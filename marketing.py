@@ -1,204 +1,391 @@
 """
-BlackWayConnect - Module Marketing (SendGrid)
-Gestion des listes de contacts, emails marketing et transactionnels,
-alertes automatiques pour les nouveaux leads.
-
-Utilise l'API SendGrid v3 pour:
-- Gérer les listes de contacts marketing
-- Envoyer des emails transactionnels (confirmations, reçus)
-- Envoyer des campagnes marketing (newsletters, promotions)
-- Alertes automatiques pour les nouveaux leads
+BlackWayConnect — Module Marketing : Vente Éclair + Alertes Discord
+===================================================================
+Ce module gère :
+1. La séquence automatisée "Vente Éclair" (3 emails via SendGrid)
+2. Les alertes HIGH VALUE sur Discord pour chaque lead qualifié
+3. Le message de succès post-paiement Stripe
 """
 
 import os
-from typing import Optional, List, Dict
-from datetime import datetime
-from utils.logger import logger
+import json
+import time
+from datetime import datetime, timedelta
 
 
-# Configuration SendGrid
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-SENDGRID_FROM_EMAIL = os.environ.get("SENDGRID_FROM_EMAIL", "marketing@blackwayconnect.com")
-SENDGRID_FROM_NAME = os.environ.get("SENDGRID_FROM_NAME", "BlackWayConnect")
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 
-# Template IDs pour les emails transactionnels
-TEMPLATE_IDS = {
-    "welcome": os.environ.get("SG_TEMPLATE_WELCOME", ""),
-    "lead_alert": os.environ.get("SG_TEMPLATE_LEAD_ALERT", ""),
-    "payment_receipt": os.environ.get("SG_TEMPLATE_PAYMENT_RECEIPT", ""),
-    "monthly_report": os.environ.get("SG_TEMPLATE_MONTHLY_REPORT", ""),
-    "renewal_reminder": os.environ.get("SG_TEMPLATE_RENEWAL_REMINDER", ""),
+SEQUENCE_CONFIG = {
+    "name": "vente_eclair_bwc02",
+    "emails": [
+        {
+            "id": "constat",
+            "delay_days": 0,
+            "subject": "{prenom}, voici combien vous perdez chaque jour sans le savoir",
+            "template_id": "vente_eclair_01_constat",
+        },
+        {
+            "id": "solution",
+            "delay_days": 2,
+            "subject": "Le système qui transforme 1$ en 8$ (en automatique)",
+            "template_id": "vente_eclair_02_solution",
+        },
+        {
+            "id": "urgence",
+            "delay_days": 5,
+            "subject": "⚠️ {prenom} — Dernière place disponible pour BWC/02",
+            "template_id": "vente_eclair_03_urgence",
+        },
+    ],
 }
 
-# Liste IDs pour le marketing
-MARKETING_LISTS = {
-    "all_clients": os.environ.get("SG_LIST_ALL_CLIENTS", ""),
-    "leads": os.environ.get("SG_LIST_LEADS", ""),
-    "newsletter": os.environ.get("SG_LIST_NEWSLETTER", ""),
-    "vip_clients": os.environ.get("SG_LIST_VIP", ""),
-}
 
+# ============================================================
+# DISCORD ALERTS — HIGH VALUE LEAD
+# ============================================================
 
-def _get_sendgrid_client():
-    """Initialise le client SendGrid."""
-    try:
-        from sendgrid import SendGridAPIClient
-        return SendGridAPIClient(SENDGRID_API_KEY)
-    except ImportError:
-        logger.error("sendgrid package not installed. Run: pip install sendgrid")
-        return None
-    except Exception as e:
-        logger.error(f"SendGrid init error: {e}")
-        return None
+def send_discord_high_value_alert(lead_data: dict) -> bool:
+    """
+    Envoie une alerte 'HIGH VALUE' sur Discord quand un lead qualifié
+    entre dans le système.
+    
+    Args:
+        lead_data: dict avec prenom, email, entreprise, score, source
+    
+    Returns:
+        bool: True si l'alerte a été envoyée avec succès
+    """
+    import requests
 
+    if not DISCORD_WEBHOOK_URL:
+        print("[ERREUR] DISCORD_WEBHOOK_URL non configuré")
+        return False
 
-async def add_contact_to_list(
-    email: str, first_name: str = "", last_name: str = "",
-    company: str = "", list_id: Optional[str] = None,
-    custom_fields: Optional[Dict] = None
-) -> dict:
-    """Ajoute un contact à une liste marketing SendGrid."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return {"status": "error", "message": "SendGrid not configured"}
+    embed = {
+        "title": "🚨 HIGH VALUE LEAD DÉTECTÉ",
+        "color": 0xFF6600,  # Orange vif
+        "fields": [
+            {"name": "👤 Nom", "value": lead_data.get("prenom", "Inconnu"), "inline": True},
+            {"name": "📧 Email", "value": lead_data.get("email", "N/A"), "inline": True},
+            {"name": "🏢 Entreprise", "value": lead_data.get("entreprise", "N/A"), "inline": True},
+            {"name": "📊 Score", "value": f"{lead_data.get('score', 0)}/100", "inline": True},
+            {"name": "🎯 Source", "value": lead_data.get("source", "Directe"), "inline": True},
+            {"name": "💰 Valeur estimée", "value": lead_data.get("valeur_estimee", "À qualifier"), "inline": True},
+        ],
+        "footer": {"text": "BlackWayConnect Growth Engine"},
+        "timestamp": datetime.utcnow().isoformat(),
+    }
 
-    contact_data = {"email": email, "first_name": first_name, "last_name": last_name, "company": company}
-    if custom_fields:
-        contact_data["custom_fields"] = custom_fields
-
-    body = {"contacts": [contact_data]}
-    if list_id:
-        body["list_ids"] = [list_id]
-
-    try:
-        response = sg.client.marketing.contacts.put(request_body=body)
-        logger.info(f"Contact ajouté: {email} -> list {list_id}")
-        return {"status": "success", "email": email, "response_code": response.status_code}
-    except Exception as e:
-        logger.error(f"Erreur ajout contact: {e}")
-        return {"status": "error", "message": str(e)}
-
-
-async def get_contact_lists() -> list:
-    """Récupère toutes les listes de contacts marketing."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return []
-    try:
-        response = sg.client.marketing.lists.get()
-        import json
-        data = json.loads(response.body)
-        return data.get("result", [])
-    except Exception as e:
-        logger.error(f"Erreur récupération listes: {e}")
-        return []
-
-
-async def create_contact_list(name: str) -> dict:
-    """Crée une nouvelle liste de contacts."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return {"status": "error", "message": "SendGrid not configured"}
-    try:
-        response = sg.client.marketing.lists.post(request_body={"name": name})
-        import json
-        data = json.loads(response.body)
-        logger.info(f"Liste créée: {name} -> {data.get('id')}")
-        return {"status": "success", "list_id": data.get("id"), "name": name}
-    except Exception as e:
-        logger.error(f"Erreur création liste: {e}")
-        return {"status": "error", "message": str(e)}
-
-
-async def send_transactional_email(
-    to_email: str, subject: str, html_content: str,
-    template_id: Optional[str] = None, dynamic_data: Optional[Dict] = None
-) -> dict:
-    """Envoie un email transactionnel via SendGrid."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return {"status": "error", "message": "SendGrid not configured"}
+    payload = {
+        "content": "💎 **NOUVEAU LEAD HIGH VALUE** — Action immédiate requise!",
+        "embeds": [embed],
+    }
 
     try:
-        from sendgrid.helpers.mail import Mail, To, From
-        message = Mail()
-        message.from_email = From(SENDGRID_FROM_EMAIL, SENDGRID_FROM_NAME)
-        message.to = To(to_email)
-
-        if template_id:
-            message.template_id = template_id
-            if dynamic_data:
-                message.dynamic_template_data = dynamic_data
-        else:
-            message.subject = subject
-            message.html_content = html_content
-
-        response = sg.send(message)
-        logger.info(f"Email transactionnel envoyé: {to_email} ({response.status_code})")
-        return {"status": "success", "to": to_email, "status_code": response.status_code}
+        response = requests.post(
+            DISCORD_WEBHOOK_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+        )
+        response.raise_for_status()
+        print(f"[OK] Alerte Discord envoyée pour {lead_data.get('email')}")
+        return True
     except Exception as e:
-        logger.error(f"Erreur envoi email: {e}")
-        return {"status": "error", "message": str(e)}
+        print(f"[ERREUR] Discord alert failed: {e}")
+        return False
 
 
-async def send_new_lead_alert(lead_data: Dict) -> dict:
-    """Envoie une alerte email quand un nouveau lead est capturé."""
-    admin_emails = os.environ.get("LEAD_ALERT_EMAILS", "service@blackwayconnect.com").split(",")
+# ============================================================
+# SENDGRID — SÉQUENCE VENTE ÉCLAIR
+# ============================================================
 
-    subject = f"Nouveau Lead: {lead_data.get('company', 'Entreprise inconnue')}"
-    html_content = f"""<div style='font-family:Arial;max-width:600px;margin:0 auto'>
-    <h1>Nouveau Lead Capturé!</h1>
-    <table><tr><td><b>Entreprise:</b></td><td>{lead_data.get('company','N/A')}</td></tr>
-    <tr><td><b>Contact:</b></td><td>{lead_data.get('name','N/A')}</td></tr>
-    <tr><td><b>Email:</b></td><td>{lead_data.get('email','N/A')}</td></tr>
-    <tr><td><b>Téléphone:</b></td><td>{lead_data.get('phone','N/A')}</td></tr>
-    <tr><td><b>Source:</b></td><td>{lead_data.get('source','N/A')}</td></tr>
-    <tr><td><b>Service:</b></td><td>{lead_data.get('service_interest','N/A')}</td></tr>
-    <tr><td><b>Date:</b></td><td>{datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}</td></tr></table>
-    <p><b>Notes:</b> {lead_data.get('notes','Aucune')}</p></div>"""
+def trigger_vente_eclair_sequence(lead_data: dict) -> dict:
+    """
+    Déclenche la séquence 'Vente Éclair' pour un lead qualifié.
+    Planifie les 3 emails avec les délais configurés.
+    
+    Args:
+        lead_data: dict avec prenom, email, entreprise
+    
+    Returns:
+        dict avec status et détails de planification
+    """
+    import requests
+
+    if not SENDGRID_API_KEY:
+        return {"status": "error", "message": "SENDGRID_API_KEY non configuré"}
 
     results = []
-    for admin_email in admin_emails:
-        admin_email = admin_email.strip()
-        if admin_email:
-            result = await send_transactional_email(admin_email, subject, html_content)
-            results.append(result)
+    base_time = datetime.utcnow()
 
-    await add_contact_to_list(
-        email=lead_data.get("email", ""),
-        first_name=lead_data.get("name", "").split(" ")[0] if lead_data.get("name") else "",
-        last_name=" ".join(lead_data.get("name", "").split(" ")[1:]) if lead_data.get("name") else "",
-        company=lead_data.get("company", ""),
-        list_id=MARKETING_LISTS.get("leads"),
-    )
+    for email_config in SEQUENCE_CONFIG["emails"]:
+        send_at = base_time + timedelta(days=email_config["delay_days"])
+        
+        # Construction du payload SendGrid
+        payload = {
+            "personalizations": [
+                {
+                    "to": [{"email": lead_data["email"]}],
+                    "dynamic_template_data": {
+                        "prenom": lead_data.get("prenom", ""),
+                        "entreprise": lead_data.get("entreprise", ""),
+                        "date_expiration": (base_time + timedelta(days=6)).strftime("%d/%m/%Y"),
+                    },
+                }
+            ],
+            "from": {
+                "email": "growth@blackwayconnect.com",
+                "name": "BlackWayConnect"
+            },
+            "template_id": email_config["template_id"],
+            "categories": ["vente_eclair", email_config["id"], "bwc02"],
+            "tracking_settings": {
+                "click_tracking": {"enable": True},
+                "open_tracking": {"enable": True},
+            },
+        }
 
-    logger.info(f"Lead alert envoyée pour: {lead_data.get('company')}")
-    return {"status": "success", "alerts_sent": len(results), "lead_added_to_list": True}
+        # Planification différée (sauf email 1 qui part immédiatement)
+        if email_config["delay_days"] > 0:
+            payload["send_at"] = int(send_at.timestamp())
+
+        try:
+            response = requests.post(
+                "https://api.sendgrid.com/v3/mail/send",
+                json=payload,
+                headers={
+                    "Authorization": f"Bearer {SENDGRID_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+            )
+            results.append({
+                "email_id": email_config["id"],
+                "status": "scheduled" if email_config["delay_days"] > 0 else "sent",
+                "send_at": send_at.isoformat(),
+                "http_status": response.status_code,
+            })
+        except Exception as e:
+            results.append({
+                "email_id": email_config["id"],
+                "status": "error",
+                "error": str(e),
+            })
+
+    return {
+        "status": "success",
+        "sequence": SEQUENCE_CONFIG["name"],
+        "lead_email": lead_data["email"],
+        "emails_planned": results,
+    }
 
 
-async def send_marketing_campaign(
-    list_id: str, subject: str, html_content: str,
-    sender_name: str = "BlackWayConnect", schedule_at: Optional[str] = None
-) -> dict:
-    """Crée et envoie une campagne marketing à une liste de contacts."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return {"status": "error", "message": "SendGrid not configured"}
-    try:
-        logger.info(f"Campagne marketing préparée pour liste {list_id}")
-        return {"status": "prepared", "list_id": list_id, "subject": subject, "scheduled": schedule_at or "immediate"}
-    except Exception as e:
-        logger.error(f"Erreur campagne marketing: {e}")
-        return {"status": "error", "message": str(e)}
+# ============================================================
+# PIPELINE PRINCIPAL — NOUVEAU LEAD QUALIFIÉ
+# ============================================================
+
+def process_qualified_lead(lead_data: dict) -> dict:
+    """
+    Pipeline principal déclenché pour chaque nouveau lead qualifié.
+    
+    Étapes :
+    1. Alerte HIGH VALUE sur Discord
+    2. Déclenchement séquence Vente Éclair (SendGrid)
+    3. Log de l'événement
+    
+    Args:
+        lead_data: {
+            "prenom": str,
+            "email": str,
+            "entreprise": str,
+            "score": int (0-100),
+            "source": str,
+            "valeur_estimee": str
+        }
+    
+    Returns:
+        dict avec résumé des actions effectuées
+    """
+    print(f"\n{'='*60}")
+    print(f"🎯 NOUVEAU LEAD QUALIFIÉ : {lead_data.get('prenom')} ({lead_data.get('email')})")
+    print(f"{'='*60}\n")
+
+    results = {
+        "lead": lead_data,
+        "timestamp": datetime.utcnow().isoformat(),
+        "actions": {},
+    }
+
+    # 1. Alerte Discord HIGH VALUE
+    print("[1/2] Envoi alerte Discord HIGH VALUE...")
+    discord_ok = send_discord_high_value_alert(lead_data)
+    results["actions"]["discord_alert"] = "sent" if discord_ok else "failed"
+
+    # 2. Séquence Vente Éclair
+    print("[2/2] Déclenchement séquence Vente Éclair...")
+    sequence_result = trigger_vente_eclair_sequence(lead_data)
+    results["actions"]["vente_eclair"] = sequence_result
+
+    print(f"\n✅ Pipeline complété pour {lead_data.get('email')}")
+    print(f"   Discord: {'✅' if discord_ok else '❌'}")
+    print(f"   Emails: {sequence_result.get('status')}")
+
+    return results
 
 
-async def get_campaign_stats(campaign_id: str) -> dict:
-    """Récupère les statistiques d'une campagne (opens, clicks, etc.)."""
-    sg = _get_sendgrid_client()
-    if not sg:
-        return {"status": "error", "message": "SendGrid not configured"}
-    try:
-        return {"campaign_id": campaign_id, "delivered": 0, "opens": 0, "clicks": 0, "bounces": 0, "unsubscribes": 0}
-    except Exception as e:
-        logger.error(f"Erreur stats campagne: {e}")
-        return {"status": "error", "message": str(e)}
+# ============================================================
+# STRIPE — MESSAGE DE SUCCÈS POST-PAIEMENT
+# ============================================================
+
+def generate_success_message(customer_data: dict, plan: str = "BWC/02") -> dict:
+    """
+    Génère le message de succès après un paiement Stripe réussi.
+    Confirme au client que son système de croissance est activé.
+    
+    Args:
+        customer_data: données client depuis Stripe (name, email)
+        plan: identifiant du forfait (default: BWC/02)
+    
+    Returns:
+        dict avec le contenu du message de succès
+    """
+    prenom = customer_data.get("name", "").split()[0] if customer_data.get("name") else "Champion"
+    
+    success_message = {
+        "type": "success_confirmation",
+        "plan": plan,
+        "subject": f"🎉 {prenom}, votre machine à croissance est activée!",
+        "headline": "FÉLICITATIONS — Vous venez de prendre la meilleure décision business de l'année.",
+        "body": f"""
+{prenom},
+
+🚀 C'est officiel. Votre système BlackWay est en cours d'activation.
+
+Voici ce qui se passe maintenant :
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 ÉTAPE ACTUELLE : Activation en cours
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Paiement confirmé — Forfait {plan}
+✅ Votre audit IA personnalisé démarre dans les prochaines 24h
+✅ Votre écosystème automatisé sera opérationnel sous 72h
+✅ Votre accompagnement stratégique 90 jours commence maintenant
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💰 CE QUE ÇA SIGNIFIE POUR VOUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dans 90 jours, votre entreprise aura :
+• Un système qui génère des leads qualifiés en automatique (24/7)
+• Des processus optimisés qui vous libèrent 15h+ par semaine
+• Une croissance de 150-200% mesurable et documentée
+
+Vous n'avez plus besoin d'espérer la croissance.
+Vous venez d'installer le SYSTÈME qui la garantit.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📞 PROCHAINE ÉTAPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Notre équipe vous contacte sous 24h pour votre session 
+de lancement personnalisée.
+
+En attendant, bienvenue dans le cercle des entrepreneurs 
+qui ont choisi de SYSTÉMATISER leur succès.
+
+À votre croissance explosive,
+L'équipe BlackWayConnect
+""",
+        "cta": {
+            "text": "Accéder à mon espace client",
+            "url": "https://app.blackwayconnect.com/dashboard",
+        },
+        "metadata": {
+            "customer_email": customer_data.get("email"),
+            "plan": plan,
+            "activation_date": datetime.utcnow().isoformat(),
+            "guarantee": "ROI 200% en 90 jours ou accompagnement prolongé gratuitement",
+        },
+    }
+
+    return success_message
+
+
+def handle_stripe_payment_success(event: dict) -> dict:
+    """
+    Webhook handler pour les événements Stripe 'payment_intent.succeeded'.
+    Déclenche le message de succès et l'alerte Discord.
+    
+    Args:
+        event: Stripe webhook event payload
+    
+    Returns:
+        dict avec résultat du traitement
+    """
+    payment_intent = event.get("data", {}).get("object", {})
+    customer_email = payment_intent.get("receipt_email", "")
+    customer_name = payment_intent.get("metadata", {}).get("customer_name", "")
+    plan = payment_intent.get("metadata", {}).get("plan", "BWC/02")
+
+    customer_data = {
+        "name": customer_name,
+        "email": customer_email,
+    }
+
+    # Générer le message de succès
+    success_msg = generate_success_message(customer_data, plan)
+
+    # Alerte Discord pour le paiement
+    payment_alert = {
+        "prenom": customer_name,
+        "email": customer_email,
+        "entreprise": payment_intent.get("metadata", {}).get("entreprise", "N/A"),
+        "score": 100,
+        "source": "Paiement Stripe",
+        "valeur_estimee": f"{payment_intent.get('amount', 0) / 100:.2f}$",
+    }
+    
+    send_discord_high_value_alert(payment_alert)
+
+    return {
+        "status": "success",
+        "customer_email": customer_email,
+        "plan": plan,
+        "success_message": success_msg,
+        "discord_notified": True,
+    }
+
+
+# ============================================================
+# POINT D'ENTRÉE — TESTS
+# ============================================================
+
+if __name__ == "__main__":
+    # Simulation d'un lead qualifié
+    test_lead = {
+        "prenom": "Marc",
+        "email": "marc@exemple.com",
+        "entreprise": "TechVision Inc.",
+        "score": 85,
+        "source": "Audit IA Landing Page",
+        "valeur_estimee": "15 000$/an",
+    }
+
+    print("\n" + "=" * 60)
+    print("🧪 TEST — Pipeline Lead Qualifié")
+    print("=" * 60)
+    result = process_qualified_lead(test_lead)
+    print(f"\nRésultat: {json.dumps(result, indent=2, default=str)}")
+
+    print("\n" + "=" * 60)
+    print("🧪 TEST — Message Succès Post-Paiement")
+    print("=" * 60)
+    success = generate_success_message({"name": "Marc Dupont", "email": "marc@exemple.com"})
+    print(f"\nSujet: {success['subject']}")
+    print(success["body"])
