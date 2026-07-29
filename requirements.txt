@@ -1,52 +1,23 @@
-# BlackWayConnect Engine v2.0 - BaaS Dependencies
-# Python 3.11+
-
-# ─── Core Framework ────────────────────────────────────────
 fastapi==0.115.0
 uvicorn[standard]==0.30.0
 pydantic[email]==2.9.0
-
-# ─── Authentication & Security ───────────────────────────
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
-
-# ─── Monitoring & Error Tracking ──────────────────────────
 sentry-sdk[fastapi]==2.14.0
-
-# ─── Database (production) ───────────────────────────────
 sqlalchemy==2.0.35
 asyncpg==0.29.0
 alembic==1.13.0
-
-# ─── Cache & Performance ────────────────────────────────
 redis==5.1.0
-aioredis==2.0.1
-
-# ─── HTTP & Async ─────────────────────────────────────
 httpx==0.27.0
 aiohttp==3.10.0
 websockets==13.0
-
-# ─── AI Module ────────────────────────────────────────
-openai==1.50.0
+opena==1.50.0
 tiktoken==0.7.0
-
-# ─── Push Notifications ─────────────────────────────────
-firebase-admin==6.5.0
-aioapns==3.2
-
-# ─── Payment Processing ─────────────────────────────────
 stripe==10.12.0
-
-# ─── Logging ──────────────────────────────────────────
 loguru==0.7.2
-
-# ─── Utilities ────────────────────────────────────────
 python-dotenv==1.0.1
 pyyaml==6.0.2
 jinja2==3.1.4
-
-# ─── Development & Testing ───────────────────────────────
-pytest==8.3.0
-pytest-asyncio==0.24.0
+sendgrid==6.11.0
+asana==5.0.0
