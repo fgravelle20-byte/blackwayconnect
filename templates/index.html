@@ -3,123 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master BlackWay — Dominez Votre Marché. Explosez Vos Ventes.</title>
-    <meta name="description" content="Le système complet de croissance numérique Master BlackWay (Site + IA + CRM). Offre exclusive 1 495 $ — Places limitées.">
+    <title>Master BlackWay &#x2014; Dominez Votre March&#233;. Explosez Vos Ventes.</title>
+    <meta name="description" content="Architecture de Performance Op&#233;rationnelle Master BlackWay &#x2014; Site + IA + CRM. Offre exclusive 1&#160;495&#160;$ &#x2014; Places limit&#233;es.">
     <meta name="robots" content="index, follow">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --red: #ff0000;
-            --red-dim: #cc0000;
             --red-deep: #990000;
-            --red-glow: rgba(255, 0, 0, 0.35);
             --bg: #0a0a0a;
-            --card: #0f0f0f;
-            --card2: #141414;
-            --border: #1e1e1e;
+            --card: #0e0e0e;
+            --card2: #131313;
+            --border: #1c1c1c;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
             background-color: var(--bg);
-            color: #ffffff;
+            color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
             overflow-x: hidden;
             line-height: 1.5;
         }
 
-        /* BACKGROUND */
-        .bg-grid {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255,0,0,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,0,0,0.025) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        .bg-glow-center {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,0,0,0.08) 0%, transparent 70%);
-        }
-
-        /* PARTICLES */
-        .particle {
-            position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-            background: var(--red); opacity: 0;
-            animation: rise linear infinite;
-        }
-        @keyframes rise {
-            0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
-            5%   { opacity: 0.5; }
-            95%  { opacity: 0.2; }
-            100% { transform: translateY(-40px) translateX(var(--dx)); opacity: 0; }
-        }
-
-        .page-wrap { position: relative; z-index: 1; }
-
-        .topbar {
-            text-align: center; padding: 18px 20px;
-            font-size: 11px; letter-spacing: 4px; color: var(--red);
-            text-transform: uppercase; font-weight: 700;
-        }
-
+        /* ━━━━━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━ */
         .hero {
-            min-height: calc(100vh - 56px);
-            display: flex; align-items: center; justify-content: center;
-            padding: 40px 20px 60px;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .hero-inner { width: 100%; max-width: 860px; text-align: center; }
 
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg');
+            background-size: cover;
+            background-position: center 30%;
+            filter: brightness(0.55) saturate(1.15);
+            transform: scale(1.02);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 120% 60% at 50% 100%, rgba(0,0,0,0.98) 0%, transparent 65%),
+                linear-gradient(180deg,
+                    rgba(0,0,0,0.5)  0%,
+                    rgba(0,0,0,0.15) 25%,
+                    rgba(0,0,0,0.3)  55%,
+                    rgba(0,0,0,0.85) 80%,
+                    rgba(0,0,0,1)    100%
+                );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            padding: 36px 24px 70px;
+            text-align: center;
+        }
+
+        /* ━━ SIGIL ━━ */
+        .sigil-wrap {
+            margin-bottom: 16px;
+            display: inline-block;
+            position: relative;
+        }
+        .sigil {
+            width: 148px;
+            height: 148px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255,0,0,0.5);
+            filter:
+                drop-shadow(0 0 14px rgba(255,0,0,0.7))
+                drop-shadow(0 0 30px rgba(255,0,0,0.35))
+                drop-shadow(0 0 60px rgba(255,0,0,0.15));
+            animation: sigil-breathe 3s ease-in-out infinite alternate;
+        }
+        @keyframes sigil-breathe {
+            from { filter: drop-shadow(0 0 12px rgba(255,0,0,0.6)) drop-shadow(0 0 28px rgba(255,0,0,0.3)); }
+            to   { filter: drop-shadow(0 0 22px rgba(255,0,0,0.9)) drop-shadow(0 0 50px rgba(255,0,0,0.5)); }
+        }
+
+        /* ━━ BRAND LABEL ━━ */
+        .brand-label {
+            font-size: 11px;
+            letter-spacing: 5px;
+            color: var(--red);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        /* ━━ BADGE ━━ */
         .badge-alert {
             display: inline-flex; align-items: center; gap: 7px;
-            background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.45);
-            color: #ff4444; padding: 7px 18px; border-radius: 100px;
+            background: rgba(255,0,0,0.10); border: 1px solid rgba(255,0,0,0.5);
+            color: #ff4444; padding: 7px 20px; border-radius: 100px;
             font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            animation: badge-pulse 2.2s ease-in-out infinite;
+            margin-bottom: 26px;
+            animation: badge-glow 2s ease-in-out infinite;
         }
-        @keyframes badge-pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,0,0,0.2); }
-            50% { box-shadow: 0 0 20px 4px rgba(255,0,0,0.25); }
+        @keyframes badge-glow {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,0,0,0.15); }
+            50%      { box-shadow: 0 0 18px 3px rgba(255,0,0,0.2); }
         }
 
+        /* ━━ HEADLINE ━━ */
         .headline {
-            font-size: clamp(2rem, 5.5vw, 4.2rem);
-            font-weight: 900; line-height: 1.06; letter-spacing: -1.5px;
-            text-shadow: 0 0 60px rgba(255,0,0,0.2);
+            font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            text-shadow: 0 2px 24px rgba(0,0,0,0.9);
+            margin-bottom: 18px;
         }
         .headline .red { color: var(--red); }
 
+        /* ━━ SUBTITLE ━━ */
+        .subtitle {
+            font-size: clamp(1rem, 1.8vw, 1.18rem);
+            color: #aaa;
+            max-width: 660px;
+            margin: 0 auto 38px;
+            line-height: 1.75;
+            text-shadow: 0 1px 12px rgba(0,0,0,0.9);
+        }
+
+        /* ━━ DEAL CARD ━━ */
         .deal-card {
-            background: var(--card2);
-            border: 1px solid rgba(255,0,0,0.35);
-            border-radius: 18px; padding: 32px 36px;
-            position: relative; overflow: hidden;
-            box-shadow: 0 0 40px rgba(255,0,0,0.08), 0 0 80px rgba(255,0,0,0.04);
+            background: rgba(8, 8, 8, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,0,0,0.38);
+            border-radius: 20px;
+            padding: 28px 36px;
+            max-width: 520px;
+            margin: 0 auto 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255,0,0,0.06), 0 20px 60px rgba(0,0,0,0.5);
         }
         .deal-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; right: -100%; height: 2px;
+            content: '';
+            position: absolute; top: 0; left: -100%; right: -100%; height: 2px;
             background: linear-gradient(90deg, transparent 0%, var(--red) 50%, transparent 100%);
-            animation: top-scan 3s linear infinite;
+            animation: card-scan 3s linear infinite;
         }
-        @keyframes top-scan { 0% { left: -100%; } 100% { left: 100%; } }
-        .deal-card::after {
-            content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,0,0,0.06) 0%, transparent 60%);
-        }
+        @keyframes card-scan { 0%{left:-100%} 100%{left:100%} }
 
         .exclusive-tag {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,0,0,0.15); border: 1px solid rgba(255,0,0,0.3);
+            background: rgba(255,0,0,0.14); border: 1px solid rgba(255,0,0,0.3);
             color: #ff5555; padding: 4px 14px; border-radius: 6px;
             font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
         }
 
-        .price-amount {
+        .price-main {
             font-size: clamp(3.8rem, 9vw, 6.5rem);
             font-weight: 900; color: var(--red); line-height: 1;
-            text-shadow: 0 0 40px rgba(255,0,0,0.4);
+            text-shadow: 0 0 30px rgba(255,0,0,0.5);
         }
-        .price-currency { font-size: 0.35em; vertical-align: super; font-weight: 700; }
-        .price-regular { font-size: 1.3rem; color: #3d3d3d; text-decoration: line-through; font-weight: 600; }
+        .price-sup { font-size: 0.32em; vertical-align: super; font-weight: 700; }
+        .price-regular { font-size: 1.25rem; color: #3c3c3c; text-decoration: line-through; font-weight: 600; }
         .savings-pill {
             display: inline-block;
             background: linear-gradient(135deg, var(--red), var(--red-deep));
@@ -128,82 +181,150 @@
         }
         .places-alert {
             color: #ff3333; font-size: 13px; font-weight: 700;
-            animation: blink-red 1.8s ease-in-out infinite;
+            animation: blink 1.8s ease-in-out infinite;
         }
-        @keyframes blink-red { 0%,100%{opacity:1} 50%{opacity:0.45} }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+        /* ━━ COUNTDOWN ━━ */
         .countdown-wrap { display: flex; justify-content: center; gap: 10px; }
         .count-box {
-            background: rgba(255,0,0,0.07); border: 1px solid rgba(255,0,0,0.2);
-            border-radius: 10px; padding: 10px 12px; min-width: 72px; text-align: center;
+            background: rgba(255,0,0,0.07); border: 1px solid rgba(255,0,0,0.22);
+            border-radius: 10px; padding: 10px 14px; min-width: 74px; text-align: center;
+            backdrop-filter: blur(8px);
         }
-        .count-num { font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1; font-variant-numeric: tabular-nums; }
+        .count-num {
+            font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
         .count-lbl { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 3px; }
 
+        /* ━━━━━━━━━━━━━━━━━━━━ RED NEON CTA ━━━━━━━━━━━━━━━━━━━━ */
         .btn-empire {
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-            color: #fff; font-size: clamp(0.95rem, 2.2vw, 1.25rem); font-weight: 800;
-            letter-spacing: 0.5px; text-transform: uppercase;
-            padding: 20px 48px; border-radius: 100px; border: none; cursor: pointer;
-            width: 100%; max-width: 540px; position: relative; overflow: hidden;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            animation: cta-pulse 2.5s ease-in-out infinite;
+            background: #000000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            font-size: clamp(1rem, 2.2vw, 1.22rem);
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 20px 50px;
+            border-radius: 100px;
+            cursor: pointer;
+            width: 100%; max-width: 560px;
+            position: relative; overflow: hidden;
+            transition: background 0.25s ease, transform 0.2s ease;
+            box-shadow:
+                0 0 7px #ff0000,
+                0 0 18px rgba(255,0,0,0.55),
+                0 0 40px rgba(255,0,0,0.28),
+                inset 0 0 6px rgba(255,0,0,0.08);
+            text-shadow:
+                0 0 8px rgba(255,0,0,0.9),
+                0 0 20px rgba(255,0,0,0.5);
+            animation: neon-flicker 2s ease-in-out infinite alternate;
         }
-        @keyframes cta-pulse {
-            0%,100% { box-shadow: 0 6px 35px rgba(255,0,0,0.45); }
-            50% { box-shadow: 0 6px 55px rgba(255,0,0,0.7), 0 0 0 8px rgba(255,0,0,0); }
+        @keyframes neon-flicker {
+            0%  { box-shadow: 0 0 7px #ff0000, 0 0 18px rgba(255,0,0,0.5), 0 0 40px rgba(255,0,0,0.25); }
+            40% { box-shadow: 0 0 5px #ff0000, 0 0 14px rgba(255,0,0,0.4), 0 0 30px rgba(255,0,0,0.2); }
+            60% { box-shadow: 0 0 12px #ff0000, 0 0 28px rgba(255,0,0,0.65), 0 0 60px rgba(255,0,0,0.35), 0 0 90px rgba(255,0,0,0.15); }
+            100%{ box-shadow: 0 0 10px #ff0000, 0 0 24px rgba(255,0,0,0.6), 0 0 55px rgba(255,0,0,0.3); }
         }
         .btn-empire:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 55px rgba(255,0,0,0.7) !important;
+            background: rgba(255, 0, 0, 0.08);
+            transform: scale(1.025) translateY(-2px);
             animation: none;
+            box-shadow:
+                0 0 18px #ff0000,
+                0 0 40px rgba(255,0,0,0.75),
+                0 0 80px rgba(255,0,0,0.45),
+                0 0 120px rgba(255,0,0,0.2);
+            text-shadow: 0 0 14px #ff0000, 0 0 30px rgba(255,0,0,0.7);
         }
         .btn-empire:active { transform: scale(0.98); }
+
+        /* SHIMMER */
         .btn-empire::before {
-            content: ''; position: absolute; top: -50%; left: -80%; width: 40%; height: 200%;
-            background: rgba(255,255,255,0.12); transform: skewX(-20deg);
-            animation: shimmer 3.5s ease-in-out infinite;
+            content: '';
+            position: absolute; top: -50%; left: -80%; width: 35%; height: 200%;
+            background: rgba(255,255,255,0.08); transform: skewX(-20deg);
+            animation: btn-shimmer 4s ease-in-out infinite;
         }
-        @keyframes shimmer { 0%{left:-80%} 100%{left:180%} }
+        @keyframes btn-shimmer { 0%{left:-80%} 100%{left:180%} }
 
-        .trust-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
-        .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-        .trust-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; flex-shrink:0; }
+        /* ━━ TRUST ROW ━━ */
+        .trust-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+        .trust-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #4a4a4a; }
+        .trust-dot { width: 5px; height: 5px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
 
+        /* ━━ SCROLL HINT ━━ */
+        .scroll-hint {
+            position: absolute;
+            bottom: 22px; left: 50%; transform: translateX(-50%);
+            z-index: 1; color: rgba(255,255,255,0.25);
+            font-size: 11px; text-transform: uppercase; letter-spacing: 2px; text-align: center;
+            animation: hint-bounce 2.5s ease-in-out infinite;
+        }
+        @keyframes hint-bounce {
+            0%,100%{ transform: translateX(-50%) translateY(0); }
+            50%    { transform: translateX(-50%) translateY(7px); }
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━ DIVIDER ━━━━━━━━━━━━━━━━━━━━ */
         .red-divider {
-            height: 1px; margin: 64px auto;
+            height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255,0,0,0.4), transparent);
-            max-width: 860px;
+            max-width: 960px; margin: 0 auto;
         }
 
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+        /* ━━━━━━━━━━━━━━━━━━━━ FEATURES ━━━━━━━━━━━━━━━━━━━━ */
+        .feat-section {
+            max-width: 1100px; margin: 0 auto; padding: 80px 24px 90px;
+        }
+        .feat-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 52px;
+            align-items: center;
+        }
+        @media (max-width: 820px) {
+            .feat-layout { grid-template-columns: 1fr; }
+        }
+        .growth-img {
+            width: 100%; border-radius: 16px;
+            border: 1px solid rgba(255,0,0,0.18);
+            box-shadow: 0 0 50px rgba(255,0,0,0.12), 0 24px 60px rgba(0,0,0,0.55);
+        }
+        .feat-cards { display: flex; flex-direction: column; gap: 14px; }
         .feat-card {
             background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-            padding: 26px; transition: border-color 0.3s ease;
+            padding: 20px 22px;
+            transition: border-color 0.25s ease, transform 0.2s ease;
         }
-        .feat-card:hover { border-color: rgba(255,0,0,0.3); }
+        .feat-card:hover { border-color: rgba(255,0,0,0.35); transform: translateX(5px); }
+        .feat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 7px; }
         .feat-icon {
-            width: 50px; height: 50px; background: rgba(255,0,0,0.08); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin-bottom: 14px;
+            width: 40px; height: 40px; background: rgba(255,0,0,0.08); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
         }
-        .feat-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-        .feat-desc { font-size: 13px; color: #555; line-height: 1.65; }
+        .feat-title { font-size: 0.98rem; font-weight: 700; }
+        .feat-desc { font-size: 13px; color: #4a4a4a; line-height: 1.65; }
 
+        /* ━━━━━━━━━━━━━━━━━━━━ FOOTER ━━━━━━━━━━━━━━━━━━━━ */
         footer {
-            border-top: 1px solid var(--border); padding: 28px 20px;
+            border-top: 1px solid var(--border); padding: 26px 20px;
             text-align: center; position: relative; z-index: 1;
         }
 
+        /* ━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━ */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.93); backdrop-filter: blur(14px);
             z-index: 200; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-overlay.active { display: flex; }
         .modal-box {
-            background: var(--card2); border: 1px solid rgba(255,0,0,0.35);
+            background: var(--card2); border: 1px solid rgba(255,0,0,0.4);
             border-radius: 20px; padding: 40px; width: 100%; max-width: 460px;
             position: relative;
         }
@@ -214,26 +335,28 @@
         }
         .modal-close {
             position: absolute; top: 14px; right: 16px; background: none; border: none;
-            color: #444; font-size: 22px; cursor: pointer; padding: 4px; line-height:1;
+            color: #444; font-size: 22px; cursor: pointer; padding: 4px; line-height: 1;
             transition: color 0.2s;
         }
         .modal-close:hover { color: #888; }
         .input-field {
             width: 100%; background: rgba(255,255,255,0.04);
             border: 1px solid #2a2a2a; border-radius: 10px;
-            padding: 14px 16px; color: #fff; font-size: 15px;
-            outline: none; transition: border-color 0.2s;
+            padding: 14px 16px; color: #fff; font-size: 15px; outline: none;
+            transition: border-color 0.2s;
         }
-        .input-field:focus { border-color: var(--red); }
-        .input-field::placeholder { color: #444; }
+        .input-field:focus { border-color: var(--red); box-shadow: 0 0 0 2px rgba(255,0,0,0.1); }
+        .input-field::placeholder { color: #3a3a3a; }
         .prog-track { width: 100%; height: 3px; background: #1a1a1a; border-radius: 3px; overflow: hidden; margin-top: 14px; }
         .prog-bar { height: 100%; background: var(--red); width: 0; transition: width 0.5s ease; border-radius: 3px; }
         .spin {
             width: 18px; height: 18px; flex-shrink: 0;
-            border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff;
+            border: 2px solid rgba(255,255,255,0.15); border-top-color: #fff;
             border-radius: 50%; animation: spinning 0.7s linear infinite;
         }
         @keyframes spinning { to { transform: rotate(360deg); } }
+
+        /* ━━━━━━━━━━━━━━━━━━━━ TOAST ━━━━━━━━━━━━━━━━━━━━ */
         .toast {
             position: fixed; bottom: 24px; right: 24px; z-index: 300;
             background: var(--card2); border: 1px solid rgba(255,0,0,0.4);
@@ -246,153 +369,188 @@
     </style>
 </head>
 <body>
-<div class="bg-grid"></div>
-<div class="bg-glow-center"></div>
-<div id="particles"></div>
 
-<div class="page-wrap">
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
 
-    <div class="topbar">&#x26A1; MASTER BLACKWAY</div>
+    <div class="hero-content">
 
-    <section class="hero">
-        <div class="hero-inner">
+        <div class="sigil-wrap">
+            <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg"
+                 alt="Master BlackWay Sigil" class="sigil">
+        </div>
 
-            <div style="margin-bottom:28px;">
-                <span class="badge-alert">&#x1F525; OFFRE BLITZ &#x2014; DISPONIBLE MAINTENANT</span>
+        <div class="brand-label">&#x26A1; MASTER BLACKWAY</div>
+
+        <div style="margin-bottom:26px;">
+            <span class="badge-alert">&#x1F525; OFFRE BLITZ &#x2014; DISPONIBLE MAINTENANT</span>
+        </div>
+
+        <h1 class="headline" style="margin-bottom:18px;">
+            DOMINEZ VOTRE MARCH&#201;.<br>
+            <span class="red">EXPLOSEZ VOS VENTES DE 150&#160;%.</span>
+        </h1>
+
+        <p class="subtitle">
+            <strong style="color:#e0e0e0;">Architecture de Performance Op&#233;rationnelle</strong> Master BlackWay.<br>
+            <span style="color:#888;">(Site&#160;+&#160;IA&#160;+&#160;CRM)</span> &#x2014; tout-en-un, livr&#233; instantan&#233;ment apr&#232;s paiement.
+        </p>
+
+        <div class="deal-card">
+            <div style="margin-bottom:16px;">
+                <span class="exclusive-tag">&#x1F48E; OFFRE EXCLUSIVE</span>
             </div>
 
-            <h1 class="headline" style="margin-bottom:18px;">
-                DOMINEZ VOTRE MARCH&#201;.<br>
-                <span class="red">EXPLOSEZ VOS VENTES DE 150&#160;%.</span>
-            </h1>
+            <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:14px;">
+                <div>
+                    <div class="price-main">
+                        <span class="price-sup">$</span>1&#160;495
+                    </div>
+                    <div style="font-size:12px;color:#3a3a3a;margin-top:4px;">CAD &#183; Paiement unique</div>
+                </div>
+                <div style="text-align:left;">
+                    <div class="price-regular">4&#160;995&#160;$</div>
+                    <span class="savings-pill">&#201;CONOMIE&#160;3&#160;500&#160;$</span>
+                </div>
+            </div>
 
-            <p style="font-size:clamp(1rem,1.8vw,1.2rem);color:#888;max-width:620px;margin:0 auto 44px;line-height:1.7;">
-                Le syst&#232;me complet de croissance num&#233;rique
-                <strong style="color:#ddd;">Master BlackWay</strong>
-                &#x2014; <span style="color:#ccc;">(Site + IA + CRM)</span> &#x2014; tout-en-un,
-                livr&#233; instantan&#233;ment apr&#232;s paiement.
+            <div style="padding-top:14px;border-top:1px solid rgba(255,0,0,0.1);">
+                <p class="places-alert">&#x1F534; PLACES LIMIT&#201;ES &#x2014; IL RESTE PEU D&#x27;ACC&#200;S</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom:30px;">
+            <p style="font-size:11px;color:#3a3a3a;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+                L&#x27;OFFRE EXPIRE DANS
             </p>
-
-            <div class="deal-card" style="max-width:520px;margin:0 auto 32px;">
-
-                <div style="margin-bottom:18px;">
-                    <span class="exclusive-tag">&#x1F48E; OFFRE EXCLUSIVE</span>
-                </div>
-
-                <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:14px;">
-                    <div>
-                        <div class="price-amount">
-                            <span class="price-currency">$</span>1&#160;495
-                        </div>
-                        <div style="font-size:12px;color:#444;margin-top:4px;">CAD &#183; Paiement unique</div>
-                    </div>
-                    <div style="text-align:left;">
-                        <div class="price-regular">4 995 $</div>
-                        <span class="savings-pill">&#201;CONOMIE&#160;3&#160;500&#160;$</span>
-                    </div>
-                </div>
-
-                <div style="padding-top:16px;border-top:1px solid rgba(255,0,0,0.12);">
-                    <p class="places-alert">&#x1F534; PLACES LIMIT&#201;ES &#x2014; IL RESTE PEU D&#x27;ACC&#200;S</p>
-                </div>
+            <div class="countdown-wrap">
+                <div class="count-box"><div class="count-num" id="cd-h">23</div><div class="count-lbl">Heures</div></div>
+                <div class="count-box"><div class="count-num" id="cd-m">59</div><div class="count-lbl">Minutes</div></div>
+                <div class="count-box"><div class="count-num" id="cd-s">00</div><div class="count-lbl">Secondes</div></div>
             </div>
+        </div>
 
-            <div style="margin-bottom:34px;">
-                <p style="font-size:11px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
-                    L&#x27;OFFRE EXPIRE DANS
-                </p>
-                <div class="countdown-wrap">
-                    <div class="count-box"><div class="count-num" id="cd-h">23</div><div class="count-lbl">Heures</div></div>
-                    <div class="count-box"><div class="count-num" id="cd-m">59</div><div class="count-lbl">Minutes</div></div>
-                    <div class="count-box"><div class="count-num" id="cd-s">00</div><div class="count-lbl">Secondes</div></div>
+        <div style="margin-bottom:20px;">
+            <button class="btn-empire" onclick="openModal()">
+                &#x26A1;&#160;ACTIVER MON EMPIRE MAINTENANT
+            </button>
+        </div>
+
+        <div class="trust-row">
+            <span class="trust-item"><span class="trust-dot"></span>Paiement SSL s&#233;curis&#233;</span>
+            <span class="trust-item"><span class="trust-dot"></span>Stripe Certified</span>
+            <span class="trust-item"><span class="trust-dot"></span>Livraison instantan&#233;e</span>
+            <span class="trust-item"><span class="trust-dot"></span>Support prioritaire 24/7</span>
+        </div>
+    </div>
+
+    <div class="scroll-hint">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <div style="margin-top:4px;">D&#233;COUVRIR</div>
+    </div>
+</section>
+
+<div class="red-divider"></div>
+
+<section class="feat-section">
+    <div style="text-align:center;margin-bottom:56px;">
+        <h2 style="font-size:clamp(1.5rem,3vw,2.3rem);font-weight:800;margin-bottom:10px;">
+            SYST&#200;ME DE VALORISATION D&#x27;ACTIFS
+        </h2>
+        <p style="color:#454545;font-size:14px;max-width:500px;margin:0 auto;">
+            Trois syst&#232;mes int&#233;gr&#233;s. Un seul prix explosif. Z&#233;ro compromis.
+        </p>
+    </div>
+
+    <div class="feat-layout">
+        <div>
+            <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d712d9610eff3b6421db5ecc6df219f3c26d2246778de70115e30f0adaa45c85.jpeg"
+                 alt="Architecture de Performance Op&#233;rationnelle" class="growth-img" loading="lazy">
+        </div>
+
+        <div class="feat-cards">
+            <div class="feat-card">
+                <div class="feat-header">
+                    <div class="feat-icon">&#x1F310;</div>
+                    <div class="feat-title">Site Professionnel</div>
                 </div>
+                <div class="feat-desc">Pr&#233;sence web percutante, optimis&#233;e Google, pr&#234;te &#224; convertir d&#232;s le jour&#160;1.</div>
             </div>
-
-            <div style="margin-bottom:22px;">
-                <button class="btn-empire" onclick="openModal()">
+            <div class="feat-card">
+                <div class="feat-header">
+                    <div class="feat-icon">&#x1F916;</div>
+                    <div class="feat-title">IA Commerciale</div>
+                </div>
+                <div class="feat-desc">Qualification automatique de leads, relance intelligente et analyse de performance en temps&#160;r&#233;el.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-header">
+                    <div class="feat-icon">&#x1F4CA;</div>
+                    <div class="feat-title">CRM Int&#233;gr&#233;</div>
+                </div>
+                <div class="feat-desc">G&#233;rez clients, contrats et revenus depuis un tableau de bord centralis&#233;.</div>
+            </div>
+            <div style="margin-top:8px;">
+                <button class="btn-empire" onclick="openModal()" style="max-width:100%;font-size:0.92rem;padding:16px 24px;">
                     &#x26A1;&#160;ACTIVER MON EMPIRE MAINTENANT
                 </button>
             </div>
-
-            <div class="trust-row">
-                <span class="trust-item"><span class="trust-dot"></span>Paiement SSL s&#233;curis&#233;</span>
-                <span class="trust-item"><span class="trust-dot"></span>Stripe Certified</span>
-                <span class="trust-item"><span class="trust-dot"></span>Livraison instantan&#233;e</span>
-                <span class="trust-item"><span class="trust-dot"></span>Support prioritaire 24/7</span>
-            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <div class="red-divider"></div>
-
-    <section style="max-width:860px;margin:0 auto;padding:0 20px 80px;">
-        <h2 style="text-align:center;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;margin-bottom:10px;">CE QUE VOUS OBTENEZ</h2>
-        <p style="text-align:center;color:#555;font-size:14px;margin-bottom:44px;">Trois syst&#232;mes int&#233;gr&#233;s, un seul prix explosif.</p>
-        <div class="features-grid">
-            <div class="feat-card">
-                <div class="feat-icon">&#x1F310;</div>
-                <div class="feat-title">Site Professionnel</div>
-                <div class="feat-desc">Pr&#233;sence web percutante, optimis&#233;e Google, pr&#234;te &#224; convertir d&#232;s le jour 1.</div>
-            </div>
-            <div class="feat-card">
-                <div class="feat-icon">&#x1F916;</div>
-                <div class="feat-title">IA Commerciale</div>
-                <div class="feat-desc">Qualification automatique de leads, relance intelligente et analyse en temps r&#233;el.</div>
-            </div>
-            <div class="feat-card">
-                <div class="feat-icon">&#x1F4CA;</div>
-                <div class="feat-title">CRM Int&#233;gr&#233;</div>
-                <div class="feat-desc">G&#233;rez clients, contrats et revenus depuis un tableau de bord centralis&#233;.</div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p style="color:#2e2e2e;font-size:13px;letter-spacing:0.5px;font-weight:600;">
-            Master BlackWay &#x2014; 9495-5457 Quebec Inc.
-        </p>
-        <p style="color:#222;font-size:12px;margin-top:5px;">
-            blackwayconnect.com &#160;&#183;&#160; service@blackwayconnect.com
-        </p>
-    </footer>
-
-</div>
+<footer>
+    <p style="color:#282828;font-size:13px;letter-spacing:0.5px;font-weight:600;">
+        Master BlackWay &#x2014; 9495-5457 Quebec Inc.
+    </p>
+    <p style="color:#1e1e1e;font-size:12px;margin-top:5px;">
+        blackwayconnect.com &#160;&#183;&#160; service@blackwayconnect.com
+    </p>
+</footer>
 
 <div class="modal-overlay" id="modal">
     <div class="modal-box">
         <button class="modal-close" onclick="closeModal()">&#x2715;</button>
-        <div style="text-align:center;margin-bottom:26px;">
-            <div style="font-size:36px;margin-bottom:8px;">&#x26A1;</div>
-            <h2 style="font-size:1.35rem;font-weight:800;margin-bottom:6px;">ACTIVER MON EMPIRE</h2>
-            <p style="color:#555;font-size:13px;">Entrez votre email &#x2014; redirection s&#233;curis&#233;e vers Stripe</p>
+
+        <div style="text-align:center;margin-bottom:24px;">
+            <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg"
+                 alt="Master BlackWay" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:1px solid rgba(255,0,0,0.4);margin-bottom:12px;filter:drop-shadow(0 0 8px rgba(255,0,0,0.5));">
+            <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:5px;">ACTIVER MON EMPIRE</h2>
+            <p style="color:#4a4a4a;font-size:13px;">Entrez votre email &#x2014; redirection s&#233;curis&#233;e vers Stripe</p>
         </div>
+
         <div id="modal-form">
             <div style="margin-bottom:14px;">
                 <input type="email" id="email-in" class="input-field" placeholder="votre@email.com" required
                     onkeydown="if(event.key==='Enter')processPayment()">
             </div>
-            <div style="background:rgba(255,0,0,0.07);border:1px solid rgba(255,0,0,0.18);border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;">
+
+            <div style="background:rgba(255,0,0,0.06);border:1px solid rgba(255,0,0,0.16);border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;">
                 <div>
-                    <div style="font-size:13px;color:#888;">Syst&#232;me complet (Site + IA + CRM)</div>
-                    <div style="font-size:11px;color:#3a3a3a;text-decoration:line-through;">Prix r&#233;gulier : 4 995 $</div>
+                    <div style="font-size:13px;color:#777;">Architecture de Performance Op&#233;rationnelle</div>
+                    <div style="font-size:11px;color:#333;text-decoration:line-through;">Prix r&#233;gulier&#160;: 4&#160;995&#160;$</div>
                 </div>
-                <div style="font-size:1.8rem;font-weight:900;color:var(--red);line-height:1;">1 495&#160;$</div>
+                <div style="font-size:1.75rem;font-weight:900;color:var(--red);line-height:1;">1&#160;495&#160;$</div>
             </div>
-            <button class="btn-empire" onclick="processPayment()" style="font-size:0.95rem;padding:16px 24px;">
+
+            <button class="btn-empire" onclick="processPayment()" style="font-size:0.92rem;padding:16px 24px;max-width:100%;">
                 &#x1F512;&#160;PROC&#201;DER AU PAIEMENT S&#201;CURIS&#201;
             </button>
         </div>
-        <div id="modal-load" style="display:none;text-align:center;padding:10px 0;">
+
+        <div id="modal-load" style="display:none;text-align:center;padding:12px 0;">
             <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;">
                 <div class="spin"></div>
-                <span id="load-txt" style="color:#888;font-size:14px;">Connexion en cours&#x2026;</span>
+                <span id="load-txt" style="color:#666;font-size:14px;">Connexion en cours&#x2026;</span>
             </div>
             <div class="prog-track"><div class="prog-bar" id="prog"></div></div>
         </div>
-        <div style="display:flex;justify-content:center;gap:18px;margin-top:18px;flex-wrap:wrap;">
-            <span style="font-size:11px;color:#333;">&#x1F512; SSL</span>
-            <span style="font-size:11px;color:#333;">&#x1F4B3; Stripe</span>
-            <span style="font-size:11px;color:#333;">&#x26A1; Instantan&#233;</span>
+
+        <div style="display:flex;justify-content:center;gap:18px;margin-top:16px;flex-wrap:wrap;">
+            <span style="font-size:11px;color:#2c2c2c;">&#x1F512;&#160;SSL</span>
+            <span style="font-size:11px;color:#2c2c2c;">&#x1F4B3;&#160;Stripe</span>
+            <span style="font-size:11px;color:#2c2c2c;">&#x26A1;&#160;Instantan&#233;</span>
         </div>
     </div>
 </div>
@@ -401,57 +559,43 @@
 
 <script>
 (function(){
-    var c = document.getElementById('particles');
-    for (var i = 0; i < 18; i++) {
-        var p = document.createElement('div');
-        p.className = 'particle';
-        var dur = 9 + Math.random() * 14;
-        var del = Math.random() * 12;
-        var dx  = (Math.random() - 0.5) * 120;
-        var sz  = 1 + Math.random() * 2;
-        p.style.cssText = 'left:' + (Math.random()*100) + '%;--dx:' + dx + 'px;animation-duration:' + dur + 's;animation-delay:' + del + 's;width:' + sz + 'px;height:' + sz + 'px;';
-        c.appendChild(p);
-    }
-})();
-
-(function(){
-    var KEY = 'bw_end';
+    var KEY = 'bw_end_v2';
     var end = parseInt(sessionStorage.getItem(KEY)) || 0;
-    if (!end || end < Date.now()) { end = Date.now() + 24 * 3600 * 1000; sessionStorage.setItem(KEY, end); }
+    if (!end || end < Date.now()){ end = Date.now() + 24*3600*1000; sessionStorage.setItem(KEY,end); }
     function pad(n){ return ('0'+n).slice(-2); }
     function tick(){
         var d = Math.max(0, end - Date.now());
         document.getElementById('cd-h').textContent = pad(Math.floor(d/3600000));
         document.getElementById('cd-m').textContent = pad(Math.floor(d%3600000/60000));
         document.getElementById('cd-s').textContent = pad(Math.floor(d%60000/1000));
-        if (d > 0) setTimeout(tick, 1000);
+        if(d>0) setTimeout(tick,1000);
     }
     tick();
 })();
 
 function openModal(){
     document.getElementById('modal').classList.add('active');
-    setTimeout(function(){ document.getElementById('email-in').focus(); }, 50);
+    setTimeout(function(){ document.getElementById('email-in').focus(); },60);
 }
 function closeModal(){ document.getElementById('modal').classList.remove('active'); }
-document.getElementById('modal').addEventListener('click', function(e){ if (e.target === this) closeModal(); });
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
 function toast(msg, ok){
     var t = document.getElementById('toast');
     t.textContent = msg;
-    t.className = 'toast show' + (ok ? ' ok' : '');
-    clearTimeout(t._to);
-    t._to = setTimeout(function(){ t.classList.remove('show','ok'); }, 4200);
+    t.className = 'toast show' + (ok?' ok':'');
+    clearTimeout(t._t);
+    t._t = setTimeout(function(){ t.classList.remove('show','ok'); },4500);
 }
 
-function setProgress(pct, txt){
-    document.getElementById('prog').style.width = pct + '%';
-    if (txt) document.getElementById('load-txt').textContent = txt;
+function setProgress(pct,txt){
+    document.getElementById('prog').style.width = pct+'%';
+    if(txt) document.getElementById('load-txt').textContent = txt;
 }
 
 async function processPayment(){
     var email = document.getElementById('email-in').value.trim();
-    if (!email || !email.includes('@')){
+    if(!email||!email.includes('@')){
         toast('Entrez un email valide pour continuer.', false);
         document.getElementById('email-in').focus();
         return;
@@ -462,37 +606,44 @@ async function processPayment(){
     try {
         var pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
         var token = null;
-        var r1 = await fetch('/api/v1/auth/register', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ email: email, password: pass, role: 'client' })
+
+        var r1 = await fetch('/api/v1/auth/register',{
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({email:email, password:pass, role:'client'})
         });
-        if (r1.ok){ var d1 = await r1.json(); token = d1.access_token; }
-        if (!token){
-            setProgress(25, 'Connexion au compte...');
-            var r2 = await fetch('/api/v1/auth/login', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ email: email, password: pass })
+        if(r1.ok){ var d1=await r1.json(); token=d1.access_token; }
+
+        if(!token){
+            setProgress(28,'Connexion au compte...');
+            var r2 = await fetch('/api/v1/auth/login',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({email:email, password:pass})
             });
-            if (r2.ok){ var d2 = await r2.json(); token = d2.access_token; }
+            if(r2.ok){ var d2=await r2.json(); token=d2.access_token; }
         }
-        if (!token) throw new Error('Authentification impossible.');
-        setProgress(55, 'Creation de votre session Stripe...');
-        var r3 = await fetch('/api/v1/payments/checkout?plan_id=site_presence_google&mode=payment', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + token }
+
+        if(!token) throw new Error('Authentification impossible.');
+
+        setProgress(58,'Creation de votre session Stripe...');
+        var r3 = await fetch('/api/v1/payments/checkout?plan_id=site_presence_google&mode=payment',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}
         });
-        if (!r3.ok){ var err = await r3.json().catch(function(){ return {}; }); throw new Error(err.detail || 'Erreur session (' + r3.status + ')'); }
+        if(!r3.ok){
+            var er = await r3.json().catch(function(){ return {}; });
+            throw new Error(er.detail||'Erreur session ('+r3.status+')');
+        }
         var d3 = await r3.json();
-        if (!d3.url) throw new Error('URL Stripe introuvable.');
-        setProgress(92, 'Redirection vers Stripe...');
-        setTimeout(function(){ window.location.href = d3.url; }, 600);
+        if(!d3.url) throw new Error('URL Stripe introuvable.');
+
+        setProgress(94,'Redirection vers Stripe...');
+        setTimeout(function(){ window.location.href=d3.url; },600);
+
     } catch(e){
         document.getElementById('modal-form').style.display = 'block';
         document.getElementById('modal-load').style.display  = 'none';
         setProgress(0);
-        toast(e.message || 'Erreur inattendue. Reessayez.', false);
+        toast(e.message||'Erreur inattendue. Reessayez.', false);
     }
 }
 </script>
