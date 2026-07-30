@@ -1,12 +1,14 @@
 import os
+import secrets
 from typing import Optional
+
 
 class Settings:
     APP_NAME: str = "BlackWayConnect Engine"
-    VERSION: str = "2.0.0"
-    ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "development")
+    VERSION: str = "2.0.1"
+    ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "production")
     DEBUG: bool = os.environ.get("DEBUG", "false").lower() == "true"
-    JWT_SECRET_KEY: Optional[str] = os.environ.get("JWT_SECRET_KEY")
+    JWT_SECRET_KEY: str = os.environ.get("JWT_SECRET_KEY") or secrets.token_urlsafe(64)
     JWT_ACCESS_EXPIRE_MINUTES: int = int(os.environ.get("JWT_ACCESS_EXPIRE_MINUTES", "30"))
     JWT_REFRESH_EXPIRE_DAYS: int = int(os.environ.get("JWT_REFRESH_EXPIRE_DAYS", "30"))
     SENTRY_DSN: str = os.environ.get("SENTRY_DSN", "")
@@ -29,5 +31,6 @@ class Settings:
     ACCOUNTING_EMAIL: str = "accounting@blackwayconnect.com"
     RATE_LIMIT_AUTH: int = int(os.environ.get("RATE_LIMIT_AUTH", "100"))
     RATE_LIMIT_ANON: int = int(os.environ.get("RATE_LIMIT_ANON", "30"))
+
 
 settings = Settings()
