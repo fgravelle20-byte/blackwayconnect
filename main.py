@@ -2,8 +2,10 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 from config.settings import settings
 from middleware.rate_limiter import RateLimiterMiddleware
@@ -39,6 +41,9 @@ app = FastAPI(
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
 )
+
+# --- Templates ---
+templates = Jinja2Templates(directory="templates")
 
 # --- CORS ---
 app.add_middleware(
@@ -80,12 +85,9 @@ async def health_check():
         "sentry_enabled": bool(sentry_dsn and "project-id" not in sentry_dsn),
     }
 
-@app.get("/")
-async def root():
-    return {
-        "name": settings.APP_NAME,
-        "version": settings.VERSION,
-    }
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == "__main__":
     import uvicorn

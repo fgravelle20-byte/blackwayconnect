@@ -2,17 +2,499 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BlackWayConnect - Portail Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master BlackWay — Dominez Votre Marché. Explosez Vos Ventes.</title>
+    <meta name="description" content="Le système complet de croissance numérique Master BlackWay (Site + IA + CRM). Offre exclusive 1 495 $ — Places limitées.">
+    <meta name="robots" content="index, follow">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --red: #ff0000;
+            --red-dim: #cc0000;
+            --red-deep: #990000;
+            --red-glow: rgba(255, 0, 0, 0.35);
+            --bg: #0a0a0a;
+            --card: #0f0f0f;
+            --card2: #141414;
+            --border: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* BACKGROUND */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,0,0,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,0,0,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .bg-glow-center {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,0,0,0.08) 0%, transparent 70%);
+        }
+
+        /* PARTICLES */
+        .particle {
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+            background: var(--red); opacity: 0;
+            animation: rise linear infinite;
+        }
+        @keyframes rise {
+            0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+            5%   { opacity: 0.5; }
+            95%  { opacity: 0.2; }
+            100% { transform: translateY(-40px) translateX(var(--dx)); opacity: 0; }
+        }
+
+        .page-wrap { position: relative; z-index: 1; }
+
+        .topbar {
+            text-align: center; padding: 18px 20px;
+            font-size: 11px; letter-spacing: 4px; color: var(--red);
+            text-transform: uppercase; font-weight: 700;
+        }
+
+        .hero {
+            min-height: calc(100vh - 56px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 40px 20px 60px;
+        }
+        .hero-inner { width: 100%; max-width: 860px; text-align: center; }
+
+        .badge-alert {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.45);
+            color: #ff4444; padding: 7px 18px; border-radius: 100px;
+            font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            animation: badge-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes badge-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,0,0,0.2); }
+            50% { box-shadow: 0 0 20px 4px rgba(255,0,0,0.25); }
+        }
+
+        .headline {
+            font-size: clamp(2rem, 5.5vw, 4.2rem);
+            font-weight: 900; line-height: 1.06; letter-spacing: -1.5px;
+            text-shadow: 0 0 60px rgba(255,0,0,0.2);
+        }
+        .headline .red { color: var(--red); }
+
+        .deal-card {
+            background: var(--card2);
+            border: 1px solid rgba(255,0,0,0.35);
+            border-radius: 18px; padding: 32px 36px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 0 40px rgba(255,0,0,0.08), 0 0 80px rgba(255,0,0,0.04);
+        }
+        .deal-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; right: -100%; height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--red) 50%, transparent 100%);
+            animation: top-scan 3s linear infinite;
+        }
+        @keyframes top-scan { 0% { left: -100%; } 100% { left: 100%; } }
+        .deal-card::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,0,0,0.06) 0%, transparent 60%);
+        }
+
+        .exclusive-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,0,0,0.15); border: 1px solid rgba(255,0,0,0.3);
+            color: #ff5555; padding: 4px 14px; border-radius: 6px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+
+        .price-amount {
+            font-size: clamp(3.8rem, 9vw, 6.5rem);
+            font-weight: 900; color: var(--red); line-height: 1;
+            text-shadow: 0 0 40px rgba(255,0,0,0.4);
+        }
+        .price-currency { font-size: 0.35em; vertical-align: super; font-weight: 700; }
+        .price-regular { font-size: 1.3rem; color: #3d3d3d; text-decoration: line-through; font-weight: 600; }
+        .savings-pill {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--red), var(--red-deep));
+            color: #fff; padding: 3px 12px; border-radius: 100px;
+            font-size: 12px; font-weight: 700;
+        }
+        .places-alert {
+            color: #ff3333; font-size: 13px; font-weight: 700;
+            animation: blink-red 1.8s ease-in-out infinite;
+        }
+        @keyframes blink-red { 0%,100%{opacity:1} 50%{opacity:0.45} }
+
+        .countdown-wrap { display: flex; justify-content: center; gap: 10px; }
+        .count-box {
+            background: rgba(255,0,0,0.07); border: 1px solid rgba(255,0,0,0.2);
+            border-radius: 10px; padding: 10px 12px; min-width: 72px; text-align: center;
+        }
+        .count-num { font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1; font-variant-numeric: tabular-nums; }
+        .count-lbl { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 3px; }
+
+        .btn-empire {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            color: #fff; font-size: clamp(0.95rem, 2.2vw, 1.25rem); font-weight: 800;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            padding: 20px 48px; border-radius: 100px; border: none; cursor: pointer;
+            width: 100%; max-width: 540px; position: relative; overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            animation: cta-pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes cta-pulse {
+            0%,100% { box-shadow: 0 6px 35px rgba(255,0,0,0.45); }
+            50% { box-shadow: 0 6px 55px rgba(255,0,0,0.7), 0 0 0 8px rgba(255,0,0,0); }
+        }
+        .btn-empire:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 55px rgba(255,0,0,0.7) !important;
+            animation: none;
+        }
+        .btn-empire:active { transform: scale(0.98); }
+        .btn-empire::before {
+            content: ''; position: absolute; top: -50%; left: -80%; width: 40%; height: 200%;
+            background: rgba(255,255,255,0.12); transform: skewX(-20deg);
+            animation: shimmer 3.5s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0%{left:-80%} 100%{left:180%} }
+
+        .trust-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+        .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+        .trust-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; flex-shrink:0; }
+
+        .red-divider {
+            height: 1px; margin: 64px auto;
+            background: linear-gradient(90deg, transparent, rgba(255,0,0,0.4), transparent);
+            max-width: 860px;
+        }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+        .feat-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+            padding: 26px; transition: border-color 0.3s ease;
+        }
+        .feat-card:hover { border-color: rgba(255,0,0,0.3); }
+        .feat-icon {
+            width: 50px; height: 50px; background: rgba(255,0,0,0.08); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 14px;
+        }
+        .feat-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+        .feat-desc { font-size: 13px; color: #555; line-height: 1.65; }
+
+        footer {
+            border-top: 1px solid var(--border); padding: 28px 20px;
+            text-align: center; position: relative; z-index: 1;
+        }
+
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            z-index: 200; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: var(--card2); border: 1px solid rgba(255,0,0,0.35);
+            border-radius: 20px; padding: 40px; width: 100%; max-width: 460px;
+            position: relative;
+        }
+        .modal-box::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
+            border-radius: 20px 20px 0 0;
+        }
+        .modal-close {
+            position: absolute; top: 14px; right: 16px; background: none; border: none;
+            color: #444; font-size: 22px; cursor: pointer; padding: 4px; line-height:1;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #888; }
+        .input-field {
+            width: 100%; background: rgba(255,255,255,0.04);
+            border: 1px solid #2a2a2a; border-radius: 10px;
+            padding: 14px 16px; color: #fff; font-size: 15px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: var(--red); }
+        .input-field::placeholder { color: #444; }
+        .prog-track { width: 100%; height: 3px; background: #1a1a1a; border-radius: 3px; overflow: hidden; margin-top: 14px; }
+        .prog-bar { height: 100%; background: var(--red); width: 0; transition: width 0.5s ease; border-radius: 3px; }
+        .spin {
+            width: 18px; height: 18px; flex-shrink: 0;
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff;
+            border-radius: 50%; animation: spinning 0.7s linear infinite;
+        }
+        @keyframes spinning { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed; bottom: 24px; right: 24px; z-index: 300;
+            background: var(--card2); border: 1px solid rgba(255,0,0,0.4);
+            border-radius: 12px; padding: 14px 20px; font-size: 14px;
+            max-width: 320px; transform: translateY(80px); opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.ok { border-color: rgba(34,197,94,0.5); }
+    </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-    <div class="text-center">
-        <h1 class="text-5xl font-bold mb-4">BlackWayConnect</h1>
-        <p class="text-gray-400 text-2xl">Moteur BaaS v2.0 - Statut : OPÉRATIONNEL</p>
-        <div class="mt-8 space-x-4">
-            <span class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-inset ring-green-400/20">Stripe Connecté</span>
-            <span class="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-400/30">IA Active</span>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow-center"></div>
+<div id="particles"></div>
+
+<div class="page-wrap">
+
+    <div class="topbar">&#x26A1; MASTER BLACKWAY</div>
+
+    <section class="hero">
+        <div class="hero-inner">
+
+            <div style="margin-bottom:28px;">
+                <span class="badge-alert">&#x1F525; OFFRE BLITZ &#x2014; DISPONIBLE MAINTENANT</span>
+            </div>
+
+            <h1 class="headline" style="margin-bottom:18px;">
+                DOMINEZ VOTRE MARCH&#201;.<br>
+                <span class="red">EXPLOSEZ VOS VENTES DE 150&#160;%.</span>
+            </h1>
+
+            <p style="font-size:clamp(1rem,1.8vw,1.2rem);color:#888;max-width:620px;margin:0 auto 44px;line-height:1.7;">
+                Le syst&#232;me complet de croissance num&#233;rique
+                <strong style="color:#ddd;">Master BlackWay</strong>
+                &#x2014; <span style="color:#ccc;">(Site + IA + CRM)</span> &#x2014; tout-en-un,
+                livr&#233; instantan&#233;ment apr&#232;s paiement.
+            </p>
+
+            <div class="deal-card" style="max-width:520px;margin:0 auto 32px;">
+
+                <div style="margin-bottom:18px;">
+                    <span class="exclusive-tag">&#x1F48E; OFFRE EXCLUSIVE</span>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:14px;">
+                    <div>
+                        <div class="price-amount">
+                            <span class="price-currency">$</span>1&#160;495
+                        </div>
+                        <div style="font-size:12px;color:#444;margin-top:4px;">CAD &#183; Paiement unique</div>
+                    </div>
+                    <div style="text-align:left;">
+                        <div class="price-regular">4 995 $</div>
+                        <span class="savings-pill">&#201;CONOMIE&#160;3&#160;500&#160;$</span>
+                    </div>
+                </div>
+
+                <div style="padding-top:16px;border-top:1px solid rgba(255,0,0,0.12);">
+                    <p class="places-alert">&#x1F534; PLACES LIMIT&#201;ES &#x2014; IL RESTE PEU D&#x27;ACC&#200;S</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom:34px;">
+                <p style="font-size:11px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+                    L&#x27;OFFRE EXPIRE DANS
+                </p>
+                <div class="countdown-wrap">
+                    <div class="count-box"><div class="count-num" id="cd-h">23</div><div class="count-lbl">Heures</div></div>
+                    <div class="count-box"><div class="count-num" id="cd-m">59</div><div class="count-lbl">Minutes</div></div>
+                    <div class="count-box"><div class="count-num" id="cd-s">00</div><div class="count-lbl">Secondes</div></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:22px;">
+                <button class="btn-empire" onclick="openModal()">
+                    &#x26A1;&#160;ACTIVER MON EMPIRE MAINTENANT
+                </button>
+            </div>
+
+            <div class="trust-row">
+                <span class="trust-item"><span class="trust-dot"></span>Paiement SSL s&#233;curis&#233;</span>
+                <span class="trust-item"><span class="trust-dot"></span>Stripe Certified</span>
+                <span class="trust-item"><span class="trust-dot"></span>Livraison instantan&#233;e</span>
+                <span class="trust-item"><span class="trust-dot"></span>Support prioritaire 24/7</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="red-divider"></div>
+
+    <section style="max-width:860px;margin:0 auto;padding:0 20px 80px;">
+        <h2 style="text-align:center;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;margin-bottom:10px;">CE QUE VOUS OBTENEZ</h2>
+        <p style="text-align:center;color:#555;font-size:14px;margin-bottom:44px;">Trois syst&#232;mes int&#233;gr&#233;s, un seul prix explosif.</p>
+        <div class="features-grid">
+            <div class="feat-card">
+                <div class="feat-icon">&#x1F310;</div>
+                <div class="feat-title">Site Professionnel</div>
+                <div class="feat-desc">Pr&#233;sence web percutante, optimis&#233;e Google, pr&#234;te &#224; convertir d&#232;s le jour 1.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">&#x1F916;</div>
+                <div class="feat-title">IA Commerciale</div>
+                <div class="feat-desc">Qualification automatique de leads, relance intelligente et analyse en temps r&#233;el.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">&#x1F4CA;</div>
+                <div class="feat-title">CRM Int&#233;gr&#233;</div>
+                <div class="feat-desc">G&#233;rez clients, contrats et revenus depuis un tableau de bord centralis&#233;.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="color:#2e2e2e;font-size:13px;letter-spacing:0.5px;font-weight:600;">
+            Master BlackWay &#x2014; 9495-5457 Quebec Inc.
+        </p>
+        <p style="color:#222;font-size:12px;margin-top:5px;">
+            blackwayconnect.com &#160;&#183;&#160; service@blackwayconnect.com
+        </p>
+    </footer>
+
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+        <div style="text-align:center;margin-bottom:26px;">
+            <div style="font-size:36px;margin-bottom:8px;">&#x26A1;</div>
+            <h2 style="font-size:1.35rem;font-weight:800;margin-bottom:6px;">ACTIVER MON EMPIRE</h2>
+            <p style="color:#555;font-size:13px;">Entrez votre email &#x2014; redirection s&#233;curis&#233;e vers Stripe</p>
+        </div>
+        <div id="modal-form">
+            <div style="margin-bottom:14px;">
+                <input type="email" id="email-in" class="input-field" placeholder="votre@email.com" required
+                    onkeydown="if(event.key==='Enter')processPayment()">
+            </div>
+            <div style="background:rgba(255,0,0,0.07);border:1px solid rgba(255,0,0,0.18);border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-size:13px;color:#888;">Syst&#232;me complet (Site + IA + CRM)</div>
+                    <div style="font-size:11px;color:#3a3a3a;text-decoration:line-through;">Prix r&#233;gulier : 4 995 $</div>
+                </div>
+                <div style="font-size:1.8rem;font-weight:900;color:var(--red);line-height:1;">1 495&#160;$</div>
+            </div>
+            <button class="btn-empire" onclick="processPayment()" style="font-size:0.95rem;padding:16px 24px;">
+                &#x1F512;&#160;PROC&#201;DER AU PAIEMENT S&#201;CURIS&#201;
+            </button>
+        </div>
+        <div id="modal-load" style="display:none;text-align:center;padding:10px 0;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;">
+                <div class="spin"></div>
+                <span id="load-txt" style="color:#888;font-size:14px;">Connexion en cours&#x2026;</span>
+            </div>
+            <div class="prog-track"><div class="prog-bar" id="prog"></div></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:18px;margin-top:18px;flex-wrap:wrap;">
+            <span style="font-size:11px;color:#333;">&#x1F512; SSL</span>
+            <span style="font-size:11px;color:#333;">&#x1F4B3; Stripe</span>
+            <span style="font-size:11px;color:#333;">&#x26A1; Instantan&#233;</span>
         </div>
     </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+    var c = document.getElementById('particles');
+    for (var i = 0; i < 18; i++) {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        var dur = 9 + Math.random() * 14;
+        var del = Math.random() * 12;
+        var dx  = (Math.random() - 0.5) * 120;
+        var sz  = 1 + Math.random() * 2;
+        p.style.cssText = 'left:' + (Math.random()*100) + '%;--dx:' + dx + 'px;animation-duration:' + dur + 's;animation-delay:' + del + 's;width:' + sz + 'px;height:' + sz + 'px;';
+        c.appendChild(p);
+    }
+})();
+
+(function(){
+    var KEY = 'bw_end';
+    var end = parseInt(sessionStorage.getItem(KEY)) || 0;
+    if (!end || end < Date.now()) { end = Date.now() + 24 * 3600 * 1000; sessionStorage.setItem(KEY, end); }
+    function pad(n){ return ('0'+n).slice(-2); }
+    function tick(){
+        var d = Math.max(0, end - Date.now());
+        document.getElementById('cd-h').textContent = pad(Math.floor(d/3600000));
+        document.getElementById('cd-m').textContent = pad(Math.floor(d%3600000/60000));
+        document.getElementById('cd-s').textContent = pad(Math.floor(d%60000/1000));
+        if (d > 0) setTimeout(tick, 1000);
+    }
+    tick();
+})();
+
+function openModal(){
+    document.getElementById('modal').classList.add('active');
+    setTimeout(function(){ document.getElementById('email-in').focus(); }, 50);
+}
+function closeModal(){ document.getElementById('modal').classList.remove('active'); }
+document.getElementById('modal').addEventListener('click', function(e){ if (e.target === this) closeModal(); });
+
+function toast(msg, ok){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (ok ? ' ok' : '');
+    clearTimeout(t._to);
+    t._to = setTimeout(function(){ t.classList.remove('show','ok'); }, 4200);
+}
+
+function setProgress(pct, txt){
+    document.getElementById('prog').style.width = pct + '%';
+    if (txt) document.getElementById('load-txt').textContent = txt;
+}
+
+async function processPayment(){
+    var email = document.getElementById('email-in').value.trim();
+    if (!email || !email.includes('@')){
+        toast('Entrez un email valide pour continuer.', false);
+        document.getElementById('email-in').focus();
+        return;
+    }
+    document.getElementById('modal-form').style.display = 'none';
+    document.getElementById('modal-load').style.display  = 'block';
+    setProgress(10, 'Authentification en cours...');
+    try {
+        var pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
+        var token = null;
+        var r1 = await fetch('/api/v1/auth/register', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ email: email, password: pass, role: 'client' })
+        });
+        if (r1.ok){ var d1 = await r1.json(); token = d1.access_token; }
+        if (!token){
+            setProgress(25, 'Connexion au compte...');
+            var r2 = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ email: email, password: pass })
+            });
+            if (r2.ok){ var d2 = await r2.json(); token = d2.access_token; }
+        }
+        if (!token) throw new Error('Authentification impossible.');
+        setProgress(55, 'Creation de votre session Stripe...');
+        var r3 = await fetch('/api/v1/payments/checkout?plan_id=site_presence_google&mode=payment', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + token }
+        });
+        if (!r3.ok){ var err = await r3.json().catch(function(){ return {}; }); throw new Error(err.detail || 'Erreur session (' + r3.status + ')'); }
+        var d3 = await r3.json();
+        if (!d3.url) throw new Error('URL Stripe introuvable.');
+        setProgress(92, 'Redirection vers Stripe...');
+        setTimeout(function(){ window.location.href = d3.url; }, 600);
+    } catch(e){
+        document.getElementById('modal-form').style.display = 'block';
+        document.getElementById('modal-load').style.display  = 'none';
+        setProgress(0);
+        toast(e.message || 'Erreur inattendue. Reessayez.', false);
+    }
+}
+</script>
 </body>
 </html>
