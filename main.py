@@ -6,9 +6,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-# LOGGING STARTUP
-PORT = int(os.environ.get("PORT", 8080))
-print(f"--- STARTING BLACKWAY ENGINE ON PORT {PORT} ---")
+# FORCE PORT 8080 (Railway Default)
+PORT = 8080
+print(f"--- FORCING BLACKWAY ENGINE ON PORT {PORT} ---")
 
 # Import dummy settings to avoid crash if file missing
 try:
@@ -16,7 +16,7 @@ try:
 except ImportError:
     class DummySettings:
         APP_NAME = "BlackWayConnect"
-        VERSION = "2.0.2"
+        VERSION = "2.0.3"
         ENVIRONMENT = "production"
         SENTRY_DSN = ""
         DEBUG = False
@@ -37,7 +37,6 @@ if sentry_dsn and "project-id" not in sentry_dsn:
             release=f"blackwayconnect@{settings.VERSION}",
             send_default_pii=False,
         )
-        print("Sentry Initialized")
     except Exception: pass
 
 # --- FastAPI App ---
@@ -62,7 +61,6 @@ try:
     app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"])
     from modules.audit.router import router as audit_router
     app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit IA"])
-    print("Routers Loaded")
 except Exception as e: print(f"Router Load Error: {e}")
 
 # Load index.html content
@@ -75,7 +73,7 @@ else:
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "port": PORT}
+    return {"status": "healthy", "mode": "forced_8080"}
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -83,5 +81,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    print(f"Running uvicorn on 0.0.0.0:{PORT}")
     uvicorn.run(app, host="0.0.0.0", port=PORT)
