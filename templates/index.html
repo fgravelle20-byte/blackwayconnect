@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master BlackWay &#x2014; Dominez Votre March&#233;. Explosez Vos Ventes.</title>
+    <meta name="description" content="Architecture de Performance Op&#233;rationnelle Master BlackWay &#x2014; Site + IA + CRM. Offre exclusive 1&#160;495&#160;$ &#x2014; Places limit&#233;es.">
     <style>
         :root {
             --red: #ff0000;
@@ -32,58 +33,76 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            text-align: center;
         }
+
         .hero-bg {
             position: absolute;
             inset: 0;
             background-image: url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg');
             background-size: cover;
             background-position: center 30%;
-            filter: brightness(0.4);
+            filter: brightness(0.55);
         }
+
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, transparent, var(--bg));
+            background:
+                radial-gradient(ellipse 120% 60% at 50% 100%, rgba(0,0,0,0.98) 0%, transparent 65%),
+                linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,1) 100%);
         }
-        .hero-content { position: relative; z-index: 1; padding: 40px 20px; max-width: 900px; }
 
-        .headline { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
-        .red { color: var(--red); }
-        .subtitle { font-size: 1.2rem; color: #888; margin-bottom: 40px; }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .headline { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 18px; }
+        .headline .red { color: var(--red); }
+        .subtitle { font-size: clamp(1rem, 1.8vw, 1.18rem); color: #aaa; max-width: 660px; margin: 0 auto 38px; line-height: 1.75; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━ DEAL CARD ━━━━━━━━━━━━━━━━━━━━ */
+        .deal-card {
+            background: rgba(8, 8, 8, 0.88); backdrop-filter: blur(24px); border: 1px solid rgba(255,0,0,0.38); border-radius: 20px;
+            padding: 28px 36px; max-width: 520px; margin: 0 auto 28px; position: relative; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .price-main { font-size: clamp(3.8rem, 9vw, 6.5rem); font-weight: 900; color: var(--red); line-height: 1; text-shadow: 0 0 30px rgba(255,0,0,0.5); }
+        .price-sup { font-size: 0.32em; vertical-align: super; font-weight: 700; }
+        .price-regular { font-size: 1.25rem; color: #3c3c3c; text-decoration: line-through; font-weight: 600; }
 
         /* ━━━━━━━━━━━━━━━━━━━━ BUTTONS ━━━━━━━━━━━━━━━━━━━━ */
         .btn-empire {
-            background: #000; color: var(--red); border: 2px solid var(--red);
-            padding: 20px 40px; border-radius: 100px; font-weight: 800; text-transform: uppercase;
-            cursor: pointer; transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(255,0,0,0.3);
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #000; color: #ff0000; border: 2px solid #ff0000;
+            font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
+            padding: 20px 50px; border-radius: 100px; cursor: pointer;
+            width: 100%; max-width: 560px; transition: all 0.25s;
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
         }
-        .btn-empire:hover { background: var(--red); color: #fff; box-shadow: 0 0 30px rgba(255,0,0,0.6); }
+        .btn-empire:hover { background: var(--red); color: #fff; transform: scale(1.02); }
 
         /* ━━━━━━━━━━━━━━━━━━━━ AUDIT SECTION ━━━━━━━━━━━━━━━━━━━━ */
-        .audit-section { padding: 80px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
-        .audit-card {
-            background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #aaa; }
-        .input-field {
-            width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
-            padding: 15px; color: #fff; font-size: 1rem;
-        }
-        .input-field:focus { border-color: var(--red); outline: none; }
-        
-        #audit-result {
-            display: none; margin-top: 30px; text-align: left; padding: 25px;
-            background: #111; border-left: 4px solid var(--red); border-radius: 5px;
-            white-space: pre-line; color: #ccc; font-size: 0.95rem; line-height: 1.6;
-        }
+        .audit-section { padding: 100px 24px; max-width: 900px; margin: 0 auto; text-align: center; }
+        .audit-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; text-align: left; }
+        .input-field { width: 100%; background: #111; border: 1px solid #222; border-radius: 10px; padding: 15px; color: #fff; font-size: 1rem; margin-top: 5px; margin-bottom: 20px; }
+        #audit-result { display: none; margin-top: 30px; padding: 25px; background: #080808; border-left: 4px solid var(--red); white-space: pre-line; color: #ccc; line-height: 1.6; }
 
-        /* ━━━━━━━━━━━━━━━━━━━━ FOOTER ━━━━━━━━━━━━━━━━━━━━ */
-        footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--border); color: #444; font-size: 0.9rem; }
+        /* ━━━━━━━━━━━━━━━━━━━━ FEATURES ━━━━━━━━━━━━━━━━━━━━ */
+        .feat-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+        .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .feat-card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 15px; }
+        .feat-card h3 { color: var(--red); margin-bottom: 15px; }
+
+        footer { padding: 40px; text-align: center; border-top: 1px solid var(--border); color: #444; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--card2); border: 1px solid var(--red); padding: 40px; border-radius: 20px; width: 100%; max-width: 450px; }
     </style>
 </head>
 <body>
@@ -92,79 +111,101 @@
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
+        <div style="margin-bottom:20px;"><img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg" style="width:120px;border-radius:50%;border:2px solid var(--red);"></div>
         <h1 class="headline">DOMINEZ VOTRE MARCH&#201;.<br><span class="red">EXPLOSEZ VOS VENTES.</span></h1>
         <p class="subtitle">Architecture de Performance Op&#233;rationnelle Master BlackWay. Site + IA + CRM.</p>
-        <button class="btn-empire" onclick="document.getElementById('audit').scrollIntoView({behavior:'smooth'})">D&#201;MARRER L'AUDIT IA GRATUIT</button>
+        
+        <div class="deal-card">
+            <div class="price-main"><span class="price-sup">$</span>1&#160;495</div>
+            <div class="price-regular">4&#160;995&#160;$</div>
+            <p style="color:var(--red); font-weight:700; margin-top:10px;">🔴 OFFRE BLITZ — PLACES LIMITÉES</p>
+        </div>
+
+        <button class="btn-empire" onclick="openModal()">⚡ ACTIVER MON EMPIRE MAINTENANT</button>
+        <p style="margin-top:20px; color:#555; font-size:0.9rem; cursor:pointer;" onclick="document.getElementById('audit').scrollIntoView({behavior:'smooth'})">Ou demandez votre Audit IA Gratuit ↓</p>
     </div>
 </section>
 
 <section class="audit-section" id="audit">
     <div class="audit-card">
-        <h2 style="margin-bottom:10px; font-size: 2.2rem; font-weight: 900; letter-spacing: -1px;">ANALYSTE IA "GHOST"</h2>
-        <p style="color:#666; margin-bottom:30px; font-size: 1.1rem;">D&#233;couvrez où votre entreprise perd de l'argent en 60 secondes.</p>
-        
-        <div class="input-group">
-            <label>Nom de l'entreprise</label>
-            <input type="text" id="audit-company" class="input-field" placeholder="Ex: Sterling Logistics">
-        </div>
-        <div class="input-group">
-            <label>Site Web (Optionnel)</label>
-            <input type="text" id="audit-url" class="input-field" placeholder="https://votre-site.com">
-        </div>
-        <div class="input-group">
-            <label>Secteur d'activité</label>
-            <input type="text" id="audit-industry" class="input-field" placeholder="Ex: Transport, Immobilier...">
-        </div>
-        
-        <button class="btn-empire" id="btn-run-audit" onclick="runAudit()" style="width: 100%; margin-top: 10px;">LANCER LE DIAGNOSTIC PRESTIGE</button>
-        
+        <h2 style="font-size:2.2rem; font-weight:900; margin-bottom:10px; color:var(--red);">ANALYSTE IA "GHOST"</h2>
+        <p style="color:#666; margin-bottom:30px;">Découvrez les failles de votre structure actuelle en 60 secondes.</p>
+        <input type="text" id="audit-company" class="input-field" placeholder="Nom de l'entreprise">
+        <input type="text" id="audit-url" class="input-field" placeholder="Site Web (Optionnel)">
+        <button class="btn-empire" id="btn-run-audit" onclick="runAudit()" style="width:100%;">LANCER LE DIAGNOSTIC PRESTIGE</button>
         <div id="audit-result"></div>
-        
-        <div id="audit-cta" style="display:none; margin-top:30px; border-top: 1px solid #222; padding-top: 20px;">
-            <p style="margin-bottom: 20px; color: #888;">Ce diagnostic prouve que votre structure actuelle fuit du profit.</p>
-            <button class="btn-empire" onclick="window.location.href='https://blackwayconnect.com'" style="width: 100%;">ACTIVER MON EMPIRE (1 495 $)</button>
-        </div>
+    </div>
+</section>
+
+<section class="feat-section">
+    <div class="feat-grid">
+        <div class="feat-card"><h3>🌐 Site & SEO</h3><p>Une présence Web d'élite conçue pour la conversion maximale. Optimisation technique pour dominer Google dès le premier mois.</p></div>
+        <div class="feat-card"><h3>🤖 Intelligence Artificielle</h3><p>Une IA Ghost entraînée sur votre business qui qualifie, relance et conclut vos prospects 24/7 sans aucune intervention humaine.</p></div>
+        <div class="feat-card"><h3>📊 CRM Master</h3><p>Gérez vos clients, vos pipelines de vente et votre cash-flow depuis une seule interface haute couture Noir & Rouge.</p></div>
     </div>
 </section>
 
 <footer>
-    <p>Master BlackWay &#x2014; 9495-5457 Quebec Inc. &#183; blackwayconnect.com</p>
+    <p>Master BlackWay — 9495-5457 Quebec Inc. ³ blackwayconnect.com</p>
 </footer>
 
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <h2 style="margin-bottom:20px;">ACTIVER MON EMPIRE</h2>
+        <p style="margin-bottom:20px; color:#888;">Entrez votre email pour procéder au paiement sécurisé via Stripe.</p>
+        <input type="email" id="email-in" class="input-field" placeholder="votre@email.com">
+        <button class="btn-empire" onclick="processPayment()" style="width:100%;">💳 PAYER 1 495 $ (STRIPE)</button>
+        <button style="background:none; border:none; color:#444; margin-top:15px; cursor:pointer;" onclick="closeModal()">Annuler</button>
+    </div>
+</div>
+
 <script>
+function openModal(){ document.getElementById('modal').classList.add('active'); }
+function closeModal(){ document.getElementById('modal').classList.remove('active'); }
+
 async function runAudit() {
     const company = document.getElementById('audit-company').value;
     const url = document.getElementById('audit-url').value;
-    const industry = document.getElementById('audit-industry').value;
     const btn = document.getElementById('btn-run-audit');
     const res = document.getElementById('audit-result');
-    const cta = document.getElementById('audit-cta');
-
-    if(!company) { alert('Veuillez entrer le nom de votre entreprise.'); return; }
-
+    if(!company) return alert('Nom de l\'entreprise requis');
     btn.innerText = 'L\'ANALYSTE GHOST SCANNE VOTRE STRUCTURE...';
-    btn.disabled = true;
     res.style.display = 'block';
-    res.innerText = 'Connexion aux serveurs Master BlackWay...\\nAnalyse des fuites de profit...';
-
+    res.innerText = 'Connexion aux serveurs Master BlackWay...\nAnalyse des fuites de profit...';
     try {
         const response = await fetch('/api/v1/audit/generate', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({company_name: company, website_url: url, industry: industry})
+            body: JSON.stringify({company_name: company, website_url: url})
         });
         const data = await response.json();
         res.innerText = data.report;
-        cta.style.display = 'block';
-        btn.innerText = 'DIAGNOSTIC TERMIN&#201;';
-        window.scrollTo({ top: res.offsetTop - 50, behavior: 'smooth' });
-    } catch (e) {
-        res.innerText = 'Erreur lors de l\'analyse. Veuillez réessayer.';
-        btn.disabled = false;
-        btn.innerText = 'RELANCER LE DIAGNOSTIC';
-    }
+        btn.innerText = 'DIAGNOSTIC TERMINÉ';
+    } catch (e) { res.innerText = 'Erreur lors de l\'analyse. Veuillez réessayer.'; btn.innerText = 'RELANCER'; }
+}
+
+async function processPayment(){
+    const email = document.getElementById('email-in').value.trim();
+    if(!email||!email.includes('@')) return alert('Email valide requis');
+    try {
+        const pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
+        await fetch('/api/v1/auth/register', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({email:email, password:pass, role:'client'})
+        });
+        const r2 = await fetch('/api/v1/auth/login', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({email:email, password:pass})
+        });
+        const d2 = await r2.json();
+        const r3 = await fetch('/api/v1/payments/checkout?plan_id=site_presence_google', {
+            method:'POST', headers:{'Authorization':'Bearer '+d2.access_token}
+        });
+        const d3 = await r3.json();
+        if(d3.url) window.location.href = d3.url;
+        else alert('Erreur session Stripe');
+    } catch(e) { alert('Erreur de redirection. Contactez le support.'); }
 }
 </script>
-
 </body>
 </html>
