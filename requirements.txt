@@ -21,3 +21,4 @@ pyyaml
 jinja2
 sendgrid
 asana
+gunicorn
