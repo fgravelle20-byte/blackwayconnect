@@ -6,7 +6,7 @@ from utils.logger import logger
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-# MASTER PRICING - 10 FORFAITS
+# MASTER PRICING - 10 FORFAITS SYNCHRONISÉS
 PRICE_IDS = {
     "site_blitz": {"id": "price_1TyIHGAG7HUL9RtrPWz5NYI3", "amount": 1495.00, "name": "Site & Présence Google (Blitz)"},
     "ia_performance": {"id": "price_1TyIHFAG7HUL9RtrvhJ6ymFc", "amount": 4995.00, "name": "IA Ghost Performance"},
@@ -22,16 +22,22 @@ PRICE_IDS = {
 
 BRAND_URL = "https://blackwayconnect.com"
 
-async def create_checkout_session(price_id, client_email, client_id, mode="payment"):
+async def create_checkout_session(plan_key, client_email, client_id, mode="payment"):
+    price_data = PRICE_IDS.get(plan_key)
+    if not price_data: return {"error": "Plan invalide"}
+    
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            mode=mode,
-            line_items=[{"price": price_id, "quantity": 1}],
+            mode="subscription" if any(x in plan_key for x in ['annuel', 'mensuel', 'unexa']) else "payment",
+            line_items=[{"price": price_data["id"], "quantity": 1}],
             customer_email=client_email,
-            metadata={"client_id": client_id, "platform": "blackwayconnect"},
+            metadata={"client_id": client_id, "plan": plan_key, "platform": "blackwayconnect"},
             success_url=f"{BRAND_URL}/app?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{BRAND_URL}",
         )
         return {"url": session.url}
     except Exception as e: return {"error": str(e)}
+
+async def create_subscription(client_email, price_id, client_id):
+    return await create_checkout_session(price_id, client_email, client_id, mode="subscription")
