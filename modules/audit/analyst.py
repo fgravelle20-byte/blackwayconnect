@@ -8,7 +8,7 @@ async def generate_prestige_audit(company_name: str, website_url: str = None, in
     """
     Génère un rapport d'audit IA haute couture pour convaincre le prospect.
     """
-    prompt = f\"\"\"
+    prompt = f"""
     Tu es l'Analyste IA de Master BlackWay. Ton ton est direct, expert, élite et sans détour.
     Analyse le potentiel de performance opérationnelle pour l'entreprise suivante :
     Nom : {company_name}
@@ -21,7 +21,7 @@ async def generate_prestige_audit(company_name: str, website_url: str = None, in
     3. SCORE DE PERFORMANCE : Un score sur 100 de leur état actuel.
 
     Le ton doit être provocateur mais professionnel (Prestige). Termine par une recommandation d'activation immédiate de l'Architecture de Performance BlackWay.
-    \"\"\"
+    """
 
     response = client.chat.completions.create(
         model="gpt-4-turbo-preview",

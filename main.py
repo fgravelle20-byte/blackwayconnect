@@ -26,6 +26,7 @@ if sentry_dsn and "project-id" not in sentry_dsn:
             release=f"blackwayconnect@{settings.VERSION}",
             send_default_pii=False,
         )
+        print("[INFO] Sentry initialized successfully.")
     except Exception as e:
         print(f"[WARNING] Failed to initialize Sentry: {e}")
 
