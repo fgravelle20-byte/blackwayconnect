@@ -65,7 +65,7 @@ async def create_checkout_session(
             mode=mode,
             line_items=[{"price": price_id, "quantity": 1}],
             customer_email=client_email,
-            metadata={
+            metadata={ 
                 "client_id": client_id,
                 "plan_key": plan_key,
                 "platform": "blackwayconnect",
