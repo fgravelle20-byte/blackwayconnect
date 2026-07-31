@@ -34,8 +34,6 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     description="BlackWayConnect BaaS Engine",
-    docs_url="/docs" if settings.DEBUG else None,
-    redoc_url="/redoc" if settings.DEBUG else None,
 )
 
 # --- CORS ---
@@ -57,6 +55,7 @@ from notifications.router import router as notifications_router
 from rewards.router import router as rewards_router
 from flex.router import router as flex_router
 from modules.payments.router import router as payments_router
+from modules.audit.router import router as audit_router
 
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(portal_router, prefix="/api/v1/portal", tags=["Portal"])
@@ -64,6 +63,7 @@ app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["
 app.include_router(rewards_router, prefix="/api/v1/rewards", tags=["Rewards"])
 app.include_router(flex_router, prefix="/api/v1/flex", tags=["Flex"])
 app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"])
+app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit IA"])
 
 # Load index.html content once at startup
 INDEX_PATH = os.path.join(os.path.dirname(__file__), "templates", "index.html")
