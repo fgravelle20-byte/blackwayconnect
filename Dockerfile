@@ -1,16 +1,22 @@
 FROM python:3.11-slim
 
+# Install system dependencies for bcrypt and other C-based libs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libc-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Install dependencies first for better caching
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Expose default port
+# Railway injects PORT; fallback to 8080
+ENV PORT=8080
 EXPOSE 8080
 
-# Railway injects PORT; fallback to 8080 if not set
-ENV PORT=8080
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
