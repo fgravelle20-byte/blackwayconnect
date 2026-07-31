@@ -4,108 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master BlackWay — Dominez Votre Marché. Explosez Vos Ventes.</title>
-    <meta name="description" content="Architecture de Performance Opérationnelle Master BlackWay — Site + IA + CRM. Offre exclusive 1 495 $ — Places limitées.">
-    <meta name="robots" content="index, follow">
     <style>
-        :root {
-            --red: #ff0000;
-            --red-deep: #990000;
-            --bg: #0a0a0a;
-            --card: #0e0e0e;
-            --card2: #131313;
-            --border: #1c1c1c;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
-            line-height: 1.5;
-        }
-
-        /* ━━━━━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━ */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            background-image: url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg');
-            background-size: cover;
-            background-position: center 30%;
-            filter: brightness(0.55) saturate(1.15);
-            transform: scale(1.02);
-        }
-
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 120% 60% at 50% 100%, rgba(0,0,0,0.98) 0%, transparent 65%),
-                linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 900px;
-            padding: 36px 24px 70px;
-            text-align: center;
-        }
-
-        .sigil { width: 148px; height: 148px; object-fit: cover; border-radius: 50%; border: 2px solid rgba(255,0,0,0.5); filter: drop-shadow(0 0 20px rgba(255,0,0,0.4)); animation: sigil-breathe 3s ease-in-out infinite alternate; }
-        @keyframes sigil-breathe { from { filter: drop-shadow(0 0 12px rgba(255,0,0,0.6)); } to { filter: drop-shadow(0 0 22px rgba(255,0,0,0.9)); } }
+        :root { --red:#ff0000; --red-deep:#990000; --bg:#0a0a0a; --card:#0e0e0e; --border:#1c1c1c; }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        html { scroll-behavior:smooth; }
+        body { background-color:var(--bg); color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif; line-height:1.5; overflow-x:hidden; }
         
-        .brand-label { font-size: 11px; letter-spacing: 5px; color: var(--red); text-transform: uppercase; font-weight: 700; margin: 18px 0; }
-        .badge-alert { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,0,0,0.10); border: 1px solid rgba(255,0,0,0.5); color: #ff4444; padding: 7px 20px; border-radius: 100px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 26px; }
+        .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
+        .hero-bg { position:absolute; inset:0; background-image:url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg'); background-size:cover; background-position:center 30%; filter:brightness(0.5); }
+        .hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.4), var(--bg)); }
+        .hero-content { position:relative; z-index:1; padding:40px 24px; max-width:900px; }
+        
+        .sigil { width:140px; height:140px; border-radius:50%; border:2px solid var(--red); margin-bottom:20px; box-shadow:0 0 30px rgba(255,0,0,0.5); }
+        .headline { font-size:clamp(2rem,5vw,4rem); font-weight:900; line-height:1.1; margin-bottom:20px; }
+        .red { color:var(--red); }
+        
+        .pricing-section { padding:100px 24px; max-width:1200px; margin:0 auto; }
+        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:25px; margin-top:50px; }
+        .price-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:35px; transition:0.3s; position:relative; }
+        .price-card:hover { border-color:var(--red); transform:translateY(-5px); }
+        .price-card.featured { border-color:var(--red); box-shadow:0 0 20px rgba(255,0,0,0.2); }
+        .plan-name { font-size:1.2rem; font-weight:800; margin-bottom:15px; color:#ccc; }
+        .plan-price { font-size:2.5rem; font-weight:900; color:var(--red); margin-bottom:20px; }
+        
+        .btn-empire { background:#000; color:var(--red); border:2px solid var(--red); padding:15px 30px; border-radius:100px; font-weight:800; cursor:pointer; text-transform:uppercase; transition:0.3s; width:100%; }
+        .btn-empire:hover { background:var(--red); color:#fff; }
+        
+        .audit-section { padding:80px 24px; max-width:800px; margin:0 auto; background:#0e0e0e; border-radius:20px; border:1px solid #1c1c1c; margin-bottom:100px; }
+        .input-field { width:100%; background:#111; border:1px solid #333; border-radius:10px; padding:15px; color:#fff; margin-bottom:15px; }
 
-        .headline { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; text-shadow: 0 2px 24px rgba(0,0,0,0.9); margin-bottom: 18px; }
-        .headline .red { color: var(--red); }
-        .subtitle { font-size: clamp(1rem, 1.8vw, 1.18rem); color: #aaa; max-width: 660px; margin: 0 auto 38px; line-height: 1.75; }
-
-        .deal-card { background: rgba(8, 8, 8, 0.88); backdrop-filter: blur(24px); border: 1px solid rgba(255,0,0,0.38); border-radius: 20px; padding: 28px 36px; max-width: 520px; margin: 0 auto 28px; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .price-main { font-size: clamp(3.8rem, 9vw, 6.5rem); font-weight: 900; color: var(--red); line-height: 1; text-shadow: 0 0 30px rgba(255,0,0,0.5); }
-        .price-sup { font-size: 0.32em; vertical-align: super; font-weight: 700; }
-        .price-regular { font-size: 1.25rem; color: #3c3c3c; text-decoration: line-through; font-weight: 600; }
-        .savings-pill { display: inline-block; background: linear-gradient(135deg, var(--red), var(--red-deep)); color: #fff; padding: 3px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
-
-        .btn-empire { display: inline-flex; align-items: center; justify-content: center; background: #000; color: #ff0000; border: 2px solid #ff0000; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; padding: 20px 50px; border-radius: 100px; cursor: pointer; width: 100%; max-width: 560px; transition: all 0.25s; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
-        .btn-empire:hover { background: var(--red); color: #fff; transform: scale(1.02); }
-
-        /* ━━━━━━━━━━━━━━━━━━━━ AUDIT SECTION ━━━━━━━━━━━━━━━━━━━━ */
-        .audit-section { max-width: 1000px; margin: 0 auto; padding: 100px 24px; text-align: center; }
-        .audit-card { background: #0e0e0e; border: 1px solid #1c1c1c; border-radius: 24px; padding: 50px 40px; text-align: left; }
-        .audit-title { font-size: 2.2rem; font-weight: 900; color: var(--red); margin-bottom: 12px; }
-        .audit-subtitle { color: #888; margin-bottom: 40px; }
-        .audit-input { width: 100%; background: #080808; border: 1px solid #1c1c1c; border-radius: 12px; padding: 18px; color: #fff; font-size: 1rem; margin-bottom: 20px; }
-        #audit-result { display: none; margin-top: 40px; padding: 30px; background: #050505; border-left: 5px solid var(--red); white-space: pre-line; color: #ccc; line-height: 1.8; }
-
-        .countdown-wrap { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-        .count-box { background: rgba(255,0,0,0.07); border: 1px solid rgba(255,0,0,0.22); border-radius: 10px; padding: 10px 14px; min-width: 74px; text-align: center; }
-        .count-num { font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1; }
-        .count-lbl { font-size: 10px; color: #555; text-transform: uppercase; }
-
-        /* ━━━━━━━━━━━━━━━━━━━━ FEATURES ━━━━━━━━━━━━━━━━━━━━ */
-        .feat-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px 90px; }
-        .feat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; }
-        @media (max-width: 820px) { .feat-layout { grid-template-columns: 1fr; } }
-        .feat-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 14px; margin-bottom: 15px; }
-        .growth-img { width: 100%; border-radius: 16px; border: 1px solid rgba(255,0,0,0.18); }
-
-        footer { border-top: 1px solid var(--border); padding: 40px 20px; text-align: center; color: #444; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: #0a0a0a; border: 1px solid var(--red); border-radius: 24px; padding: 50px; width: 100%; max-width: 480px; position: relative; }
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:1000; align-items:center; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:#0a0a0a; border:1px solid var(--red); padding:40px; border-radius:20px; width:100%; max-width:450px; }
+        
+        footer { padding:40px; text-align:center; border-top:1px solid var(--border); color:#444; }
     </style>
 </head>
 <body>
@@ -115,97 +47,121 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg" class="sigil">
-        <div class="brand-label">⚡ MASTER BLACKWAY</div>
-        <h1 class="headline">DOMINEZ VOTRE MARCHÉ.<br><span class="red">EXPLOSEZ VOS VENTES.</span></h1>
-        <p class="subtitle">Architecture de Performance Opérationnelle Master BlackWay. Site + IA + CRM.</p>
-        
-        <div class="deal-card">
-            <div class="price-main"><span class="price-sup">$</span>1 495</div>
-            <div class="price-regular">4 995 $</div>
-            <p style="color:var(--red); font-weight:700; margin-top:10px;">🔴 OFFRE BLITZ — PLACES LIMITÉES</p>
+        <h1 class="headline">DOMINEZ VOTRE MARCHÉ.<br><span class="red">EMPIRE BLACKWAYCONNECT.</span></h1>
+        <p style="color:#888;margin-bottom:40px;">Choisissez votre architecture de performance parmi nos 10 forfaits d'élite.</p>
+        <button class="btn-empire" style="max-width:400px;" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">VOIR LES FORFAITS</button>
+    </div>
+</section>
+
+<section class="pricing-section" id="pricing">
+    <h2 style="text-align:center; font-size:2.5rem; font-weight:900;">NOS <span class="red">10 FORFAITS</span> DE PRESTIGE</h2>
+    <div class="pricing-grid">
+        <div class="price-card featured">
+            <div class="plan-name">Site & Présence (Blitz)</div>
+            <div class="plan-price">1 495 $</div>
+            <p style="color:#666;margin-bottom:20px;">Lancement rapide. Site Élite + SEO Google.</p>
+            <button class="btn-empire" onclick="openModal('site_blitz')">ACTIVER</button>
         </div>
-
-        <button class="btn-empire" onclick="openModal()">⚡ ACTIVER MON EMPIRE MAINTENANT</button>
-        <p style="margin-top:20px; color:#555; font-size:0.9rem; cursor:pointer;" onclick="document.getElementById('audit').scrollIntoView({behavior:'smooth'})">Ou demandez votre Audit IA Gratuit ↓</p>
-
-        <div class="countdown-wrap">
-            <div class="count-box"><div class="count-num" id="cd-h">23</div><div class="count-lbl">Heures</div></div>
-            <div class="count-box"><div class="count-num" id="cd-m">59</div><div class="count-lbl">Minutes</div></div>
-            <div class="count-box"><div class="count-num" id="cd-s">00</div><div class="count-lbl">Secondes</div></div>
+        <div class="price-card">
+            <div class="plan-name">IA Ghost Performance</div>
+            <div class="plan-price">4 995 $</div>
+            <p style="color:#666;margin-bottom:20px;">Automatisation totale des leads et relances.</p>
+            <button class="btn-empire" onclick="openModal('ia_performance')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">CRM Elite & Conversion</div>
+            <div class="plan-price">6 995 $</div>
+            <p style="color:#666;margin-bottom:20px;">Structure de vente complète et pipeline Master.</p>
+            <button class="btn-empire" onclick="openModal('crm_elite')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">Site & Présence (Annuel)</div>
+            <div class="plan-price">3 000 $</div>
+            <button class="btn-empire" onclick="openModal('site_annuel')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">IA Ghost (Annuel)</div>
+            <div class="plan-price">15 000 $</div>
+            <button class="btn-empire" onclick="openModal('ia_annuel')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">CRM Elite (Annuel)</div>
+            <div class="plan-price">9 000 $</div>
+            <button class="btn-empire" onclick="openModal('crm_annuel')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">Site (Mensuel)</div>
+            <div class="plan-price">250 $</div>
+            <button class="btn-empire" onclick="openModal('site_mensuel')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">UNEXA Pro</div>
+            <div class="plan-price">499 $</div>
+            <button class="btn-empire" onclick="openModal('unexa_pro')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">UNEXA Business</div>
+            <div class="plan-price">999 $</div>
+            <button class="btn-empire" onclick="openModal('unexa_business')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">UNEXA Starter</div>
+            <div class="plan-price">199 $</div>
+            <button class="btn-empire" onclick="openModal('unexa_starter')">ACTIVER</button>
         </div>
     </div>
 </section>
 
 <section class="audit-section" id="audit">
-    <div class="audit-card">
-        <h2 class="audit-title">ANALYSTE IA "GHOST"</h2>
-        <p class="audit-subtitle">Découvrez où votre entreprise fuit du profit en 60 secondes.</p>
-        <input type="text" id="audit-company" class="audit-input" placeholder="Nom de l'entreprise">
-        <input type="text" id="audit-industry" class="audit-input" placeholder="Secteur d'activité">
-        <button class="btn-empire" onclick="runAudit()" style="max-width: 100%;">LANCER LE DIAGNOSTIC PRESTIGE</button>
-        <div id="audit-result"></div>
-    </div>
+    <h2 style="margin-bottom:20px; color:var(--red); text-align:center;">ANALYSTE IA "GHOST"</h2>
+    <input type="text" id="audit-company" class="input-field" placeholder="Nom de l'entreprise">
+    <button class="btn-empire" id="btn-run-audit" onclick="runAudit()">LANCER LE DIAGNOSTIC</button>
+    <div id="audit-result" style="display:none; margin-top:20px; padding:20px; background:#000; border-left:4px solid var(--red); white-space:pre-line;"></div>
 </section>
 
-<section class="feat-section">
-    <div class="feat-layout">
-        <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d712d9610eff3b6421db5ecc6df219f3c26d2246778de70115e30f0adaa45c85.jpeg" class="growth-img">
-        <div class="feat-cards">
-            <div class="feat-card"><h3>🌐 Site & SEO</h3><p>Présence web percutante, optimisée Google, prête à convertir dès le jour 1.</p></div>
-            <div class="feat-card"><h3>🤖 IA Ghost</h3><p>Qualification automatique de leads et relance intelligente 24/7.</p></div>
-            <div class="feat-card"><h3>📊 CRM Elite</h3><p>Gérez clients, contrats et revenus depuis une interface Noir & Rouge.</p></div>
-        </div>
-    </div>
-</section>
-
-<footer><p>Master BlackWay — 9495-5457 Quebec Inc. ³ blackwayconnect.com</p></footer>
+<footer><p>Master BlackWay — 9495-5457 Quebec Inc. — blackwayconnect.com</p></footer>
 
 <div class="modal-overlay" id="modal">
     <div class="modal-box">
-        <button onclick="closeModal()" style="float:right; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+        <button style="float:right;background:none;border:none;color:#fff;cursor:pointer;" onclick="closeModal()">✕</button>
         <h2 style="margin-bottom:20px;">ACTIVER MON EMPIRE</h2>
-        <input type="email" id="email-in" class="audit-input" placeholder="votre@email.com">
-        <button class="btn-empire" onclick="processPayment()" style="max-width:100%;">💳 PAYER 1 495 $ (STRIPE)</button>
+        <p id="modal-plan-name" style="color:var(--red); font-weight:800; margin-bottom:20px;"></p>
+        <input type="email" id="email-in" class="input-field" placeholder="votre@email.com">
+        <input type="hidden" id="selected-plan">
+        <button class="btn-empire" onclick="processPayment()">PROCÉDER AU PAIEMENT</button>
     </div>
 </div>
 
 <script>
-(function(){
-    var end = Date.now() + 24*3600*1000;
-    function pad(n){ return ('0'+n).slice(-2); }
-    function tick(){
-        var d = Math.max(0, end - Date.now());
-        document.getElementById('cd-h').textContent = pad(Math.floor(d/3600000));
-        document.getElementById('cd-m').textContent = pad(Math.floor(d%3600000/60000));
-        document.getElementById('cd-s').textContent = pad(Math.floor(d%60000/1000));
-        if(d>0) setTimeout(tick,1000);
-    }
-    tick();
-})();
-
-function openModal(){ document.getElementById('modal').classList.add('active'); }
+let currentPlan = 'site_blitz';
+function openModal(plan){ 
+    currentPlan = plan; 
+    document.getElementById('modal-plan-name').innerText = plan.replace(/_/g,' ').toUpperCase();
+    document.getElementById('modal').classList.add('active'); 
+}
 function closeModal(){ document.getElementById('modal').classList.remove('active'); }
 
 async function runAudit() {
     const company = document.getElementById('audit-company').value;
-    const industry = document.getElementById('audit-industry').value;
     if(!company) return alert('Nom requis');
     const res = document.getElementById('audit-result');
     res.style.display = 'block'; res.innerText = 'Analyse en cours...';
     try {
-        const response = await fetch('/api/v1/audit/generate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({company_name: company, industry: industry}) });
+        const response = await fetch('/api/v1/audit/generate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({company_name: company}) });
         const data = await response.json(); res.innerText = data.report;
-    } catch (e) { res.innerText = 'Erreur. Réessayez.'; }
+    } catch (e) { res.innerText = 'Erreur.'; }
 }
+
 async function processPayment(){
-    const email = document.getElementById('email-in').value.trim();
-    if(!email||!email.includes('@')) return alert('Email requis');
+    const email = document.getElementById('email-in').value;
+    if(!email) return alert('Email requis');
     try {
         const pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
         await fetch('/api/v1/auth/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass, role:'client'}) });
         const r2 = await fetch('/api/v1/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass}) });
         const d2 = await r2.json();
-        const r3 = await fetch('/api/v1/payments/checkout?plan_id=site_presence_google&mode=payment',{ method:'POST', headers:{'Authorization':'Bearer '+d2.access_token} });
+        const mode = (currentPlan.includes('annuel') || currentPlan.includes('mensuel') || currentPlan.includes('unexa')) ? 'subscription' : 'payment';
+        const r3 = await fetch(`/api/v1/payments/checkout?plan_id=${currentPlan}&mode=${mode}`,{ method:'POST', headers:{'Authorization':'Bearer '+d2.access_token} });
         const d3 = await r3.json(); window.location.href = d3.url;
     } catch(e) { alert('Erreur redirection'); }
 }
