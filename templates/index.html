@@ -51,7 +51,7 @@
             inset: 0;
             background:
                 radial-gradient(ellipse 120% 60% at 50% 100%, rgba(0,0,0,0.98) 0%, transparent 65%),
-                linear-gradient(180deg, rgba(0,0,0,0.5)  0%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%);
+                linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%);
         }
 
         .hero-content {
@@ -63,7 +63,9 @@
             text-align: center;
         }
 
-        .sigil { width: 148px; height: 148px; object-fit: cover; border-radius: 50%; border: 2px solid rgba(255,0,0,0.5); filter: drop-shadow(0 0 20px rgba(255,0,0,0.4)); }
+        .sigil { width: 148px; height: 148px; object-fit: cover; border-radius: 50%; border: 2px solid rgba(255,0,0,0.5); filter: drop-shadow(0 0 20px rgba(255,0,0,0.4)); animation: sigil-breathe 3s ease-in-out infinite alternate; }
+        @keyframes sigil-breathe { from { filter: drop-shadow(0 0 12px rgba(255,0,0,0.6)); } to { filter: drop-shadow(0 0 22px rgba(255,0,0,0.9)); } }
+        
         .brand-label { font-size: 11px; letter-spacing: 5px; color: var(--red); text-transform: uppercase; font-weight: 700; margin: 18px 0; }
         .badge-alert { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,0,0,0.10); border: 1px solid rgba(255,0,0,0.5); color: #ff4444; padding: 7px 20px; border-radius: 100px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 26px; }
 
@@ -88,14 +90,19 @@
         .audit-input { width: 100%; background: #080808; border: 1px solid #1c1c1c; border-radius: 12px; padding: 18px; color: #fff; font-size: 1rem; margin-bottom: 20px; }
         #audit-result { display: none; margin-top: 40px; padding: 30px; background: #050505; border-left: 5px solid var(--red); white-space: pre-line; color: #ccc; line-height: 1.8; }
 
+        .countdown-wrap { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .count-box { background: rgba(255,0,0,0.07); border: 1px solid rgba(255,0,0,0.22); border-radius: 10px; padding: 10px 14px; min-width: 74px; text-align: center; }
+        .count-num { font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1; }
+        .count-lbl { font-size: 10px; color: #555; text-transform: uppercase; }
+
         /* ━━━━━━━━━━━━━━━━━━━━ FEATURES ━━━━━━━━━━━━━━━━━━━━ */
         .feat-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px 90px; }
         .feat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; }
         @media (max-width: 820px) { .feat-layout { grid-template-columns: 1fr; } }
         .feat-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 14px; margin-bottom: 15px; }
+        .growth-img { width: 100%; border-radius: 16px; border: 1px solid rgba(255,0,0,0.18); }
 
         footer { border-top: 1px solid var(--border); padding: 40px 20px; text-align: center; color: #444; }
-
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: #0a0a0a; border: 1px solid var(--red); border-radius: 24px; padding: 50px; width: 100%; max-width: 480px; position: relative; }
@@ -120,6 +127,12 @@
 
         <button class="btn-empire" onclick="openModal()">⚡ ACTIVER MON EMPIRE MAINTENANT</button>
         <p style="margin-top:20px; color:#555; font-size:0.9rem; cursor:pointer;" onclick="document.getElementById('audit').scrollIntoView({behavior:'smooth'})">Ou demandez votre Audit IA Gratuit ↓</p>
+
+        <div class="countdown-wrap">
+            <div class="count-box"><div class="count-num" id="cd-h">23</div><div class="count-lbl">Heures</div></div>
+            <div class="count-box"><div class="count-num" id="cd-m">59</div><div class="count-lbl">Minutes</div></div>
+            <div class="count-box"><div class="count-num" id="cd-s">00</div><div class="count-lbl">Secondes</div></div>
+        </div>
     </div>
 </section>
 
@@ -157,8 +170,22 @@
 </div>
 
 <script>
+(function(){
+    var end = Date.now() + 24*3600*1000;
+    function pad(n){ return ('0'+n).slice(-2); }
+    function tick(){
+        var d = Math.max(0, end - Date.now());
+        document.getElementById('cd-h').textContent = pad(Math.floor(d/3600000));
+        document.getElementById('cd-m').textContent = pad(Math.floor(d%3600000/60000));
+        document.getElementById('cd-s').textContent = pad(Math.floor(d%60000/1000));
+        if(d>0) setTimeout(tick,1000);
+    }
+    tick();
+})();
+
 function openModal(){ document.getElementById('modal').classList.add('active'); }
 function closeModal(){ document.getElementById('modal').classList.remove('active'); }
+
 async function runAudit() {
     const company = document.getElementById('audit-company').value;
     const industry = document.getElementById('audit-industry').value;
