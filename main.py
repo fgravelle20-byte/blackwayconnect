@@ -6,13 +6,17 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
+# LOGGING STARTUP
+PORT = int(os.environ.get("PORT", 8080))
+print(f"--- STARTING BLACKWAY ENGINE ON PORT {PORT} ---")
+
 # Import dummy settings to avoid crash if file missing
 try:
     from config.settings import settings
 except ImportError:
     class DummySettings:
         APP_NAME = "BlackWayConnect"
-        VERSION = "2.0.1"
+        VERSION = "2.0.2"
         ENVIRONMENT = "production"
         SENTRY_DSN = ""
         DEBUG = False
@@ -33,6 +37,7 @@ if sentry_dsn and "project-id" not in sentry_dsn:
             release=f"blackwayconnect@{settings.VERSION}",
             send_default_pii=False,
         )
+        print("Sentry Initialized")
     except Exception: pass
 
 # --- FastAPI App ---
@@ -49,27 +54,16 @@ app.add_middleware(
 try:
     from auth.router import router as auth_router
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
-except Exception as e: print(f"Auth Router Error: {e}")
-
-try:
     from portal.router import router as portal_router
     app.include_router(portal_router, prefix="/api/v1/portal", tags=["Portal"])
-except Exception as e: print(f"Portal Router Error: {e}")
-
-try:
     from notifications.router import router as notifications_router
     app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["Notifications"])
-except Exception as e: print(f"Notif Router Error: {e}")
-
-try:
     from modules.payments.router import router as payments_router
     app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"])
-except Exception as e: print(f"Payments Router Error: {e}")
-
-try:
     from modules.audit.router import router as audit_router
     app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit IA"])
-except Exception as e: print(f"Audit Router Error: {e}")
+    print("Routers Loaded")
+except Exception as e: print(f"Router Load Error: {e}")
 
 # Load index.html content
 INDEX_PATH = os.path.join(os.path.dirname(__file__), "templates", "index.html")
@@ -81,7 +75,7 @@ else:
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "version": settings.VERSION}
+    return {"status": "healthy", "port": PORT}
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -89,5 +83,5 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8080))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    print(f"Running uvicorn on 0.0.0.0:{PORT}")
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
