@@ -1,1 +1,207 @@
-{"content": "... (HTML complete du footer avec les liens légaux) ..."}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master BlackWay — Dominez Votre Marché. Explosez Vos Ventes.</title>
+    <meta name="description" content="Architecture de Performance Opérationnelle Master BlackWay — Site + IA + CRM. 10 Forfaits disponibles.">
+    <style>
+        :root { --red:#ff0000; --red-deep:#990000; --bg:#0a0a0a; --card:#0e0e0e; --border:#1c1c1c; }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        html { scroll-behavior:smooth; }
+        body { background-color:var(--bg); color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif; line-height:1.5; overflow-x:hidden; }
+        
+        .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
+        .hero-bg { position:absolute; inset:0; background-image:url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg'); background-size:cover; background-position:center 30%; filter:brightness(0.5); }
+        .hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.4), var(--bg)); }
+        .hero-content { position:relative; z-index:1; padding:40px 24px; max-width:900px; }
+        
+        .sigil { width:140px; height:140px; border-radius:50%; border:2px solid var(--red); margin-bottom:20px; box-shadow:0 0 30px rgba(255,0,0,0.5); }
+        .headline { font-size:clamp(2.1rem,5vw,4.5rem); font-weight:900; line-height:1.1; margin-bottom:20px; }
+        .red { color:var(--red); }
+        
+        .pricing-section { padding:100px 24px; max-width:1200px; margin:0 auto; }
+        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:25px; margin-top:50px; }
+        .price-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:35px; transition:0.3s; position:relative; text-align:left; }
+        .price-card:hover { border-color:var(--red); transform:translateY(-5px); }
+        .price-card.featured { border-color:var(--red); box-shadow:0 0 20px rgba(255,0,0,0.2); }
+        .plan-name { font-size:1.1rem; font-weight:800; margin-bottom:10px; color:#ccc; text-transform:uppercase; letter-spacing:1px; }
+        .plan-price { font-size:2.8rem; font-weight:900; color:var(--red); margin-bottom:20px; }
+        
+        .btn-empire { background:#000; color:var(--red); border:2px solid var(--red); padding:18px 30px; border-radius:100px; font-weight:800; cursor:pointer; text-transform:uppercase; transition:0.3s; width:100%; font-size:0.9rem; }
+        .btn-empire:hover { background:var(--red); color:#fff; }
+        
+        .audit-section { padding:80px 24px; max-width:900px; margin:100px auto; background:#0e0e0e; border-radius:24px; border:1px solid #1c1c1c; text-align:center; }
+        .audit-title { font-size:2.2rem; font-weight:900; color:var(--red); margin-bottom:15px; }
+        .input-field { width:100%; background:#111; border:1px solid #333; border-radius:12px; padding:18px; color:#fff; margin-bottom:20px; font-size:1rem; }
+        .input-field:focus { border-color:var(--red); outline:none; }
+        
+        #audit-result { display:none; margin-top:30px; padding:30px; background:#050505; border-left:5px solid var(--red); border-radius:10px; white-space:pre-line; text-align:left; color:#ccc; line-height:1.7; }
+
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:1000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(10px); }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:#0a0a0a; border:1px solid var(--red); padding:50px; border-radius:24px; width:100%; max-width:480px; position:relative; text-align:center; }
+        .modal-close { position:absolute; top:20px; right:20px; background:none; border:none; color:#444; font-size:24px; cursor:pointer; }
+        
+        footer { padding:80px 24px; border-top:1px solid var(--border); text-align:center; }
+        .legal-links { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-bottom:40px; }
+        .legal-links a { color:#666; text-decoration:none; font-size:13px; transition:0.3s; }
+        .legal-links a:hover { color:var(--red); }
+        
+        .feat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:30px; padding:0 24px 100px; max-width:1200px; margin:0 auto; }
+        .feat-card { background:var(--card); border:1px solid var(--border); padding:40px; border-radius:20px; }
+        .feat-card h3 { color:var(--red); margin-bottom:15px; font-weight:800; }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg" class="sigil">
+        <h1 class="headline">DOMINEZ VOTRE MARCHÉ.<br><span class="red">EXPLOSEZ VOS VENTES.</span></h1>
+        <p style="color:#aaa; font-size:1.2rem; margin-bottom:40px;">L'Architecture de Performance Opérationnelle Master BlackWay.</p>
+        <button class="btn-empire" style="max-width:400px;" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">DÉCOUVRIR NOS 10 FORFAITS</button>
+    </div>
+</section>
+
+<section class="pricing-section" id="pricing">
+    <h2 style="text-align:center; font-size:3rem; font-weight:900; margin-bottom:60px;">NOS <span class="red">10 FORFAITS</span> DE PRESTIGE</h2>
+    <div class="pricing-grid">
+        <div class="price-card featured">
+            <div class="plan-name">Site & Présence (Blitz)</div>
+            <div class="plan-price">1 495 $</div>
+            <p style="color:#666; margin-bottom:25px;">Site Élite + SEO Google. Lancement immédiat.</p>
+            <button class="btn-empire" onclick="openModal('site_blitz', '1 495 $')">ACTIVER MON EMPIRE</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">IA Ghost Performance</div>
+            <div class="plan-price">4 995 $</div>
+            <p style="color:#666; margin-bottom:25px;">Qualification et relance automatique 24/7.</p>
+            <button class="btn-empire" onclick="openModal('ia_performance', '4 995 $')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">CRM Elite & Conversion</div>
+            <div class="plan-price">6 995 $</div>
+            <p style="color:#666; margin-bottom:25px;">Pipeline de vente Master et gestion client.</p>
+            <button class="btn-empire" onclick="openModal('crm_elite', '6 995 $')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">Site (Mensuel)</div>
+            <div class="plan-price">250 $<span style="font-size:1rem; color:#444;">/mois</span></div>
+            <button class="btn-empire" onclick="openModal('site_mensuel', '250 $')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">Site (Annuel)</div>
+            <div class="plan-price">3 000 $</div>
+            <button class="btn-empire" onclick="openModal('site_annuel', '3 000 $')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">IA Ghost (Annuel)</div>
+            <div class="plan-price">15 000 $</div>
+            <button class="btn-empire" onclick="openModal('ia_annuel', '15 000 $')">ACTIVER</button>
+        </div>
+        <div class="price-card">
+            <div class="plan-name">CRM Elite (Annuel)</div>
+            <div class="plan-price">9 000 $</div>
+            <button class="btn-empire" onclick="openModal('crm_annuel', '9 000 $')">ACTIVER</button>
+        </div>
+        <div class="price-card" style="border-color:#333;">
+            <div class="plan-name">UNEXA Pro</div>
+            <div class="plan-price">499 $<span style="font-size:1rem; color:#444;">/mois</span></div>
+            <button class="btn-empire" onclick="openModal('unexa_pro', '499 $')">ACTIVER</button>
+        </div>
+        <div class="price-card" style="border-color:#333;">
+            <div class="plan-name">UNEXA Business</div>
+            <div class="plan-price">999 $<span style="font-size:1rem; color:#444;">/mois</span></div>
+            <button class="btn-empire" onclick="openModal('unexa_business', '999 $')">ACTIVER</button>
+        </div>
+        <div class="price-card" style="border-color:#333;">
+            <div class="plan-name">UNEXA Starter</div>
+            <div class="plan-price">199 $<span style="font-size:1rem; color:#444;">/mois</span></div>
+            <button class="btn-empire" onclick="openModal('unexa_starter', '199 $')">ACTIVER</button>
+        </div>
+    </div>
+</section>
+
+<section class="audit-section" id="audit">
+    <h2 class="audit-title">ANALYSTE IA "GHOST"</h2>
+    <p style="color:#888; margin-bottom:40px;">Découvrez où votre entreprise fuit du profit en 60 secondes.</p>
+    <input type="text" id="audit-company" class="input-field" placeholder="Nom de l'entreprise">
+    <input type="text" id="audit-industry" class="input-field" placeholder="Secteur d'activité (Ex: Transport, Santé...)">
+    <button class="btn-empire" id="btn-run-audit" onclick="runAudit()">LANCER LE DIAGNOSTIC PRESTIGE</button>
+    <div id="audit-result"></div>
+</section>
+
+<div class="feat-grid">
+    <div class="feat-card"><h3>🌐 Présence Élite</h3><p>Design haute couture optimisé pour capturer chaque prospect.</p></div>
+    <div class="feat-card"><h3>🤖 Cerveau IA</h3><p>Automatisation intelligente qui travaille pendant que vous dormez.</p></div>
+    <div class="feat-card"><h3>📊 Structure Master</h3><p>Gérez vos revenus et vos leads avec une précision chirurgicale.</p></div>
+</div>
+
+<footer>
+    <div class="legal-links">
+        <a href="/legal/mentions-legales">Mentions Légales</a>
+        <a href="/legal/cgu">CGU</a>
+        <a href="/legal/confidentialite">Confidentialité</a>
+        <a href="/legal/cookies">Cookies</a>
+        <a href="/legal/msa">MSA / CGV</a>
+        <a href="/legal/sla">SLA</a>
+        <a href="/legal/aup">AUP</a>
+    </div>
+    <p style="color:#444; font-weight:800;">BlackWayConnect Inc. — Domination Digitale & IA</p>
+    <p style="color:#222; font-size:12px; margin-top:10px;">1250 Blvd. René-Lévesque Ouest, Montréal, QC H3B 4W8, Canada</p>
+</footer>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="margin-bottom:10px;">ACTIVER MON EMPIRE</h2>
+        <p id="modal-plan-display" style="color:var(--red); font-weight:800; margin-bottom:30px; font-size:1.2rem;"></p>
+        <input type="email" id="email-in" class="input-field" placeholder="votre@email.com">
+        <button class="btn-empire" onclick="processPayment()">PAYER ET DÉPLOYER</button>
+    </div>
+</div>
+
+<script>
+let selectedPlan = '';
+function openModal(plan, price){ 
+    selectedPlan = plan; 
+    document.getElementById('modal-plan-display').innerText = plan.replace(/_/g,' ').toUpperCase() + ' — ' + price;
+    document.getElementById('modal').classList.add('active'); 
+}
+function closeModal(){ document.getElementById('modal').classList.remove('active'); }
+
+async function runAudit() {
+    const company = document.getElementById('audit-company').value;
+    const industry = document.getElementById('audit-industry').value;
+    const btn = document.getElementById('btn-run-audit');
+    const res = document.getElementById('audit-result');
+    if(!company) return alert('Nom de l\'entreprise requis');
+    btn.innerText = 'ANALYSE GHOST EN COURS...';
+    res.style.display = 'block';
+    res.innerText = 'L\'IA Ghost analyse votre structure...';
+    try {
+        const response = await fetch('/api/v1/audit/generate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({company_name: company, industry: industry}) });
+        const data = await response.json(); res.innerText = data.report;
+        btn.innerText = 'DIAGNOSTIC TERMINÉ';
+    } catch (e) { res.innerText = 'Erreur. Réessayez.'; btn.innerText = 'RELANCER'; }
+}
+
+async function processPayment(){
+    const email = document.getElementById('email-in').value.trim();
+    if(!email||!email.includes('@')) return alert('Email valide requis');
+    try {
+        const pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
+        await fetch('/api/v1/auth/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass, role:'client'}) });
+        const r2 = await fetch('/api/v1/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass}) });
+        const d2 = await r2.json();
+        const mode = (selectedPlan.includes('annuel') || selectedPlan.includes('mensuel') || selectedPlan.includes('unexa')) ? 'subscription' : 'payment';
+        const r3 = await fetch(`/api/v1/payments/checkout?plan_id=${selectedPlan}&mode=${mode}`,{ method:'POST', headers:{'Authorization':'Bearer '+${d2.access_token}} });
+        const d3 = await r3.json(); if(d3.url) window.location.href = d3.url;
+    } catch(e) { alert('Erreur redirection'); }
+}
+</script>
+</body>
+</html>
