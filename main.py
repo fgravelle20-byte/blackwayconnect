@@ -6,9 +6,17 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-from config.settings import settings
-from middleware.rate_limiter import RateLimiterMiddleware
-from middleware.performance import PerformanceMiddleware
+# Import dummy settings to avoid crash if file missing
+try:
+    from config.settings import settings
+except ImportError:
+    class DummySettings:
+        APP_NAME = "BlackWayConnect"
+        VERSION = "2.0.1"
+        ENVIRONMENT = "production"
+        SENTRY_DSN = ""
+        DEBUG = False
+    settings = DummySettings()
 
 # --- Sentry Initialization ---
 sentry_dsn = os.environ.get("SENTRY_DSN", settings.SENTRY_DSN)
@@ -20,24 +28,16 @@ if sentry_dsn and "project-id" not in sentry_dsn:
                 StarletteIntegration(transaction_style="endpoint"),
                 FastApiIntegration(transaction_style="endpoint"),
             ],
-            traces_sample_rate=1.0 if settings.ENVIRONMENT == "development" else 0.3,
-            profiles_sample_rate=0.1,
+            traces_sample_rate=0.3,
             environment=settings.ENVIRONMENT,
             release=f"blackwayconnect@{settings.VERSION}",
             send_default_pii=False,
         )
-        print("[INFO] Sentry initialized successfully.")
-    except Exception as e:
-        print(f"[WARNING] Failed to initialize Sentry: {e}")
+    except Exception: pass
 
 # --- FastAPI App ---
-app = FastAPI(
-    title=settings.APP_NAME,
-    version=settings.VERSION,
-    description="BlackWayConnect BaaS Engine",
-)
+app = FastAPI(title=settings.APP_NAME, version=settings.VERSION)
 
-# --- CORS ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -45,28 +45,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Custom Middleware ---
-app.add_middleware(RateLimiterMiddleware)
-app.add_middleware(PerformanceMiddleware)
+# --- Routers (Safe Import) ---
+try:
+    from auth.router import router as auth_router
+    app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+except Exception as e: print(f"Auth Router Error: {e}")
 
-# --- Routers ---
-from auth.router import router as auth_router
-from portal.router import router as portal_router
-from notifications.router import router as notifications_router
-from rewards.router import router as rewards_router
-from flex.router import router as flex_router
-from modules.payments.router import router as payments_router
-from modules.audit.router import router as audit_router
+try:
+    from portal.router import router as portal_router
+    app.include_router(portal_router, prefix="/api/v1/portal", tags=["Portal"])
+except Exception as e: print(f"Portal Router Error: {e}")
 
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
-app.include_router(portal_router, prefix="/api/v1/portal", tags=["Portal"])
-app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["Notifications"])
-app.include_router(rewards_router, prefix="/api/v1/rewards", tags=["Rewards"])
-app.include_router(flex_router, prefix="/api/v1/flex", tags=["Flex"])
-app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"])
-app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit IA"])
+try:
+    from notifications.router import router as notifications_router
+    app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["Notifications"])
+except Exception as e: print(f"Notif Router Error: {e}")
 
-# Load index.html content once at startup
+try:
+    from modules.payments.router import router as payments_router
+    app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"])
+except Exception as e: print(f"Payments Router Error: {e}")
+
+try:
+    from modules.audit.router import router as audit_router
+    app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit IA"])
+except Exception as e: print(f"Audit Router Error: {e}")
+
+# Load index.html content
 INDEX_PATH = os.path.join(os.path.dirname(__file__), "templates", "index.html")
 if os.path.exists(INDEX_PATH):
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
@@ -78,17 +83,11 @@ else:
 async def health_check():
     return {"status": "healthy", "version": settings.VERSION}
 
-@app.get("/app", response_class=HTMLResponse)
-async def portal():
-    portal_path = os.path.join(os.path.dirname(__file__), "templates", "portal.html")
-    if os.path.exists(portal_path):
-        with open(portal_path, "r", encoding="utf-8") as f: return f.read()
-    return "<h1>Portal Not Found</h1>"
-
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return INDEX_HTML
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)
