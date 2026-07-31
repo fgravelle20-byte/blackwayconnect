@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackBox Master &#x2014; Votre Empire en Construction</title>
+    <style>
+        :root { --red: #ff0000; --bg: #050505; --card: #0a0a0a; --border: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        .container { max-width: 1000px; margin: 60px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .title { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--red); }
+        
+        .progression-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 40px; margin-bottom: 30px; }
+        .progression-label { font-size: 0.9rem; color: #666; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .progression-bar-bg { width: 100%; height: 6px; background: #111; border-radius: 10px; overflow: hidden; }
+        .progression-bar-fill { width: 35%; height: 100%; background: var(--red); box-shadow: 0 0 15px var(--red); }
+        
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .step { background: #080808; border: 1px solid #111; padding: 20px; border-radius: 10px; }
+        .step.active { border-color: var(--red); }
+        .step-icon { font-size: 1.5rem; margin-bottom: 10px; }
+        .step-title { font-weight: 700; margin-bottom: 5px; }
+        .step-status { font-size: 0.8rem; color: #444; text-transform: uppercase; }
+        .step.active .step-status { color: var(--red); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">BLACKBOX MASTER</div>
+            <div style="font-size: 0.8rem; color: #444;">ID: BWC-9495-5457</div>
+        </div>
+        
+        <div class="progression-card">
+            <div class="progression-label">Déploiement de votre Architecture : 35%</div>
+            <div class="progression-bar-bg">
+                <div class="progression-bar-fill"></div>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">🌐</div>
+                <div class="step-title">Configuration Domaine</div>
+                <div class="step-status">Terminé</div>
+            </div>
+            <div class="step active">
+                <div class="step-icon">🤖</div>
+                <div class="step-title">Entraînement IA Ghost</div>
+                <div class="step-status">En cours...</div>
+            </div>
+            <div class="step">
+                <div class="step-icon">📊</div>
+                <div class="step-title">Déploiement CRM Elite</div>
+                <div class="step-status">En attente</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
