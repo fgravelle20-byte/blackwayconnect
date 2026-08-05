@@ -1,0 +1,94 @@
+{% extends "partials/base.html" %}
+{% block content %}
+<section class="wrap hero" style="grid-template-columns:1fr">
+  <div>
+    <p class="eyebrow">Grow Hub</p>
+    <h1>Le centre de commande des revenus.</h1>
+    <p class="lede">Pipeline, scoring, soumissions, paiements et automatisations IA — un seul système. Des tarifs transparents en CAD et en USD.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/#reserver">Réserver 15 minutes</a>
+      <a class="btn" href="#pricing">Voir les prix</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <aside class="demo-panel" aria-label="Exemple d'affichage du Grow Hub">
+    <div class="demo-head"><span>Exemple d'affichage</span><span class="live-dot">● LIVE</span></div>
+    <div class="demo-grid">
+      <div class="metric"><small>Leads actifs</small><strong>48</strong><span class="delta">+18 %</span></div>
+      <div class="metric"><small>Pipeline</small><strong>184 k$</strong></div>
+      <div class="lead-row"><div class="row"><strong>Système de revenus</strong><span>4 995 $</span></div></div>
+    </div>
+    <p class="demo-note">Exemple d'affichage</p>
+  </aside>
+</section>
+
+<section class="wrap" id="pricing">
+  <div class="section-head">
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between">
+      <p class="eyebrow" style="margin:0">Quatre niveaux · une seule plateforme</p>
+      <div class="currency-toggle" role="group" aria-label="Devise">
+        <button type="button" id="cur-cad" aria-pressed="true">CAD</button>
+        <button type="button" id="cur-usd" aria-pressed="false">USD</button>
+      </div>
+    </div>
+    <h2>Commencez simplement. Grandissez sans changer de système.</h2>
+  </div>
+  <div class="pricing-grid">
+    <article class="plan" id="launch">
+      <h3>Launch</h3>
+      <p class="price"><span data-cad="299 $ CAD" data-usd="229 $ USD">299 $ CAD</span> <span>/ mois</span></p>
+      <p class="incl">1 pipeline · formulaires · tâches · 2 automatisations · hébergement et maintenance</p>
+      <a class="btn" href="/#reserver">Réserver 15 minutes</a>
+    </article>
+    <article class="plan featured" id="growth">
+      <span class="badge">Le plus choisi</span>
+      <h3>Growth</h3>
+      <p class="price"><span data-cad="749 $ CAD" data-usd="579 $ USD">749 $ CAD</span> <span>/ mois</span></p>
+      <p class="incl">Scoring · chatbot IA · soumissions · paiements · 8 automatisations · SEO mensuel</p>
+      <a class="btn btn-primary" href="/#reserver">Réserver 15 minutes</a>
+    </article>
+    <article class="plan" id="scale">
+      <h3>Scale</h3>
+      <p class="price"><span data-cad="1 495 $ CAD" data-usd="1 149 $ USD">1 495 $ CAD</span> <span>/ mois</span></p>
+      <p class="incl">Multi-pipelines · IA avancée · API · application mobile · support prioritaire</p>
+      <a class="btn" href="/#reserver">Réserver 15 minutes</a>
+    </article>
+    <article class="plan">
+      <h3>Entreprise</h3>
+      <p class="price">Sur mesure</p>
+      <p class="incl">Architecture dédiée · SLA · développement continu</p>
+      <a class="btn" href="/#reserver">Parler à un stratège</a>
+    </article>
+  </div>
+  <div class="banner-soft">Deux mois offerts au paiement annuel · Frais de démarrage à 0 $ sur engagement de 12 mois · Annulable en tout temps sur le mensuel.</div>
+  <div class="guarantee"><strong>Notre garantie :</strong> votre premier lead capté dans les 30 jours, ou le mois suivant est offert.</div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">Projets d'activation</p>
+    <h2>Site haute conversion à partir de 1 995 $</h2>
+  </div>
+  <div class="projects">
+    <div class="project"><strong>Site haute conversion</strong><span>à partir de 1 995 $</span><span>21 jours</span><span>3 versements</span></div>
+    <div class="project"><strong>Système de revenus complet</strong><span>4 995 $</span><span>35 jours</span><span>3 versements</span></div>
+    <div class="project"><strong>Application mobile iOS et Android</strong><span>7 995 $</span><span>45 jours</span><span>4 versements</span></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  const cadBtn=document.getElementById('cur-cad'), usdBtn=document.getElementById('cur-usd');
+  function setCurrency(cur){
+    document.querySelectorAll('[data-cad]').forEach(el=>{el.textContent=cur==='usd'?el.dataset.usd:el.dataset.cad;});
+    cadBtn.setAttribute('aria-pressed',cur==='cad'?'true':'false');
+    usdBtn.setAttribute('aria-pressed',cur==='usd'?'true':'false');
+  }
+  cadBtn.addEventListener('click',()=>setCurrency('cad'));
+  usdBtn.addEventListener('click',()=>setCurrency('usd'));
+})();
+</script>
+{% endblock %}

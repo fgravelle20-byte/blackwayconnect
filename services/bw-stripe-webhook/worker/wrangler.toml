@@ -1,0 +1,17 @@
+name = "bw-stripe-webhook"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# Secrets (a definir avec : wrangler secret put <NOM>)
+#   STRIPE_SECRET_KEY
+#   STRIPE_WEBHOOK_SECRET
+#   HUBSPOT_TOKEN
+#   SLACK_WEBHOOK_URL   (optionnel)
+
+# Anti-rejeu optionnel — decommenter apres avoir cree le namespace :
+#   wrangler kv namespace create BW_EVENTS
+# [[kv_namespaces]]
+# binding = "BW_EVENTS"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

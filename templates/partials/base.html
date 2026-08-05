@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('fr') }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ canonical }}">
+  <link rel="alternate" hreflang="fr-CA" href="https://blackwayconnect.com/">
+  <link rel="alternate" hreflang="en-CA" href="https://blackwayconnect.com/en">
+  <link rel="alternate" hreflang="en-US" href="https://blackwayconnect.com/en">
+  <meta property="og:title" content="{{ og_title | default(title) }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ canonical }}">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ og_locale | default('fr_CA') }}">
+  <meta property="og:image" content="https://blackwayconnect.com/og.png">
+  <link rel="icon" href="https://blackwayconnect.com/blackwayconnect-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;650;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/site.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <a class="skip" href="#contenu-principal">Aller au contenu principal</a>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="{{ '/' if (lang | default('fr')) == 'fr' else '/en' }}">
+        BlackWay
+        <span>Connect</span>
+      </a>
+      {% if (lang | default('fr')) == 'fr' %}
+      <nav class="nav" aria-label="Principale">
+        <a href="/grow-hub">Grow Hub</a>
+        <a href="/services">Services</a>
+        <a href="/forfaits">Forfaits</a>
+        <a href="/equipe">Notre équipe</a>
+        <a href="/en">EN</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
+      </div>
+      {% else %}
+      <nav class="nav" aria-label="Primary">
+        <a href="/en/grow-hub">Grow Hub</a>
+        <a href="/en/services">Services</a>
+        <a href="/en">Pricing</a>
+        <a href="/equipe">Team</a>
+        <a href="/">FR</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-primary" href="#book">Book 15 minutes</a>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+  <main id="contenu-principal">
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>Solutions</h3>
+          <a href="/grow-hub">Grow Hub</a>
+          <a href="/services">Voir tous les services</a>
+          <a href="/forfaits">Forfaits par projet</a>
+          <a href="/portail-client">Portail client</a>
+        </div>
+        <div>
+          <h3>Entreprise</h3>
+          <a href="/equipe">Notre équipe</a>
+          <a href="/partenaires">Partenaires</a>
+          <a href="#reserver">Réserver 15 minutes</a>
+          <a href="/en">English</a>
+        </div>
+        <div>
+          <h3>Conditions</h3>
+          <a href="/legal/mentions-legales">Centre juridique</a>
+          <a href="/legal/confidentialite">Confidentialité</a>
+          <a href="/legal/cgu">Conditions</a>
+          <a href="/legal/msa">Paiements</a>
+        </div>
+        <div>
+          <h3>Coordonnées</h3>
+          <p><a href="mailto:serviceclient@blackwayconnect.com">serviceclient@blackwayconnect.com</a></p>
+          <p><a href="mailto:accounting@blackwayconnect.com">accounting@blackwayconnect.com</a></p>
+          <p><a href="tel:+19382015055">1-938-201-5055</a></p>
+          <p>313 Cuvillier Ouest, local 302<br>Longueuil, Québec, Canada · J4L 0B2</p>
+        </div>
+      </div>
+      <p class="legal-line">
+        © 2026 9495-5457 Québec inc., faisant affaire sous BlackWayConnect. Tous droits réservés.<br>
+        NEQ 1178930310 · TPS 75946 3623 RT0001
+      </p>
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

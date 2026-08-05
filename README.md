@@ -1,11 +1,15 @@
-# BlackWayConnect Engine v2.0
+# BlackWayConnect Engine
 
-Infrastructure de croissance numérique automatisée.
+Infrastructure de croissance numérique + site marketing (audit 5 août 2026).
 
 ## Status
-- Railway: LIVE
-- Pipeline: Stripe -> Asana -> SendGrid -> Twilio
-- ROI Engine: Active
-- Beauté Tout Pour Elle: Active
+- Railway / FastAPI : site corrigé (prix Grow Hub 299 / 749 / 1 495 $)
+- Services Node : `services/blackway-engine`, `services/bw-stripe-webhook`
+- Artefacts : `artifacts/` (grille, produits HubSpot, formulaire, contacts)
 
-*Master BlackWay is 100% Operational.*
+## Pages marketing
+- `/` — accueil corrigé (prix, HydroFix, FAQ, CAD/USD)
+- `/grow-hub`, `/forfaits`, `/services`, `/equipe`, `/en`
+
+## Action hébergeur
+`www.blackwayconnect.com` doit rediriger vers l’apex — voir `artifacts/AUDIT-HOMEPAGE-5-AOUT.md`.
