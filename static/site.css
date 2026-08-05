@@ -255,6 +255,8 @@ section { padding: var(--section-y) 0; }
 .plan .price span { font-size: .95rem; font-weight: 500; color: var(--muted); font-family: var(--sans); }
 .plan .promise, .plan .incl { color: var(--muted); font-size: .98rem; font-weight: 300; }
 .plan .btn { margin-top: auto; width: 100%; }
+.plan .cta-row { margin-top: auto; width: 100%; }
+.plan .cta-row .btn { margin-top: 0; width: auto; flex: 1; min-width: 7rem; }
 
 .banner-soft {
   margin-top: 1.5rem; padding: 1.25rem 1.4rem;
@@ -270,14 +272,15 @@ section { padding: var(--section-y) 0; }
 
 .projects { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .project {
-  display: grid; gap: .35rem 1.5rem; align-items: baseline;
+  display: grid; gap: .35rem 1.5rem; align-items: center;
   border-bottom: 1px solid var(--line); padding: 1.35rem 0;
 }
 @media (min-width: 720px) {
-  .project { grid-template-columns: 1.5fr .8fr .6fr 1fr; }
+  .project { grid-template-columns: 1.5fr .8fr .6fr 1fr auto; }
 }
 .project strong { font-family: var(--display); font-size: 1.15rem; }
 .project span { color: var(--muted); font-weight: 300; }
+.project .btn { width: auto; justify-self: start; white-space: nowrap; }
 
 /* Social proof */
 .cases { display: grid; gap: 1.5rem; }

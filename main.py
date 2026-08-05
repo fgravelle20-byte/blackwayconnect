@@ -92,19 +92,32 @@ def render(request: Request, name: str, **kwargs):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "mode": "homepage_audit_2026_08_05", "version": settings.VERSION}
+    return {
+        "status": "healthy",
+        "mode": "go_live_cloudflare_b",
+        "version": settings.VERSION,
+        "origin": "railway",
+        "preview": "https://blackwayconnect-production.up.railway.app",
+        "buy": "/api/v1/payments/plans",
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
+    # SEO PARTIE 4 — titre ≤ ~60 car. (mot-clé en tête) + meta ~155 car.
+    seo_title = "Grow Hub — CRM, site et automatisation IA | BlackWayConnect"
+    seo_description = (
+        "Site, CRM, soumissions, paiements et IA dans un seul système. "
+        "Forfaits dès 299 $/mois. Premier lead en 30 jours ou le mois suivant est offert."
+    )
     return render(
         request,
         "index.html",
         transparent_nav=True,
-        title="Grow Hub — CRM, site et automatisation IA | BlackWayConnect",
-        description="Site, CRM, soumissions, paiements et IA dans un seul système. Forfaits dès 299 $/mois. Premier lead en 30 jours ou le mois suivant est offert.",
+        title=seo_title,
+        description=seo_description,
         canonical="https://blackwayconnect.com/",
-        og_title="BlackWayConnect Grow Hub — Du lead au revenu",
+        og_title=seo_title,
     )
 
 
