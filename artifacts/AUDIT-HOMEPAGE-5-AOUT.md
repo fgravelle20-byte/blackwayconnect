@@ -21,7 +21,7 @@ Le site marketing LIVE (`blackwayconnect.com`) est actuellement servi par **Vine
 2. **Recoller les mêmes textes** sur le front Vinext (ou pointer le domaine vers ce service une fois validé).
 3. **Stripe** : créer de nouveaux Price objects aux montants corrigés (les `price_id` historiques restent pour reconnaître les anciens paiements).
 4. **HubSpot** : régénérer le jeton Private App et le coller dans Cloudflare Worker `blackway-pipe` (`HUBSPOT_TOKEN`).
-5. **HydroFix** : faire approuver le témoignage + obtenir soumissions/mois avant/après.
+5. **Preuve sociale** : HydroFix (approuvé) + AlphaVIT / alphavit.net (approuvé) + Beauté Tout Pour Elle.
 
 ## Vérification FR — chaînes interdites
 
