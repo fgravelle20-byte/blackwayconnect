@@ -18,14 +18,13 @@
   <link rel="icon" href="https://blackwayconnect.com/blackwayconnect-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;650;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/site.css">
   {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
   <a class="skip" href="#contenu-principal">Aller au contenu principal</a>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
+  <header class="topbar" id="topbar" data-transparent="{{ transparent_nav | default(false) }}">
+    <div class="topbar-inner">
       <a class="brand" href="{{ '/' if (lang | default('fr')) == 'fr' else '/en' }}">
         BlackWay
         <span>Connect</span>
@@ -39,18 +38,17 @@
         <a href="/en">EN</a>
       </nav>
       <div class="nav-cta">
-        <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
+        <a class="btn {% if transparent_nav %}btn-light{% else %}btn-dark{% endif %}" id="nav-cta" href="/#reserver">Réserver 15 minutes</a>
       </div>
       {% else %}
       <nav class="nav" aria-label="Primary">
-        <a href="/en/grow-hub">Grow Hub</a>
-        <a href="/en/services">Services</a>
-        <a href="/en">Pricing</a>
-        <a href="/equipe">Team</a>
+        <a href="/en">Grow Hub</a>
+        <a href="/services">Services</a>
+        <a href="/forfaits">Pricing</a>
         <a href="/">FR</a>
       </nav>
       <div class="nav-cta">
-        <a class="btn btn-primary" href="#book">Book 15 minutes</a>
+        <a class="btn btn-dark" href="/en#book">Book 15 minutes</a>
       </div>
       {% endif %}
     </div>
@@ -66,13 +64,11 @@
           <a href="/grow-hub">Grow Hub</a>
           <a href="/services">Voir tous les services</a>
           <a href="/forfaits">Forfaits par projet</a>
-          <a href="/portail-client">Portail client</a>
         </div>
         <div>
           <h3>Entreprise</h3>
           <a href="/equipe">Notre équipe</a>
-          <a href="/partenaires">Partenaires</a>
-          <a href="#reserver">Réserver 15 minutes</a>
+          <a href="/#reserver">Réserver 15 minutes</a>
           <a href="/en">English</a>
         </div>
         <div>
@@ -80,14 +76,13 @@
           <a href="/legal/mentions-legales">Centre juridique</a>
           <a href="/legal/confidentialite">Confidentialité</a>
           <a href="/legal/cgu">Conditions</a>
-          <a href="/legal/msa">Paiements</a>
         </div>
         <div>
           <h3>Coordonnées</h3>
           <p><a href="mailto:serviceclient@blackwayconnect.com">serviceclient@blackwayconnect.com</a></p>
           <p><a href="mailto:accounting@blackwayconnect.com">accounting@blackwayconnect.com</a></p>
           <p><a href="tel:+19382015055">1-938-201-5055</a></p>
-          <p>313 Cuvillier Ouest, local 302<br>Longueuil, Québec, Canada · J4L 0B2</p>
+          <p>313 Cuvillier Ouest, local 302<br>Longueuil, Québec · J4L 0B2</p>
         </div>
       </div>
       <p class="legal-line">
@@ -96,6 +91,24 @@
       </p>
     </div>
   </footer>
+  <script>
+  (function () {
+    var bar = document.getElementById('topbar');
+    if (!bar) return;
+    var transparent = bar.getAttribute('data-transparent') === 'True' || bar.getAttribute('data-transparent') === 'true';
+    var cta = document.getElementById('nav-cta');
+    function sync() {
+      var solid = !transparent || window.scrollY > 40;
+      bar.classList.toggle('is-solid', solid);
+      if (cta && transparent) {
+        cta.classList.toggle('btn-light', !solid);
+        cta.classList.toggle('btn-dark', solid);
+      }
+    }
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+  })();
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
