@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Tableau de bord CRM Grow Hub affichant 48 leads actifs et un pipeline de 184 000 $">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1a1a1a"/><stop offset="1" stop-color="#0a0a0a"/></linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="#050505"/>
+  <rect x="40" y="40" width="1120" height="640" rx="28" fill="url(#g)" stroke="#ffffff22"/>
+  <text x="80" y="100" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="22" letter-spacing="3">BLACKWAY GROW HUB</text>
+  <text x="80" y="180" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="64" font-weight="700">48</text>
+  <text x="80" y="220" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="24">LEADS ACTIFS</text>
+  <text x="220" y="180" fill="#8fbc8f" font-family="ui-sans-serif,system-ui" font-size="28">+18 %</text>
+  <text x="520" y="180" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="64" font-weight="700">184 k$</text>
+  <text x="520" y="220" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="24">PIPELINE</text>
+  <rect x="80" y="280" width="1040" height="90" rx="16" fill="#ffffff08" stroke="#ffffff18"/>
+  <text x="110" y="335" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="28">Système de revenus · 4 995 $ · Relancer maintenant</text>
+  <rect x="80" y="400" width="1040" height="90" rx="16" fill="#ffffff08" stroke="#ffffff18"/>
+  <text x="110" y="455" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="28">Refonte du site · Qualifié · Rencontre demain</text>
+  <rect x="80" y="520" width="1040" height="90" rx="16" fill="#ffffff08" stroke="#ffffff18"/>
+  <text x="110" y="575" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="28">Chatbot IA · Nouveau · Besoin à préciser</text>
+</svg>

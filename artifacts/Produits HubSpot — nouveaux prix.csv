@@ -1,0 +1,7 @@
+﻿Name,SKU,Unit price,Currency,Billing frequency,Description,bw_forfait
+Grow Hub Launch,GH-LAUNCH,299,CAD,monthly,"Un pipeline, formulaires, taches, 2 automatisations, hebergement et maintenance inclus.",grow_hub_launch
+Grow Hub Growth,GH-GROWTH,749,CAD,monthly,"Scoring, chatbot IA, soumissions, paiements, 8 automatisations, SEO mensuel.",grow_hub_growth
+Grow Hub Scale,GH-SCALE,1495,CAD,monthly,"Multi-pipelines, IA avancee, API, application mobile, support prioritaire, stratege dedie.",grow_hub_scale
+Site haute conversion,PRJ-SITE,1995,CAD,one-time,"Site de conversion, SEO de base, formulaires relies au Grow Hub. Livraison 21 jours.",website_lead_launch
+Systeme de revenus complet,PRJ-REVENU,4995,CAD,one-time,"Site, CRM, soumissions, paiements et automatisations relies. Livraison 35 jours.",revenue_system
+Application mobile iOS & Android,PRJ-APP,7995,CAD,one-time,Application mobile connectee au CRM et aux automatisations IA. Livraison 45 jours.,ai_scale

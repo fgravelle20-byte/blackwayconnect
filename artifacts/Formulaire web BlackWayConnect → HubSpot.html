@@ -1,0 +1,122 @@
+<!--
+  BlackWayConnect — formulaire de demande de soumission
+  À coller dans une page du site. Envoie directement dans HubSpot via le service blackway-pipe.
+  Change l'adresse dans ENDPOINT si tu passes de workers.dev à api.blackwayconnect.com.
+-->
+<form id="bw-form" class="bw-form" novalidate>
+  <h3>Obtenir une soumission</h3>
+
+  <label>Nom complet
+    <input name="nom_complet" required autocomplete="name" placeholder="Sylvain Lemieux">
+  </label>
+
+  <label>Courriel professionnel
+    <input name="email" type="email" required autocomplete="email" placeholder="vous@entreprise.com">
+  </label>
+
+  <label>Téléphone
+    <input name="telephone" type="tel" autocomplete="tel" placeholder="450 555-0142">
+  </label>
+
+  <label>Entreprise
+    <input name="entreprise" autocomplete="organization" placeholder="Transport Lemieux">
+  </label>
+
+  <label>Ce qui vous intéresse
+    <select name="forfait" required>
+      <option value="">Choisir…</option>
+      <option value="grow_hub_launch">Grow Hub Launch — 299 $/mois</option>
+      <option value="grow_hub_growth">Grow Hub Growth — 749 $/mois</option>
+      <option value="grow_hub_scale">Grow Hub Scale — 1 495 $/mois</option>
+      <option value="website_lead_launch">Site haute conversion — dès 1 995 $</option>
+      <option value="revenue_system">Système de revenus — 4 995 $</option>
+      <option value="ai_scale">Application mobile & IA — 7 995 $</option>
+    </select>
+  </label>
+
+  <label>Votre échéance
+    <select name="urgence">
+      <option value="normal">Dans les prochains mois</option>
+      <option value="elevee">Dès que possible</option>
+    </select>
+  </label>
+
+  <label>Votre besoin en une phrase
+    <textarea name="message" rows="3" placeholder="Ce que vous voulez régler"></textarea>
+  </label>
+
+  <!-- piège à robots : invisible pour un humain, rempli par les robots -->
+  <input name="site_web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+
+  <button type="submit">Envoyer ma demande</button>
+  <p id="bw-msg" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+(function () {
+  // Adresse du service. api.blackwayconnect.com est prêt, mais tant que la protection
+  // anti-robots de Cloudflare bloque les requêtes, garde l'adresse workers.dev.
+  const ENDPOINT = "https://blackway-pipe.f-gravelle20.workers.dev/lead";
+  const CLE = "";  // si tu définis BW_LEAD_KEY dans Cloudflare, mets la même valeur ici
+
+  const form = document.getElementById("bw-form");
+  const msg = document.getElementById("bw-msg");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (form.site_web.value) return;              // robot détecté, on ignore en silence
+
+    const bouton = form.querySelector("button");
+    bouton.disabled = true;
+    msg.textContent = "Envoi en cours…";
+
+    const nom = (form.nom_complet.value || "").trim().split(" ");
+    const donnees = {
+      email: form.email.value.trim(),
+      prenom: nom[0] || "",
+      nom: nom.slice(1).join(" "),
+      telephone: form.telephone.value.trim(),
+      entreprise: form.entreprise.value.trim(),
+      forfait: form.forfait.value,
+      urgence: form.urgence.value,
+      message: form.message.value.trim(),
+      source: "form_web",
+    };
+
+    try {
+      const entetes = { "Content-Type": "application/json" };
+      if (CLE) entetes["X-BW-Key"] = CLE;
+      const r = await fetch(ENDPOINT, { method: "POST", headers: entetes, body: JSON.stringify(donnees) });
+      const res = await r.json();
+      if (!r.ok) throw new Error(res.erreur || "erreur");
+
+      msg.textContent = "Merci. Votre demande est enregistrée — nous vous répondons en moins de 24 h ouvrables.";
+      form.reset();
+
+      // Conversion mesurable (Google Analytics 4, si présent)
+      if (window.gtag) gtag("event", "generate_lead", { forfait: donnees.forfait });
+    } catch (err) {
+      msg.textContent = "Envoi impossible. Écrivez-nous directement et nous prenons le relais.";
+      bouton.disabled = false;
+    }
+  });
+})();
+</script>
+
+<style>
+.bw-form { display: grid; gap: 14px; max-width: 520px; font-family: inherit; }
+.bw-form label { display: grid; gap: 6px; font-size: 14px; font-weight: 500; }
+.bw-form input, .bw-form select, .bw-form textarea {
+  padding: 12px 14px; border: 1px solid #d4d4d8; border-radius: 10px;
+  font: inherit; background: #fff; color: #18181b;
+}
+.bw-form input:focus, .bw-form select:focus, .bw-form textarea:focus {
+  outline: 2px solid #18181b; outline-offset: 1px; border-color: transparent;
+}
+.bw-form button {
+  padding: 14px 20px; border: 0; border-radius: 10px; background: #18181b; color: #fff;
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.bw-form button:disabled { opacity: .55; cursor: default; }
+.bw-form #bw-msg { margin: 0; font-size: 14px; color: #3f3f46; min-height: 20px; }
+</style>

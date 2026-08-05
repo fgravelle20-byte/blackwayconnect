@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Application mobile iOS et Android du CRM Grow Hub avec fiches de leads">
+  <rect width="1200" height="720" fill="#050505"/>
+  <rect x="430" y="40" width="340" height="640" rx="42" fill="#0a0a0a" stroke="#ffffff28"/>
+  <rect x="455" y="90" width="290" height="520" rx="18" fill="#111"/>
+  <text x="480" y="150" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="18">GROW HUB MOBILE</text>
+  <text x="480" y="210" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="32" font-weight="650">Leads</text>
+  <rect x="480" y="250" width="240" height="70" rx="12" fill="#1a1a1a"/>
+  <text x="500" y="295" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="20">HydroFix · Chaud</text>
+  <rect x="480" y="340" width="240" height="70" rx="12" fill="#1a1a1a"/>
+  <text x="500" y="385" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="20">Toitures Pro · Qualifié</text>
+  <rect x="480" y="430" width="240" height="70" rx="12" fill="#1a1a1a"/>
+  <text x="500" y="475" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="20">Garage Nord · Nouveau</text>
+  <text x="80" y="360" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="24">iOS &amp; Android</text>
+  <text x="80" y="410" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="36" font-weight="650">Fiches leads</text>
+  <text x="80" y="460" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="22">sur le terrain, en temps réel</text>
+</svg>

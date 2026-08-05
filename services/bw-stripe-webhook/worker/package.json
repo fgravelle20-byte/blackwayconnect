@@ -1,0 +1,12 @@
+{
+  "name": "bw-stripe-webhook-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test-worker.js"
+  },
+  "devDependencies": { "wrangler": "^3.78.0" }
+}

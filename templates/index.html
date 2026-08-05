@@ -1,207 +1,494 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master BlackWay — Dominez Votre Marché. Explosez Vos Ventes.</title>
-    <meta name="description" content="Architecture de Performance Opérationnelle Master BlackWay — Site + IA + CRM. 10 Forfaits disponibles.">
-    <style>
-        :root { --red:#ff0000; --red-deep:#990000; --bg:#0a0a0a; --card:#0e0e0e; --border:#1c1c1c; }
-        * { box-sizing:border-box; margin:0; padding:0; }
-        html { scroll-behavior:smooth; }
-        body { background-color:var(--bg); color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif; line-height:1.5; overflow-x:hidden; }
-        
-        .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
-        .hero-bg { position:absolute; inset:0; background-image:url('https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/d8c38634b078554ef7488166d922e09bb2b675d8f863ecfad7d5704604437575.jpeg'); background-size:cover; background-position:center 30%; filter:brightness(0.5); }
-        .hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.4), var(--bg)); }
-        .hero-content { position:relative; z-index:1; padding:40px 24px; max-width:900px; }
-        
-        .sigil { width:140px; height:140px; border-radius:50%; border:2px solid var(--red); margin-bottom:20px; box-shadow:0 0 30px rgba(255,0,0,0.5); }
-        .headline { font-size:clamp(2.1rem,5vw,4.5rem); font-weight:900; line-height:1.1; margin-bottom:20px; }
-        .red { color:var(--red); }
-        
-        .pricing-section { padding:100px 24px; max-width:1200px; margin:0 auto; }
-        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:25px; margin-top:50px; }
-        .price-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:35px; transition:0.3s; position:relative; text-align:left; }
-        .price-card:hover { border-color:var(--red); transform:translateY(-5px); }
-        .price-card.featured { border-color:var(--red); box-shadow:0 0 20px rgba(255,0,0,0.2); }
-        .plan-name { font-size:1.1rem; font-weight:800; margin-bottom:10px; color:#ccc; text-transform:uppercase; letter-spacing:1px; }
-        .plan-price { font-size:2.8rem; font-weight:900; color:var(--red); margin-bottom:20px; }
-        
-        .btn-empire { background:#000; color:var(--red); border:2px solid var(--red); padding:18px 30px; border-radius:100px; font-weight:800; cursor:pointer; text-transform:uppercase; transition:0.3s; width:100%; font-size:0.9rem; }
-        .btn-empire:hover { background:var(--red); color:#fff; }
-        
-        .audit-section { padding:80px 24px; max-width:900px; margin:100px auto; background:#0e0e0e; border-radius:24px; border:1px solid #1c1c1c; text-align:center; }
-        .audit-title { font-size:2.2rem; font-weight:900; color:var(--red); margin-bottom:15px; }
-        .input-field { width:100%; background:#111; border:1px solid #333; border-radius:12px; padding:18px; color:#fff; margin-bottom:20px; font-size:1rem; }
-        .input-field:focus { border-color:var(--red); outline:none; }
-        
-        #audit-result { display:none; margin-top:30px; padding:30px; background:#050505; border-left:5px solid var(--red); border-radius:10px; white-space:pre-line; text-align:left; color:#ccc; line-height:1.7; }
+{% extends "partials/base.html" %}
 
-        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:1000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(10px); }
-        .modal-overlay.active { display:flex; }
-        .modal-box { background:#0a0a0a; border:1px solid var(--red); padding:50px; border-radius:24px; width:100%; max-width:480px; position:relative; text-align:center; }
-        .modal-close { position:absolute; top:20px; right:20px; background:none; border:none; color:#444; font-size:24px; cursor:pointer; }
-        
-        footer { padding:80px 24px; border-top:1px solid var(--border); text-align:center; }
-        .legal-links { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-bottom:40px; }
-        .legal-links a { color:#666; text-decoration:none; font-size:13px; transition:0.3s; }
-        .legal-links a:hover { color:var(--red); }
-        
-        .feat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:30px; padding:0 24px 100px; max-width:1200px; margin:0 auto; }
-        .feat-card { background:var(--card); border:1px solid var(--border); padding:40px; border-radius:20px; }
-        .feat-card h3 { color:var(--red); margin-bottom:15px; font-weight:800; }
-    </style>
-</head>
-<body>
-
-<section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <img src="https://static.prod-images.emergentagent.com/jobs/4a9e20f0-0bee-4100-8e85-5d61c6b2bbce/images/7b496bb305b9e7624997b592048489b410ed0d90256871c1b76570fab20239fc.jpeg" class="sigil">
-        <h1 class="headline">DOMINEZ VOTRE MARCHÉ.<br><span class="red">EXPLOSEZ VOS VENTES.</span></h1>
-        <p style="color:#aaa; font-size:1.2rem; margin-bottom:40px;">L'Architecture de Performance Opérationnelle Master BlackWay.</p>
-        <button class="btn-empire" style="max-width:400px;" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">DÉCOUVRIR NOS 10 FORFAITS</button>
-    </div>
-</section>
-
-<section class="pricing-section" id="pricing">
-    <h2 style="text-align:center; font-size:3rem; font-weight:900; margin-bottom:60px;">NOS <span class="red">10 FORFAITS</span> DE PRESTIGE</h2>
-    <div class="pricing-grid">
-        <div class="price-card featured">
-            <div class="plan-name">Site & Présence (Blitz)</div>
-            <div class="plan-price">1 495 $</div>
-            <p style="color:#666; margin-bottom:25px;">Site Élite + SEO Google. Lancement immédiat.</p>
-            <button class="btn-empire" onclick="openModal('site_blitz', '1 495 $')">ACTIVER MON EMPIRE</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">IA Ghost Performance</div>
-            <div class="plan-price">4 995 $</div>
-            <p style="color:#666; margin-bottom:25px;">Qualification et relance automatique 24/7.</p>
-            <button class="btn-empire" onclick="openModal('ia_performance', '4 995 $')">ACTIVER</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">CRM Elite & Conversion</div>
-            <div class="plan-price">6 995 $</div>
-            <p style="color:#666; margin-bottom:25px;">Pipeline de vente Master et gestion client.</p>
-            <button class="btn-empire" onclick="openModal('crm_elite', '6 995 $')">ACTIVER</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">Site (Mensuel)</div>
-            <div class="plan-price">250 $<span style="font-size:1rem; color:#444;">/mois</span></div>
-            <button class="btn-empire" onclick="openModal('site_mensuel', '250 $')">ACTIVER</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">Site (Annuel)</div>
-            <div class="plan-price">3 000 $</div>
-            <button class="btn-empire" onclick="openModal('site_annuel', '3 000 $')">ACTIVER</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">IA Ghost (Annuel)</div>
-            <div class="plan-price">15 000 $</div>
-            <button class="btn-empire" onclick="openModal('ia_annuel', '15 000 $')">ACTIVER</button>
-        </div>
-        <div class="price-card">
-            <div class="plan-name">CRM Elite (Annuel)</div>
-            <div class="plan-price">9 000 $</div>
-            <button class="btn-empire" onclick="openModal('crm_annuel', '9 000 $')">ACTIVER</button>
-        </div>
-        <div class="price-card" style="border-color:#333;">
-            <div class="plan-name">UNEXA Pro</div>
-            <div class="plan-price">499 $<span style="font-size:1rem; color:#444;">/mois</span></div>
-            <button class="btn-empire" onclick="openModal('unexa_pro', '499 $')">ACTIVER</button>
-        </div>
-        <div class="price-card" style="border-color:#333;">
-            <div class="plan-name">UNEXA Business</div>
-            <div class="plan-price">999 $<span style="font-size:1rem; color:#444;">/mois</span></div>
-            <button class="btn-empire" onclick="openModal('unexa_business', '999 $')">ACTIVER</button>
-        </div>
-        <div class="price-card" style="border-color:#333;">
-            <div class="plan-name">UNEXA Starter</div>
-            <div class="plan-price">199 $<span style="font-size:1rem; color:#444;">/mois</span></div>
-            <button class="btn-empire" onclick="openModal('unexa_starter', '199 $')">ACTIVER</button>
-        </div>
-    </div>
-</section>
-
-<section class="audit-section" id="audit">
-    <h2 class="audit-title">ANALYSTE IA "GHOST"</h2>
-    <p style="color:#888; margin-bottom:40px;">Découvrez où votre entreprise fuit du profit en 60 secondes.</p>
-    <input type="text" id="audit-company" class="input-field" placeholder="Nom de l'entreprise">
-    <input type="text" id="audit-industry" class="input-field" placeholder="Secteur d'activité (Ex: Transport, Santé...)">
-    <button class="btn-empire" id="btn-run-audit" onclick="runAudit()">LANCER LE DIAGNOSTIC PRESTIGE</button>
-    <div id="audit-result"></div>
-</section>
-
-<div class="feat-grid">
-    <div class="feat-card"><h3>🌐 Présence Élite</h3><p>Design haute couture optimisé pour capturer chaque prospect.</p></div>
-    <div class="feat-card"><h3>🤖 Cerveau IA</h3><p>Automatisation intelligente qui travaille pendant que vous dormez.</p></div>
-    <div class="feat-card"><h3>📊 Structure Master</h3><p>Gérez vos revenus et vos leads avec une précision chirurgicale.</p></div>
-</div>
-
-<footer>
-    <div class="legal-links">
-        <a href="/legal/mentions-legales">Mentions Légales</a>
-        <a href="/legal/cgu">CGU</a>
-        <a href="/legal/confidentialite">Confidentialité</a>
-        <a href="/legal/cookies">Cookies</a>
-        <a href="/legal/msa">MSA / CGV</a>
-        <a href="/legal/sla">SLA</a>
-        <a href="/legal/aup">AUP</a>
-    </div>
-    <p style="color:#444; font-weight:800;">BlackWayConnect Inc. — Domination Digitale & IA</p>
-    <p style="color:#222; font-size:12px; margin-top:10px;">1250 Blvd. René-Lévesque Ouest, Montréal, QC H3B 4W8, Canada</p>
-</footer>
-
-<div class="modal-overlay" id="modal">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal()">✕</button>
-        <h2 style="margin-bottom:10px;">ACTIVER MON EMPIRE</h2>
-        <p id="modal-plan-display" style="color:var(--red); font-weight:800; margin-bottom:30px; font-size:1.2rem;"></p>
-        <input type="email" id="email-in" class="input-field" placeholder="votre@email.com">
-        <button class="btn-empire" onclick="processPayment()">PAYER ET DÉPLOYER</button>
-    </div>
-</div>
-
-<script>
-let selectedPlan = '';
-function openModal(plan, price){ 
-    selectedPlan = plan; 
-    document.getElementById('modal-plan-display').innerText = plan.replace(/_/g,' ').toUpperCase() + ' — ' + price;
-    document.getElementById('modal').classList.add('active'); 
-}
-function closeModal(){ document.getElementById('modal').classList.remove('active'); }
-
-async function runAudit() {
-    const company = document.getElementById('audit-company').value;
-    const industry = document.getElementById('audit-industry').value;
-    const btn = document.getElementById('btn-run-audit');
-    const res = document.getElementById('audit-result');
-    if(!company) return alert('Nom de l\'entreprise requis');
-    btn.innerText = 'ANALYSE GHOST EN COURS...';
-    res.style.display = 'block';
-    res.innerText = 'L\'IA Ghost analyse votre structure...';
-    try {
-        const response = await fetch('/api/v1/audit/generate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({company_name: company, industry: industry}) });
-        const data = await response.json(); res.innerText = data.report;
-        btn.innerText = 'DIAGNOSTIC TERMINÉ';
-    } catch (e) { res.innerText = 'Erreur. Réessayez.'; btn.innerText = 'RELANCER'; }
-}
-
-async function processPayment(){
-    const email = document.getElementById('email-in').value.trim();
-    if(!email||!email.includes('@')) return alert('Email valide requis');
-    try {
-        const pass = 'bw' + btoa(email).replace(/[^a-zA-Z0-9]/g,'').slice(0,10);
-        await fetch('/api/v1/auth/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass, role:'client'}) });
-        const r2 = await fetch('/api/v1/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:email, password:pass}) });
-        const d2 = await r2.json();
-        const mode = (selectedPlan.includes('annuel') || selectedPlan.includes('mensuel') || selectedPlan.includes('unexa')) ? 'subscription' : 'payment';
-        const r3 = await fetch(`/api/v1/payments/checkout?plan_id=${selectedPlan}&mode=${mode}`,{ method:'POST', headers:{'Authorization':'Bearer '+${d2.access_token}} });
-        const d3 = await r3.json(); if(d3.url) window.location.href = d3.url;
-    } catch(e) { alert('Erreur redirection'); }
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "BlackWayConnect",
+  "legalName": "9495-5457 Québec inc.",
+  "url": "https://blackwayconnect.com",
+  "logo": "https://blackwayconnect.com/blackwayconnect-icon.png",
+  "email": "serviceclient@blackwayconnect.com",
+  "telephone": "+1-938-201-5055",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "313 Cuvillier Ouest, local 302",
+    "addressLocality": "Longueuil",
+    "addressRegion": "QC",
+    "postalCode": "J4L 0B2",
+    "addressCountry": "CA"
+  },
+  "taxID": "75946 3623 RT0001",
+  "identifier": "NEQ 1178930310"
 }
 </script>
-</body>
-</html>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "C'est plus cher que les autres. Pourquoi ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations — quatre outils qui coûteraient plus cher séparément, sans personne pour les relier."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Puis-je le faire moi-même avec des outils gratuits ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Le mois de travail que ça demande vaut plus que l'abonnement annuel, et le système s'arrête le jour où vous manquez de temps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Et si ça ne fonctionne pas pour mon secteur ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Premier lead capté dans les 30 jours, ou le mois suivant est offert. Aucun contrat à long terme sur le mensuel."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Suis-je prisonnier de votre plateforme ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Vos données vous appartiennent et sont exportables en tout temps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Y a-t-il des frais de démarrage ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Frais de démarrage à 0 $ sur engagement de 12 mois. Sur le mensuel, vous pouvez annuler en tout temps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Les prix sont-ils en CAD et en USD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Utilisez le sélecteur de devise sur la page. Exemple : Grow Hub Growth à 749 $ CAD / mois correspond à 579 $ USD / mois."
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="hero wrap">
+  <div class="reveal">
+    <p class="eyebrow">Plateforme lead-to-revenue · Canada + États-Unis</p>
+    <h1>Transformez chaque lead en prochaine action rentable.</h1>
+    <p class="lede">BlackWayConnect Grow Hub réunit votre site, vos prospects, votre CRM, vos soumissions, vos paiements et vos automatisations IA dans un seul système commercial bilingue.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
+      <a class="btn" href="#pricing">Voir les prix</a>
+    </div>
+    <div class="trust-row">
+      <span><b>Sans contrat à long terme</b></span>
+      <span>Accompagnement humain</span>
+      <span>FR + EN</span>
+      <span>Données et actions reliées</span>
+    </div>
+  </div>
+
+  <aside class="demo-panel reveal reveal-delay-1" aria-label="Exemple d'affichage du Grow Hub">
+    <div class="demo-head">
+      <span>BlackWay Grow Hub · Centre de commande</span>
+      <span class="live-dot">● LIVE</span>
+    </div>
+    <div class="demo-grid">
+      <div class="metric">
+        <small>Leads actifs</small>
+        <strong>48</strong>
+        <span class="delta">+18 %</span>
+      </div>
+      <div class="metric">
+        <small>Pipeline</small>
+        <strong>184 k$</strong>
+        <small>Potentiel</small>
+      </div>
+      <div class="lead-row">
+        <div class="row"><strong>Système de revenus</strong><span>4 995 $</span></div>
+        <small>Décideur · Relancer maintenant</small>
+      </div>
+      <div class="lead-row">
+        <div class="row"><strong>Refonte du site</strong><span>Qualifié</span></div>
+        <small>Rencontre demain</small>
+      </div>
+      <div class="lead-row">
+        <div class="row"><strong>Chatbot IA</strong><span>Nouveau</span></div>
+        <small>Besoin à préciser</small>
+      </div>
+    </div>
+    <p class="demo-note">Exemple d'affichage</p>
+  </aside>
+</section>
+
+<section class="wrap">
+  <div class="section-head reveal">
+    <p class="eyebrow">BlackWayConnect Grow Hub</p>
+    <h2>De la première visite au revenu récurrent, rien ne se perd.</h2>
+    <p>Le Grow Hub donne à votre équipe une prochaine action claire pour chaque occasion — et automatise tout ce qui ne nécessite pas une décision humaine.</p>
+  </div>
+  <div class="steps">
+    <article class="step">
+      <div class="num">01</div>
+      <h3>Capturer</h3>
+      <p>Site, formulaires, chatbot et campagnes alimentent un seul dossier prospect.</p>
+    </article>
+    <article class="step">
+      <div class="num">02</div>
+      <h3>Qualifier</h3>
+      <p>Score, urgence, budget, source et décideur déterminent la priorité réelle.</p>
+    </article>
+    <article class="step">
+      <div class="num">03</div>
+      <h3>Convertir</h3>
+      <p>Pipeline, relances, rendez-vous, soumissions et paiements avancent ensemble.</p>
+    </article>
+    <article class="step">
+      <div class="num">04</div>
+      <h3>Développer</h3>
+      <p>Maintenance, avis, recommandations et offres complémentaires augmentent la valeur client.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" id="pricing">
+  <div class="section-head">
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between">
+      <p class="eyebrow" style="margin:0">Quatre niveaux · une seule plateforme</p>
+      <div class="currency-toggle" role="group" aria-label="Devise">
+        <button type="button" id="cur-cad" aria-pressed="true">CAD</button>
+        <button type="button" id="cur-usd" aria-pressed="false">USD</button>
+      </div>
+    </div>
+    <h2>Commencez simplement. Grandissez sans changer de système.</h2>
+    <p>Des tarifs transparents en CAD et en USD, deux mois offerts au paiement annuel, et aucun contrat à long terme sur le mensuel.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <article class="plan" data-plan="launch">
+      <h3>Launch</h3>
+      <p class="price"><span data-cad="299 $ CAD" data-usd="229 $ USD">299 $ CAD</span> <span>/ mois</span></p>
+      <p class="promise">Pour transformer vos premières demandes en pipeline organisé.</p>
+      <p class="incl">1 pipeline · formulaires · tâches · 2 automatisations · hébergement et maintenance</p>
+      <a class="btn" href="/grow-hub#launch">Voir le forfait complet</a>
+    </article>
+    <article class="plan featured" data-plan="growth">
+      <span class="badge">Le plus choisi</span>
+      <h3>Growth</h3>
+      <p class="price"><span data-cad="749 $ CAD" data-usd="579 $ USD">749 $ CAD</span> <span>/ mois</span></p>
+      <p class="promise">Le moteur complet pour vendre, relancer et mesurer.</p>
+      <p class="incl">Scoring · chatbot IA · soumissions · paiements · 8 automatisations · SEO mensuel</p>
+      <a class="btn btn-primary" href="/grow-hub#growth">Voir le forfait complet</a>
+    </article>
+    <article class="plan" data-plan="scale">
+      <h3>Scale</h3>
+      <p class="price"><span data-cad="1 495 $ CAD" data-usd="1 149 $ USD">1 495 $ CAD</span> <span>/ mois</span></p>
+      <p class="promise">Pour plusieurs équipes, marchés ou parcours commerciaux.</p>
+      <p class="incl">Multi-pipelines · IA avancée · API · application mobile · support prioritaire · stratège dédié</p>
+      <a class="btn" href="/grow-hub#scale">Voir le forfait complet</a>
+    </article>
+    <article class="plan" data-plan="enterprise">
+      <h3>Entreprise</h3>
+      <p class="price">Sur mesure</p>
+      <p class="promise">Volume élevé, multi-succursales, intégrations aux systèmes existants.</p>
+      <p class="incl">Architecture dédiée · SLA · développement continu</p>
+      <a class="btn" href="#reserver">Parler à un stratège</a>
+    </article>
+  </div>
+
+  <div class="banner-soft">
+    Deux mois offerts au paiement annuel · Frais de démarrage à 0 $ sur engagement de 12 mois · Annulable en tout temps sur le mensuel, vos données vous appartiennent.
+  </div>
+  <div class="guarantee">
+    <strong>Notre garantie :</strong> votre premier lead capté dans les 30 jours, ou le mois suivant est offert.
+  </div>
+</section>
+
+<section class="wrap" id="projets">
+  <div class="section-head">
+    <p class="eyebrow">Projets</p>
+    <h2>Activation claire. Moteur mensuel qui continue de vendre.</h2>
+    <p>Le prix de projet couvre la conception et l’activation ; Grow Hub assure ensuite le pipeline et la continuité commerciale.</p>
+  </div>
+  <div class="projects">
+    <div class="project">
+      <strong>Site haute conversion</strong>
+      <span>à partir de 1 995 $</span>
+      <span>21 jours</span>
+      <span>3 versements sans frais</span>
+    </div>
+    <div class="project">
+      <strong>Système de revenus complet</strong>
+      <span>4 995 $</span>
+      <span>35 jours</span>
+      <span>3 versements sans frais</span>
+    </div>
+    <div class="project">
+      <strong>Application mobile iOS et Android</strong>
+      <span>7 995 $</span>
+      <span>45 jours</span>
+      <span>4 versements sans frais</span>
+    </div>
+  </div>
+  <div class="cta-row" style="margin-top:1.5rem">
+    <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
+    <a class="btn" href="/forfaits">Voir les prix</a>
+  </div>
+</section>
+
+<section class="wrap" id="hydrofix">
+  <div class="section-head">
+    <p class="eyebrow">Preuve sociale</p>
+    <h2>Ils vendent déjà avec le Grow Hub</h2>
+  </div>
+  <article class="case">
+    <div>
+      <h3>Les Services Piscines HydroFix inc. — Longueuil, Rive-Sud et Grand Montréal</h3>
+      <p style="color:var(--muted);margin:1rem 0">
+        Une entreprise de services saisonniers avec plus de dix ans de métier, qui perdait des demandes chaque printemps faute d’un système pour les capter et les trier.
+      </p>
+      <p style="color:var(--muted);margin-bottom:1rem">
+        Aujourd’hui : soumission gratuite en ligne, assistant virtuel qui répond sur-le-champ, réponse garantie en moins de 12 heures, service 7 jours sur 7, galerie de réalisations et témoignages clients. Le tout sur quinze municipalités desservies.
+      </p>
+      <p>
+        Résultat annoncé publiquement sur leur site : réponse à toute demande en 12 heures maximum, et une promotion saisonnière structurée — réservation de l’ouverture avec la fermeture à 20 % de rabais.
+      </p>
+      <p style="margin-top:1rem"><a class="btn" href="https://www.piscineshydrofix.com" rel="noopener" target="_blank">Voir le site →</a></p>
+    </div>
+    <div>
+      <p class="eyebrow">Témoignage — à faire approuver par le client</p>
+      <blockquote>
+        « Avant, les appels se perdaient entre deux contrats sur le terrain. Maintenant chaque demande entre dans le système, personne ne l’oublie, et on répond en moins de 12 heures. »
+      </blockquote>
+      <cite>— Propriétaire, Les Services Piscines HydroFix inc.</cite>
+    </div>
+  </article>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">Un seul partenaire de croissance</p>
+    <h2>Une plateforme centrale. Une équipe pour tout construire autour.</h2>
+    <p>Ajoutez seulement ce qui augmente vos revenus, réduit vos coûts ou améliore l’expérience client.</p>
+  </div>
+  <div class="steps">
+    <article class="step">
+      <div class="num">01</div>
+      <h3>Sites haute conversion</h3>
+      <p>Pages, SEO et formulaires reliés au Grow Hub.</p>
+    </article>
+    <article class="step">
+      <div class="num">02</div>
+      <h3>Applications web et mobile</h3>
+      <p>Portails, SaaS, iOS et Android connectés aux mêmes données.</p>
+    </article>
+    <article class="step">
+      <div class="num">03</div>
+      <h3>Agents IA et automatisations</h3>
+      <p>Chat, voix, réceptionniste IA, routage, suivis et opérations supervisées.</p>
+    </article>
+    <article class="step">
+      <div class="num">04</div>
+      <h3>SEO et acquisition</h3>
+      <p>Visibilité locale, contenu, réputation et mesure des sources.</p>
+    </article>
+  </div>
+  <div class="cta-row" style="margin-top:1.5rem">
+    <a class="btn" href="/services">Voir tous les services</a>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">Canada · United States</p>
+    <h2>Conçu au Québec. Prêt pour deux marchés.</h2>
+    <p>Une seule architecture pour servir des clients francophones et anglophones, avec parcours, devises, contenus et règles commerciales adaptés au Canada et aux États-Unis.</p>
+  </div>
+  <div class="steps">
+    <article class="step"><h3>Expérience française et anglaise</h3></article>
+    <article class="step"><h3>Tarifs CAD et USD</h3></article>
+    <article class="step"><h3>Parcours mobiles rapides</h3></article>
+    <article class="step"><h3>Soumissions et paiements structurés</h3></article>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">Produit en images</p>
+    <h2>Ce que votre équipe voit chaque jour.</h2>
+  </div>
+  <div class="visual-grid">
+    <figure class="visual">
+      <img src="/static/visuels/blackway-visuel-1.svg" width="1200" height="720" loading="lazy"
+           alt="Tableau de bord CRM Grow Hub affichant 48 leads actifs et un pipeline de 184 000 $">
+      <figcaption>Tableau de bord — leads et pipeline</figcaption>
+    </figure>
+    <figure class="visual">
+      <img src="/static/visuels/blackway-visuel-2.svg" width="1200" height="720" loading="lazy"
+           alt="Parcours automatisé du visiteur au paiement en cinq étapes avec le Grow Hub">
+      <figcaption>Parcours automatisé en cinq étapes</figcaption>
+    </figure>
+    <figure class="visual">
+      <img src="/static/visuels/blackway-visuel-3.svg" width="1200" height="720" loading="lazy"
+           alt="Soumission Grow Hub Growth à 749 $ par mois avec paiement sécurisé Stripe">
+      <figcaption>Soumission Growth — 749 $ / mois</figcaption>
+    </figure>
+    <figure class="visual">
+      <img src="/static/visuels/blackway-visuel-4.svg" width="1200" height="720" loading="lazy"
+           alt="Application mobile iOS et Android du CRM Grow Hub avec fiches de leads">
+      <figcaption>Application mobile CRM</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="wrap" id="faq">
+  <div class="section-head">
+    <p class="eyebrow">FAQ</p>
+    <h2>Les objections, avant qu’elles freinent la décision.</h2>
+  </div>
+  <div class="faq">
+    <details>
+      <summary>C’est plus cher que les autres. Pourquoi&nbsp;?</summary>
+      <p>Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations — quatre outils qui coûteraient plus cher séparément, sans personne pour les relier.</p>
+    </details>
+    <details>
+      <summary>Puis-je le faire moi-même avec des outils gratuits&nbsp;?</summary>
+      <p>Oui. Le mois de travail que ça demande vaut plus que l’abonnement annuel, et le système s’arrête le jour où vous manquez de temps.</p>
+    </details>
+    <details>
+      <summary>Et si ça ne fonctionne pas pour mon secteur&nbsp;?</summary>
+      <p>Premier lead capté dans les 30 jours, ou le mois suivant est offert. Aucun contrat à long terme sur le mensuel.</p>
+    </details>
+    <details>
+      <summary>Suis-je prisonnier de votre plateforme&nbsp;?</summary>
+      <p>Non. Vos données vous appartiennent et sont exportables en tout temps.</p>
+    </details>
+    <details>
+      <summary>Y a-t-il des frais de démarrage&nbsp;?</summary>
+      <p>Frais de démarrage à 0 $ sur engagement de 12 mois. Sur le mensuel, vous pouvez annuler en tout temps.</p>
+    </details>
+    <details>
+      <summary>Comment réserver 15 minutes&nbsp;?</summary>
+      <p>Utilisez le formulaire ci-dessous ou écrivez à serviceclient@blackwayconnect.com. Nous confirmons un créneau HubSpot Meetings en moins de 24 h ouvrables.</p>
+    </details>
+  </div>
+</section>
+
+<section class="wrap" id="reserver">
+  <div class="section-head">
+    <p class="eyebrow">Stratégie du système de leads</p>
+    <h2>Combien de revenus perdez-vous entre un nouveau lead et la prochaine relance&nbsp;?</h2>
+    <p>Nous analysons votre parcours actuel et identifions les trois fuites de conversion les plus coûteuses avant de définir la solution appropriée.</p>
+  </div>
+  <div class="cta-row" style="margin-bottom:1.5rem">
+    <a class="btn btn-primary" href="mailto:serviceclient@blackwayconnect.com?subject=R%C3%A9server%2015%20minutes%20Grow%20Hub">Réserver 15 minutes</a>
+    <a class="btn" href="#pricing">Voir les prix</a>
+  </div>
+
+  <form id="bw-form" class="bw-form" novalidate>
+    <h3>Obtenir une soumission</h3>
+    <label>Nom complet
+      <input name="nom_complet" required autocomplete="name" placeholder="Sylvain Lemieux">
+    </label>
+    <label>Courriel professionnel
+      <input name="email" type="email" required autocomplete="email" placeholder="vous@entreprise.com">
+    </label>
+    <label>Téléphone
+      <input name="telephone" type="tel" autocomplete="tel" placeholder="450 555-0142">
+    </label>
+    <label>Entreprise
+      <input name="entreprise" autocomplete="organization" placeholder="Transport Lemieux">
+    </label>
+    <label>Ce qui vous intéresse
+      <select name="forfait" required>
+        <option value="">Choisir…</option>
+        <option value="grow_hub_launch">Grow Hub Launch — 299 $/mois</option>
+        <option value="grow_hub_growth">Grow Hub Growth — 749 $/mois</option>
+        <option value="grow_hub_scale">Grow Hub Scale — 1 495 $/mois</option>
+        <option value="website_lead_launch">Site haute conversion — dès 1 995 $</option>
+        <option value="revenue_system">Système de revenus — 4 995 $</option>
+        <option value="ai_scale">Application mobile et IA — 7 995 $</option>
+      </select>
+    </label>
+    <label>Votre échéance
+      <select name="urgence">
+        <option value="normal">Dans les prochains mois</option>
+        <option value="elevee">Dès que possible</option>
+      </select>
+    </label>
+    <label>Votre besoin en une phrase
+      <textarea name="message" rows="3" placeholder="Ce que vous voulez régler"></textarea>
+    </label>
+    <input name="site_web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+    <button class="btn btn-primary" type="submit">Envoyer ma demande</button>
+    <p id="bw-msg" role="status" aria-live="polite"></p>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const cadBtn = document.getElementById('cur-cad');
+  const usdBtn = document.getElementById('cur-usd');
+  function setCurrency(cur) {
+    document.querySelectorAll('[data-cad]').forEach((el) => {
+      el.textContent = cur === 'usd' ? el.dataset.usd : el.dataset.cad;
+    });
+    cadBtn.setAttribute('aria-pressed', cur === 'cad' ? 'true' : 'false');
+    usdBtn.setAttribute('aria-pressed', cur === 'usd' ? 'true' : 'false');
+  }
+  cadBtn.addEventListener('click', () => setCurrency('cad'));
+  usdBtn.addEventListener('click', () => setCurrency('usd'));
+
+  const ENDPOINT = 'https://blackway-pipe.f-gravelle20.workers.dev/lead';
+  const form = document.getElementById('bw-form');
+  const msg = document.getElementById('bw-msg');
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (form.site_web.value) return;
+    const bouton = form.querySelector('button[type="submit"]');
+    bouton.disabled = true;
+    msg.textContent = 'Envoi en cours…';
+    const nom = (form.nom_complet.value || '').trim().split(' ');
+    const donnees = {
+      email: form.email.value.trim(),
+      prenom: nom[0] || '',
+      nom: nom.slice(1).join(' '),
+      telephone: form.telephone.value.trim(),
+      entreprise: form.entreprise.value.trim(),
+      forfait: form.forfait.value,
+      urgence: form.urgence.value,
+      message: form.message.value.trim(),
+      source: 'form_web',
+    };
+    try {
+      const r = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(donnees),
+      });
+      const res = await r.json();
+      if (!r.ok) throw new Error(res.erreur || 'erreur');
+      msg.textContent = 'Merci. Votre demande est enregistrée — nous vous répondons en moins de 24 h ouvrables.';
+      form.reset();
+      if (window.gtag) gtag('event', 'generate_lead', { forfait: donnees.forfait });
+    } catch (err) {
+      msg.textContent = 'Envoi impossible. Écrivez-nous directement à serviceclient@blackwayconnect.com.';
+      bouton.disabled = false;
+    }
+  });
+})();
+</script>
+{% endblock %}

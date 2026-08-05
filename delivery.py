@@ -30,10 +30,89 @@ ASANA_WORKSPACE_GID = os.environ.get("ASANA_WORKSPACE_GID", "1216895175256768")
 ASANA_DELIVERY_PROJECT_GID = os.environ.get("ASANA_DELIVERY_PROJECT_GID", "1216895175895720")
 ASANA_BASE_URL = "https://app.asana.com/api/1.0"
 
-# Mapping des forfaits vers des templates de livraison
+# Mapping des forfaits vers des templates de livraison (grille 4 août 2026)
 DELIVERY_TEMPLATES = {
+    "website_lead_launch": {
+        "name": "Site haute conversion",
+        "checklist": [
+            "Appel découverte avec le client (30 min)",
+            "Collecte du contenu (textes, images, logo)",
+            "Design de la maquette haute conversion",
+            "Développement du site web",
+            "Formulaires reliés au Grow Hub",
+            "Optimisation SEO de base",
+            "Formation client (portail + analytics)",
+            "Mise en ligne et validation finale",
+        ],
+        "delivery_days": 21,
+    },
+    "revenue_system": {
+        "name": "Système de revenus complet",
+        "checklist": [
+            "Appel stratégique avec le client (60 min)",
+            "Audit de la présence numérique actuelle",
+            "Configuration CRM et pipeline de ventes",
+            "Site + soumissions + paiements reliés",
+            "Mise en place du suivi de leads automatisé",
+            "Intégration email marketing (séquences)",
+            "Configuration des rapports et KPIs",
+            "Formation équipe client",
+            "Test end-to-end du funnel",
+            "Lancement et optimisation initiale",
+        ],
+        "delivery_days": 35,
+    },
+    "ai_scale": {
+        "name": "Application mobile iOS & Android",
+        "checklist": [
+            "Appel architecture avec le client (90 min)",
+            "Cartographie des parcours mobiles",
+            "Design UX iOS & Android",
+            "Développement application connectée CRM",
+            "Automatisations IA reliées",
+            "Tests et QA des scénarios",
+            "Publication stores / déploiement",
+            "Formation avancée de l'équipe",
+            "Monitoring et optimisation post-lancement",
+        ],
+        "delivery_days": 45,
+    },
+    "grow_hub_launch": {
+        "name": "Grow Hub Launch",
+        "checklist": [
+            "Onboarding Grow Hub Launch",
+            "Configuration 1 pipeline + formulaires",
+            "Tâches et 2 automatisations",
+            "Hébergement et maintenance",
+            "Formation de démarrage",
+        ],
+        "delivery_days": 7,
+    },
+    "grow_hub_growth": {
+        "name": "Grow Hub Growth",
+        "checklist": [
+            "Onboarding Grow Hub Growth",
+            "Scoring leads + chatbot IA",
+            "Soumissions et paiements en ligne",
+            "8 automatisations + SEO mensuel",
+            "Formation équipe commerciale",
+        ],
+        "delivery_days": 7,
+    },
+    "grow_hub_scale": {
+        "name": "Grow Hub Scale",
+        "checklist": [
+            "Onboarding Grow Hub Scale",
+            "Multi-pipelines et IA avancée",
+            "Accès API + app mobile",
+            "Support prioritaire + stratège dédié",
+            "Revue stratégique de lancement",
+        ],
+        "delivery_days": 7,
+    },
+    # Alias historiques
     "site_presence_google": {
-        "name": "Site & Présence Google",
+        "name": "Site haute conversion",
         "checklist": [
             "Appel découverte avec le client (30 min)",
             "Collecte du contenu (textes, images, logo)",
@@ -44,10 +123,10 @@ DELIVERY_TEMPLATES = {
             "Formation client (portail + analytics)",
             "Mise en ligne et validation finale",
         ],
-        "delivery_days": 5,
+        "delivery_days": 21,
     },
     "conversion_crm": {
-        "name": "Conversion & CRM",
+        "name": "Système de revenus complet",
         "checklist": [
             "Appel stratégique avec le client (60 min)",
             "Audit de la présence numérique actuelle",
@@ -60,23 +139,23 @@ DELIVERY_TEMPLATES = {
             "Test end-to-end du funnel",
             "Lancement et optimisation initiale",
         ],
-        "delivery_days": 10,
+        "delivery_days": 35,
     },
     "automatisation_ia": {
-        "name": "Automatisation & IA",
+        "name": "Application mobile & IA",
         "checklist": [
             "Appel architecture avec le client (90 min)",
             "Cartographie des processus à automatiser",
             "Design des workflows IA",
             "Développement chatbot / assistant IA",
             "Intégration avec les systèmes existants",
-            "Configuration des automatisations (n8n/Zapier)",
+            "Configuration des automatisations",
             "Tests et QA des scénarios",
             "Formation avancée de l'équipe",
             "Déploiement progressif",
             "Monitoring et optimisation post-lancement",
         ],
-        "delivery_days": 15,
+        "delivery_days": 45,
     },
 }
 
@@ -103,7 +182,7 @@ def _get_plan_key_from_price_id(price_id: str) -> Optional[str]:
     """Résout le price_id Stripe vers la clé de plan interne."""
     from modules.payments.payments import PRICE_IDS
     for key, data in PRICE_IDS.items():
-        if price_id in [data.get("one_time"), data.get("monthly"), data.get("annual")]:
+        if price_id in [data.get("one_time"), data.get("monthly"), data.get("annual"), data.get("id")]:
             return key
     return None
 

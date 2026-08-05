@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Parcours automatisé du visiteur au paiement en cinq étapes avec le Grow Hub">
+  <rect width="1200" height="720" fill="#050505"/>
+  <text x="80" y="100" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="22" letter-spacing="3">PARCOURS AUTOMATISÉ</text>
+  <text x="80" y="160" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="42" font-weight="650">Du visiteur au paiement</text>
+  <rect x="80" y="280" width="200" height="160" rx="18" fill="#101010" stroke="#ffffff22"/>
+  <text x="100" y="340" fill="#a7a5a3" font-family="ui-monospace,monospace" font-size="20">01</text>
+  <text x="100" y="390" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="24">Capturer</text>
+  <rect x="300" y="280" width="200" height="160" rx="18" fill="#101010" stroke="#ffffff22"/>
+  <text x="320" y="340" fill="#a7a5a3" font-family="ui-monospace,monospace" font-size="20">02</text>
+  <text x="320" y="390" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="24">Qualifier</text>
+  <rect x="520" y="280" width="200" height="160" rx="18" fill="#101010" stroke="#ffffff22"/>
+  <text x="540" y="340" fill="#a7a5a3" font-family="ui-monospace,monospace" font-size="20">03</text>
+  <text x="540" y="390" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="24">Convertir</text>
+  <rect x="740" y="280" width="200" height="160" rx="18" fill="#101010" stroke="#ffffff22"/>
+  <text x="760" y="340" fill="#a7a5a3" font-family="ui-monospace,monospace" font-size="20">04</text>
+  <text x="760" y="390" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="24">Payer</text>
+  <rect x="960" y="280" width="200" height="160" rx="18" fill="#101010" stroke="#ffffff22"/>
+  <text x="980" y="340" fill="#a7a5a3" font-family="ui-monospace,monospace" font-size="20">05</text>
+  <text x="980" y="390" fill="#f5f4f2" font-family="ui-sans-serif,system-ui" font-size="24">Développer</text>
+
+  <text x="80" y="560" fill="#a7a5a3" font-family="ui-sans-serif,system-ui" font-size="24">Cinq étapes reliées — rien ne se perd entre le site et le revenu.</text>
+</svg>

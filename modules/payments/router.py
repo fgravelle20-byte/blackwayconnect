@@ -20,8 +20,11 @@ async def list_plans():
         plans.append({
             "id": key,
             "name": data["name"],
-            "amount_cad": data["amount"] / 100,
-            "price_id_one_time": data["one_time"],
+            "amount_cad": data["amount"],
+            "type": data.get("type"),
+            "bw_forfait": data.get("bw_forfait", key),
+            "price_id_one_time": data.get("one_time") or data.get("id"),
+            "price_id_monthly": data.get("monthly"),
         })
     return {"plans": plans, "currency": "CAD"}
 
@@ -37,14 +40,17 @@ async def checkout(
         raise HTTPException(status_code=400, detail="Plan invalide")
 
     plan = PRICE_IDS[plan_id]
-    price_id = plan["one_time"] if mode == "payment" else plan.get("monthly", plan["one_time"])
+    if plan.get("type") == "abonnement":
+        mode = "subscription"
 
     result = await create_checkout_session(
-        price_id=price_id,
+        plan_key=plan_id,
         client_email=current_user["sub"],
         client_id=current_user["sub"],
         mode=mode,
     )
+    if result.get("error"):
+        raise HTTPException(status_code=502, detail=result["error"])
     return result
 
 
