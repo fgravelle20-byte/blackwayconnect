@@ -1,7 +1,19 @@
 name = "blackwayconnect"
 main = "src/index.js"
 compatibility_date = "2026-08-05"
+account_id = "eda7fc96b400297aaa0b185a26ad1846"
 
-# Domaine custom : à attacher dans Cloudflare Workers → Domains
-# puis remplacer le CNAME www (custom-domains.chatgpt.site)
-# par le routage Worker / Railway.
+# Preview: https://blackwayconnect.<subdomain>.workers.dev
+# Custom domains (Dashboard → Workers → blackwayconnect → Domains):
+#   - blackwayconnect.com
+#   - www.blackwayconnect.com
+#
+# DNS cutover (zone déjà chez Cloudflare — NS lana/quincy):
+#   1. Supprimer ou désactiver le CNAME www → custom-domains.chatgpt.site
+#   2. Workers → Domains → Add custom domain pour apex + www
+#      (Cloudflare crée les enregistrements automatiquement)
+#   OU CNAME www → blackwayconnect-production.up.railway.app (proxied)
+#      et CNAME @ → même cible / ou Worker route
+#
+# Vérification: curl -sI https://blackwayconnect.com | grep x-bw-proxy
+# doit afficher: x-bw-proxy: railway-production
