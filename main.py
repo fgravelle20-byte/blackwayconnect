@@ -100,6 +100,7 @@ async def root(request: Request):
     return render(
         request,
         "index.html",
+        transparent_nav=True,
         title="Grow Hub — CRM, site et automatisation IA | BlackWayConnect",
         description="Site, CRM, soumissions, paiements et IA dans un seul système. Forfaits dès 299 $/mois. Premier lead en 30 jours ou le mois suivant est offert.",
         canonical="https://blackwayconnect.com/",

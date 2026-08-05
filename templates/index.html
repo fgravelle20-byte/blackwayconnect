@@ -18,9 +18,7 @@
     "addressRegion": "QC",
     "postalCode": "J4L 0B2",
     "addressCountry": "CA"
-  },
-  "taxID": "75946 3623 RT0001",
-  "identifier": "NEQ 1178930310"
+  }
 }
 </script>
 <script type="application/ld+json">
@@ -33,15 +31,7 @@
       "name": "C'est plus cher que les autres. Pourquoi ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations — quatre outils qui coûteraient plus cher séparément, sans personne pour les relier."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Puis-je le faire moi-même avec des outils gratuits ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Oui. Le mois de travail que ça demande vaut plus que l'abonnement annuel, et le système s'arrête le jour où vous manquez de temps."
+        "text": "Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations."
       }
     },
     {
@@ -59,22 +49,6 @@
         "@type": "Answer",
         "text": "Non. Vos données vous appartiennent et sont exportables en tout temps."
       }
-    },
-    {
-      "@type": "Question",
-      "name": "Y a-t-il des frais de démarrage ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Frais de démarrage à 0 $ sur engagement de 12 mois. Sur le mensuel, vous pouvez annuler en tout temps."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Les prix sont-ils en CAD et en USD ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Oui. Utilisez le sélecteur de devise sur la page. Exemple : Grow Hub Growth à 749 $ CAD / mois correspond à 579 $ USD / mois."
-      }
     }
   ]
 }
@@ -82,411 +56,342 @@
 {% endblock %}
 
 {% block content %}
-<section class="hero wrap">
-  <div class="reveal">
-    <p class="eyebrow">Plateforme lead-to-revenue · Canada + États-Unis</p>
+<section class="hero-video" aria-label="Hero BlackWayConnect">
+  <div class="hero-video__media">
+    <video autoplay muted loop playsinline preload="metadata" poster="/static/visuels/blackway-visuel-1.svg">
+      <source src="/static/video/hero.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-video__overlay" aria-hidden="true"></div>
+  <div class="hero-video__content">
+    <p class="hero-eyebrow">BlackWayConnect · Grow Hub</p>
     <h1>Transformez chaque lead en prochaine action rentable.</h1>
-    <p class="lede">BlackWayConnect Grow Hub réunit votre site, vos prospects, votre CRM, vos soumissions, vos paiements et vos automatisations IA dans un seul système commercial bilingue.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
-      <a class="btn" href="#pricing">Voir les prix</a>
+    <p class="hero-lede">
+      Site, CRM, soumissions, paiements et automatisations IA — un seul système commercial bilingue pour le Canada et les États-Unis.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-accent btn-jumbo" href="#reserver">Réserver 15 minutes</a>
+      <a class="btn btn-light btn-jumbo" href="#pricing">Voir les prix</a>
     </div>
-    <div class="trust-row">
+    <div class="hero-trust">
       <span><b>Sans contrat à long terme</b></span>
-      <span>Accompagnement humain</span>
+      <span>Garantie premier lead · 30 jours</span>
       <span>FR + EN</span>
-      <span>Données et actions reliées</span>
     </div>
   </div>
-
-  <aside class="demo-panel reveal reveal-delay-1" aria-label="Exemple d'affichage du Grow Hub">
-    <div class="demo-head">
-      <span>BlackWay Grow Hub · Centre de commande</span>
-      <span class="live-dot">● LIVE</span>
-    </div>
-    <div class="demo-grid">
-      <div class="metric">
-        <small>Leads actifs</small>
-        <strong>48</strong>
-        <span class="delta">+18 %</span>
-      </div>
-      <div class="metric">
-        <small>Pipeline</small>
-        <strong>184 k$</strong>
-        <small>Potentiel</small>
-      </div>
-      <div class="lead-row">
-        <div class="row"><strong>Système de revenus</strong><span>4 995 $</span></div>
-        <small>Décideur · Relancer maintenant</small>
-      </div>
-      <div class="lead-row">
-        <div class="row"><strong>Refonte du site</strong><span>Qualifié</span></div>
-        <small>Rencontre demain</small>
-      </div>
-      <div class="lead-row">
-        <div class="row"><strong>Chatbot IA</strong><span>Nouveau</span></div>
-        <small>Besoin à préciser</small>
-      </div>
-    </div>
-    <p class="demo-note">Exemple d'affichage</p>
-  </aside>
 </section>
 
-<section class="wrap">
-  <div class="section-head reveal">
-    <p class="eyebrow">BlackWayConnect Grow Hub</p>
-    <h2>De la première visite au revenu récurrent, rien ne se perd.</h2>
-    <p>Le Grow Hub donne à votre équipe une prochaine action claire pour chaque occasion — et automatise tout ce qui ne nécessite pas une décision humaine.</p>
-  </div>
-  <div class="steps">
-    <article class="step">
-      <div class="num">01</div>
-      <h3>Capturer</h3>
-      <p>Site, formulaires, chatbot et campagnes alimentent un seul dossier prospect.</p>
-    </article>
-    <article class="step">
-      <div class="num">02</div>
-      <h3>Qualifier</h3>
-      <p>Score, urgence, budget, source et décideur déterminent la priorité réelle.</p>
-    </article>
-    <article class="step">
-      <div class="num">03</div>
-      <h3>Convertir</h3>
-      <p>Pipeline, relances, rendez-vous, soumissions et paiements avancent ensemble.</p>
-    </article>
-    <article class="step">
-      <div class="num">04</div>
-      <h3>Développer</h3>
-      <p>Maintenance, avis, recommandations et offres complémentaires augmentent la valeur client.</p>
-    </article>
-  </div>
-</section>
-
-<section class="wrap" id="pricing">
-  <div class="section-head">
-    <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between">
-      <p class="eyebrow" style="margin:0">Quatre niveaux · une seule plateforme</p>
-      <div class="currency-toggle" role="group" aria-label="Devise">
-        <button type="button" id="cur-cad" aria-pressed="true">CAD</button>
-        <button type="button" id="cur-usd" aria-pressed="false">USD</button>
-      </div>
-    </div>
-    <h2>Commencez simplement. Grandissez sans changer de système.</h2>
-    <p>Des tarifs transparents en CAD et en USD, deux mois offerts au paiement annuel, et aucun contrat à long terme sur le mensuel.</p>
-  </div>
-
-  <div class="pricing-grid">
-    <article class="plan" data-plan="launch">
-      <h3>Launch</h3>
-      <p class="price"><span data-cad="299 $ CAD" data-usd="229 $ USD">299 $ CAD</span> <span>/ mois</span></p>
-      <p class="promise">Pour transformer vos premières demandes en pipeline organisé.</p>
-      <p class="incl">1 pipeline · formulaires · tâches · 2 automatisations · hébergement et maintenance</p>
-      <a class="btn" href="/grow-hub#launch">Voir le forfait complet</a>
-    </article>
-    <article class="plan featured" data-plan="growth">
-      <span class="badge">Le plus choisi</span>
-      <h3>Growth</h3>
-      <p class="price"><span data-cad="749 $ CAD" data-usd="579 $ USD">749 $ CAD</span> <span>/ mois</span></p>
-      <p class="promise">Le moteur complet pour vendre, relancer et mesurer.</p>
-      <p class="incl">Scoring · chatbot IA · soumissions · paiements · 8 automatisations · SEO mensuel</p>
-      <a class="btn btn-primary" href="/grow-hub#growth">Voir le forfait complet</a>
-    </article>
-    <article class="plan" data-plan="scale">
-      <h3>Scale</h3>
-      <p class="price"><span data-cad="1 495 $ CAD" data-usd="1 149 $ USD">1 495 $ CAD</span> <span>/ mois</span></p>
-      <p class="promise">Pour plusieurs équipes, marchés ou parcours commerciaux.</p>
-      <p class="incl">Multi-pipelines · IA avancée · API · application mobile · support prioritaire · stratège dédié</p>
-      <a class="btn" href="/grow-hub#scale">Voir le forfait complet</a>
-    </article>
-    <article class="plan" data-plan="enterprise">
-      <h3>Entreprise</h3>
-      <p class="price">Sur mesure</p>
-      <p class="promise">Volume élevé, multi-succursales, intégrations aux systèmes existants.</p>
-      <p class="incl">Architecture dédiée · SLA · développement continu</p>
-      <a class="btn" href="#reserver">Parler à un stratège</a>
-    </article>
-  </div>
-
-  <div class="banner-soft">
-    Deux mois offerts au paiement annuel · Frais de démarrage à 0 $ sur engagement de 12 mois · Annulable en tout temps sur le mensuel, vos données vous appartiennent.
-  </div>
-  <div class="guarantee">
-    <strong>Notre garantie :</strong> votre premier lead capté dans les 30 jours, ou le mois suivant est offert.
-  </div>
-</section>
-
-<section class="wrap" id="projets">
-  <div class="section-head">
-    <p class="eyebrow">Projets</p>
-    <h2>Activation claire. Moteur mensuel qui continue de vendre.</h2>
-    <p>Le prix de projet couvre la conception et l’activation ; Grow Hub assure ensuite le pipeline et la continuité commerciale.</p>
-  </div>
-  <div class="projects">
-    <div class="project">
-      <strong>Site haute conversion</strong>
-      <span>à partir de 1 995 $</span>
-      <span>21 jours</span>
-      <span>3 versements sans frais</span>
-    </div>
-    <div class="project">
-      <strong>Système de revenus complet</strong>
-      <span>4 995 $</span>
-      <span>35 jours</span>
-      <span>3 versements sans frais</span>
-    </div>
-    <div class="project">
-      <strong>Application mobile iOS et Android</strong>
-      <span>7 995 $</span>
-      <span>45 jours</span>
-      <span>4 versements sans frais</span>
+<section class="section-dark">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><strong>80+</strong><span>entreprises actives</span></div>
+      <div class="stat"><strong>30 j</strong><span>garantie premier lead</span></div>
+      <div class="stat"><strong>0 $</strong><span>frais de démarrage (12 mois)</span></div>
+      <div class="stat"><strong>CA·US</strong><span>parcours bilingues</span></div>
     </div>
   </div>
-  <div class="cta-row" style="margin-top:1.5rem">
-    <a class="btn btn-primary" href="#reserver">Réserver 15 minutes</a>
-    <a class="btn" href="/forfaits">Voir les prix</a>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Plateforme lead-to-revenue</p>
+      <h2>De la première visite au revenu récurrent, rien ne se perd.</h2>
+      <p>Le Grow Hub donne à votre équipe une prochaine action claire — et automatise tout ce qui ne nécessite pas une décision humaine.</p>
+    </div>
+    <div class="expertise">
+      <article class="expertise-item">
+        <div class="num">01</div>
+        <div>
+          <h3>Capturer</h3>
+          <p>Site, formulaires, chatbot et campagnes alimentent un seul dossier prospect.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">02</div>
+        <div>
+          <h3>Qualifier</h3>
+          <p>Score, urgence, budget, source et décideur déterminent la priorité réelle.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">03</div>
+        <div>
+          <h3>Convertir</h3>
+          <p>Pipeline, relances, rendez-vous, soumissions et paiements avancent ensemble.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">04</div>
+        <div>
+          <h3>Développer</h3>
+          <p>Maintenance, avis, recommandations et offres complémentaires augmentent la valeur client.</p>
+          <a href="/grow-hub">Explorer le Grow Hub</a>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
-<section class="wrap" id="preuve-sociale">
-  <div class="section-head">
-    <p class="eyebrow">Preuve sociale</p>
-    <h2>Ils vendent déjà avec le Grow Hub</h2>
-    <p>Trois entreprises québécoises. Des sites en ligne. Des résultats visibles.</p>
-  </div>
+<section class="section-soft" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+        <p class="eyebrow" style="margin:0">Quatre niveaux · une seule plateforme</p>
+        <div class="currency-toggle" role="group" aria-label="Devise">
+          <button type="button" id="cur-cad" aria-pressed="true">CAD</button>
+          <button type="button" id="cur-usd" aria-pressed="false">USD</button>
+        </div>
+      </div>
+      <h2>Commencez simplement. Grandissez sans changer de système.</h2>
+      <p>Des tarifs transparents en CAD et en USD, deux mois offerts au paiement annuel, et aucun contrat à long terme sur le mensuel.</p>
+    </div>
 
-  <div class="cases">
-    <article class="case" id="hydrofix">
-      <div>
-        <span class="approved">Témoignage approuvé</span>
-        <h3>Les Services Piscines HydroFix inc. — Longueuil, Rive-Sud et Grand Montréal</h3>
-        <p style="color:var(--muted);margin:1rem 0">
-          Une entreprise de services saisonniers avec plus de dix ans de métier, qui perdait des demandes chaque printemps faute d’un système pour les capter et les trier.
-        </p>
-        <p style="color:var(--muted);margin-bottom:1rem">
-          Aujourd’hui : soumission gratuite en ligne, assistant virtuel qui répond sur-le-champ, réponse garantie en moins de 12 heures, service 7 jours sur 7, galerie de réalisations et témoignages clients. Le tout sur quinze municipalités desservies.
-        </p>
-        <p>
-          Résultat annoncé publiquement sur leur site : réponse à toute demande en 12 heures maximum, et une promotion saisonnière structurée — réservation de l’ouverture avec la fermeture à 20 % de rabais.
-        </p>
-        <p style="margin-top:1rem"><a class="btn" href="https://piscinehydrofix.com" rel="noopener" target="_blank">Voir le site →</a></p>
-      </div>
-      <div>
-        <blockquote>
-          « Avant, les appels se perdaient entre deux contrats sur le terrain. Maintenant chaque demande entre dans le système, personne ne l’oublie, et on répond en moins de 12 heures. »
-        </blockquote>
-        <cite>— Propriétaire, Les Services Piscines HydroFix inc.</cite>
-      </div>
-    </article>
+    <div class="pricing-grid">
+      <article class="plan">
+        <h3>Launch</h3>
+        <p class="price"><span data-cad="299 $ CAD" data-usd="229 $ USD">299 $ CAD</span> <span>/ mois</span></p>
+        <p class="promise">Pour transformer vos premières demandes en pipeline organisé.</p>
+        <p class="incl">1 pipeline · formulaires · tâches · 2 automatisations · hébergement et maintenance</p>
+        <a class="btn btn-dark" href="/grow-hub#launch">Voir le forfait complet</a>
+      </article>
+      <article class="plan featured">
+        <span class="badge">Le plus choisi</span>
+        <h3>Growth</h3>
+        <p class="price"><span data-cad="749 $ CAD" data-usd="579 $ USD">749 $ CAD</span> <span>/ mois</span></p>
+        <p class="promise">Le moteur complet pour vendre, relancer et mesurer.</p>
+        <p class="incl">Scoring · chatbot IA · soumissions · paiements · 8 automatisations · SEO mensuel</p>
+        <a class="btn btn-accent" href="/grow-hub#growth">Voir le forfait complet</a>
+      </article>
+      <article class="plan">
+        <h3>Scale</h3>
+        <p class="price"><span data-cad="1 495 $ CAD" data-usd="1 149 $ USD">1 495 $ CAD</span> <span>/ mois</span></p>
+        <p class="promise">Pour plusieurs équipes, marchés ou parcours commerciaux.</p>
+        <p class="incl">Multi-pipelines · IA avancée · API · application mobile · support prioritaire · stratège dédié</p>
+        <a class="btn btn-dark" href="/grow-hub#scale">Voir le forfait complet</a>
+      </article>
+      <article class="plan">
+        <h3>Entreprise</h3>
+        <p class="price">Sur mesure</p>
+        <p class="promise">Volume élevé, multi-succursales, intégrations aux systèmes existants.</p>
+        <p class="incl">Architecture dédiée · SLA · développement continu</p>
+        <a class="btn btn-dark" href="#reserver">Parler à un stratège</a>
+      </article>
+    </div>
 
-    <article class="case" id="alphavit">
-      <div>
-        <span class="approved">Témoignage approuvé</span>
-        <h3>AlphaVIT — alphavit.net · Boutique AlphaVIT Lab</h3>
-        <p style="color:var(--muted);margin:1rem 0">
-          Aucun magasin physique au départ. Une marque de suppléments premium à bâtir de zéro : catalogue, panier, paiements, acquisition et suivi des commandes.
-        </p>
-        <p style="color:var(--muted);margin-bottom:1rem">
-          Lancée avec BlackWayConnect, AlphaVIT vend aujourd’hui en ligne (CAD et USD), avec quiz produit, forfaits, livraison et une présence bilingue — de la première visite jusqu’au paiement. Le domaine <strong>alphavit.net</strong> est actuellement en mise à jour ; la boutique live est sur AlphaVIT Lab.
-        </p>
-        <p>
-          Résultat : un client plus que satisfait, qui génère des revenus et bâtit sa petite fortune avec un système qui continue de vendre pendant qu’il développe la marque.
-        </p>
-        <p style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:.6rem">
-          <a class="btn btn-primary" href="https://alphavitlab.com" rel="noopener" target="_blank">Voir la boutique live →</a>
-          <a class="btn" href="https://www.alphavit.net" rel="noopener" target="_blank">alphavit.net (mise à jour)</a>
-        </p>
-      </div>
-      <div>
-        <blockquote>
-          « Je n’avais aucun magasin. BlackWayConnect m’a permis de lancer AlphaVIT. Aujourd’hui, le système génère des revenus — on bâtit vraiment quelque chose, et je suis plus que satisfait. »
-        </blockquote>
-        <cite>— Fondateur, AlphaVIT · alphavit.net / AlphaVIT Lab</cite>
-      </div>
-    </article>
-
-    <article class="case" id="beaute-tout-pour-elle">
-      <div>
-        <span class="approved">Client actif</span>
-        <h3>Beauté Tout Pour Elle — St-Jean-sur-Richelieu</h3>
-        <p style="color:var(--muted);margin:1rem 0">
-          Clinique d’esthétique dirigée par Chantale Ménard : soins du visage et du corps, boutique de produits, prises de rendez-vous et présence locale à consolider.
-        </p>
-        <p style="color:var(--muted);margin-bottom:1rem">
-          Avec BlackWayConnect, le parcours cliente est organisé — boutique en ligne, promotions, blogue et prise de rendez-vous — pour que chaque demande de soin ou d’achat trouve une prochaine étape claire.
-        </p>
-        <p>
-          Une PME de services au Québec qui montre qu’un système relié fonctionne aussi hors du e-commerce pur : confort, suivi et conversion sur le même fil.
-        </p>
-        <p style="margin-top:1rem"><a class="btn" href="https://beautetoutpourelle.com" rel="noopener" target="_blank">Voir le site →</a></p>
-      </div>
-      <div>
-        <blockquote>
-          « On se concentre sur les besoins de nos clientes pour un service empreint de confort, de douceur et de plaisir — et maintenant chaque demande trouve son chemin jusqu’au rendez-vous ou à la boutique. »
-        </blockquote>
-        <cite>— Beauté Tout Pour Elle · St-Jean-sur-Richelieu</cite>
-      </div>
-    </article>
+    <div class="banner-soft">
+      Deux mois offerts au paiement annuel · Frais de démarrage à 0 $ sur engagement de 12 mois · Annulable en tout temps sur le mensuel, vos données vous appartiennent.
+    </div>
+    <div class="guarantee">
+      <strong>Notre garantie :</strong> votre premier lead capté dans les 30 jours, ou le mois suivant est offert.
+    </div>
   </div>
 </section>
 
-<section class="wrap">
-  <div class="section-head">
-    <p class="eyebrow">Un seul partenaire de croissance</p>
-    <h2>Une plateforme centrale. Une équipe pour tout construire autour.</h2>
-    <p>Ajoutez seulement ce qui augmente vos revenus, réduit vos coûts ou améliore l’expérience client.</p>
-  </div>
-  <div class="steps">
-    <article class="step">
-      <div class="num">01</div>
-      <h3>Sites haute conversion</h3>
-      <p>Pages, SEO et formulaires reliés au Grow Hub.</p>
-    </article>
-    <article class="step">
-      <div class="num">02</div>
-      <h3>Applications web et mobile</h3>
-      <p>Portails, SaaS, iOS et Android connectés aux mêmes données.</p>
-    </article>
-    <article class="step">
-      <div class="num">03</div>
-      <h3>Agents IA et automatisations</h3>
-      <p>Chat, voix, réceptionniste IA, routage, suivis et opérations supervisées.</p>
-    </article>
-    <article class="step">
-      <div class="num">04</div>
-      <h3>SEO et acquisition</h3>
-      <p>Visibilité locale, contenu, réputation et mesure des sources.</p>
-    </article>
-  </div>
-  <div class="cta-row" style="margin-top:1.5rem">
-    <a class="btn" href="/services">Voir tous les services</a>
-  </div>
-</section>
-
-<section class="wrap">
-  <div class="section-head">
-    <p class="eyebrow">Canada · United States</p>
-    <h2>Conçu au Québec. Prêt pour deux marchés.</h2>
-    <p>Une seule architecture pour servir des clients francophones et anglophones, avec parcours, devises, contenus et règles commerciales adaptés au Canada et aux États-Unis.</p>
-  </div>
-  <div class="steps">
-    <article class="step"><h3>Expérience française et anglaise</h3></article>
-    <article class="step"><h3>Tarifs CAD et USD</h3></article>
-    <article class="step"><h3>Parcours mobiles rapides</h3></article>
-    <article class="step"><h3>Soumissions et paiements structurés</h3></article>
+<section id="projets">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Projets</p>
+      <h2>Activation claire. Moteur mensuel qui continue de vendre.</h2>
+      <p>Le prix de projet couvre la conception et l’activation ; Grow Hub assure ensuite le pipeline.</p>
+    </div>
+    <div class="projects">
+      <div class="project">
+        <strong>Site haute conversion</strong>
+        <span>à partir de 1 995 $</span>
+        <span>21 jours</span>
+        <span>3 versements sans frais</span>
+      </div>
+      <div class="project">
+        <strong>Système de revenus complet</strong>
+        <span>4 995 $</span>
+        <span>35 jours</span>
+        <span>3 versements sans frais</span>
+      </div>
+      <div class="project">
+        <strong>Application mobile iOS et Android</strong>
+        <span>7 995 $</span>
+        <span>45 jours</span>
+        <span>4 versements sans frais</span>
+      </div>
+    </div>
+    <div class="cta-row" style="margin-top:2rem">
+      <a class="btn btn-accent" href="#reserver">Réserver 15 minutes</a>
+      <a class="btn btn-dark" href="/forfaits">Voir les prix</a>
+    </div>
   </div>
 </section>
 
-<section class="wrap">
-  <div class="section-head">
-    <p class="eyebrow">Produit en images</p>
-    <h2>Ce que votre équipe voit chaque jour.</h2>
-  </div>
-  <div class="visual-grid">
-    <figure class="visual">
-      <img src="/static/visuels/blackway-visuel-1.svg" width="1200" height="720" loading="lazy"
-           alt="Tableau de bord CRM Grow Hub affichant 48 leads actifs et un pipeline de 184 000 $">
-      <figcaption>Tableau de bord — leads et pipeline</figcaption>
-    </figure>
-    <figure class="visual">
-      <img src="/static/visuels/blackway-visuel-2.svg" width="1200" height="720" loading="lazy"
-           alt="Parcours automatisé du visiteur au paiement en cinq étapes avec le Grow Hub">
-      <figcaption>Parcours automatisé en cinq étapes</figcaption>
-    </figure>
-    <figure class="visual">
-      <img src="/static/visuels/blackway-visuel-3.svg" width="1200" height="720" loading="lazy"
-           alt="Soumission Grow Hub Growth à 749 $ par mois avec paiement sécurisé Stripe">
-      <figcaption>Soumission Growth — 749 $ / mois</figcaption>
-    </figure>
-    <figure class="visual">
-      <img src="/static/visuels/blackway-visuel-4.svg" width="1200" height="720" loading="lazy"
-           alt="Application mobile iOS et Android du CRM Grow Hub avec fiches de leads">
-      <figcaption>Application mobile CRM</figcaption>
-    </figure>
+<section class="section-soft" id="preuve-sociale">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Preuve sociale</p>
+      <h2>Ils vendent déjà avec le Grow Hub</h2>
+      <p>Des sites en ligne. Des résultats visibles. Des dirigeants qui ont arrêté de perdre des demandes.</p>
+    </div>
+    <div class="cases">
+      <article class="case" id="hydrofix">
+        <div>
+          <span class="approved">Témoignage approuvé</span>
+          <h3>Les Services Piscines HydroFix inc.</h3>
+          <p class="muted" style="margin-bottom:1rem">Longueuil, Rive-Sud et Grand Montréal — services saisonniers, plus de dix ans de métier.</p>
+          <p class="muted" style="margin-bottom:1rem">Soumission en ligne, assistant virtuel, réponse garantie en moins de 12 heures, service 7 jours sur 7, quinze municipalités.</p>
+          <a class="btn btn-dark" href="https://piscinehydrofix.com" rel="noopener" target="_blank">Voir le site →</a>
+        </div>
+        <div>
+          <blockquote>« Avant, les appels se perdaient entre deux contrats sur le terrain. Maintenant chaque demande entre dans le système, personne ne l’oublie, et on répond en moins de 12 heures. »</blockquote>
+          <cite>— Propriétaire, Les Services Piscines HydroFix inc.</cite>
+        </div>
+      </article>
+
+      <article class="case" id="alphavit">
+        <div>
+          <span class="approved">Témoignage approuvé</span>
+          <h3>AlphaVIT · alphavit.net</h3>
+          <p class="muted" style="margin-bottom:1rem">Aucun magasin au départ. Marque de suppléments premium lancée avec BlackWayConnect.</p>
+          <p class="muted" style="margin-bottom:1rem">Aujourd’hui : boutique live, revenus en croissance. <strong>alphavit.net</strong> est en mise à jour — la boutique active est sur AlphaVIT Lab.</p>
+          <a class="btn btn-accent" href="https://alphavitlab.com" rel="noopener" target="_blank">Voir la boutique live →</a>
+        </div>
+        <div>
+          <blockquote>« Je n’avais aucun magasin. BlackWayConnect m’a permis de lancer AlphaVIT. Aujourd’hui, le système génère des revenus — on bâtit vraiment quelque chose, et je suis plus que satisfait. »</blockquote>
+          <cite>— Fondateur, AlphaVIT · alphavit.net / AlphaVIT Lab</cite>
+        </div>
+      </article>
+
+      <article class="case" id="beaute-tout-pour-elle">
+        <div>
+          <span class="approved">Client actif</span>
+          <h3>Beauté Tout Pour Elle</h3>
+          <p class="muted" style="margin-bottom:1rem">St-Jean-sur-Richelieu — clinique d’esthétique, boutique et prises de rendez-vous reliées.</p>
+          <a class="btn btn-dark" href="https://beautetoutpourelle.com" rel="noopener" target="_blank">Voir le site →</a>
+        </div>
+        <div>
+          <blockquote>« On se concentre sur les besoins de nos clientes pour un service empreint de confort — et maintenant chaque demande trouve son chemin jusqu’au rendez-vous ou à la boutique. »</blockquote>
+          <cite>— Beauté Tout Pour Elle · St-Jean-sur-Richelieu</cite>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
-<section class="wrap" id="faq">
-  <div class="section-head">
-    <p class="eyebrow">FAQ</p>
-    <h2>Les objections, avant qu’elles freinent la décision.</h2>
-  </div>
-  <div class="faq">
-    <details>
-      <summary>C’est plus cher que les autres. Pourquoi&nbsp;?</summary>
-      <p>Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations — quatre outils qui coûteraient plus cher séparément, sans personne pour les relier.</p>
-    </details>
-    <details>
-      <summary>Puis-je le faire moi-même avec des outils gratuits&nbsp;?</summary>
-      <p>Oui. Le mois de travail que ça demande vaut plus que l’abonnement annuel, et le système s’arrête le jour où vous manquez de temps.</p>
-    </details>
-    <details>
-      <summary>Et si ça ne fonctionne pas pour mon secteur&nbsp;?</summary>
-      <p>Premier lead capté dans les 30 jours, ou le mois suivant est offert. Aucun contrat à long terme sur le mensuel.</p>
-    </details>
-    <details>
-      <summary>Suis-je prisonnier de votre plateforme&nbsp;?</summary>
-      <p>Non. Vos données vous appartiennent et sont exportables en tout temps.</p>
-    </details>
-    <details>
-      <summary>Y a-t-il des frais de démarrage&nbsp;?</summary>
-      <p>Frais de démarrage à 0 $ sur engagement de 12 mois. Sur le mensuel, vous pouvez annuler en tout temps.</p>
-    </details>
-    <details>
-      <summary>Comment réserver 15 minutes&nbsp;?</summary>
-      <p>Utilisez le formulaire ci-dessous ou écrivez à serviceclient@blackwayconnect.com. Nous confirmons un créneau HubSpot Meetings en moins de 24 h ouvrables.</p>
-    </details>
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Services</p>
+      <h2>Une plateforme centrale. Une équipe pour tout construire autour.</h2>
+    </div>
+    <div class="expertise">
+      <article class="expertise-item">
+        <div class="num">01</div>
+        <div>
+          <h3>Sites haute conversion</h3>
+          <p>Pages, SEO et formulaires reliés au Grow Hub.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">02</div>
+        <div>
+          <h3>Applications web et mobile</h3>
+          <p>Portails, SaaS, iOS et Android connectés aux mêmes données.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">03</div>
+        <div>
+          <h3>Agents IA et automatisations</h3>
+          <p>Chat, voix, réceptionniste IA, routage et suivis supervisés.</p>
+        </div>
+      </article>
+      <article class="expertise-item">
+        <div class="num">04</div>
+        <div>
+          <h3>SEO et acquisition</h3>
+          <p>Visibilité locale, contenu, réputation et mesure des sources.</p>
+          <a href="/services">Voir tous les services</a>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
-<section class="wrap" id="reserver">
-  <div class="section-head">
-    <p class="eyebrow">Stratégie du système de leads</p>
-    <h2>Combien de revenus perdez-vous entre un nouveau lead et la prochaine relance&nbsp;?</h2>
-    <p>Nous analysons votre parcours actuel et identifions les trois fuites de conversion les plus coûteuses avant de définir la solution appropriée.</p>
+<section class="section-soft" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">FAQ</p>
+      <h2>Les objections, avant qu’elles freinent la décision.</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>C’est plus cher que les autres. Pourquoi&nbsp;?</summary>
+        <p>Un site seul coûte 3 000 $ et ne rapporte rien. Le Grow Hub réunit le site, le CRM, les soumissions, les paiements et les automatisations.</p>
+      </details>
+      <details>
+        <summary>Puis-je le faire moi-même avec des outils gratuits&nbsp;?</summary>
+        <p>Oui. Le mois de travail que ça demande vaut plus que l’abonnement annuel, et le système s’arrête le jour où vous manquez de temps.</p>
+      </details>
+      <details>
+        <summary>Et si ça ne fonctionne pas pour mon secteur&nbsp;?</summary>
+        <p>Premier lead capté dans les 30 jours, ou le mois suivant est offert. Aucun contrat à long terme sur le mensuel.</p>
+      </details>
+      <details>
+        <summary>Suis-je prisonnier de votre plateforme&nbsp;?</summary>
+        <p>Non. Vos données vous appartiennent et sont exportables en tout temps.</p>
+      </details>
+    </div>
   </div>
-  <div class="cta-row" style="margin-bottom:1.5rem">
-    <a class="btn btn-primary" href="mailto:serviceclient@blackwayconnect.com?subject=R%C3%A9server%2015%20minutes%20Grow%20Hub">Réserver 15 minutes</a>
-    <a class="btn" href="#pricing">Voir les prix</a>
-  </div>
+</section>
 
-  <form id="bw-form" class="bw-form" novalidate>
-    <h3>Obtenir une soumission</h3>
-    <label>Nom complet
-      <input name="nom_complet" required autocomplete="name" placeholder="Sylvain Lemieux">
-    </label>
-    <label>Courriel professionnel
-      <input name="email" type="email" required autocomplete="email" placeholder="vous@entreprise.com">
-    </label>
-    <label>Téléphone
-      <input name="telephone" type="tel" autocomplete="tel" placeholder="450 555-0142">
-    </label>
-    <label>Entreprise
-      <input name="entreprise" autocomplete="organization" placeholder="Transport Lemieux">
-    </label>
-    <label>Ce qui vous intéresse
-      <select name="forfait" required>
-        <option value="">Choisir…</option>
-        <option value="grow_hub_launch">Grow Hub Launch — 299 $/mois</option>
-        <option value="grow_hub_growth">Grow Hub Growth — 749 $/mois</option>
-        <option value="grow_hub_scale">Grow Hub Scale — 1 495 $/mois</option>
-        <option value="website_lead_launch">Site haute conversion — dès 1 995 $</option>
-        <option value="revenue_system">Système de revenus — 4 995 $</option>
-        <option value="ai_scale">Application mobile et IA — 7 995 $</option>
-      </select>
-    </label>
-    <label>Votre échéance
-      <select name="urgence">
-        <option value="normal">Dans les prochains mois</option>
-        <option value="elevee">Dès que possible</option>
-      </select>
-    </label>
-    <label>Votre besoin en une phrase
-      <textarea name="message" rows="3" placeholder="Ce que vous voulez régler"></textarea>
-    </label>
-    <input name="site_web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-    <button class="btn btn-primary" type="submit">Envoyer ma demande</button>
-    <p id="bw-msg" role="status" aria-live="polite"></p>
-  </form>
+<section class="section-dark" id="reserver">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Parler à un stratège</p>
+      <h2>Combien de revenus perdez-vous entre un nouveau lead et la prochaine relance&nbsp;?</h2>
+      <p>Nous identifions les trois fuites de conversion les plus coûteuses avant de définir la solution appropriée.</p>
+    </div>
+    <div class="cta-row" style="margin-bottom:2rem">
+      <a class="btn btn-accent btn-jumbo" href="mailto:serviceclient@blackwayconnect.com?subject=R%C3%A9server%2015%20minutes%20Grow%20Hub">Réserver 15 minutes</a>
+      <a class="btn btn-light btn-jumbo" href="#pricing">Voir les prix</a>
+    </div>
+
+    <form id="bw-form" class="bw-form" novalidate>
+      <h3 style="font-family:var(--display);font-size:1.35rem;margin-bottom:.25rem;color:#fff">Obtenir une soumission</h3>
+      <label style="color:rgba(255,255,255,.8)">Nom complet
+        <input name="nom_complet" required autocomplete="name" placeholder="Sylvain Lemieux">
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Courriel professionnel
+        <input name="email" type="email" required autocomplete="email" placeholder="vous@entreprise.com">
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Téléphone
+        <input name="telephone" type="tel" autocomplete="tel" placeholder="450 555-0142">
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Entreprise
+        <input name="entreprise" autocomplete="organization" placeholder="Transport Lemieux">
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Ce qui vous intéresse
+        <select name="forfait" required>
+          <option value="">Choisir…</option>
+          <option value="grow_hub_launch">Grow Hub Launch — 299 $/mois</option>
+          <option value="grow_hub_growth">Grow Hub Growth — 749 $/mois</option>
+          <option value="grow_hub_scale">Grow Hub Scale — 1 495 $/mois</option>
+          <option value="website_lead_launch">Site haute conversion — dès 1 995 $</option>
+          <option value="revenue_system">Système de revenus — 4 995 $</option>
+          <option value="ai_scale">Application mobile et IA — 7 995 $</option>
+        </select>
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Votre échéance
+        <select name="urgence">
+          <option value="normal">Dans les prochains mois</option>
+          <option value="elevee">Dès que possible</option>
+        </select>
+      </label>
+      <label style="color:rgba(255,255,255,.8)">Votre besoin en une phrase
+        <textarea name="message" rows="3" placeholder="Ce que vous voulez régler"></textarea>
+      </label>
+      <input name="site_web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <button class="btn btn-accent" type="submit">Envoyer ma demande</button>
+      <p id="bw-msg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
 </section>
 {% endblock %}
 
@@ -495,19 +400,22 @@
 (function () {
   const cadBtn = document.getElementById('cur-cad');
   const usdBtn = document.getElementById('cur-usd');
-  function setCurrency(cur) {
-    document.querySelectorAll('[data-cad]').forEach((el) => {
-      el.textContent = cur === 'usd' ? el.dataset.usd : el.dataset.cad;
-    });
-    cadBtn.setAttribute('aria-pressed', cur === 'cad' ? 'true' : 'false');
-    usdBtn.setAttribute('aria-pressed', cur === 'usd' ? 'true' : 'false');
+  if (cadBtn && usdBtn) {
+    function setCurrency(cur) {
+      document.querySelectorAll('[data-cad]').forEach((el) => {
+        el.textContent = cur === 'usd' ? el.dataset.usd : el.dataset.cad;
+      });
+      cadBtn.setAttribute('aria-pressed', cur === 'cad' ? 'true' : 'false');
+      usdBtn.setAttribute('aria-pressed', cur === 'usd' ? 'true' : 'false');
+    }
+    cadBtn.addEventListener('click', () => setCurrency('cad'));
+    usdBtn.addEventListener('click', () => setCurrency('usd'));
   }
-  cadBtn.addEventListener('click', () => setCurrency('cad'));
-  usdBtn.addEventListener('click', () => setCurrency('usd'));
 
   const ENDPOINT = 'https://blackway-pipe.f-gravelle20.workers.dev/lead';
   const form = document.getElementById('bw-form');
   const msg = document.getElementById('bw-msg');
+  if (!form) return;
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     if (form.site_web.value) return;
@@ -536,9 +444,8 @@
       if (!r.ok) throw new Error(res.erreur || 'erreur');
       msg.textContent = 'Merci. Votre demande est enregistrée — nous vous répondons en moins de 24 h ouvrables.';
       form.reset();
-      if (window.gtag) gtag('event', 'generate_lead', { forfait: donnees.forfait });
     } catch (err) {
-      msg.textContent = 'Envoi impossible. Écrivez-nous directement à serviceclient@blackwayconnect.com.';
+      msg.textContent = 'Envoi impossible. Écrivez-nous à serviceclient@blackwayconnect.com.';
       bouton.disabled = false;
     }
   });
