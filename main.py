@@ -92,7 +92,14 @@ def render(request: Request, name: str, **kwargs):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "mode": "homepage_audit_2026_08_05", "version": settings.VERSION}
+    return {
+        "status": "healthy",
+        "mode": "go_live_cloudflare_b",
+        "version": settings.VERSION,
+        "origin": "railway",
+        "preview": "https://blackwayconnect-production.up.railway.app",
+        "buy": "/api/v1/payments/plans",
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
