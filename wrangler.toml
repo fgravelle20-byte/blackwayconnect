@@ -1,0 +1,7 @@
+name = "blackwayconnect"
+main = "src/index.js"
+compatibility_date = "2026-08-05"
+
+# Domaine custom : à attacher dans Cloudflare Workers → Domains
+# puis remplacer le CNAME www (custom-domains.chatgpt.site)
+# par le routage Worker / Railway.
