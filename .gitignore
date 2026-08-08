@@ -1,0 +1,34 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# next
+.next
+out
+dist
+build
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# tooling
+.turbo
+.vercel
+.DS_Store
+*.log
+coverage
+playwright-report
+test-results
+.sentryclirc
+
+# ide
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# supabase
+supabase/.branches
+supabase/.temp

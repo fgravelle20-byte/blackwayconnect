@@ -1,0 +1,74 @@
+name: Playwright
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e-public:
+    name: E2E public (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @noirroutes/web exec playwright install --with-deps chromium
+      - name: Run public Playwright suite
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_NAME: NoirRoutes
+          APP_ENV: PREVIEW
+        run: >
+          pnpm --filter @noirroutes/web exec playwright test
+          marketing-home.spec.ts
+          marketing-pricing.spec.ts
+          auth-protected.spec.ts
+          stripe-checkout.spec.ts
+          stripe-webhook.spec.ts
+          customer-portal.spec.ts
+          quote-creation.spec.ts
+          support-ticket.spec.ts
+          admin-blocked.spec.ts
+          smoke.spec.ts
+
+  e2e-auth:
+    name: E2E auth-dependent
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Soft-fail until Clerk E2E secrets are configured in the repo.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @noirroutes/web exec playwright install --with-deps chromium
+      - name: Run auth-dependent Playwright
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_NAME: NoirRoutes
+          APP_ENV: PREVIEW
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          E2E_CLERK_TEST_USER_EMAIL: ${{ secrets.E2E_CLERK_TEST_USER_EMAIL }}
+          E2E_CLERK_TEST_USER_PASSWORD: ${{ secrets.E2E_CLERK_TEST_USER_PASSWORD }}
+        run: >
+          pnpm --filter @noirroutes/web exec playwright test
+          auth-signup.spec.ts
+          auth-login.spec.ts
+          org-creation.spec.ts
+          projects-crud.spec.ts
+          subscription-access.spec.ts
+          invoice-creation.spec.ts

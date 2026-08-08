@@ -1,0 +1,233 @@
+{
+  "brand": {
+    "name": "NoirRoutes",
+    "slogan": "Create. Automate. Scale.",
+    "domains": "noirroutes.com"
+  },
+  "nav": {
+    "platform": "Platform",
+    "studio": "Studio",
+    "pricing": "Pricing",
+    "products": "Products",
+    "services": "Services",
+    "caseStudies": "Case studies",
+    "why": "Why NoirRoutes",
+    "faq": "FAQ",
+    "support": "Support",
+    "requestQuote": "Request a quote",
+    "signIn": "Sign in",
+    "signUp": "Start free",
+    "dashboard": "Dashboard",
+    "home": "Home"
+  },
+  "home": {
+    "title": "The AI platform that builds, automates, and scales your business",
+    "subtitle": "NoirRoutes combines a self-serve SaaS platform with an expert Studio — so you can create websites, SEO, chatbots, and growth systems without rebuilding from scratch.",
+    "ctaPrimary": "View pricing",
+    "ctaSecondary": "Explore the platform",
+    "feature1Title": "Build with AI",
+    "feature1Body": "Generate projects, pages, and campaigns with plan-based limits that grow with you.",
+    "feature2Title": "Automate operations",
+    "feature2Body": "Billing, onboarding, support, and entitlements wired for real subscriptions — not demos.",
+    "feature3Title": "Scale with Studio",
+    "feature3Body": "Need a custom website, app, or launch package? NoirRoutes Studio delivers on quote.",
+    "socialProof": "Built for founders, agencies, and enterprises ready to ship."
+  },
+  "platform": {
+    "title": "One platform. Every growth module.",
+    "subtitle": "Website builder, SEO, chatbots, business CRM, and social distribution — gated by your plan, ready to expand.",
+    "modulesTitle": "Modules",
+    "modulesBody": "Start with what you need. Upgrade when your usage and team grow."
+  },
+  "studio": {
+    "title": "NoirRoutes Studio",
+    "subtitle": "When you want experts to build it for you — websites, apps, SEO, automation, branding, and custom digital systems.",
+    "cta": "Request a quote"
+  },
+  "pricing": {
+    "title": "Pricing that scales with you",
+    "subtitle": "Six commercial paths — self-serve plans, Studio services, packages, automation, agencies, and enterprise.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "section1": "Use the platform yourself",
+    "section2": "Let NoirRoutes build it for you",
+    "section3": "Launch faster with a package",
+    "section4": "Scale with automation",
+    "section5": "For agencies",
+    "section6": "Enterprise / custom",
+    "checkout": "Subscribe",
+    "contact": "Contact sales",
+    "quote": "Request quote",
+    "loading": "Loading catalog…",
+    "empty": "No plans available yet. Check back soon.",
+    "perMonth": "/mo",
+    "perYear": "/yr",
+    "popular": "Popular",
+    "enterprise": "Custom"
+  },
+  "caseStudies": {
+    "title": "Case studies",
+    "subtitle": "Selected outcomes from NoirRoutes Platform and Studio engagements.",
+    "empty": "Published case studies will appear here as we ship public references."
+  },
+  "why": {
+    "title": "Why NoirRoutes",
+    "subtitle": "A serious commercial SaaS — not a mockup. Real billing, real entitlements, real Studio delivery.",
+    "point1": "Create — ship sites, apps, and content systems faster",
+    "point2": "Automate — subscriptions, onboarding, and support that run themselves",
+    "point3": "Scale — plans, add-ons, and agency tools that grow with revenue"
+  },
+  "products": {
+    "websiteBuilder": {
+      "title": "AI Website Builder",
+      "body": "Generate and manage websites with plan-based page limits. Full builder ships in a later phase; entitlements are live today."
+    },
+    "seoEngine": {
+      "title": "AI SEO Engine",
+      "body": "Campaigns, audits, and keyword tracking scoped to your organization. Engine workflows unlock in Phase 3."
+    },
+    "chatbotBuilder": {
+      "title": "AI Chatbot Builder",
+      "body": "Conversational assistants with conversation limits tied to your plan. Builder UI arrives in Phase 3."
+    },
+    "business": {
+      "title": "Business Management",
+      "body": "Clients, pipeline, and invoices for growing teams. Available on Growth+ plans."
+    },
+    "social": {
+      "title": "Social Distribution",
+      "body": "Multi-platform publishing architecture is ready; OAuth providers connect when each network is certified — no fake Connect buttons."
+    }
+  },
+  "services": {
+    "web": {
+      "title": "Web development",
+      "body": "Production websites and web apps delivered by NoirRoutes Studio."
+    },
+    "app": {
+      "title": "App development",
+      "body": "iOS, Android, and hybrid apps scoped on quote."
+    },
+    "seo": {
+      "title": "SEO services",
+      "body": "Ongoing or project-based SEO execution."
+    },
+    "automation": {
+      "title": "Automation",
+      "body": "Process automation that connects your tools and workflows."
+    },
+    "redesign": {
+      "title": "Website redesign",
+      "body": "Full redesigns with migration and launch support."
+    }
+  },
+  "quote": {
+    "title": "Request a quote",
+    "subtitle": "Tell us what you need. Our Studio team responds with a scoped proposal.",
+    "name": "Full name",
+    "email": "Work email",
+    "company": "Company",
+    "service": "Service type",
+    "description": "Project details",
+    "submit": "Send request",
+    "success": "Request received. We will email you shortly.",
+    "error": "Could not submit. Please try again."
+  },
+  "faq": {
+    "title": "FAQ",
+    "q1": "Is pricing hardcoded?",
+    "a1": "No. Plans, prices, limits, and features load from our commerce catalog API backed by Supabase.",
+    "q2": "Can I cancel anytime?",
+    "a2": "Yes. Manage billing in the Stripe Customer Portal from your dashboard.",
+    "q3": "Do you offer custom work?",
+    "a3": "Yes — NoirRoutes Studio delivers websites, apps, SEO, and custom systems on quote.",
+    "q4": "Which languages are supported?",
+    "a4": "English and French for marketing and product UI in Phase 1."
+  },
+  "supportPage": {
+    "title": "Support",
+    "subtitle": "Signed-in customers can open tickets from the dashboard. For pre-sales, use Request a quote or email support@noirroutes.com."
+  },
+  "legal": {
+    "termsTitle": "Terms of Service",
+    "privacyTitle": "Privacy Policy",
+    "termsBody": "By using NoirRoutes (noirroutes.com / app.noirroutes.com) you agree to these terms. Subscriptions are billed via Stripe. You are responsible for account access and lawful use of the platform. Studio work is governed by the accepted quote or contract.",
+    "privacyBody": "We process account data (via Clerk), billing data (via Stripe), and application data (via Supabase) to provide the service. Analytics may use PostHog and error monitoring via Sentry. Contact privacy@noirroutes.com for data requests."
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "rights": "© NoirRoutes. All rights reserved."
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "projects": "Projects",
+    "websiteBuilder": "Website builder",
+    "seo": "SEO",
+    "chatbots": "Chatbots",
+    "business": "Business",
+    "social": "Social",
+    "quotes": "Quotes",
+    "invoices": "Invoices",
+    "subscriptions": "Subscriptions",
+    "billing": "Billing",
+    "files": "Files",
+    "support": "Support",
+    "settings": "Settings",
+    "team": "Team",
+    "empty": "Nothing here yet.",
+    "laterPhase": "This module is available in a later phase. Your plan entitlements are already tracked.",
+    "gated": "Your current plan does not include this feature. Upgrade from Pricing or Billing.",
+    "createProject": "Create project",
+    "projectName": "Project name",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "createInvoice": "Create draft invoice",
+    "sendMessage": "Send message",
+    "openPortal": "Open billing portal",
+    "tickets": "Support tickets",
+    "newTicket": "New ticket",
+    "noOrg": "No organization linked yet. Complete onboarding or create a workspace in Clerk."
+  },
+  "onboarding": {
+    "title": "Welcome to NoirRoutes",
+    "subtitle": "A few details so we can tailor your workspace.",
+    "orgName": "Organization name",
+    "industry": "Industry",
+    "goals": "Primary goals",
+    "next": "Continue",
+    "finish": "Finish setup",
+    "success": "Onboarding complete."
+  },
+  "admin": {
+    "title": "Admin",
+    "overview": "Overview",
+    "plans": "Plans",
+    "users": "Users",
+    "organizations": "Organizations",
+    "subscriptions": "Subscriptions",
+    "projects": "Projects",
+    "quotes": "Quotes",
+    "invoices": "Invoices",
+    "serviceRequests": "Service requests",
+    "supportTickets": "Support tickets",
+    "aiUsage": "AI usage",
+    "socialLogs": "Social logs",
+    "errors": "Errors",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "denied": "You are not a platform admin."
+  },
+  "portal": {
+    "title": "Client portal",
+    "subtitle": "Shared quotes, invoices, and files for clients — Phase 1 shell."
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "back": "Back",
+    "learnMore": "Learn more"
+  }
+}

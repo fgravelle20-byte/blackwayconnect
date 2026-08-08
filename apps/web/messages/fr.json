@@ -1,0 +1,233 @@
+{
+  "brand": {
+    "name": "NoirRoutes",
+    "slogan": "Créer. Automatiser. Propulser.",
+    "domains": "noirroutes.com"
+  },
+  "nav": {
+    "platform": "Plateforme",
+    "studio": "Studio",
+    "pricing": "Tarifs",
+    "products": "Produits",
+    "services": "Services",
+    "caseStudies": "Réalisations",
+    "why": "Pourquoi NoirRoutes",
+    "faq": "FAQ",
+    "support": "Support",
+    "requestQuote": "Demander une soumission",
+    "signIn": "Connexion",
+    "signUp": "Commencer",
+    "dashboard": "Tableau de bord",
+    "home": "Accueil"
+  },
+  "home": {
+    "title": "La plateforme IA qui crée, automatise et propulse votre entreprise",
+    "subtitle": "NoirRoutes combine une plateforme SaaS en libre-service et un Studio d'experts — sites, SEO, chatbots et systèmes de croissance sans tout reconstruire.",
+    "ctaPrimary": "Voir les tarifs",
+    "ctaSecondary": "Découvrir la plateforme",
+    "feature1Title": "Créer avec l'IA",
+    "feature1Body": "Générez projets, pages et campagnes avec des limites liées à votre forfait.",
+    "feature2Title": "Automatiser les opérations",
+    "feature2Body": "Facturation, onboarding et droits d'accès conçus pour de vrais abonnements.",
+    "feature3Title": "Scaler avec le Studio",
+    "feature3Body": "Besoin d'un site, d'une app ou d'un package de lancement ? Le Studio NoirRoutes livre sur devis.",
+    "socialProof": "Conçu pour fondateurs, agences et entreprises prêtes à livrer."
+  },
+  "platform": {
+    "title": "Une plateforme. Tous les modules de croissance.",
+    "subtitle": "Créateur de sites, SEO, chatbots, CRM et distribution sociale — selon votre forfait.",
+    "modulesTitle": "Modules",
+    "modulesBody": "Commencez avec l'essentiel. Évoluez quand votre usage et votre équipe grandissent."
+  },
+  "studio": {
+    "title": "NoirRoutes Studio",
+    "subtitle": "Quand vous voulez que des experts le construisent pour vous — sites, apps, SEO, automatisation, branding et systèmes sur mesure.",
+    "cta": "Demander une soumission"
+  },
+  "pricing": {
+    "title": "Des tarifs qui évoluent avec vous",
+    "subtitle": "Six approches commerciales — forfaits, Studio, packages, automatisation, agences et entreprise.",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "section1": "Utilisez la plateforme vous-même",
+    "section2": "Laissez NoirRoutes construire pour vous",
+    "section3": "Lancez plus vite avec un package",
+    "section4": "Scalez avec l'automatisation",
+    "section5": "Pour les agences",
+    "section6": "Entreprise / sur mesure",
+    "checkout": "S'abonner",
+    "contact": "Contacter les ventes",
+    "quote": "Demander un devis",
+    "loading": "Chargement du catalogue…",
+    "empty": "Aucun forfait disponible pour le moment.",
+    "perMonth": "/mois",
+    "perYear": "/an",
+    "popular": "Populaire",
+    "enterprise": "Sur mesure"
+  },
+  "caseStudies": {
+    "title": "Réalisations",
+    "subtitle": "Résultats sélectionnés de la plateforme et du Studio NoirRoutes.",
+    "empty": "Les études de cas publiques apparaîtront ici."
+  },
+  "why": {
+    "title": "Pourquoi NoirRoutes",
+    "subtitle": "Un SaaS commercial sérieux — pas une maquette. Vraie facturation, vrais droits, vrai Studio.",
+    "point1": "Créer — livrez sites, apps et contenus plus vite",
+    "point2": "Automatiser — abonnements, onboarding et support qui tournent",
+    "point3": "Propulser — forfaits, add-ons et outils agence qui suivent le revenu"
+  },
+  "products": {
+    "websiteBuilder": {
+      "title": "Créateur de sites IA",
+      "body": "Générez et gérez des sites avec des limites de pages par forfait. Le builder complet arrive dans une phase ultérieure."
+    },
+    "seoEngine": {
+      "title": "Moteur SEO IA",
+      "body": "Campagnes, audits et mots-clés liés à votre organisation. Workflows en Phase 3."
+    },
+    "chatbotBuilder": {
+      "title": "Créateur de chatbots IA",
+      "body": "Assistants conversationnels avec limites de conversations. UI en Phase 3."
+    },
+    "business": {
+      "title": "Gestion d'entreprise",
+      "body": "Clients, pipeline et factures. Disponible dès Growth+."
+    },
+    "social": {
+      "title": "Distribution sociale",
+      "body": "Architecture multi-plateformes prête ; OAuth uniquement quand chaque réseau est certifié — aucun faux bouton Connect."
+    }
+  },
+  "services": {
+    "web": {
+      "title": "Développement web",
+      "body": "Sites et applications web livrés par le Studio."
+    },
+    "app": {
+      "title": "Développement d'apps",
+      "body": "Apps iOS, Android et hybrides sur devis."
+    },
+    "seo": {
+      "title": "Services SEO",
+      "body": "SEO ponctuel ou récurrent."
+    },
+    "automation": {
+      "title": "Automatisation",
+      "body": "Automatisez vos processus et outils."
+    },
+    "redesign": {
+      "title": "Refonte de site",
+      "body": "Refonte complète avec migration et lancement."
+    }
+  },
+  "quote": {
+    "title": "Demander une soumission",
+    "subtitle": "Décrivez votre besoin. Le Studio répond avec une proposition cadrée.",
+    "name": "Nom complet",
+    "email": "Courriel professionnel",
+    "company": "Entreprise",
+    "service": "Type de service",
+    "description": "Détails du projet",
+    "submit": "Envoyer",
+    "success": "Demande reçue. Nous vous écrirons sous peu.",
+    "error": "Échec de l'envoi. Réessayez."
+  },
+  "faq": {
+    "title": "FAQ",
+    "q1": "Les prix sont-ils codés en dur ?",
+    "a1": "Non. Forfaits, prix, limites et fonctionnalités viennent de l'API catalogue commerce (Supabase).",
+    "q2": "Puis-je annuler ?",
+    "a2": "Oui. Gérez la facturation via le portail Stripe depuis le tableau de bord.",
+    "q3": "Travaux sur mesure ?",
+    "a3": "Oui — le Studio NoirRoutes livre sur devis.",
+    "q4": "Langues ?",
+    "a4": "Anglais et français pour le marketing et l'UI en Phase 1."
+  },
+  "supportPage": {
+    "title": "Support",
+    "subtitle": "Les clients connectés ouvrent des tickets depuis le tableau de bord. Prévente : soumission ou support@noirroutes.com."
+  },
+  "legal": {
+    "termsTitle": "Conditions d'utilisation",
+    "privacyTitle": "Politique de confidentialité",
+    "termsBody": "En utilisant NoirRoutes (noirroutes.com / app.noirroutes.com), vous acceptez ces conditions. Les abonnements sont facturés via Stripe. Vous êtes responsable de l'accès au compte et d'une utilisation légale. Le Studio est régi par le devis ou contrat accepté.",
+    "privacyBody": "Nous traitons les données de compte (Clerk), de facturation (Stripe) et applicatives (Supabase). Analytics via PostHog et erreurs via Sentry. Contact : privacy@noirroutes.com."
+  },
+  "footer": {
+    "product": "Produit",
+    "company": "Entreprise",
+    "legal": "Légal",
+    "rights": "© NoirRoutes. Tous droits réservés."
+  },
+  "dashboard": {
+    "overview": "Vue d'ensemble",
+    "projects": "Projets",
+    "websiteBuilder": "Créateur de sites",
+    "seo": "SEO",
+    "chatbots": "Chatbots",
+    "business": "Affaires",
+    "social": "Social",
+    "quotes": "Devis",
+    "invoices": "Factures",
+    "subscriptions": "Abonnements",
+    "billing": "Facturation",
+    "files": "Fichiers",
+    "support": "Support",
+    "settings": "Paramètres",
+    "team": "Équipe",
+    "empty": "Rien pour le moment.",
+    "laterPhase": "Ce module arrive dans une phase ultérieure. Vos droits de forfait sont déjà suivis.",
+    "gated": "Votre forfait n'inclut pas cette fonctionnalité. Passez par Tarifs ou Facturation.",
+    "createProject": "Créer un projet",
+    "projectName": "Nom du projet",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "createInvoice": "Créer une facture brouillon",
+    "sendMessage": "Envoyer le message",
+    "openPortal": "Ouvrir le portail de facturation",
+    "tickets": "Tickets support",
+    "newTicket": "Nouveau ticket",
+    "noOrg": "Aucune organisation liée. Terminez l'onboarding ou créez un espace dans Clerk."
+  },
+  "onboarding": {
+    "title": "Bienvenue sur NoirRoutes",
+    "subtitle": "Quelques détails pour configurer votre espace.",
+    "orgName": "Nom de l'organisation",
+    "industry": "Industrie",
+    "goals": "Objectifs principaux",
+    "next": "Continuer",
+    "finish": "Terminer",
+    "success": "Onboarding terminé."
+  },
+  "admin": {
+    "title": "Admin",
+    "overview": "Vue d'ensemble",
+    "plans": "Forfaits",
+    "users": "Utilisateurs",
+    "organizations": "Organisations",
+    "subscriptions": "Abonnements",
+    "projects": "Projets",
+    "quotes": "Devis",
+    "invoices": "Factures",
+    "serviceRequests": "Demandes de service",
+    "supportTickets": "Tickets",
+    "aiUsage": "Usage IA",
+    "socialLogs": "Logs sociaux",
+    "errors": "Erreurs",
+    "analytics": "Analytique",
+    "settings": "Paramètres",
+    "denied": "Vous n'êtes pas administrateur plateforme."
+  },
+  "portal": {
+    "title": "Portail client",
+    "subtitle": "Devis, factures et fichiers partagés — coquille Phase 1."
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "back": "Retour",
+    "learnMore": "En savoir plus"
+  }
+}
