@@ -5,6 +5,7 @@ from sentry_sdk.integrations.starlette import StarletteIntegration
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 PORT = 8080
@@ -23,6 +24,10 @@ if sentry_dsn and "project-id" not in sentry_dsn:
 app = FastAPI(title=settings.APP_NAME, version=settings.VERSION)
 templates = Jinja2Templates(directory="templates")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],)
+
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+if os.path.isdir(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 try:
     from auth.router import router as auth_router
