@@ -1,7 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { orgHasFeature } from "@/lib/permissions";
+import { orgCanAccessModule } from "@/lib/permissions";
 import { resolveOrganization } from "@/lib/auth/session";
-import { PhaseGate } from "@/components/shared/phase-gate";
+import { EmptyState } from "@/components/shared/empty-state";
+import { BusinessClient } from "@/components/dashboard/business-client";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -11,17 +12,19 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   let hasFeature = false;
   try {
     const org = await resolveOrganization();
-    if (org) hasFeature = await orgHasFeature(org.id, "has_business_management");
+    if (org) hasFeature = await orgCanAccessModule(org.id, "has_business_management");
   } catch {
     hasFeature = false;
   }
 
   return (
-    <PhaseGate
-      title={t("business")}
-      laterPhase={t("laterPhase")}
-      gated={t("gated")}
-      hasFeature={hasFeature}
-    />
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">{t("business")}</h2>
+      {hasFeature ? (
+        <BusinessClient />
+      ) : (
+        <EmptyState title={t("gated")} description={t("gatedModuleHint")} />
+      )}
+    </div>
   );
 }

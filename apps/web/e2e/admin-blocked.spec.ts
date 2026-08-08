@@ -5,7 +5,7 @@ test.describe("admin access control", () => {
   test("admin is blocked for anonymous users", async ({ page }) => {
     await page.goto("/en/admin");
     await expect(page).toHaveURL(
-      /sign-in|clerk|accounts\.dev|dashboard|admin|Authentication is not configured/,
+      /sign-in|clerk|accounts\.dev|dashboard|admin|onboarding|Authentication is not configured/,
     );
   });
 

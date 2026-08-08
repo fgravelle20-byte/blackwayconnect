@@ -19,4 +19,6 @@
   --input: #2a2a2a;
   --ring: #dc2626;
   --radius: 0.5rem;
+  --font-noirroutes-sans: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-noirroutes-mono: "IBM Plex Mono", ui-monospace, monospace;
 }

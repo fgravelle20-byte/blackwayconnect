@@ -54,26 +54,38 @@ CROSS JOIN (VALUES
   ('starter', 'max_ai_generations_per_month', 50), ('starter', 'max_seo_campaigns', 1), ('starter', 'max_seo_audits_per_month', 2),
   ('starter', 'max_chatbots', 1), ('starter', 'max_chatbot_conversations', 100), ('starter', 'max_social_accounts', 0),
   ('starter', 'max_social_posts_per_month', 0), ('starter', 'max_team_members', 1), ('starter', 'max_storage_mb', 500), ('starter', 'max_agency_clients', 0),
+  ('starter', 'max_leads', 100), ('starter', 'max_stores', 0), ('starter', 'max_products', 0),
+  ('starter', 'max_phone_assistants', 0), ('starter', 'max_review_campaigns', 1),
   ('growth', 'max_projects', 3), ('growth', 'max_websites', 2), ('growth', 'max_pages_per_website', 15),
   ('growth', 'max_ai_generations_per_month', 200), ('growth', 'max_seo_campaigns', 3), ('growth', 'max_seo_audits_per_month', 10),
   ('growth', 'max_chatbots', 2), ('growth', 'max_chatbot_conversations', 500), ('growth', 'max_social_accounts', 2),
   ('growth', 'max_social_posts_per_month', 20), ('growth', 'max_team_members', 3), ('growth', 'max_storage_mb', 2000), ('growth', 'max_agency_clients', 0),
+  ('growth', 'max_leads', 500), ('growth', 'max_stores', 1), ('growth', 'max_products', 50),
+  ('growth', 'max_phone_assistants', 1), ('growth', 'max_review_campaigns', 3),
   ('business', 'max_projects', 10), ('business', 'max_websites', 5), ('business', 'max_pages_per_website', 50),
   ('business', 'max_ai_generations_per_month', 1000), ('business', 'max_seo_campaigns', 10), ('business', 'max_seo_audits_per_month', 30),
   ('business', 'max_chatbots', 5), ('business', 'max_chatbot_conversations', 2000), ('business', 'max_social_accounts', 5),
   ('business', 'max_social_posts_per_month', 100), ('business', 'max_team_members', 8), ('business', 'max_storage_mb', 10000), ('business', 'max_agency_clients', 0),
+  ('business', 'max_leads', 2000), ('business', 'max_stores', 2), ('business', 'max_products', 200),
+  ('business', 'max_phone_assistants', 2), ('business', 'max_review_campaigns', 10),
   ('scale', 'max_projects', 25), ('scale', 'max_websites', 15), ('scale', 'max_pages_per_website', 100),
   ('scale', 'max_ai_generations_per_month', 5000), ('scale', 'max_seo_campaigns', 25), ('scale', 'max_seo_audits_per_month', 100),
   ('scale', 'max_chatbots', 10), ('scale', 'max_chatbot_conversations', 10000), ('scale', 'max_social_accounts', 15),
   ('scale', 'max_social_posts_per_month', 500), ('scale', 'max_team_members', 15), ('scale', 'max_storage_mb', 50000), ('scale', 'max_agency_clients', 5),
+  ('scale', 'max_leads', 10000), ('scale', 'max_stores', 5), ('scale', 'max_products', 1000),
+  ('scale', 'max_phone_assistants', 5), ('scale', 'max_review_campaigns', 25),
   ('agency', 'max_projects', 50), ('agency', 'max_websites', 30), ('agency', 'max_pages_per_website', -1),
   ('agency', 'max_ai_generations_per_month', 20000), ('agency', 'max_seo_campaigns', 50), ('agency', 'max_seo_audits_per_month', -1),
   ('agency', 'max_chatbots', 25), ('agency', 'max_chatbot_conversations', 50000), ('agency', 'max_social_accounts', 50),
   ('agency', 'max_social_posts_per_month', 2000), ('agency', 'max_team_members', 25), ('agency', 'max_storage_mb', 100000), ('agency', 'max_agency_clients', -1),
+  ('agency', 'max_leads', 50000), ('agency', 'max_stores', 15), ('agency', 'max_products', 5000),
+  ('agency', 'max_phone_assistants', 15), ('agency', 'max_review_campaigns', 50),
   ('enterprise', 'max_projects', -1), ('enterprise', 'max_websites', -1), ('enterprise', 'max_pages_per_website', -1),
   ('enterprise', 'max_ai_generations_per_month', -1), ('enterprise', 'max_seo_campaigns', -1), ('enterprise', 'max_seo_audits_per_month', -1),
   ('enterprise', 'max_chatbots', -1), ('enterprise', 'max_chatbot_conversations', -1), ('enterprise', 'max_social_accounts', -1),
-  ('enterprise', 'max_social_posts_per_month', -1), ('enterprise', 'max_team_members', -1), ('enterprise', 'max_storage_mb', -1), ('enterprise', 'max_agency_clients', -1)
+  ('enterprise', 'max_social_posts_per_month', -1), ('enterprise', 'max_team_members', -1), ('enterprise', 'max_storage_mb', -1), ('enterprise', 'max_agency_clients', -1),
+  ('enterprise', 'max_leads', -1), ('enterprise', 'max_stores', -1), ('enterprise', 'max_products', -1),
+  ('enterprise', 'max_phone_assistants', -1), ('enterprise', 'max_review_campaigns', -1)
 ) AS l(tier, limit_key, value_int)
 WHERE p.tier::text = l.tier
 ON CONFLICT (plan_id, limit_key) DO NOTHING;
@@ -86,26 +98,38 @@ CROSS JOIN (VALUES
   ('starter', 'has_client_portal', false), ('starter', 'has_business_management', false), ('starter', 'has_social_distribution', false),
   ('starter', 'has_advanced_analytics', false), ('starter', 'has_white_label', false), ('starter', 'has_agency_tools', false),
   ('starter', 'has_priority_support', false), ('starter', 'has_custom_integrations', false),
+  ('starter', 'has_lead_management', true), ('starter', 'has_ecommerce', false),
+  ('starter', 'has_phone_assistance', false), ('starter', 'has_google_reviews', true),
   ('growth', 'has_website_builder', true), ('growth', 'has_seo', true), ('growth', 'has_chatbots', true),
   ('growth', 'has_client_portal', false), ('growth', 'has_business_management', true), ('growth', 'has_social_distribution', false),
   ('growth', 'has_advanced_analytics', false), ('growth', 'has_white_label', false), ('growth', 'has_agency_tools', false),
   ('growth', 'has_priority_support', false), ('growth', 'has_custom_integrations', false),
+  ('growth', 'has_lead_management', true), ('growth', 'has_ecommerce', true),
+  ('growth', 'has_phone_assistance', true), ('growth', 'has_google_reviews', true),
   ('business', 'has_website_builder', true), ('business', 'has_seo', true), ('business', 'has_chatbots', true),
   ('business', 'has_client_portal', true), ('business', 'has_business_management', true), ('business', 'has_social_distribution', false),
   ('business', 'has_advanced_analytics', true), ('business', 'has_white_label', false), ('business', 'has_agency_tools', false),
   ('business', 'has_priority_support', false), ('business', 'has_custom_integrations', false),
+  ('business', 'has_lead_management', true), ('business', 'has_ecommerce', true),
+  ('business', 'has_phone_assistance', true), ('business', 'has_google_reviews', true),
   ('scale', 'has_website_builder', true), ('scale', 'has_seo', true), ('scale', 'has_chatbots', true),
   ('scale', 'has_client_portal', true), ('scale', 'has_business_management', true), ('scale', 'has_social_distribution', true),
   ('scale', 'has_advanced_analytics', true), ('scale', 'has_white_label', false), ('scale', 'has_agency_tools', false),
   ('scale', 'has_priority_support', true), ('scale', 'has_custom_integrations', false),
+  ('scale', 'has_lead_management', true), ('scale', 'has_ecommerce', true),
+  ('scale', 'has_phone_assistance', true), ('scale', 'has_google_reviews', true),
   ('agency', 'has_website_builder', true), ('agency', 'has_seo', true), ('agency', 'has_chatbots', true),
   ('agency', 'has_client_portal', true), ('agency', 'has_business_management', true), ('agency', 'has_social_distribution', true),
   ('agency', 'has_advanced_analytics', true), ('agency', 'has_white_label', true), ('agency', 'has_agency_tools', true),
   ('agency', 'has_priority_support', true), ('agency', 'has_custom_integrations', false),
+  ('agency', 'has_lead_management', true), ('agency', 'has_ecommerce', true),
+  ('agency', 'has_phone_assistance', true), ('agency', 'has_google_reviews', true),
   ('enterprise', 'has_website_builder', true), ('enterprise', 'has_seo', true), ('enterprise', 'has_chatbots', true),
   ('enterprise', 'has_client_portal', true), ('enterprise', 'has_business_management', true), ('enterprise', 'has_social_distribution', true),
   ('enterprise', 'has_advanced_analytics', true), ('enterprise', 'has_white_label', true), ('enterprise', 'has_agency_tools', true),
-  ('enterprise', 'has_priority_support', true), ('enterprise', 'has_custom_integrations', true)
+  ('enterprise', 'has_priority_support', true), ('enterprise', 'has_custom_integrations', true),
+  ('enterprise', 'has_lead_management', true), ('enterprise', 'has_ecommerce', true),
+  ('enterprise', 'has_phone_assistance', true), ('enterprise', 'has_google_reviews', true)
 ) AS f(tier, feature_key, enabled)
 WHERE p.tier::text = f.tier
 ON CONFLICT (plan_id, feature_key) DO NOTHING;
@@ -160,6 +184,7 @@ SELECT
     WHEN 'extra_social_posts' THEN 1200
     WHEN 'extra_team_members' THEN 1000
     WHEN 'extra_storage' THEN 900
+    WHEN 'custom_domain' THEN 1500
     WHEN 'priority_support' THEN 4900
     WHEN 'white_label' THEN 9900
     WHEN 'advanced_analytics' THEN 3900

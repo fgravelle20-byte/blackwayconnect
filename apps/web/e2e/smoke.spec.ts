@@ -22,7 +22,10 @@ test("login page loads", async ({ page }) => {
 
 test("dashboard protected route", async ({ page }) => {
   await page.goto("/en/dashboard");
-  await expect(page).toHaveURL(/sign-in|clerk|accounts\.dev|dashboard/);
+  // Clerk redirect, fail-closed 503, or local/dev without keys may still render shell.
+  await expect(page).toHaveURL(
+    /sign-in|clerk|accounts\.dev|dashboard|onboarding|Authentication is not configured/,
+  );
 });
 
 test("request quote page loads", async ({ page }) => {
@@ -33,6 +36,10 @@ test("request quote page loads", async ({ page }) => {
 test("health endpoint", async ({ request }) => {
   const res = await request.get("/api/health");
   expect(res.ok()).toBeTruthy();
+  const body = await res.json();
+  expect(body.ok).toBe(true);
+  expect(body.service).toBe("NoirRoutes");
+  expect(body.integrations).toBeTruthy();
 });
 
 test("platform page loads", async ({ page }) => {
@@ -62,12 +69,22 @@ test("privacy page loads", async ({ page }) => {
 
 test("admin route blocked without auth", async ({ page }) => {
   await page.goto("/en/admin");
-  await expect(page).toHaveURL(/sign-in|clerk|accounts\.dev|admin|dashboard/);
+  // Unauthenticated visitors must not land on a working admin plans editor.
+  await expect(page).toHaveURL(
+    /sign-in|clerk|accounts\.dev|admin|dashboard|onboarding|Authentication is not configured/,
+  );
+  await expect(page.getByRole("heading", { name: /^Plans$/i })).toHaveCount(0);
 });
 
 test("why page loads", async ({ page }) => {
   await page.goto("/en/why-noirroutes");
   await expect(page.locator("body")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Why NoirRoutes/i })).toBeVisible();
+});
+
+test("legacy why-noirroutes redirects to why-noirroutes", async ({ page }) => {
+  await page.goto("/en/why-noirroutes");
+  await expect(page).toHaveURL(/why-noirroutes/);
 });
 
 test("catalog API responds", async ({ request }) => {

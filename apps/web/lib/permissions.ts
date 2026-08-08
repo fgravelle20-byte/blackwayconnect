@@ -71,16 +71,46 @@ export async function orgHasFeature(orgId: string, featureKey: string): Promise<
   if (!featureKey) return false;
   const supabase = createAdminSupabaseClient();
   const planId = await resolveOrgPlanId(orgId);
-  if (!planId) return false;
 
-  const { data: feature } = await supabase
-    .from("plan_features")
-    .select("enabled")
-    .eq("plan_id", planId)
-    .eq("feature_key", featureKey)
-    .maybeSingle();
+  if (planId) {
+    const { data: feature } = await supabase
+      .from("plan_features")
+      .select("enabled")
+      .eq("plan_id", planId)
+      .eq("feature_key", featureKey)
+      .maybeSingle();
+    if (feature?.enabled) return true;
+  }
 
-  return feature?.enabled ?? false;
+  // À-la-carte modules / packs: active customer_add_ons that unlock this feature
+  const { data: addOns } = await supabase
+    .from("customer_add_ons")
+    .select("add_ons(unlocks_feature)")
+    .eq("organization_id", orgId)
+    .eq("status", "active");
+
+  for (const row of addOns ?? []) {
+    const addon = row.add_ons as
+      | { unlocks_feature: string | null }
+      | { unlocks_feature: string | null }[]
+      | null;
+    const meta = Array.isArray(addon) ? addon[0] : addon;
+    if (meta?.unlocks_feature === featureKey) return true;
+  }
+
+  return false;
+}
+
+/** Feature flag OR positive plan/addon limit — used to open module UIs. */
+export async function orgCanAccessModule(
+  orgId: string,
+  featureKey: string,
+  limitKey?: string,
+): Promise<boolean> {
+  if (await orgHasFeature(orgId, featureKey)) return true;
+  if (!limitKey) return false;
+  const limit = await orgEffectiveLimit(orgId, limitKey);
+  return limit === -1 || limit > 0;
 }
 
 export async function getOrgLimit(orgId: string, limitKey: string): Promise<number> {

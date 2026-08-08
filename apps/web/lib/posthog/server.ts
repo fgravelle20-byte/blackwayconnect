@@ -17,7 +17,7 @@ export async function captureServerEvent(
         api_key: key,
         event,
         distinct_id: distinctId,
-        properties: { ...properties, $lib: "noirroutes-server" },
+        properties: { ...properties, $lib: "blackwayconnect-server" },
       }),
     });
   } catch {

@@ -6,10 +6,14 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", key: "overview" as const },
+  { href: "/dashboard/leads", key: "leads" as const },
   { href: "/dashboard/projects", key: "projects" as const },
   { href: "/dashboard/website-builder", key: "websiteBuilder" as const },
+  { href: "/dashboard/ecommerce", key: "ecommerce" as const },
   { href: "/dashboard/seo", key: "seo" as const },
   { href: "/dashboard/chatbots", key: "chatbots" as const },
+  { href: "/dashboard/phone-assistance", key: "phoneAssistance" as const },
+  { href: "/dashboard/google-reviews", key: "googleReviews" as const },
   { href: "/dashboard/business", key: "business" as const },
   { href: "/dashboard/social", key: "social" as const },
   { href: "/dashboard/quotes", key: "quotes" as const },

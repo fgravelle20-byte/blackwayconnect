@@ -21,22 +21,22 @@
     "home": "Accueil"
   },
   "home": {
-    "title": "La plateforme IA qui crée, automatise et propulse votre entreprise",
-    "subtitle": "NoirRoutes combine une plateforme SaaS en libre-service et un Studio d'experts — sites, SEO, chatbots et systèmes de croissance sans tout reconstruire.",
+    "title": "La plateforme IA autonome pour toute votre croissance",
+    "subtitle": "NoirRoutes n'est pas une brochure — c'est une plateforme intelligente qui crée sites, chatbots, assistance téléphonique, avis Google, boutiques en ligne, leads, SEO et social, puis les fait tourner de façon autonome.",
     "ctaPrimary": "Voir les tarifs",
-    "ctaSecondary": "Découvrir la plateforme",
-    "feature1Title": "Créer avec l'IA",
-    "feature1Body": "Générez projets, pages et campagnes avec des limites liées à votre forfait.",
-    "feature2Title": "Automatiser les opérations",
-    "feature2Body": "Facturation, onboarding et droits d'accès conçus pour de vrais abonnements.",
+    "ctaSecondary": "Demander une soumission",
+    "feature1Title": "Créer en autonomie",
+    "feature1Body": "Créateur de sites, chatbots, assistance téléphonique, boutique en ligne et workflows d'avis Google — un seul moteur connecté.",
+    "feature2Title": "Capturer chaque lead",
+    "feature2Body": "Les leads arrivent des formulaires, chatbots, téléphone, campagnes d'avis et devis — sans faux CRM.",
     "feature3Title": "Scaler avec le Studio",
-    "feature3Body": "Besoin d'un site, d'une app ou d'un package de lancement ? Le Studio NoirRoutes livre sur devis.",
-    "socialProof": "Conçu pour fondateurs, agences et entreprises prêtes à livrer."
+    "feature3Body": "Besoin d'experts pour un site, une app ou un package de lancement ? Le Studio NoirRoutes livre sur devis.",
+    "socialProof": "Conçu pour fondateurs, agences et entreprises qui veulent tourner sur l'IA — pas des démos."
   },
   "platform": {
-    "title": "Une plateforme. Tous les modules de croissance.",
-    "subtitle": "Créateur de sites, SEO, chatbots, CRM et distribution sociale — selon votre forfait.",
-    "modulesTitle": "Modules",
+    "title": "Une plateforme IA autonome. Tous les modules.",
+    "subtitle": "Site, chatbot, assistance téléphonique, avis Google, e-commerce, leads, SEO et social — selon votre forfait.",
+    "modulesTitle": "Modules autonomes",
     "modulesBody": "Commencez avec l'essentiel. Évoluez quand votre usage et votre équipe grandissent."
   },
   "studio": {
@@ -63,7 +63,10 @@
     "perMonth": "/mois",
     "perYear": "/an",
     "popular": "Populaire",
-    "enterprise": "Sur mesure"
+    "enterprise": "Sur mesure",
+    "modulesTitle": "Achetez un seul module",
+    "modulesSubtitle": "Pas besoin du forfait complet — activez Site, Chatbot, Boutique, Leads, Téléphone, Avis Google… à l'unité ou en packs.",
+    "buyModule": "Acheter ce module"
   },
   "caseStudies": {
     "title": "Réalisations",
@@ -80,7 +83,7 @@
   "products": {
     "websiteBuilder": {
       "title": "Créateur de sites IA",
-      "body": "Générez et gérez des sites avec des limites de pages par forfait. Le builder complet arrive dans une phase ultérieure."
+      "body": "Générez et gérez des sites avec des limites par forfait — scaffolding projet→site actif ; builder visuel complet par phases."
     },
     "seoEngine": {
       "title": "Moteur SEO IA",
@@ -88,7 +91,23 @@
     },
     "chatbotBuilder": {
       "title": "Créateur de chatbots IA",
-      "body": "Assistants conversationnels avec limites de conversations. UI en Phase 3."
+      "body": "Assistants conversationnels qui capturent des leads dans le module Leads. Limites selon le forfait."
+    },
+    "phoneAssistance": {
+      "title": "Assistance téléphonique",
+      "body": "Architecture d'agent vocal prête pour un fournisseur téléphonie. Statut integration_required tant qu'aucun provider n'est branché."
+    },
+    "googleReviews": {
+      "title": "Avis Google",
+      "body": "Workflows de réputation : campagnes de demandes et suggestions IA uniquement. Publication Google = API validée — jamais de faux avis."
+    },
+    "leads": {
+      "title": "Leads",
+      "body": "Intake de leads depuis formulaires, chatbots, téléphone, avis, devis et imports — CRUD réel, limité par forfait."
+    },
+    "ecommerce": {
+      "title": "Boutique en ligne / E-commerce Builder",
+      "body": "Boutiques et produits en CRUD réel. Paiement boutique = integration_required jusqu'à Stripe Connect / Checkout magasin — aucune fausse vente."
     },
     "business": {
       "title": "Gestion d'entreprise",
@@ -164,8 +183,12 @@
     "overview": "Vue d'ensemble",
     "projects": "Projets",
     "websiteBuilder": "Créateur de sites",
+    "ecommerce": "Boutique en ligne",
     "seo": "SEO",
     "chatbots": "Chatbots",
+    "phoneAssistance": "Assistance téléphonique",
+    "googleReviews": "Avis Google",
+    "leads": "Leads",
     "business": "Affaires",
     "social": "Social",
     "quotes": "Devis",
@@ -189,7 +212,81 @@
     "openPortal": "Ouvrir le portail de facturation",
     "tickets": "Tickets support",
     "newTicket": "Nouveau ticket",
-    "noOrg": "Aucune organisation liée. Terminez l'onboarding ou créez un espace dans Clerk."
+    "noOrg": "Aucune organisation liée. Terminez l'onboarding ou créez un espace dans Clerk.",
+    "setupRequired": "Authentification non configurée. Collez vos clés Clerk dans apps/web/.env.local, puis ouvrez Setup.",
+    "openSetup": "Ouvrir la checklist setup",
+    "leadsHint": "CRUD leads réel. Sources : formulaires, chatbot, téléphone, avis Google, devis, manuel, import.",
+    "leadsEmpty": "Aucun lead. Créez-en un ou capturez via chatbot / demande de devis.",
+    "createLead": "Créer un lead",
+    "leadName": "Nom",
+    "leadEmail": "Courriel",
+    "leadCompany": "Entreprise",
+    "ecommerceHint": "Boutiques et produits réels. Paiement boutique = integration_required jusqu'à Stripe Checkout magasin — aucune fausse commande.",
+    "ecommerceEmpty": "Aucune boutique. Créez-en une pour ajouter des produits.",
+    "websiteHint": "CRUD sites réel (table websites + page home). Déploiement = planned jusqu'à wiring Cloudflare/Vercel.",
+    "websiteEmpty": "Aucun site. Créez-en un pour démarrer le builder.",
+    "websiteName": "Nom du site",
+    "createWebsite": "Créer un site",
+    "seoHint": "CRUD campagnes SEO réel (table seo_campaigns). Audits/scores viennent ensuite.",
+    "seoEmpty": "Aucune campagne SEO.",
+    "seoCampaignName": "Nom de la campagne",
+    "createSeoCampaign": "Créer une campagne",
+    "chatbotsHint": "CRUD chatbots tenant réel (table chatbots). Distinct du chatbot conversion marketing.",
+    "chatbotsEmpty": "Aucun chatbot. Créez-en un pour votre organisation.",
+    "chatbotName": "Nom du chatbot",
+    "createChatbot": "Créer un chatbot",
+    "gatedModuleHint": "Achetez le module à l'unité ou un forfait qui l'inclut (Facturation / Tarifs).",
+    "createStore": "Créer une boutique",
+    "storeName": "Nom de la boutique",
+    "createProduct": "Ajouter un produit",
+    "productName": "Nom du produit",
+    "manageProducts": "Produits",
+    "ordersEmpty": "Commandes : vides jusqu'à l'implémentation du Checkout magasin",
+    "phoneAssistanceHint": "CRUD assistants téléphoniques réel. Appels live = integration_required jusqu'à Twilio/Vapi.",
+    "phoneAssistanceProvider": "Branchez Twilio/Vapi (ou équivalent) pour activer. Appels et transcriptions restent vides d'ici là.",
+    "phoneAssistanceEmpty": "Aucun assistant. Créez-en un (draft) — la téléphonie reste integration_required.",
+    "phoneAssistantName": "Nom de l'assistant",
+    "createPhoneAssistant": "Créer un assistant",
+    "googleReviewsHint": "CRUD campagnes + demandes + suggestions IA (suggestion_only). Jamais d'auto-post Google.",
+    "googleReviewsPolicy": "Nous ne publions pas d'avis sur Google. Suggestions = suggestion_only jusqu'à API Google Business validée.",
+    "googleReviewsEmpty": "Aucune campagne. Statut par défaut : planned.",
+    "reviewCampaignName": "Nom de la campagne",
+    "createReviewCampaign": "Créer une campagne",
+    "addReviewRequest": "Demande d'avis",
+    "reviewCustomerContact": "Email / téléphone client",
+    "createReviewRequest": "Créer demande + suggestion",
+    "businessHint": "Clients + deals + pipeline (seed auto à l'onboarding). Factures via /dashboard/invoices.",
+    "clients": "Clients",
+    "clientsEmpty": "Aucun client.",
+    "clientName": "Nom du client",
+    "clientEmail": "Courriel client",
+    "createClient": "Créer un client",
+    "deals": "Deals",
+    "dealsEmpty": "Aucun deal.",
+    "dealTitle": "Titre du deal",
+    "createDeal": "Créer un deal"
+  },
+  "setup": {
+    "title": "Connectez vos moteurs",
+    "subtitle": "NoirRoutes exige de vraies clés Clerk + Stripe pour l'auth et la facturation. Supabase local : pnpm db:sync-env. Nous n'inventons jamais de credentials.",
+    "credentialsTitle": "Credentials requis",
+    "credentialsBody": "Collez les clés dans apps/web/.env.local. Les liens ouvrent les dashboards officiels — copiez vos propres clés test.",
+    "clerkPublishable": "Clé publique Clerk (pk_test_…)",
+    "clerkSecret": "Clé secrète Clerk (sk_test_…)",
+    "clerkWebhook": "Secret webhook Clerk (optionnel jusqu'aux webhooks)",
+    "stripePublishable": "Clé publique Stripe test (pk_test_…)",
+    "stripeSecret": "Clé secrète Stripe test (sk_test_…)",
+    "stripeWebhook": "Secret webhook Stripe (optionnel jusqu'aux webhooks)",
+    "supabaseUrl": "URL projet Supabase (local ou hébergé)",
+    "supabaseAnon": "JWT anon Supabase (supabase status -o env)",
+    "supabaseService": "JWT service_role Supabase (serveur seulement)",
+    "openDocs": "Ouvrir la source",
+    "configured": "Présent",
+    "missing": "Manquant",
+    "optional": "Optionnel",
+    "fileHint": "Éditez",
+    "restartHint": "puis redémarrez pnpm dev.",
+    "backHome": "Retour à l'accueil"
   },
   "onboarding": {
     "title": "Bienvenue sur NoirRoutes",

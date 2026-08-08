@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { createServiceRequest } from "@/modules/studio/service-request-service";
 import { sendTransactionalEmail, emailTemplates } from "@/lib/resend/client";
 
 const schema = z.object({
@@ -16,21 +16,14 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   try {
-    const sb = createAdminSupabaseClient();
-    const { data, error } = await sb
-      .from("service_requests")
-      .insert({
-        contact_name: parsed.data.contact_name,
-        contact_email: parsed.data.contact_email,
-        company: parsed.data.company ?? null,
-        service_type: parsed.data.service_type ?? null,
-        description: parsed.data.description,
-        locale: parsed.data.locale,
-        status: "new",
-      })
-      .select("*")
-      .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const data = await createServiceRequest({
+      contact_name: parsed.data.contact_name,
+      contact_email: parsed.data.contact_email,
+      company: parsed.data.company,
+      service_type: parsed.data.service_type,
+      description: parsed.data.description,
+      locale: parsed.data.locale,
+    });
     const tmpl = emailTemplates.quoteReceived();
     await sendTransactionalEmail({ to: parsed.data.contact_email, ...tmpl }).catch(() => undefined);
     return NextResponse.json({ request: data });

@@ -3,9 +3,17 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 export const revalidate = 60;
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const url = new URL(req.url);
+    const publicOnly = url.searchParams.get("public") !== "0";
+
     const sb = createAdminSupabaseClient();
+    let plansQuery = sb.from("plans").select("*").eq("is_active", true).order("sort_order");
+    if (publicOnly) {
+      plansQuery = plansQuery.eq("is_public", true);
+    }
+
     const [
       { data: plans, error: plansError },
       { data: prices },
@@ -15,7 +23,7 @@ export async function GET() {
       { data: addOnPrices },
       { data: offers },
     ] = await Promise.all([
-      sb.from("plans").select("*").eq("is_active", true).order("sort_order"),
+      plansQuery,
       sb.from("plan_prices").select("*").eq("is_active", true),
       sb.from("plan_features").select("*"),
       sb.from("plan_limits").select("*"),

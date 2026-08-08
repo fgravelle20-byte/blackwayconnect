@@ -1,7 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getOrgLimit } from "@/lib/permissions";
+import { orgCanAccessModule } from "@/lib/permissions";
 import { resolveOrganization } from "@/lib/auth/session";
-import { PhaseGate } from "@/components/shared/phase-gate";
+import { EmptyState } from "@/components/shared/empty-state";
+import { SeoClient } from "@/components/dashboard/seo-client";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -12,19 +13,20 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   try {
     const org = await resolveOrganization();
     if (org) {
-      const limit = await getOrgLimit(org.id, "max_seo_campaigns");
-      hasFeature = limit === -1 || limit > 0;
+      hasFeature = await orgCanAccessModule(org.id, "has_seo", "max_seo_campaigns");
     }
   } catch {
     hasFeature = false;
   }
 
   return (
-    <PhaseGate
-      title={t("seo")}
-      laterPhase={t("laterPhase")}
-      gated={t("gated")}
-      hasFeature={hasFeature}
-    />
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">{t("seo")}</h2>
+      {hasFeature ? (
+        <SeoClient />
+      ) : (
+        <EmptyState title={t("gated")} description={t("gatedModuleHint")} />
+      )}
+    </div>
   );
 }

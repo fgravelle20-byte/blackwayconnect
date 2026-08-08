@@ -20,3 +20,27 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
+
+  rls-policy-tests:
+    name: Supabase RLS policy tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Install psql client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Start local Supabase, reset DB, run RLS assertions
+        run: |
+          supabase start
+          supabase db reset --yes
+          DB_URL="$(supabase status -o env | sed -n 's/^DB_URL=//p' | tr -d '"')"
+          if [ -z "$DB_URL" ]; then
+            echo "Could not resolve local DB_URL from supabase status"
+            supabase status
+            exit 1
+          fi
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/rls_policies.test.sql
+          supabase stop

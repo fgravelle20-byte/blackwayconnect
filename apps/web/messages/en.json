@@ -21,22 +21,22 @@
     "home": "Home"
   },
   "home": {
-    "title": "The AI platform that builds, automates, and scales your business",
-    "subtitle": "NoirRoutes combines a self-serve SaaS platform with an expert Studio — so you can create websites, SEO, chatbots, and growth systems without rebuilding from scratch.",
+    "title": "The autonomous AI platform for your entire growth stack",
+    "subtitle": "NoirRoutes is not a brochure — it is an intelligent platform that builds websites, chatbots, phone assistants, Google review workflows, online stores, leads, SEO, and social — then runs them autonomously.",
     "ctaPrimary": "View pricing",
-    "ctaSecondary": "Explore the platform",
-    "feature1Title": "Build with AI",
-    "feature1Body": "Generate projects, pages, and campaigns with plan-based limits that grow with you.",
-    "feature2Title": "Automate operations",
-    "feature2Body": "Billing, onboarding, support, and entitlements wired for real subscriptions — not demos.",
+    "ctaSecondary": "Request a quote",
+    "feature1Title": "Create autonomously",
+    "feature1Body": "AI Website Builder, Chatbot Builder, Phone Assistance, E-commerce Builder, and Google review workflows — one connected engine.",
+    "feature2Title": "Capture every lead",
+    "feature2Body": "Leads flow in from website forms, chatbots, phone, review campaigns, and quotes — scored and managed without fake CRM theater.",
     "feature3Title": "Scale with Studio",
-    "feature3Body": "Need a custom website, app, or launch package? NoirRoutes Studio delivers on quote.",
-    "socialProof": "Built for founders, agencies, and enterprises ready to ship."
+    "feature3Body": "Need experts to ship a custom site, app, or launch package? NoirRoutes Studio delivers on quote.",
+    "socialProof": "Built for founders, agencies, and enterprises ready to run on AI — not demos."
   },
   "platform": {
-    "title": "One platform. Every growth module.",
-    "subtitle": "Website builder, SEO, chatbots, business CRM, and social distribution — gated by your plan, ready to expand.",
-    "modulesTitle": "Modules",
+    "title": "One autonomous AI platform. Every growth module.",
+    "subtitle": "Website, chatbot, phone assistance, Google reviews, e-commerce, leads, SEO, and social — gated by your plan, ready to expand.",
+    "modulesTitle": "Autonomous modules",
     "modulesBody": "Start with what you need. Upgrade when your usage and team grow."
   },
   "studio": {
@@ -63,7 +63,10 @@
     "perMonth": "/mo",
     "perYear": "/yr",
     "popular": "Popular",
-    "enterprise": "Custom"
+    "enterprise": "Custom",
+    "modulesTitle": "Buy a single module",
+    "modulesSubtitle": "No full plan required — unlock Website, Chatbot, Store, Leads, Phone, Google Reviews… individually or as packs.",
+    "buyModule": "Buy this module"
   },
   "caseStudies": {
     "title": "Case studies",
@@ -80,7 +83,7 @@
   "products": {
     "websiteBuilder": {
       "title": "AI Website Builder",
-      "body": "Generate and manage websites with plan-based page limits. Full builder ships in a later phase; entitlements are live today."
+      "body": "Generate and manage websites with plan-based page limits — project→website scaffolding is live; full visual builder expands by phase."
     },
     "seoEngine": {
       "title": "AI SEO Engine",
@@ -88,7 +91,23 @@
     },
     "chatbotBuilder": {
       "title": "AI Chatbot Builder",
-      "body": "Conversational assistants with conversation limits tied to your plan. Builder UI arrives in Phase 3."
+      "body": "Conversational assistants that capture leads into the Leads module. Conversation limits follow your plan."
+    },
+    "phoneAssistance": {
+      "title": "Phone Assistance",
+      "body": "Voice-agent architecture ready for telephony providers. Status stays integration_required until a provider is wired — no fake call logs."
+    },
+    "googleReviews": {
+      "title": "Google Reviews",
+      "body": "Reputation workflows: review request campaigns and AI suggestions only. Posting to Google requires a validated API — we never fabricate reviews."
+    },
+    "leads": {
+      "title": "Leads",
+      "body": "First-class lead intake from website forms, chatbots, phone, review campaigns, quotes, and imports — real CRUD, plan-gated."
+    },
+    "ecommerce": {
+      "title": "E-commerce Builder",
+      "body": "Boutique en ligne: stores and products with real CRUD. Storefront checkout stays integration_required until Stripe Connect/store Checkout is wired — no fake sales."
     },
     "business": {
       "title": "Business Management",
@@ -164,8 +183,12 @@
     "overview": "Overview",
     "projects": "Projects",
     "websiteBuilder": "Website builder",
+    "ecommerce": "E-commerce",
     "seo": "SEO",
     "chatbots": "Chatbots",
+    "phoneAssistance": "Phone assistance",
+    "googleReviews": "Google reviews",
+    "leads": "Leads",
     "business": "Business",
     "social": "Social",
     "quotes": "Quotes",
@@ -189,7 +212,81 @@
     "openPortal": "Open billing portal",
     "tickets": "Support tickets",
     "newTicket": "New ticket",
-    "noOrg": "No organization linked yet. Complete onboarding or create a workspace in Clerk."
+    "noOrg": "No organization linked yet. Complete onboarding or create a workspace in Clerk.",
+    "setupRequired": "Authentication is not configured. Paste your Clerk keys into apps/web/.env.local, then open Setup.",
+    "openSetup": "Open setup checklist",
+    "leadsHint": "Real lead CRUD. Sources: website forms, chatbot, phone, Google review campaigns, quotes, manual, import.",
+    "leadsEmpty": "No leads yet. Create one manually or capture from chatbot / quote request.",
+    "createLead": "Create lead",
+    "leadName": "Name",
+    "leadEmail": "Email",
+    "leadCompany": "Company",
+    "ecommerceHint": "Stores and products are real. Storefront payment checkout stays integration_required until Stripe store Checkout is wired — no fake orders.",
+    "ecommerceEmpty": "No stores yet. Create a boutique to start adding products.",
+    "websiteHint": "Real website CRUD (websites table + home page). Deploy stays planned until Cloudflare/Vercel wiring.",
+    "websiteEmpty": "No websites yet. Create one to start the builder.",
+    "websiteName": "Website name",
+    "createWebsite": "Create website",
+    "seoHint": "Real SEO campaign CRUD (seo_campaigns). Audits/scores come next.",
+    "seoEmpty": "No SEO campaigns yet.",
+    "seoCampaignName": "Campaign name",
+    "createSeoCampaign": "Create campaign",
+    "chatbotsHint": "Real tenant chatbot CRUD (chatbots table). Separate from the marketing conversion chatbot.",
+    "chatbotsEmpty": "No chatbots yet. Create one for your organization.",
+    "chatbotName": "Chatbot name",
+    "createChatbot": "Create chatbot",
+    "gatedModuleHint": "Buy the module à la carte or a plan that includes it (Billing / Pricing).",
+    "createStore": "Create store",
+    "storeName": "Store name",
+    "createProduct": "Add product",
+    "productName": "Product name",
+    "manageProducts": "Products",
+    "ordersEmpty": "Orders: empty until store Checkout is implemented",
+    "phoneAssistanceHint": "Real phone-assistant CRUD. Live calls stay integration_required until Twilio/Vapi.",
+    "phoneAssistanceProvider": "Wire Twilio/Vapi (or equivalent) to activate assistants. Calls and transcripts stay empty until then.",
+    "phoneAssistanceEmpty": "No assistants yet. Create a draft — telephony stays integration_required.",
+    "phoneAssistantName": "Assistant name",
+    "createPhoneAssistant": "Create assistant",
+    "googleReviewsHint": "Real campaigns + requests + AI suggestions (suggestion_only). Never auto-post to Google.",
+    "googleReviewsPolicy": "We do not auto-post reviews to Google. Suggestions are suggestion_only until a validated Google Business API is connected.",
+    "googleReviewsEmpty": "No review campaigns yet. Default status: planned.",
+    "reviewCampaignName": "Campaign name",
+    "createReviewCampaign": "Create campaign",
+    "addReviewRequest": "Review request",
+    "reviewCustomerContact": "Customer email / phone",
+    "createReviewRequest": "Create request + suggestion",
+    "businessHint": "Clients + deals + pipeline (auto-seeded on onboarding). Invoices via /dashboard/invoices.",
+    "clients": "Clients",
+    "clientsEmpty": "No clients yet.",
+    "clientName": "Client name",
+    "clientEmail": "Client email",
+    "createClient": "Create client",
+    "deals": "Deals",
+    "dealsEmpty": "No deals yet.",
+    "dealTitle": "Deal title",
+    "createDeal": "Create deal"
+  },
+  "setup": {
+    "title": "Connect your engines",
+    "subtitle": "NoirRoutes needs real Clerk + Stripe keys for auth and billing. Local Supabase can be synced with pnpm db:sync-env. We never invent credentials.",
+    "credentialsTitle": "Required credentials",
+    "credentialsBody": "Paste keys into apps/web/.env.local. Links open the official dashboards — copy your own test keys.",
+    "clerkPublishable": "Clerk publishable key (pk_test_…)",
+    "clerkSecret": "Clerk secret key (sk_test_…)",
+    "clerkWebhook": "Clerk webhook signing secret (optional until webhooks)",
+    "stripePublishable": "Stripe publishable test key (pk_test_…)",
+    "stripeSecret": "Stripe secret test key (sk_test_…)",
+    "stripeWebhook": "Stripe webhook secret (optional until webhooks)",
+    "supabaseUrl": "Local or hosted Supabase project URL",
+    "supabaseAnon": "Supabase anon JWT (from supabase status -o env)",
+    "supabaseService": "Supabase service_role JWT (server only)",
+    "openDocs": "Open source",
+    "configured": "Present",
+    "missing": "Missing",
+    "optional": "Optional",
+    "fileHint": "Edit",
+    "restartHint": "then restart pnpm dev.",
+    "backHome": "Back to home"
   },
   "onboarding": {
     "title": "Welcome to NoirRoutes",

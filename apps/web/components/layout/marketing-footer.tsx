@@ -7,6 +7,7 @@ export function MarketingFooter() {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
   const brand = useTranslations("brand");
+  const products = useTranslations("products");
 
   return (
     <footer className="border-t border-border bg-[#0A0A0A]">
@@ -21,8 +22,11 @@ export function MarketingFooter() {
           </p>
           <ul className="space-y-2 text-sm">
             <li><Link href="/platform">{nav("platform")}</Link></li>
+            <li><Link href="/products/ecommerce">{products("ecommerce.title")}</Link></li>
+            <li><Link href="/products/leads">{products("leads.title")}</Link></li>
             <li><Link href="/pricing">{nav("pricing")}</Link></li>
             <li><Link href="/studio">{nav("studio")}</Link></li>
+            <li><Link href="/setup">Setup</Link></li>
           </ul>
         </div>
         <div>

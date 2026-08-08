@@ -16,24 +16,28 @@ const schema = z.object({
   org_name: z.string().min(1).max(120),
   industry: z.string().min(1).max(120),
   goals: z.string().min(1).max(2000),
+  notes: z.string().max(4000).optional(),
+  plan_tier: z.string().optional(),
   step_key: z.string().optional(),
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await requireUser();
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const url = new URL(req.url);
+  const planTier = url.searchParams.get("plan_tier") || "starter";
   const sb = createAdminSupabaseClient();
   const { data: templates } = await sb
     .from("onboarding_templates")
     .select("step_key, sort_order, plan_tier")
-    .eq("plan_tier", "starter")
+    .eq("plan_tier", planTier)
     .order("sort_order", { ascending: true });
 
-  return NextResponse.json({ templates: templates ?? [] });
+  return NextResponse.json({ templates: templates ?? [], plan_tier: planTier });
 }
 
 export async function POST(req: Request) {
@@ -114,11 +118,21 @@ export async function POST(req: Request) {
     { onConflict: "organization_id,profile_id" },
   );
 
+  if (parsed.data.plan_tier) {
+    await sb
+      .from("organizations")
+      .update({ plan_tier: parsed.data.plan_tier, updated_at: new Date().toISOString() })
+      .eq("id", orgRecord.id);
+  }
+
   const steps = [
     { step_key: "org_name", data: { value: parsed.data.org_name } },
     { step_key: "industry", data: { value: parsed.data.industry } },
     { step_key: "goals", data: { value: parsed.data.goals } },
     { step_key: "organization", data: { value: parsed.data.org_name } },
+    ...(parsed.data.notes
+      ? [{ step_key: "notes", data: { value: parsed.data.notes } }]
+      : []),
     { step_key: "completed", data: { at: new Date().toISOString() } },
   ];
 
@@ -148,9 +162,19 @@ export async function POST(req: Request) {
     await sendTransactionalEmail({ to: profile.email, ...tmpl }).catch(() => undefined);
   }
 
+  const { bootstrapOrganizationJourney } = await import(
+    "@/modules/onboarding/journey-bootstrap"
+  );
+  const journey = await bootstrapOrganizationJourney({
+    organization_id: orgRecord.id,
+    profile_email: profile.email,
+    org_name: parsed.data.org_name,
+  }).catch(() => null);
+
   return NextResponse.json({
     ok: true,
     organization_id: orgRecord.id,
     clerk_org_id: clerkOrgId,
+    journey,
   });
 }

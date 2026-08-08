@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getOrCreateProfile, isPlatformAdmin } from "@/lib/auth/session";
+import { requirePlatformAdmin } from "@/lib/clerk/guards";
 
 export const dynamic = "force-dynamic";
 
@@ -34,15 +34,9 @@ export default async function AdminLayout({
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
-  let allowed = false;
   try {
-    const profile = await getOrCreateProfile();
-    if (profile) allowed = await isPlatformAdmin(profile.id);
+    await requirePlatformAdmin();
   } catch {
-    allowed = false;
-  }
-
-  if (!allowed) {
     redirect(`/${locale}/dashboard`);
   }
 

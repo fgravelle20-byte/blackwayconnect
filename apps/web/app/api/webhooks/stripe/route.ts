@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import * as Sentry from "@sentry/nextjs";
 import { getStripe } from "@/lib/stripe/client";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { sendTransactionalEmail, emailTemplates } from "@/lib/resend/client";
@@ -466,6 +467,7 @@ export async function POST(req: Request) {
     await markProcessed(event);
     return NextResponse.json({ received: true });
   } catch (e) {
+    Sentry.captureException(e, { tags: { webhook: "stripe" } });
     const message = e instanceof Error ? e.message : "webhook_error";
     return NextResponse.json({ error: message }, { status: 500 });
   }

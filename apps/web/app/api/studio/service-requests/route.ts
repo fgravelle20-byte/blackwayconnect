@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import {
+  createServiceRequest,
+  listServiceRequests,
+} from "@/modules/studio/service-request-service";
 import {
   emailTemplates,
   sendTransactionalEmail,
 } from "@/lib/resend/client";
+import { getOrCreateProfile, isPlatformAdmin, requireUser } from "@/lib/auth/session";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -14,6 +18,26 @@ const schema = z.object({
   description: z.string().min(1),
 });
 
+export async function GET() {
+  try {
+    await requireUser();
+    const profile = await getOrCreateProfile();
+    if (!profile || !(await isPlatformAdmin(profile.id))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const requests = await listServiceRequests();
+    return NextResponse.json({ requests });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   const json = await req.json();
   const parsed = schema.safeParse(json);
@@ -21,31 +45,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const sb = createAdminSupabaseClient();
-  const { data, error } = await sb
-    .from("service_requests")
-    .insert({
+  try {
+    const data = await createServiceRequest({
       contact_name: parsed.data.name,
       contact_email: parsed.data.email,
-      company: parsed.data.company ?? null,
+      company: parsed.data.company,
       service_type: parsed.data.offer_slug ?? "custom",
       description: parsed.data.description,
-      status: "new",
-    })
-    .select("id")
-    .single();
+    });
 
-  if (error) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+    try {
+      const t = emailTemplates.quoteReceived();
+      await sendTransactionalEmail({ to: parsed.data.email, ...t });
+    } catch (e) {
+      console.error("email failed", e);
+    }
 
-  try {
-    const t = emailTemplates.quoteReceived();
-    await sendTransactionalEmail({ to: parsed.data.email, ...t });
+    return NextResponse.json({ id: data.id, request: data });
   } catch (e) {
-    console.error("email failed", e);
+    const message = e instanceof Error ? e.message : "Failed";
+    console.error(e);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  return NextResponse.json({ id: data.id });
 }

@@ -69,6 +69,17 @@ export function QuotesClient() {
     await load();
   }
 
+  async function remove(id: string) {
+    setError(null);
+    const res = await fetch(`/api/quotes/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error || "Failed to delete quote");
+      return;
+    }
+    await load();
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -92,6 +103,7 @@ export function QuotesClient() {
               <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Total</TableHead>
+              <TableHead className="w-24" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -116,6 +128,11 @@ export function QuotesClient() {
                   </Select>
                 </TableCell>
                 <TableCell>{formatCents(q.total_cents)}</TableCell>
+                <TableCell>
+                  <Button variant="ghost" size="sm" onClick={() => remove(q.id)}>
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

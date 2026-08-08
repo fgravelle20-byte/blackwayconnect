@@ -5,7 +5,7 @@ test.describe("auth protected routes", () => {
     await page.goto("/en/dashboard");
     // With Clerk: sign-in redirect. Without Clerk in local/dev: page may load or 503.
     await expect(page).toHaveURL(
-      /sign-in|clerk|accounts\.dev|dashboard|Authentication is not configured/,
+      /sign-in|clerk|accounts\.dev|dashboard|onboarding|Authentication is not configured/,
     );
   });
 

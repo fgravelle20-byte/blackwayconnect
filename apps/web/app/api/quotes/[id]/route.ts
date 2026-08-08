@@ -33,3 +33,23 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ quote: data });
 }
+
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+  try {
+    await requireUser();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const organization = await resolveOrganization();
+  if (!organization) return NextResponse.json({ error: "No organization" }, { status: 400 });
+
+  const { id } = await ctx.params;
+  const sb = createAdminSupabaseClient();
+  const { error } = await sb
+    .from("quotes")
+    .delete()
+    .eq("id", id)
+    .eq("organization_id", organization.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}

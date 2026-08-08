@@ -25,6 +25,10 @@ test.describe("quote creation", () => {
     const list = await page.request.get("/api/quotes");
     expect(list.ok()).toBeTruthy();
     const body = await list.json();
-    expect((body.quotes ?? []).some((q: { title: string }) => q.title === title)).toBeTruthy();
+    const quote = (body.quotes ?? []).find((q: { title: string }) => q.title === title);
+    expect(quote).toBeTruthy();
+
+    const del = await page.request.delete(`/api/quotes/${quote.id}`);
+    expect(del.ok()).toBeTruthy();
   });
 });

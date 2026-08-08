@@ -9,6 +9,6 @@ export const colors = {
 } as const;
 
 export const fonts = {
-  sans: "var(--font-geist-sans), system-ui, sans-serif",
-  mono: "var(--font-geist-mono), monospace",
+  sans: "var(--font-noirroutes-sans), ui-sans-serif, system-ui, sans-serif",
+  mono: "var(--font-noirroutes-mono), ui-monospace, monospace",
 } as const;

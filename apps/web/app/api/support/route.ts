@@ -13,6 +13,11 @@ const createSchema = z.object({
   priority: z.enum(["low", "normal", "high", "urgent"]).default("normal"),
 });
 
+const replySchema = z.object({
+  ticket_id: z.string().uuid(),
+  body: z.string().min(1).max(5000),
+});
+
 export async function GET() {
   try {
     await requireUser();
@@ -40,11 +45,59 @@ export async function POST(req: Request) {
   if (!organization) {
     return NextResponse.json({ error: "No organization" }, { status: 400 });
   }
-  const parsed = createSchema.safeParse(await req.json());
-  if (!parsed.success) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+
+  let json: unknown;
+  try {
+    json = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
   const profile = await getOrCreateProfile();
   if (!profile) return NextResponse.json({ error: "Profile required" }, { status: 400 });
   const sb = createAdminSupabaseClient();
+
+  const asReply = replySchema.safeParse(json);
+  if (asReply.success && !("subject" in (json as object))) {
+    const { ticket_id, body } = asReply.data;
+    const { data: ticket } = await sb
+      .from("support_tickets")
+      .select("id, status")
+      .eq("id", ticket_id)
+      .eq("organization_id", organization.id)
+      .maybeSingle();
+    if (!ticket) {
+      return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+    }
+
+    const { data: message, error } = await sb
+      .from("support_messages")
+      .insert({
+        ticket_id,
+        profile_id: profile.id,
+        body,
+      })
+      .select("*")
+      .single();
+    if (error || !message) {
+      return NextResponse.json({ error: error?.message ?? "Failed" }, { status: 500 });
+    }
+
+    if (ticket.status === "resolved" || ticket.status === "closed") {
+      await sb
+        .from("support_tickets")
+        .update({ status: "open" })
+        .eq("id", ticket_id)
+        .eq("organization_id", organization.id);
+    }
+
+    return NextResponse.json({ message });
+  }
+
+  const parsed = createSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+  }
 
   const { data: ticket, error } = await sb
     .from("support_tickets")

@@ -18,8 +18,8 @@ export function PhaseGate({
         title={hasFeature ? laterPhase : gated}
         description={
           hasFeature
-            ? "Entitlements are active; module UI ships in a later phase."
-            : "Upgrade your plan to unlock this module."
+            ? "Entitlements ON — open this module route for live CRUD when wired."
+            : "Buy the module or upgrade plan (Billing) to unlock."
         }
       />
     </div>

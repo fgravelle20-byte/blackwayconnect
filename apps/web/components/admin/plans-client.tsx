@@ -17,21 +17,45 @@ type Price = {
   stripe_price_id: string | null;
   is_active: boolean;
 };
+type AddOn = { id: string; slug: string; name: string; type: string };
+type AddOnPrice = {
+  id: string;
+  add_on_id: string;
+  interval: string | null;
+  amount_cents: number;
+  stripe_price_id: string | null;
+  is_active: boolean;
+};
+type ServiceOffer = {
+  id: string;
+  slug: string;
+  name: string;
+  base_price_cents: number | null;
+  is_active: boolean;
+};
 
 export function AdminPlansClient({
   plans,
   limits: initialLimits,
   features: initialFeatures,
   prices: initialPrices,
+  addOns = [],
+  addOnPrices: initialAddOnPrices = [],
+  serviceOffers: initialOffers = [],
 }: {
   plans: Plan[];
   limits: Limit[];
   features: Feature[];
   prices: Price[];
+  addOns?: AddOn[];
+  addOnPrices?: AddOnPrice[];
+  serviceOffers?: ServiceOffer[];
 }) {
   const [limits, setLimits] = useState(initialLimits);
   const [features, setFeatures] = useState(initialFeatures);
   const [prices, setPrices] = useState(initialPrices);
+  const [addOnPrices, setAddOnPrices] = useState(initialAddOnPrices);
+  const [serviceOffers, setServiceOffers] = useState(initialOffers);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -40,7 +64,13 @@ export function AdminPlansClient({
     const res = await fetch("/api/admin/plans", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ limits, features, prices }),
+      body: JSON.stringify({
+        limits,
+        features,
+        prices,
+        add_on_prices: addOnPrices,
+        service_offers: serviceOffers,
+      }),
     });
     setMessage(res.ok ? "Saved" : "Save failed");
     setSaving(false);
@@ -49,12 +79,18 @@ export function AdminPlansClient({
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Plans</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">Commerce catalog</h1>
+          <p className="text-sm text-muted-foreground">
+            Edit provisional plan limits, features, prices, add-ons, and Studio offers — no redeploy.
+          </p>
+        </div>
         <Button onClick={save} disabled={saving}>
           {saving ? "Saving…" : "Save changes"}
         </Button>
       </div>
       {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
+
       {plans.map((plan) => (
         <section key={plan.id} className="rounded-lg border border-border p-4">
           <div className="mb-4 flex items-center gap-2">
@@ -193,6 +229,133 @@ export function AdminPlansClient({
           </div>
         </section>
       ))}
+
+      <section className="rounded-lg border border-border p-4">
+        <h2 className="mb-4 text-lg font-medium">Add-ons (provisional prices)</h2>
+        <div className="space-y-4">
+          {addOns.map((addon) => (
+            <div key={addon.id} className="rounded-md border border-border/60 p-3">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-medium">{addon.name}</span>
+                <Badge variant="secondary">{addon.slug}</Badge>
+                <Badge variant="outline">{addon.type}</Badge>
+              </div>
+              {addOnPrices
+                .filter((p) => p.add_on_id === addon.id)
+                .map((p) => (
+                  <div
+                    key={p.id}
+                    className="mt-2 grid gap-2 md:grid-cols-2 lg:grid-cols-4"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">Interval</span>
+                      <span className="text-sm">{p.interval ?? "one_time"}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">Amount (cents)</span>
+                      <Input
+                        type="number"
+                        className="h-8"
+                        value={p.amount_cents}
+                        onChange={(e) =>
+                          setAddOnPrices((prev) =>
+                            prev.map((x) =>
+                              x.id === p.id ? { ...x, amount_cents: Number(e.target.value) } : x,
+                            ),
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">Stripe price ID</span>
+                      <Input
+                        className="h-8 font-mono text-xs"
+                        value={p.stripe_price_id ?? ""}
+                        onChange={(e) =>
+                          setAddOnPrices((prev) =>
+                            prev.map((x) =>
+                              x.id === p.id
+                                ? { ...x, stripe_price_id: e.target.value || null }
+                                : x,
+                            ),
+                          )
+                        }
+                      />
+                    </div>
+                    <label className="flex items-end gap-2 pb-1 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={p.is_active}
+                        onChange={(e) =>
+                          setAddOnPrices((prev) =>
+                            prev.map((x) =>
+                              x.id === p.id ? { ...x, is_active: e.target.checked } : x,
+                            ),
+                          )
+                        }
+                      />
+                      Active
+                    </label>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-border p-4">
+        <h2 className="mb-4 text-lg font-medium">Studio service offers</h2>
+        <div className="space-y-3">
+          {serviceOffers.map((offer) => (
+            <div
+              key={offer.id}
+              className="grid gap-2 rounded-md border border-border/60 p-3 md:grid-cols-2 lg:grid-cols-4"
+            >
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground">Offer</span>
+                <span className="text-sm font-medium">{offer.name}</span>
+                <span className="font-mono text-xs text-muted-foreground">{offer.slug}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground">Base price (cents)</span>
+                <Input
+                  type="number"
+                  className="h-8"
+                  value={offer.base_price_cents ?? ""}
+                  placeholder="null = custom"
+                  onChange={(e) =>
+                    setServiceOffers((prev) =>
+                      prev.map((x) =>
+                        x.id === offer.id
+                          ? {
+                              ...x,
+                              base_price_cents:
+                                e.target.value === "" ? null : Number(e.target.value),
+                            }
+                          : x,
+                      ),
+                    )
+                  }
+                />
+              </div>
+              <label className="flex items-end gap-2 pb-1 text-sm">
+                <input
+                  type="checkbox"
+                  checked={offer.is_active}
+                  onChange={(e) =>
+                    setServiceOffers((prev) =>
+                      prev.map((x) =>
+                        x.id === offer.id ? { ...x, is_active: e.target.checked } : x,
+                      ),
+                    )
+                  }
+                />
+                Active
+              </label>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

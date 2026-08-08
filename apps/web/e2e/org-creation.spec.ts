@@ -19,7 +19,7 @@ test.describe("organization creation", () => {
     await signInWithTestUser(page);
     await page.goto("/en/onboarding");
 
-    await expect(page.getByRole("heading", { name: /Welcome to NoirRoutes/i })).toBeVisible({
+    await expect(page.getByRole("heading", { name: /Welcome to BLACKWAYCONNECT/i })).toBeVisible({
       timeout: 20_000,
     });
 
@@ -27,7 +27,7 @@ test.describe("organization creation", () => {
     await page.getByLabel(/Organization name/i).fill(`E2E Workspace ${Date.now()}`);
     await page.getByLabel(/Industry/i).fill("Software");
     await page.getByRole("button", { name: /Continue|Next/i }).click();
-    await page.getByLabel(/Primary goals/i).fill("Automate growth with NoirRoutes");
+    await page.getByLabel(/Primary goals/i).fill("Automate growth with BLACKWAYCONNECT");
     await page.getByRole("button", { name: /Finish setup|Continue|Next/i }).click();
 
     await expect(page).toHaveURL(/\/en\/dashboard/, { timeout: 45_000 });

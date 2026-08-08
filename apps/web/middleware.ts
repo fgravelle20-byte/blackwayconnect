@@ -41,10 +41,10 @@ const marketingRedirects = [
 /** Canonical why page is /why-noirroutes; rewrite legacy aliases. */
 function rewriteWhyPath(pathname: string) {
   return pathname
-    .replace("/why-blackwayconnect", "/why-noirroutes")
-    .replace("/why-NoirRoutes", "/why-noirroutes")
-    .replace("/why/", "/why-noirroutes/")
-    .replace(/\/why$/, "/why-noirroutes");
+    .replace(/\/why-blackwayconnect/gi, "/why-noirroutes")
+    .replace(/\/why-NoirRoutes/g, "/why-noirroutes")
+    .replace(/\/why\//g, "/why-noirroutes/")
+    .replace(/\/why$/g, "/why-noirroutes");
 }
 
 function localeOnlyMiddleware(req: NextRequest) {
@@ -59,17 +59,11 @@ function localeOnlyMiddleware(req: NextRequest) {
     }
   }
 
-  if (
-    pathname.includes("why-blackwayconnect") ||
-    pathname.includes("why-NoirRoutes") ||
-    /(^|\/)why(\/|$)/.test(pathname)
-  ) {
-    const rewritten = rewriteWhyPath(pathname);
-    if (rewritten !== pathname) {
-      const url = req.nextUrl.clone();
-      url.pathname = rewritten;
-      return NextResponse.redirect(url);
-    }
+  const rewritten = rewriteWhyPath(pathname);
+  if (rewritten !== pathname) {
+    const url = req.nextUrl.clone();
+    url.pathname = rewritten;
+    return NextResponse.redirect(url);
   }
 
   return intlMiddleware(req);
@@ -88,12 +82,32 @@ const isProdLike =
   process.env.VERCEL_ENV === "production" ||
   process.env.VERCEL_ENV === "preview";
 
+function redirectToSetup(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const localeMatch = pathname.match(/^\/(en|fr)(\/|$)/);
+  const locale = localeMatch?.[1] ?? "en";
+  if (pathname.includes("/setup")) return localeOnlyMiddleware(req);
+  const url = req.nextUrl.clone();
+  url.pathname = `/${locale}/setup`;
+  return NextResponse.redirect(url);
+}
+
 function failClosedWithoutClerk(req: NextRequest) {
   // Webhooks must remain reachable without Clerk session middleware
   if (isWebhookApi(req)) return NextResponse.next();
   if (isApiRoute(req)) return NextResponse.next();
   if (isProtectedRoute(req)) {
-    return new NextResponse("Authentication is not configured", { status: 503 });
+    return redirectToSetup(req);
+  }
+  return localeOnlyMiddleware(req);
+}
+
+function devWithoutClerk(req: NextRequest) {
+  if (isWebhookApi(req)) return NextResponse.next();
+  if (isApiRoute(req)) return NextResponse.next();
+  // Soft-gate: send dashboard/admin/onboarding to setup instead of crashing auth
+  if (isProtectedRoute(req)) {
+    return redirectToSetup(req);
   }
   return localeOnlyMiddleware(req);
 }
@@ -108,7 +122,7 @@ export default hasClerk
     })
   : isProdLike
     ? failClosedWithoutClerk
-    : localeOnlyMiddleware;
+    : devWithoutClerk;
 
 export const config = {
   matcher: [

@@ -76,7 +76,7 @@ BEGIN
   ), 'social_platforms_read policy must exist';
 END $$;
 
--- Commerce extras policies (from 20260101000004)
+-- Commerce extras policies (from 20260101000004 / 20260101000005)
 DO $$
 BEGIN
   ASSERT EXISTS (

@@ -12,6 +12,15 @@ import type { CommerceCatalog } from "@noirroutes/database";
 import { CheckoutButton } from "@/components/billing/checkout-button";
 import { MarketingSection } from "./section";
 
+type CatalogAddOnRow = CommerceCatalog["add_ons"][number] & {
+  category?: string | null;
+  headline?: string | null;
+  badge?: string | null;
+  is_public?: boolean;
+  sort_order?: number;
+  slug?: string;
+};
+
 export function PricingSections() {
   const t = useTranslations("pricing");
   const [catalog, setCatalog] = useState<CommerceCatalog | null>(null);
@@ -36,8 +45,12 @@ export function PricingSections() {
     return <p className="px-4 py-20 text-center text-muted-foreground">{error}</p>;
   }
 
-  const plans = (catalog?.plans ?? []).filter((p) => p.is_public && p.is_active);
+  const plans = (catalog?.plans ?? []).filter((p) => p.is_active);
   const offers = catalog?.service_offers ?? [];
+  const addOns = (catalog?.add_ons ?? []) as CatalogAddOnRow[];
+  const moduleAddOns = addOns
+    .filter((a) => a.is_public !== false && (a.category === "module" || a.category === "growth" || a.slug?.startsWith("module_") || a.slug?.startsWith("pack_")))
+    .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100));
   const packageOffer = offers.find((o) => o.slug === "branding_launch_package");
   const customOffer = offers.find((o) => o.slug === "custom_digital_system");
   const agency = plans.find((p) => p.tier === "agency");
@@ -112,6 +125,53 @@ export function PricingSections() {
             })}
         </div>
       </MarketingSection>
+
+      <div id="modules">
+        <MarketingSection
+          title={t("modulesTitle")}
+          subtitle={t("modulesSubtitle")}
+        >
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {moduleAddOns.map((addon) => {
+              const price = addon.prices?.find((p) => p.is_active);
+              return (
+                <Card key={addon.id} className="flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-2">
+                      <CardTitle className="text-lg">{addon.name}</CardTitle>
+                      {addon.badge ? <Badge variant="secondary">{addon.badge}</Badge> : null}
+                    </div>
+                    <CardDescription>{addon.headline || addon.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <p className="text-2xl font-semibold">
+                      {price ? formatCents(price.amount_cents) : "—"}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        {t("perMonth")}
+                      </span>
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">{addon.description}</p>
+                  </CardContent>
+                  <CardFooter>
+                    {price?.id ? (
+                      <CheckoutButton
+                        addOnPriceId={price.id}
+                        label={t("buyModule")}
+                        className="w-full"
+                        mode="subscription"
+                      />
+                    ) : (
+                      <Button asChild variant="outline" className="w-full">
+                        <Link href="/sign-up">{t("checkout")}</Link>
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        </MarketingSection>
+      </div>
 
       <MarketingSection title={t("section2")}>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

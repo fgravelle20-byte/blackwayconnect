@@ -20,11 +20,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @noirroutes/web exec playwright install --with-deps chromium
-      - name: Run public Playwright suite
+      - name: Run public Playwright suite (Phase 1 critical)
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
-          NEXT_PUBLIC_APP_NAME: NoirRoutes
+          NEXT_PUBLIC_APP_NAME: BLACKWAYCONNECT
           APP_ENV: PREVIEW
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
         run: >
           pnpm --filter @noirroutes/web exec playwright test
           marketing-home.spec.ts
@@ -36,14 +37,13 @@ jobs:
           quote-creation.spec.ts
           support-ticket.spec.ts
           admin-blocked.spec.ts
+          observability.spec.ts
           smoke.spec.ts
 
   e2e-auth:
-    name: E2E auth-dependent
+    name: E2E auth-dependent (blocking when secrets present)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Soft-fail until Clerk E2E secrets are configured in the repo.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -55,11 +55,24 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @noirroutes/web exec playwright install --with-deps chromium
-      - name: Run auth-dependent Playwright
+      - name: Check Clerk E2E secrets
+        id: creds
+        env:
+          E2E_CLERK_TEST_USER_EMAIL: ${{ secrets.E2E_CLERK_TEST_USER_EMAIL }}
+          E2E_CLERK_TEST_USER_PASSWORD: ${{ secrets.E2E_CLERK_TEST_USER_PASSWORD }}
+        run: |
+          if [ -z "$E2E_CLERK_TEST_USER_EMAIL" ] || [ -z "$E2E_CLERK_TEST_USER_PASSWORD" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Clerk E2E secrets missing — auth suite will skip authenticated flows (tests still run and assert unauth paths)."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run auth-dependent Playwright (Phase 1 remaining)
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
-          NEXT_PUBLIC_APP_NAME: NoirRoutes
+          NEXT_PUBLIC_APP_NAME: BLACKWAYCONNECT
           APP_ENV: PREVIEW
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           E2E_CLERK_TEST_USER_EMAIL: ${{ secrets.E2E_CLERK_TEST_USER_EMAIL }}

@@ -1,6 +1,20 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Syne, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-noirroutes-sans",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-noirroutes-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -32,8 +46,8 @@ export default function RootLayout({
   );
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>{content}</body>
+    <html lang="en" className={`${syne.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased">{content}</body>
     </html>
   );
 }

@@ -2,14 +2,16 @@
   "name": "noirroutes",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter @noirroutes/web dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "build:web": "pnpm --filter @noirroutes/web build",
-    "lint:web": "pnpm --filter @noirroutes/web lint",
-    "typecheck:web": "pnpm --filter @noirroutes/web typecheck",
+    "dev": "turbo run dev --filter=@noirroutes/web",
+    "build": "turbo run build --filter=@noirroutes/web",
+    "lint": "turbo run lint --filter=@noirroutes/web",
+    "typecheck": "turbo run typecheck --filter=@noirroutes/web",
     "test:e2e": "pnpm --filter @noirroutes/web test:e2e",
+    "db:start": "npx supabase start",
+    "db:stop": "npx supabase stop",
+    "db:reset": "npx supabase db reset",
+    "db:status": "npx supabase status",
+    "db:sync-env": "node scripts/sync-supabase-env.mjs",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
   },
   "devDependencies": {

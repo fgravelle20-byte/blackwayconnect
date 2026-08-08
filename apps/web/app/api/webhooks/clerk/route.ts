@@ -1,8 +1,10 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { sendTransactionalEmail, emailTemplates } from "@/lib/resend/client";
+import { captureServerEvent } from "@/lib/posthog/server";
 
 type ClerkEmail = { email_address: string };
 type ClerkUser = {
@@ -77,6 +79,7 @@ export async function POST(req: Request) {
         if (evt.type === "user.created" && email) {
           const tmpl = emailTemplates.welcome(fullName || "");
           await sendTransactionalEmail({ to: email, ...tmpl }).catch(() => undefined);
+          await captureServerEvent(user.id, "user_signed_up", { email_domain: email.split("@")[1] });
         }
         break;
       }
@@ -185,6 +188,7 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ ok: true });
   } catch (e) {
+    Sentry.captureException(e, { tags: { webhook: "clerk" } });
     const message = e instanceof Error ? e.message : "clerk_webhook_error";
     return NextResponse.json({ error: message }, { status: 500 });
   }

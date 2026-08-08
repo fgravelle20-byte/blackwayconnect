@@ -1,11 +1,24 @@
 @import "tailwindcss";
 @import "@noirroutes/ui-tokens/css";
 
+@theme inline {
+  --font-sans: var(--font-noirroutes-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-noirroutes-mono), ui-monospace, monospace;
+}
+
 html,
 body {
   background: #0a0a0a;
   color: #fafafa;
   min-height: 100%;
+  font-family: var(--font-sans);
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.18), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(26, 26, 26, 0.9), transparent);
+  background-attachment: fixed;
 }
 
 a {

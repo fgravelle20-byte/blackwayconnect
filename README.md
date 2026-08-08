@@ -29,8 +29,8 @@ supabase/                Migrations + seed
 1. Copy `.env.example` → `apps/web/.env.local` and fill Clerk, Supabase, Stripe **test** keys.
 2. `pnpm install`
 3. Apply migrations: `npx supabase db push` (or link your project)
-4. Seed: `npx supabase db seed` (or run `supabase/seed.sql`)
-5. `pnpm dev` → http://localhost:3000
+4. Seed: run `supabase/seed.sql` against your project
+5. `pnpm --filter @noirroutes/web dev` → http://localhost:3000
 
 ## Environments
 
@@ -56,7 +56,3 @@ Pricing page loads from `/api/commerce/catalog`. Edit via Admin → Plans.
 ## License
 
 Proprietary — NoirRoutes
-
-## Definition of Done
-
-See [docs/definition-of-done.md](./docs/definition-of-done.md) before promoting PREVIEW → PROD.

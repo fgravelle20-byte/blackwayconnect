@@ -33,4 +33,31 @@ test.describe("support ticket", () => {
     const messages = ticket.support_messages ?? [];
     expect(messages.some((m: { body: string }) => m.body === message)).toBeTruthy();
   });
+
+  test("authenticated user can reply to a ticket", async ({ page }) => {
+    test.skip(!hasClerkTestCreds(), "needs E2E_CLERK_TEST_USER_EMAIL/PASSWORD");
+
+    await signInWithTestUser(page);
+    await page.goto("/en/dashboard/support");
+
+    const subject = `E2E Reply ${Date.now()}`;
+    await page.getByPlaceholder(/Subject/i).fill(subject);
+    await page.getByPlaceholder(/^Message$/i).fill("Initial ticket body");
+    await page.getByRole("button", { name: /Save/i }).click();
+    await expect(page.getByText(subject)).toBeVisible({ timeout: 15_000 });
+
+    await page.getByText(subject).click();
+    const reply = `Follow-up ${Date.now()}`;
+    await page.getByPlaceholder(/Add a message/i).fill(reply);
+    await page.getByRole("button", { name: /Send message|Send/i }).click();
+    await expect(page.getByText(reply)).toBeVisible({ timeout: 15_000 });
+
+    const list = await page.request.get("/api/support");
+    const body = await list.json();
+    const ticket = (body.tickets ?? []).find((t: { subject: string }) => t.subject === subject);
+    expect(ticket).toBeTruthy();
+    expect(
+      (ticket.support_messages ?? []).some((m: { body: string }) => m.body === reply),
+    ).toBeTruthy();
+  });
 });
