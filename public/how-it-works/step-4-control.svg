@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Contrôle dashboard et outils">
+  <rect width="640" height="400" fill="#0b0b0c"/>
+  <rect x="24" y="24" width="592" height="352" rx="8" fill="#121214" stroke="#2a2a2e"/>
+  <text x="48" y="64" fill="#f7f4ef" font-family="Arial Black, Impact, sans-serif" font-size="22" letter-spacing="1">PORTAIL · DASHBOARD</text>
+  <text x="48" y="92" fill="#9a958c" font-family="Arial, sans-serif" font-size="14">Outils débloqués · web + mobile</text>
+  <rect x="48" y="120" width="360" height="220" rx="8" fill="#1a1a1d" stroke="#3a3a40"/>
+  <rect x="64" y="140" width="120" height="16" rx="3" fill="#2a2a2e"/>
+  <rect x="64" y="172" width="328" height="48" rx="4" fill="#0b0b0c" stroke="#2a2a2e"/>
+  <rect x="64" y="236" width="150" height="80" rx="4" fill="#161618" stroke="#e10600"/>
+  <rect x="232" y="236" width="150" height="80" rx="4" fill="#161618" stroke="#2a2a2e"/>
+  <text x="80" y="282" fill="#eee9df" font-family="Arial, sans-serif" font-size="13" font-weight="700">Master Tools</text>
+  <text x="248" y="282" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">Pipeline</text>
+  <rect x="432" y="120" width="160" height="220" rx="18" fill="#1a1a1d" stroke="#3a3a40"/>
+  <rect x="452" y="148" width="120" height="164" rx="8" fill="#0b0b0c"/>
+  <circle cx="512" cy="328" r="8" fill="#2a2a2e"/>
+  <text x="48" y="368" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">Tu contrôles. Le système ferme.</text>
+</svg>

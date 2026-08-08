@@ -1,0 +1,9 @@
+{
+  "name": "blackway-pipe",
+  "main": "index.js",
+  "compatibility_date": "2025-08-01",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "api.blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
+  ]
+}

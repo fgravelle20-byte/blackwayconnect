@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blackway-site",
+  "compatibility_date": "2026-08-05",
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS",
+    // Worker-first so HTML routes get per-page OG/Twitter injection for social crawlers.
+    // Static files (*.js, *.css, images) still short-circuit via ASSETS with no rewrite.
+    "run_worker_first": true
+  },
+  "vars": {
+    "PIPE_URL": "https://api.blackwayconnect.com",
+    "APP_WEB_URL": "https://blackwayconnect.com/portail",
+    // Empty until Ready for Sale. ASC Apple ID (internal only): 6797345749
+    "APP_STORE_URL": "",
+    "PLAY_STORE_URL": ""
+  },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "blackwayconnect.com", "custom_domain": true },
+    { "pattern": "blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,4 @@
+BW_LEAD_KEY=
+BW_BASE44_API_KEY=
+# optional OpenAI fallback if Workers AI unavailable locally/prod:
+# OPENAI_API_KEY=

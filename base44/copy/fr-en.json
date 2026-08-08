@@ -1,0 +1,88 @@
+{
+  "fr": {
+    "brand": "BlackWayConnect",
+    "home": {
+      "headline": "Contrôle ton dashboard. Partout.",
+      "sub": "Même Portail Client Master que le site — forfait, outils, support.",
+      "ctaPipeline": "Ouvrir mon Portail",
+      "ctaPlans": "Forfaits Grow Hub (site)",
+      "ctaTools": "Outils",
+      "trustStripe": "Stripe → CRM synchronisé",
+      "trustBilingual": "Bilingue FR / EN",
+      "trustGeo": "Québec · Canada · US",
+      "estimatorTitle": "Revenu potentiel ce mois",
+      "estimatorHint": "Tes chiffres. Pas de magie inventée."
+    },
+    "pipeline": {
+      "title": "Pipeline Grow Hub",
+      "streak": "Série {n} jours",
+      "streakCta": "Continuer mon streak",
+      "sendLead": "Envoyer ce lead à BlackWay",
+      "stages": ["Lead", "Qualifié", "Proposition", "Clôture", "Gagné"]
+    },
+    "plans": {
+      "title": "Forfaits Grow Hub",
+      "subtitle": "CAD / mois · checkout Stripe en un tap",
+      "featured": "Recommandé",
+      "subscribe": "S’abonner",
+      "enterprise": "Entreprise — consultation"
+    },
+    "lead": {
+      "title": "On te rappelle.",
+      "subtitle": "Une demande = un dossier HubSpot. Provenance app mobile.",
+      "submit": "Envoyer le lead",
+      "success": "Reçu. Pendant ce temps, lance un outil Master Tools."
+    },
+    "tools": {
+      "title": "Master Tools",
+      "diagnostic": "Diagnostic",
+      "roi": "Calculateur ROI",
+      "compare": "Comparer",
+      "pricing": "Grille forfaits"
+    },
+    "support": "serviceclient@blackwayconnect.com"
+  },
+  "en": {
+    "brand": "BlackWayConnect",
+    "home": {
+      "headline": "Control your dashboard. Anywhere.",
+      "sub": "Same Client Master Portal as the site — plan, tools, support.",
+      "ctaPipeline": "Open my Portal",
+      "ctaPlans": "Grow Hub plans (website)",
+      "ctaTools": "Tools",
+      "trustStripe": "Stripe → CRM synced",
+      "trustBilingual": "Bilingual FR / EN",
+      "trustGeo": "Québec · Canada · US",
+      "estimatorTitle": "Potential revenue this month",
+      "estimatorHint": "Your numbers. No invented magic."
+    },
+    "pipeline": {
+      "title": "Grow Hub pipeline",
+      "streak": "{n}-day streak",
+      "streakCta": "Keep my streak",
+      "sendLead": "Send this lead to BlackWay",
+      "stages": ["Lead", "Qualified", "Proposal", "Close", "Won"]
+    },
+    "plans": {
+      "title": "Grow Hub plans",
+      "subtitle": "CAD / month · one-tap Stripe checkout",
+      "featured": "Recommended",
+      "subscribe": "Subscribe",
+      "enterprise": "Enterprise — consultation"
+    },
+    "lead": {
+      "title": "We’ll call you back.",
+      "subtitle": "One request = one HubSpot record. Mobile app provenance.",
+      "submit": "Send lead",
+      "success": "Got it. Meanwhile, open a Master Tool."
+    },
+    "tools": {
+      "title": "Master Tools",
+      "diagnostic": "Diagnostic",
+      "roi": "ROI calculator",
+      "compare": "Compare",
+      "pricing": "Pricing grid"
+    },
+    "support": "serviceclient@blackwayconnect.com"
+  }
+}

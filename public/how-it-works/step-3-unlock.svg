@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Activation automatique Portail">
+  <rect width="640" height="400" fill="#0b0b0c"/>
+  <rect x="24" y="24" width="592" height="352" rx="8" fill="#121214" stroke="#2a2a2e"/>
+  <text x="48" y="64" fill="#f7f4ef" font-family="Arial Black, Impact, sans-serif" font-size="22" letter-spacing="1">AUTO-ACTIVATION</text>
+  <text x="48" y="92" fill="#9a958c" font-family="Arial, sans-serif" font-size="14">Webhook Stripe ’ HubSpot ’ Portail</text>
+  <g font-family="Arial, sans-serif" font-size="14">
+    <rect x="48" y="130" width="150" height="70" rx="6" fill="#1a1a1d" stroke="#3a3a40"/>
+    <text x="78" y="172" fill="#eee9df" font-weight="700">Stripe payé</text>
+    <path d="M210 165 h40" stroke="#e10600" stroke-width="3"/>
+    <polygon points="250,165 240,160 240,170" fill="#e10600"/>
+    <rect x="260" y="130" width="150" height="70" rx="6" fill="#1a1a1d" stroke="#3a3a40"/>
+    <text x="285" y="172" fill="#eee9df" font-weight="700">bw_forfait</text>
+    <path d="M422 165 h40" stroke="#e10600" stroke-width="3"/>
+    <polygon points="462,165 452,160 452,170" fill="#e10600"/>
+    <rect x="472" y="130" width="120" height="70" rx="6" fill="#e10600"/>
+    <text x="492" y="172" fill="#fff" font-weight="700">UNLOCK</text>
+  </g>
+  <rect x="48" y="240" width="544" height="96" rx="6" fill="#161618" stroke="#2a2a2e"/>
+  <text x="72" y="280" fill="#f7f4ef" font-family="Arial, sans-serif" font-size="16" font-weight="700">3 · Le forfait choisi sactive tout seul</text>
+  <text x="72" y="308" fill="#9a958c" font-family="Arial, sans-serif" font-size="14">Portail Client Master débloqué selon le palier payé.</text>
+</svg>

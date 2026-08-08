@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /og.png
+Allow: /og.svg
+Allow: /sitemap.xml
+
+Sitemap: https://blackwayconnect.com/sitemap.xml
