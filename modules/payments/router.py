@@ -23,7 +23,10 @@ from modules.payments.payments import (
     create_subscription,
     handle_webhook_event,
     get_payment_history,
+    audit_stripe_health,
     _price_aligned,
+    STRIPE_ACCOUNT_ID,
+    CANONICAL_WEBHOOK_URL,
 )
 
 # Prefix is applied in main.py: include_router(..., prefix="/api/v1/payments")
@@ -65,8 +68,23 @@ async def list_plans():
             "payment_link": meta.get("payment_link") if aligned else None,
             "buy_url": f"/api/v1/payments/buy/{key}",
             "buyable": bool(meta.get("buyable")),
+            "canonical": bool(meta.get("canonical")),
         })
-    return {"plans": plans, "currency": "CAD"}
+    return {
+        "plans": plans,
+        "currency": "CAD",
+        "stripe_account": STRIPE_ACCOUNT_ID,
+        "canonical_webhook": CANONICAL_WEBHOOK_URL,
+    }
+
+
+@router.get("/status")
+async def payments_status():
+    """
+    Audit lecture seule du compte Stripe + catalogue.
+    À utiliser après panique / onboarding pour vérifier qu'on n'a rien perdu.
+    """
+    return await audit_stripe_health()
 
 
 @router.get("/buy/{plan_id}")

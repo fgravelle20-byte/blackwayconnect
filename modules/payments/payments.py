@@ -1,11 +1,13 @@
 """
-Paiements Stripe — BlackWay Connect
-====================================
-Grille affichée (4 août 2026) + checkout public.
+Paiements Stripe — BlackWay Connect (CANONICAL LOCK)
+====================================================
+Compte LIVE unique : acct_1TDZjzAG7HUL9Rtr (BlackWayConnect Inc)
 
-Quand le Price Stripe historique ne correspond pas au montant affiché,
-on crée une Checkout Session avec price_data (montant correct).
-Les Payment Links ne sont utilisés QUE si stripe_amount == amount.
+Règle d'or :
+  - Un seul catalogue PRICE_IDS pour le site marketing
+  - payment_link + price_id DOIVENT matcher amount (affichage)
+  - Ne jamais réutiliser les liens "launch_pricing" 69/129/199
+  - Webhook canonical : https://api.blackwayconnect.com/webhooks/stripe
 """
 import os
 import stripe
@@ -15,20 +17,26 @@ from utils.logger import logger
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-# Grille tarifaire corrigée — 4 août 2026
-# price_id / payment_link = Stripe LIVE historiques (acct_1TDZjzAG7HUL9Rtr)
+STRIPE_ACCOUNT_ID = "acct_1TDZjzAG7HUL9Rtr"
+STRIPE_ACCOUNT_NAME = "BlackWayConnect Inc"
+CANONICAL_WEBHOOK_URL = "https://api.blackwayconnect.com/webhooks/stripe"
+
+# Catalogue canonique — montants = ce que le site affiche (CAD)
+# Créé / verrouillé 2026-08-09 (metadata canonical=true, tier=site_affiche)
 PRICE_IDS = {
     "website_lead_launch": {
-        "one_time": "price_1U0CWRAG7HUL9RtrKszbmNvn",
-        "id": "price_1U0CWRAG7HUL9RtrKszbmNvn",
+        "one_time": "price_1U2WJaAG7HUL9RtrT7JQxyFD",
+        "id": "price_1U2WJaAG7HUL9RtrT7JQxyFD",
         "amount": 1995.00,
-        "stripe_amount": 1495.00,
+        "stripe_amount": 1995.00,
         "name": "Site haute conversion",
         "type": "activation",
         "bw_forfait": "website_lead_launch",
         "delai_jours": 21,
-        "payment_link": "https://buy.stripe.com/fZu9AS2HH3sT2ZEdVIeIw0q",
+        "payment_link": "https://buy.stripe.com/7sY28qgyx5B10Rw04SeIw0M",
+        "payment_link_id": "plink_1U2WJnAG7HUL9Rtr68g02qdc",
         "buyable": True,
+        "canonical": True,
     },
     "revenue_system": {
         "one_time": "price_1U0CWYAG7HUL9RtrqiOYoSVL",
@@ -39,8 +47,10 @@ PRICE_IDS = {
         "type": "activation",
         "bw_forfait": "revenue_system",
         "delai_jours": 35,
-        "payment_link": "https://buy.stripe.com/14A7sKeqpfbB8jY5pceIw0r",
+        "payment_link": "https://buy.stripe.com/eVq6oGdmld3tcAe8BoeIw0L",
+        "payment_link_id": "plink_1U2WJnAG7HUL9RtrGhu8Gedz",
         "buyable": True,
+        "canonical": True,
     },
     "ai_scale": {
         "one_time": "price_1U0CWYAG7HUL9RtrEHxzww0T",
@@ -51,47 +61,55 @@ PRICE_IDS = {
         "type": "activation",
         "bw_forfait": "ai_scale",
         "delai_jours": 45,
-        "payment_link": "https://buy.stripe.com/dRm8wO965fbB8jY5pceIw0s",
+        "payment_link": "https://buy.stripe.com/00w9AS4PPbZpdEibNAeIw0N",
+        "payment_link_id": "plink_1U2WJoAG7HUL9RtrPghkD6hV",
         "buyable": True,
+        "canonical": True,
     },
     "grow_hub_launch": {
-        "monthly": "price_1U0CWiAG7HUL9RtrKaR00BRz",
-        "id": "price_1U0CWiAG7HUL9RtrKaR00BRz",
-        "one_time": "price_1U0CWiAG7HUL9RtrKaR00BRz",
+        "monthly": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
+        "id": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
+        "one_time": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
         "amount": 299.00,
-        "stripe_amount": 129.00,
+        "stripe_amount": 299.00,
         "name": "Grow Hub Launch",
         "type": "abonnement",
         "bw_forfait": "grow_hub_launch",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/6oUfZgbedgfFgQu2d0eIw0t",
+        "payment_link": "https://buy.stripe.com/4gM8wO8216F52ZEeZMeIw0J",
+        "payment_link_id": "plink_1U2WJmAG7HUL9Rtr0rs8hTp5",
         "buyable": True,
+        "canonical": True,
     },
     "grow_hub_growth": {
-        "monthly": "price_1U0CWhAG7HUL9RtrRUDlmp9v",
-        "id": "price_1U0CWhAG7HUL9RtrRUDlmp9v",
-        "one_time": "price_1U0CWhAG7HUL9RtrRUDlmp9v",
+        "monthly": "price_1U2WJbAG7HUL9Rtry31Accba",
+        "id": "price_1U2WJbAG7HUL9Rtry31Accba",
+        "one_time": "price_1U2WJbAG7HUL9Rtry31Accba",
         "amount": 749.00,
-        "stripe_amount": 299.00,
+        "stripe_amount": 749.00,
         "name": "Grow Hub Growth",
         "type": "abonnement",
         "bw_forfait": "grow_hub_growth",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/28EeVc1DDd3tbwag3QeIw0u",
+        "payment_link": "https://buy.stripe.com/eVq9AScihfbBbwa5pceIw0I",
+        "payment_link_id": "plink_1U2WJlAG7HUL9RtrFQjbB6P1",
         "buyable": True,
+        "canonical": True,
     },
     "grow_hub_scale": {
-        "monthly": "price_1U0CWqAG7HUL9RtrwZ66aT90",
-        "id": "price_1U0CWqAG7HUL9RtrwZ66aT90",
-        "one_time": "price_1U0CWqAG7HUL9RtrwZ66aT90",
+        "monthly": "price_1U2WJaAG7HUL9RtrFwUU08yf",
+        "id": "price_1U2WJaAG7HUL9RtrFwUU08yf",
+        "one_time": "price_1U2WJaAG7HUL9RtrFwUU08yf",
         "amount": 1495.00,
-        "stripe_amount": 599.00,
+        "stripe_amount": 1495.00,
         "name": "Grow Hub Scale",
         "type": "abonnement",
         "bw_forfait": "grow_hub_scale",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/6oUfZg0zz6F57fU3h4eIw0v",
+        "payment_link": "https://buy.stripe.com/bJedR81DD8Nd57M3h4eIw0K",
+        "payment_link_id": "plink_1U2WJmAG7HUL9RtrKSoJ6eaI",
         "buyable": True,
+        "canonical": True,
     },
 }
 
@@ -111,13 +129,13 @@ def _is_subscription(meta: dict) -> bool:
 
 
 def _line_item_for_plan(meta: dict) -> dict:
-    """Construit line_item Stripe au montant AFFICHÉ (amount), pas l'ancien Price."""
     unit_amount = int(round(float(meta["amount"]) * 100))
     product_data = {
         "name": meta["name"],
         "metadata": {
             "bw_forfait": meta.get("bw_forfait", ""),
             "platform": "blackwayconnect",
+            "canonical": "true",
         },
     }
     if _is_subscription(meta):
@@ -141,7 +159,6 @@ def _line_item_for_plan(meta: dict) -> dict:
 
 
 def _line_item_from_price_id(meta: dict) -> dict:
-    """Utilise le Price ID Stripe existant (uniquement si montants alignés)."""
     if _is_subscription(meta):
         price_id = meta.get("monthly") or meta.get("id")
     else:
@@ -156,23 +173,20 @@ async def create_public_checkout(
     success_url: Optional[str] = None,
     cancel_url: Optional[str] = None,
 ):
-    """
-    Checkout public pour un forfait.
-    - Si Price Stripe aligné → utilise price_id (ou Payment Link côté router)
-    - Sinon → price_data au montant affiché sur le site
-    """
     meta = PRICE_IDS.get(plan_key)
     if not meta:
         return {"error": "Plan invalide"}
 
+    # Prefer Payment Link when price-aligned (no secret key required)
+    if _price_aligned(meta) and meta.get("payment_link"):
+        return {
+            "url": meta["payment_link"],
+            "via": "payment_link",
+            "amount": meta["amount"],
+            "canonical": True,
+        }
+
     if not stripe.api_key:
-        # Fallback: Payment Link même si montant désaligné (dernier recours)
-        if meta.get("payment_link"):
-            return {
-                "url": meta["payment_link"],
-                "via": "payment_link",
-                "warning": "STRIPE_SECRET_KEY manquante — redirection Payment Link (montant Stripe historique).",
-            }
         return {"error": "Stripe non configuré (STRIPE_SECRET_KEY manquante)"}
 
     mode = "subscription" if _is_subscription(meta) else "payment"
@@ -194,6 +208,7 @@ async def create_public_checkout(
             "plan": plan_meta,
             "bw_forfait": plan_meta,
             "platform": "blackwayconnect",
+            "canonical": "true",
             "displayed_amount": str(meta["amount"]),
         },
         "success_url": success_url or f"{RAILWAY_PUBLIC}/?paid=1&session_id={{CHECKOUT_SESSION_ID}}",
@@ -210,31 +225,81 @@ async def create_public_checkout(
         return {"url": session.url, "session_id": session.id, "via": via, "amount": meta["amount"]}
     except Exception as e:
         logger.error(f"public checkout error: {e}")
-        # Dernier recours : Payment Link
         if meta.get("payment_link"):
-            return {
-                "url": meta["payment_link"],
-                "via": "payment_link_fallback",
-                "warning": str(e),
-            }
+            return {"url": meta["payment_link"], "via": "payment_link_fallback", "warning": str(e)}
         return {"error": str(e)}
 
 
 async def create_checkout_session(plan_key, client_email, client_id, mode="payment"):
-    result = await create_public_checkout(
+    return await create_public_checkout(
         plan_key,
         client_email=client_email,
         client_id=client_id,
     )
-    return result
 
 
 async def create_subscription(client_email, price_id, client_id):
     return await create_checkout_session(price_id, client_email, client_id, mode="subscription")
 
 
+async def audit_stripe_health():
+    """Audit lecture seule — pour rassurer et détecter une dérive."""
+    report = {
+        "account_expected": STRIPE_ACCOUNT_ID,
+        "account_name_expected": STRIPE_ACCOUNT_NAME,
+        "canonical_webhook": CANONICAL_WEBHOOK_URL,
+        "secret_key_configured": bool(stripe.api_key),
+        "plans": [],
+        "charges_count": None,
+        "paid_sessions_count": None,
+        "balance_available_cad": None,
+        "warnings": [],
+    }
+    for key, meta in PRICE_IDS.items():
+        report["plans"].append({
+            "id": key,
+            "amount": meta["amount"],
+            "stripe_amount": meta.get("stripe_amount"),
+            "aligned": _price_aligned(meta),
+            "payment_link": meta.get("payment_link"),
+            "buyable": meta.get("buyable"),
+            "canonical": meta.get("canonical"),
+        })
+        if not _price_aligned(meta):
+            report["warnings"].append(f"{key}: affichage {meta['amount']} ≠ stripe {meta.get('stripe_amount')}")
+
+    if not stripe.api_key:
+        report["warnings"].append("STRIPE_SECRET_KEY manquante sur ce runtime")
+        return report
+
+    try:
+        bal = stripe.Balance.retrieve()
+        cad = next((x for x in bal.available if x.currency == "cad"), None)
+        report["balance_available_cad"] = (cad.amount / 100.0) if cad else 0
+        charges = stripe.Charge.list(limit=100)
+        report["charges_count"] = len(charges.data)
+        sessions = stripe.checkout.Session.list(limit=100)
+        report["paid_sessions_count"] = sum(1 for s in sessions.data if s.payment_status == "paid")
+        # webhook check
+        hooks = stripe.WebhookEndpoint.list(limit=100)
+        canonical = [h for h in hooks.data if h.url == CANONICAL_WEBHOOK_URL]
+        report["canonical_webhook_enabled"] = bool(canonical and canonical[0].status == "enabled")
+        stale_enabled = [
+            {"id": h.id, "url": h.url}
+            for h in hooks.data
+            if h.status == "enabled" and "blackway" not in (h.url or "").lower()
+            and "api.blackwayconnect.com" not in (h.url or "")
+        ]
+        # Keep non-BW hooks listed but don't fail — multi-product account
+        report["other_enabled_webhooks"] = stale_enabled
+        if not report["canonical_webhook_enabled"]:
+            report["warnings"].append("Webhook canonical api.blackwayconnect.com absent ou disabled")
+    except Exception as e:
+        report["warnings"].append(f"audit Stripe API: {e}")
+    return report
+
+
 async def handle_webhook_event(payload, sig_header):
-    """Vérifie la signature Stripe et déclenche la livraison si paiement confirmé."""
     try:
         if STRIPE_WEBHOOK_SECRET:
             event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
@@ -265,7 +330,6 @@ async def handle_webhook_event(payload, sig_header):
 
 
 async def get_payment_history(client_id: str, limit: int = 10):
-    """Historique Stripe filtré par metadata client_id."""
     try:
         sessions = stripe.checkout.Session.list(limit=limit * 3)
         out = []
