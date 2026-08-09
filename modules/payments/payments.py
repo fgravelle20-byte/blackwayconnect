@@ -7,7 +7,8 @@ Règle d'or :
   - Un seul catalogue PRICE_IDS pour le site marketing
   - payment_link + price_id DOIVENT matcher amount (affichage)
   - Ne jamais réutiliser les liens "launch_pricing" 69/129/199
-  - Webhook canonical : https://api.blackwayconnect.com/webhooks/stripe
+  - Webhook canonical : https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe
+  - (api.blackwayconnect.com/webhooks/stripe bloqué par Cloudflare challenge — ne pas réutiliser tant que CF n'est pas corrigé)
 """
 import os
 import stripe
@@ -19,7 +20,7 @@ STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
 STRIPE_ACCOUNT_ID = "acct_1TDZjzAG7HUL9Rtr"
 STRIPE_ACCOUNT_NAME = "BlackWayConnect Inc"
-CANONICAL_WEBHOOK_URL = "https://api.blackwayconnect.com/webhooks/stripe"
+CANONICAL_WEBHOOK_URL = "https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe"
 
 # Catalogue canonique — montants = ce que le site affiche (CAD)
 # Créé / verrouillé 2026-08-09 (metadata canonical=true, tier=site_affiche)
