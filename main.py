@@ -99,6 +99,7 @@ async def health_check():
         "origin": "railway",
         "preview": "https://blackwayconnect-production.up.railway.app",
         "buy": "/api/v1/payments/plans",
+        "email_canonical": settings.SUPPORT_EMAIL,
     }
 
 
