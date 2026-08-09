@@ -35,7 +35,8 @@ Anciens liens « launch pricing » 69/129/199 **désactivés**.
 
 ### Webhook canonical
 
-`https://api.blackwayconnect.com/webhooks/stripe` (enabled)
+`https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe` (enabled — KING)  
+~~`api.blackwayconnect.com/webhooks/stripe`~~ = FAUX (Cloudflare challenge)
 
 Stale Emergent preview webhook **disabled**.
 
