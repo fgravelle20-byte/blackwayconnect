@@ -288,13 +288,17 @@ async def audit_stripe_health():
         stale_enabled = [
             {"id": h.id, "url": h.url}
             for h in hooks.data
-            if h.status == "enabled" and "blackway" not in (h.url or "").lower()
+            if h.status == "enabled"
+            and h.url != CANONICAL_WEBHOOK_URL
+            and "blackway" not in (h.url or "").lower()
             and "api.blackwayconnect.com" not in (h.url or "")
         ]
         # Keep non-BW hooks listed but don't fail — multi-product account
         report["other_enabled_webhooks"] = stale_enabled
         if not report["canonical_webhook_enabled"]:
-            report["warnings"].append("Webhook canonical api.blackwayconnect.com absent ou disabled")
+            report["warnings"].append(
+                "Webhook canonical blackway-pipe.workers.dev absent ou disabled"
+            )
     except Exception as e:
         report["warnings"].append(f"audit Stripe API: {e}")
     return report
