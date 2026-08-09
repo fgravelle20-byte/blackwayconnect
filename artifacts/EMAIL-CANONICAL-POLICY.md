@@ -1,36 +1,16 @@
-# Politique emails BlackWayConnect — anti-friction
+# Email UNIQUE — Stripe & BlackWayConnect
 
-## Adresse SAUVEGARDÉE (canonique)
+## Confirmé et fonctionnel
 
 **`serviceclient@blackwayconnect.com`**
 
-C’est la seule adresse à utiliser pour :
-- support client
-- notifications Stripe business
-- alertes leads / paiements
-- FROM des emails transactionnels
-- footer du site
-- HubSpot / Workers / Railway
+C’est la **seule** adresse autorisée pour Stripe, support, alertes, FROM.
 
-## Autres adresses
+Toutes les autres (iCloud, accounting@, hello@, growth@, etc.) sont **retirées** de la tuyauterie.
 
-| Email | Rôle |
-|---|---|
-| `accounting@blackwayconnect.com` | Comptabilité interne |
-| `accounting@unexa.ca` | Personne légale Stripe (représentant) — déjà sur le compte |
-| `f.gravelle20@icloud.com` | **INTERDIT** pour apps / Stripe / Base44 |
+## Stripe Dashboard (manuel)
 
-## Pourquoi l’iCloud recevait tout
-
-Base44 / Vorixa a créé des dizaines de sous-comptes Connect avec
-`f.gravelle20@icloud.com` → Stripe envoie « complète ton inscription »
-à cet email. Ce n’est pas l’email officiel du compte
-(`serviceclient@blackwayconnect.com`).
-
-## Action Dashboard (1 fois, manuelle)
-
-Stripe → Settings → **Personal details / Team** → login principal
-= `serviceclient@blackwayconnect.com` (pas iCloud).
-
-Connect emails : https://dashboard.stripe.com/settings/connect/emails
-Public business info : https://dashboard.stripe.com/settings/public
+1. Login / Team → uniquement `serviceclient@blackwayconnect.com`
+2. [Public business info](https://dashboard.stripe.com/settings/public) → support email = même
+3. [Connect emails](https://dashboard.stripe.com/settings/connect/emails) → recipients = même
+4. Ne jamais reconnecter Base44 / apps avec un autre email

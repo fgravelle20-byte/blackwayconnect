@@ -22,10 +22,9 @@ function env(nom, defaut = undefined) {
 export const config = {
   port: Number(env('PORT', 3000)),
 
-  /** Emails business — JAMAIS iCloud perso */
+  /** Email UNIQUE — serviceclient@blackwayconnect.com uniquement */
   emails: {
-    service: env('SUPPORT_EMAIL', 'serviceclient@blackwayconnect.com'),
-    accounting: env('ACCOUNTING_EMAIL', 'accounting@blackwayconnect.com'),
+    service: 'serviceclient@blackwayconnect.com',
     from: env('FROM_EMAIL', 'serviceclient@blackwayconnect.com'),
     adminAlert: env('ADMIN_ALERT_EMAIL', 'serviceclient@blackwayconnect.com'),
   },

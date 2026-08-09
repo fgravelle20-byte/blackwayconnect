@@ -1,32 +1,32 @@
 """
-Emails canoniques BlackWayConnect — source unique de vérité.
-=============================================================
-NE JAMAIS utiliser f.gravelle20@icloud.com dans les apps, Stripe,
-HubSpot, Base44, Workers ou notifications business.
+Email UNIQUE BlackWayConnect / Stripe.
+======================================
+Une seule adresse confirmée et fonctionnelle :
 
-Règle :
-  - Clients / support / Stripe business  → SERVICE_EMAIL
-  - Comptabilité / factures internes     → ACCOUNTING_EMAIL
-  - iCloud perso                         → interdit (PERSONAL_BLOCKED)
+    serviceclient@blackwayconnect.com
+
+Toute autre adresse (iCloud, accounting@, hello@, etc.)
+est interdite dans la tuyauterie Stripe / apps / alertes.
 """
 
-# === ADRESSE SAUVEGARDÉE POUR L'AVENIR (unique, business) ===
 SERVICE_EMAIL = "serviceclient@blackwayconnect.com"
-
-# Comptabilité (légal / Stripe representative déjà sur accounting@unexa.ca côté personne)
-ACCOUNTING_EMAIL = "accounting@blackwayconnect.com"
-ACCOUNTING_LEGACY_UNEXA = "accounting@unexa.ca"  # personne Stripe ; ne pas utiliser pour clients
-
-# Expéditeur transactionnel (reçus, alertes admin)
 FROM_EMAIL = SERVICE_EMAIL
-
-# Alertes admin (leads, paiements) — JAMAIS iCloud
+SUPPORT_EMAIL = SERVICE_EMAIL
 ADMIN_ALERT_EMAIL = SERVICE_EMAIL
+BRAND_SUPPORT = SERVICE_EMAIL
 
-# Adresse personnelle — bloquée pour toute tuyauterie business
-PERSONAL_BLOCKED = (
+# Adresses à ne jamais utiliser pour Stripe / apps
+BLOCKED_EMAILS = (
     "f.gravelle20@icloud.com",
     "f.gravelle20@me.com",
+    "accounting@blackwayconnect.com",
+    "accounting@unexa.ca",
+    "hello@blackwayconnect.com",
+    "hello@blackway.io",
+    "service@blackwayconnect.com",
+    "growth@blackwayconnect.com",
 )
 
-BRAND_SUPPORT = SERVICE_EMAIL
+# Alias historiques pour imports — tous pointent vers SERVICE_EMAIL
+PERSONAL_BLOCKED = BLOCKED_EMAILS
+ACCOUNTING_EMAIL = SERVICE_EMAIL  # plus d'email accounting séparé

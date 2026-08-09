@@ -28,7 +28,7 @@ from modules.payments.payments import (
     STRIPE_ACCOUNT_ID,
     CANONICAL_WEBHOOK_URL,
 )
-from config.emails import SERVICE_EMAIL, ACCOUNTING_EMAIL, PERSONAL_BLOCKED
+from config.emails import SERVICE_EMAIL, BLOCKED_EMAILS
 
 # Prefix is applied in main.py: include_router(..., prefix="/api/v1/payments")
 router = APIRouter(tags=["payments"])
@@ -87,9 +87,9 @@ async def payments_status():
     report = await audit_stripe_health()
     report["emails"] = {
         "canonical_saved": SERVICE_EMAIL,
-        "accounting": ACCOUNTING_EMAIL,
-        "personal_blocked": list(PERSONAL_BLOCKED),
-        "rule": "Never use iCloud for Stripe/Base44/apps — only serviceclient@blackwayconnect.com",
+        "only_email": SERVICE_EMAIL,
+        "blocked": list(BLOCKED_EMAILS),
+        "rule": "ONE email only for Stripe/apps: serviceclient@blackwayconnect.com",
     }
     return report
 

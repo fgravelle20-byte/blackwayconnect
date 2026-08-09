@@ -48,19 +48,12 @@ Attention : ce même compte Stripe héberge aussi Vorixa / UNEXA / Factura / Get
 3. **bw-stripe-webhook** — worker repo ; déployer OU utiliser api.blackwayconnect.com
 4. **blackway-engine** — logique forfaits ; ne plus pointer d'anciens buy.stripe.com
 
-## Emails (verrouillé)
+## Email UNIQUE (verrouillé)
 
-**Adresse sauvegardée :** `serviceclient@blackwayconnect.com`
+**`serviceclient@blackwayconnect.com`**
 
-| Email | Rôle |
-|---|---|
-| `serviceclient@blackwayconnect.com` | **UNIQUE** — support, Stripe business, alertes, FROM |
-| `accounting@blackwayconnect.com` | Comptabilité |
-| `f.gravelle20@icloud.com` | **INTERDIT** dans les apps |
+Aucune autre adresse dans la tuyauterie Stripe / apps.
+(accounting@, iCloud, hello@ — retirés)
 
-Voir `artifacts/EMAIL-CANONICAL-POLICY.md`.
-
-Stripe Dashboard (manuel, 1 fois) :
-- Login team → `serviceclient@blackwayconnect.com`
-- Connect emails recipients → même adresse
-- Ne plus créer de comptes Base44/Connect avec l’iCloud
+Stripe Dashboard (manuel) :
+- Login team + support + Connect recipients → **uniquement** `serviceclient@blackwayconnect.com`
