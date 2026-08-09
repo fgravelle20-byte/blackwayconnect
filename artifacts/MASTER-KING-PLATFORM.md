@@ -72,24 +72,25 @@ Ne jamais les réactiver. Seuls les 6 liens `canonical=true` ci-dessus.
 
 ## 3) POURQUOI TU TE SENS « COUPÉ »
 
-1. **Plusieurs BlackWay vivants en même temps** (ChatGPT + Emergent + Railway + Cloudflare).
-2. Le domaine public **n’affiche pas** encore le KING Railway (CF challenge / ancien site).
-3. Railway prod tourne encore un **vieux build** sans `/buy/{plan}` → impression que Stripe est cassé.
-4. **0 vente encaissée** sur Stripe (pas un vol) — les « premiers revenus » n’étaient pas sur ce compte live.
+1. **Plusieurs BlackWay vivants** (ChatGPT + Emergent + Replit mobile + Railway + Cloudflare).
+2. Le domaine public **n’affiche pas** encore le KING (CF challenge / ancien ChatGPT).
+3. ~~Railway vieux build~~ → **corrigé 2026-08-09** (`2.1.0`, `/buy` OK).
+4. **0 vente encaissée** sur Stripe live (pas un vol).
 
 Ce n’est pas Stripe qui t’a coupé. C’est le **multi-déploiement**.
 
 ---
 
-## 4) PLAN KING (ordre strict)
+## 4) PLAN KING — statut 2026-08-09
 
-1. **Merger PR #13** → deploy Railway  
-2. Vérifier :  
-   - `…railway.app/api/v1/payments/buy/grow_hub_launch` → redirect Stripe 299 $  
-   - `…railway.app/health`  
-3. **Cloudflare cutover** : Worker `src/index.js` sur apex+www → Railway (Option B)  
-4. **Ne plus toucher** ChatGPT Sites / Emergent  
-5. Vendre **uniquement** via les 6 liens KING (ou boutons `/buy/` après deploy)
+1. ~~Merger PR #13 + deploy Railway~~ → **FAIT** (`health` 2.1.0, 6× `/buy` → 303 Stripe)  
+2. **Cloudflare cutover** → **À FAIRE** (5 min) : `artifacts/CUTOVER-CLOUDFLARE.md`  
+3. **Tuer Replit + Emergent mobile** → cancel abos, ne plus payer  
+4. Vendre **uniquement** via Railway `/buy/…` ou les 6 liens KING  
+
+### Replit + Emergent mobile — quoi faire ?
+**Abandonne les deux maintenant.** Zéro app mobile payante.  
+KING = **web Railway + Stripe**. Une seule app mobile plus tard, branchée sur ce backend — pas 2 builders en parallèle.
 
 ---
 
