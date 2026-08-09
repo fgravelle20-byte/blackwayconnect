@@ -97,7 +97,7 @@ async def health_check():
         "mode": "go_live_cloudflare_b",
         "version": settings.VERSION,
         "origin": "railway",
-        "preview": "https://blackwayconnect-production.up.railway.app",
+        "preview": "https://dependable-spirit-production.up.railway.app",
         "buy": "/api/v1/payments/plans",
         "email_canonical": settings.SUPPORT_EMAIL,
     }

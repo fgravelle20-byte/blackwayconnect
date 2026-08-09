@@ -117,7 +117,7 @@ PRICE_IDS = {
 BRAND_URL = os.environ.get("BRAND_URL", "https://blackwayconnect.com")
 RAILWAY_PUBLIC = os.environ.get(
     "RAILWAY_PUBLIC_DOMAIN",
-    "https://blackwayconnect-production.up.railway.app",
+    "https://dependable-spirit-production.up.railway.app",
 )
 
 

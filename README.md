@@ -8,7 +8,7 @@ Lis d’abord : [`artifacts/MASTER-KING-PLATFORM.md`](artifacts/MASTER-KING-PLAT
 
 | Quoi | Où |
 |---|---|
-| Site / API | https://blackwayconnect-production.up.railway.app |
+| Site / API | https://dependable-spirit-production.up.railway.app |
 | Domaine cible | https://blackwayconnect.com (après cutover Cloudflare) |
 | Stripe account | `acct_1TDZjzAG7HUL9Rtr` |
 | Webhook | https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe |

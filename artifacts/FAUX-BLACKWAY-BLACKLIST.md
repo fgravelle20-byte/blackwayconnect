@@ -23,6 +23,6 @@ Tu n’as **pas** besoin de 2 apps mobiles maintenant.
 Mobile = phase 2, **une seule** stack, seulement après revenus stables.
 
 ## KING
-- Site : https://blackwayconnect-production.up.railway.app/
+- Site : https://dependable-spirit-production.up.railway.app/
 - Domaine cible : https://blackwayconnect.com/ (après cutover)
 - Doc : `artifacts/MASTER-KING-PLATFORM.md`

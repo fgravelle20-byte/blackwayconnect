@@ -37,4 +37,4 @@ curl -sI https://blackwayconnect.com/api/v1/payments/buy/grow_hub_launch
 ## En attendant le cutover
 
 Vends / montre le site ici :  
-**https://blackwayconnect-production.up.railway.app**
+**https://dependable-spirit-production.up.railway.app**

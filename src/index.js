@@ -4,7 +4,7 @@
  * Option B go-live: ce Worker remplace ChatGPT Sites une fois le domaine
  * custom attaché (apex + www). Origin = Railway production.
  */
-const ORIGIN = 'https://blackwayconnect-production.up.railway.app';
+const ORIGIN = 'https://dependable-spirit-production.up.railway.app';
 
 export default {
   async fetch(request) {

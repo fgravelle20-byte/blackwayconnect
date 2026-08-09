@@ -10,7 +10,7 @@
 |---|---|---|
 | **Compte Stripe** | `acct_1TDZjzAG7HUL9Rtr` | LIVE |
 | **Code repo** | GitHub `fgravelle20-byte/blackwayconnect` branche à merger : `cursor/stripe-plumbing-lock-381b` (PR #13) | KING |
-| **Site / API prod** | `https://blackwayconnect-production.up.railway.app` | KING (deploy) |
+| **Site / API prod** | `https://dependable-spirit-production.up.railway.app` | KING (deploy) |
 | **Domaine public** | `https://blackwayconnect.com` | KING **après** cutover CF → Railway |
 | **Webhook paiements** | `https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe` | KING |
 | **Leads HubSpot** | `https://blackway-pipe.f-gravelle20.workers.dev/lead` | KING |
