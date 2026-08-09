@@ -454,7 +454,7 @@ class BulkMarketingEngine:
                     "dynamic_template_data": email_data["personalization_vars"]
                 }],
                 "from": {
-                    "email": os.environ.get("SENDGRID_FROM_EMAIL", "hello@blackway.io"),
+                    "email": os.environ.get("SENDGRID_FROM_EMAIL", "serviceclient@blackwayconnect.com"),
                     "name": os.environ.get("SENDGRID_FROM_NAME", "BlackWay")
                 },
                 "tracking_settings": {

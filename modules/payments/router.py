@@ -28,6 +28,7 @@ from modules.payments.payments import (
     STRIPE_ACCOUNT_ID,
     CANONICAL_WEBHOOK_URL,
 )
+from config.emails import SERVICE_EMAIL, ACCOUNTING_EMAIL, PERSONAL_BLOCKED
 
 # Prefix is applied in main.py: include_router(..., prefix="/api/v1/payments")
 router = APIRouter(tags=["payments"])
@@ -81,10 +82,16 @@ async def list_plans():
 @router.get("/status")
 async def payments_status():
     """
-    Audit lecture seule du compte Stripe + catalogue.
-    À utiliser après panique / onboarding pour vérifier qu'on n'a rien perdu.
+    Audit lecture seule du compte Stripe + catalogue + emails canoniques.
     """
-    return await audit_stripe_health()
+    report = await audit_stripe_health()
+    report["emails"] = {
+        "canonical_saved": SERVICE_EMAIL,
+        "accounting": ACCOUNTING_EMAIL,
+        "personal_blocked": list(PERSONAL_BLOCKED),
+        "rule": "Never use iCloud for Stripe/Base44/apps — only serviceclient@blackwayconnect.com",
+    }
+    return report
 
 
 @router.get("/buy/{plan_id}")

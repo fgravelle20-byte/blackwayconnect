@@ -140,7 +140,7 @@ def trigger_vente_eclair_sequence(lead_data: dict) -> dict:
                 }
             ],
             "from": {
-                "email": "growth@blackwayconnect.com",
+                "email": "serviceclient@blackwayconnect.com",
                 "name": "BlackWayConnect"
             },
             "template_id": email_config["template_id"],

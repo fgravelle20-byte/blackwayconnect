@@ -22,6 +22,14 @@ function env(nom, defaut = undefined) {
 export const config = {
   port: Number(env('PORT', 3000)),
 
+  /** Emails business — JAMAIS iCloud perso */
+  emails: {
+    service: env('SUPPORT_EMAIL', 'serviceclient@blackwayconnect.com'),
+    accounting: env('ACCOUNTING_EMAIL', 'accounting@blackwayconnect.com'),
+    from: env('FROM_EMAIL', 'serviceclient@blackwayconnect.com'),
+    adminAlert: env('ADMIN_ALERT_EMAIL', 'serviceclient@blackwayconnect.com'),
+  },
+
   hubspot: {
     token: env('HUBSPOT_TOKEN', ''),
     baseUrl: 'https://api.hubapi.com',

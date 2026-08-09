@@ -14,7 +14,8 @@ class EmailService:
         self.smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
         self.smtp_port = int(os.environ.get("SMTP_PORT", "587"))
         self.smtp_user = os.environ.get("SMTP_USER")
-        self.from_email = os.environ.get("FROM_EMAIL", "service@blackwayconnect.com")
+        self.from_email = os.environ.get("FROM_EMAIL", "serviceclient@blackwayconnect.com")
+        self.admin_email = os.environ.get("ADMIN_ALERT_EMAIL", "serviceclient@blackwayconnect.com")
 
     async def send_transactional(
         self,

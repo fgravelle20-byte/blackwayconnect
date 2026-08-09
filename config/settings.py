@@ -1,9 +1,14 @@
 import os
 from typing import Optional
+from config.emails import (
+    SERVICE_EMAIL,
+    FROM_EMAIL as CANONICAL_FROM,
+    ACCOUNTING_EMAIL as CANONICAL_ACCOUNTING,
+)
 
 class Settings:
     APP_NAME: str = "BlackWayConnect Engine"
-    VERSION: str = "2.0.1"
+    VERSION: str = "2.1.0"
     ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "production")
     DEBUG: bool = os.environ.get("DEBUG", "false").lower() == "true"
     
@@ -23,11 +28,14 @@ class Settings:
     SMTP_HOST: str = os.environ.get("SMTP_HOST", "smtp.sendgrid.net")
     SMTP_PORT: int = int(os.environ.get("SMTP_PORT", "587"))
     SENDGRID_API_KEY: Optional[str] = os.environ.get("SENDGRID_API_KEY")
-    FROM_EMAIL: str = os.environ.get("FROM_EMAIL", "hello@blackwayconnect.com")
+    # Canonique : serviceclient@ — jamais iCloud perso
+    FROM_EMAIL: str = os.environ.get("FROM_EMAIL", CANONICAL_FROM)
     
     BRAND_NAME: str = "BlackWayConnect"
     BRAND_URL: str = "https://blackwayconnect.com"
-    SUPPORT_EMAIL: str = "serviceclient@blackwayconnect.com"
+    SUPPORT_EMAIL: str = os.environ.get("SUPPORT_EMAIL", SERVICE_EMAIL)
+    ACCOUNTING_EMAIL: str = os.environ.get("ACCOUNTING_EMAIL", CANONICAL_ACCOUNTING)
+    ADMIN_ALERT_EMAIL: str = os.environ.get("ADMIN_ALERT_EMAIL", SERVICE_EMAIL)
     
     RATE_LIMIT_AUTH: int = 100
     RATE_LIMIT_ANON: int = 30

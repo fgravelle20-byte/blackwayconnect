@@ -27,6 +27,15 @@ export const HUBSPOT = {
   },
 };
 
+/** Emails business — JAMAIS f.gravelle20@icloud.com */
+export const EMAILS = {
+  service: 'serviceclient@blackwayconnect.com',
+  accounting: 'accounting@blackwayconnect.com',
+  from: 'serviceclient@blackwayconnect.com',
+  adminAlert: 'serviceclient@blackwayconnect.com',
+  blockedPersonal: ['f.gravelle20@icloud.com', 'f.gravelle20@me.com'],
+};
+
 export const CATALOGUE = {
   'Website & Lead Launch': {
     hubspot: 'website_lead_launch',
