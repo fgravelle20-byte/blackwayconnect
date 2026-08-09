@@ -1,0 +1,14 @@
+{
+  "name": "blackwayconnect-cf-proxy",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cloudflare Worker proxy → Railway MASTER KING",
+  "main": "src/index.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.20.0"
+  }
+}
