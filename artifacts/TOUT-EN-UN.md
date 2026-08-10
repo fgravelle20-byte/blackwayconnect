@@ -30,16 +30,16 @@ Ancien `blackwayconnect-production.up.railway.app` = **MORT**. Ne plus utiliser.
 
 ## 3) STRIPE — ENCAISSER (6 forfaits KING seulement)
 
-| Forfait | Prix | Lien / buy |
+| Forfait | Prix | Achat |
 |---|---|---|
-| Grow Hub Launch | 299 $/mois | Voir `artifacts/STRIPE-KING-CATALOG.json` (après provision) |
-| Grow Hub Growth | 749 $/mois | idem |
-| Grow Hub Scale | 1 495 $/mois | idem |
-| Site haute conversion | 1 995 $ | idem |
-| Système de revenus | 4 995 $ | idem |
-| App mobile / IA | 7 995 $ | idem |
+| Grow Hub Launch | 299 $/mois **ou** 3 157,44 $/an (−12 %) | `/buy/grow_hub_launch?billing=monthly\|annual` |
+| Grow Hub Growth | 749 $/mois **ou** 7 909,44 $/an (−12 %) | `/buy/grow_hub_growth?billing=…` |
+| Grow Hub Scale | 1 495 $/mois **ou** 15 787,20 $/an (−12 %) | `/buy/grow_hub_scale?billing=…` |
+| Site haute conversion | 1 995 $ (unique) | `/buy/website_lead_launch` |
+| Système de revenus | 4 995 $ (unique) | `/buy/revenue_system` |
+| App mobile / IA | 7 995 $ (unique) | `/buy/ai_scale` |
 
-**Provision :** `python3 scripts/provision-stripe-king-catalog.py` avec `STRIPE_SECRET_KEY` du compte `acct_1U1zzdEWku3DPVf3`.
+**Provision :** `.venv/bin/python scripts/provision-stripe-king-catalog.py` avec `STRIPE_SECRET_KEY` du compte `acct_1U1zzdEWku3DPVf3`.
 
 Ou via site :  
 `/api/v1/payments/buy/{plan_id}`  

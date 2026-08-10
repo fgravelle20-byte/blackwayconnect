@@ -20,14 +20,25 @@ Dashboard test keys : https://dashboard.stripe.com/acct_1U1zzdEWku3DPVf3/test/ap
 
 ## Catalogue KING (montants site = CAD)
 
-| Forfait | Montant | Lien |
+### Grow Hub — abonnements (mensuel **ou** annuel −12 %)
+
+| Forfait | Mensuel | Annuel (−12 %) |
 |---|---|---|
-| Grow Hub Launch | 299 $/mois | *(provision script)* |
-| Grow Hub Growth | 749 $/mois | *(provision script)* |
-| Grow Hub Scale | 1 495 $/mois | *(provision script)* |
-| Site haute conversion | 1 995 $ | *(provision script)* |
-| Système de revenus | 4 995 $ | *(provision script)* |
-| App mobile / IA | 7 995 $ | *(provision script)* |
+| Grow Hub Launch | 299 $/mois | 3 157,44 $/an |
+| Grow Hub Growth | 749 $/mois | 7 909,44 $/an |
+| Grow Hub Scale | 1 495 $/mois | 15 787,20 $/an |
+
+Buy : `/api/v1/payments/buy/{plan}?billing=monthly` ou `billing=annual`
+
+### Projets — paiement unique
+
+| Projet | Montant |
+|---|---|
+| Site haute conversion | 1 995 $ |
+| Système de revenus | 4 995 $ |
+| App mobile / IA | 7 995 $ |
+
+Liens Stripe : `artifacts/STRIPE-KING-CATALOG.json` (après provision).
 
 Source générée : `artifacts/STRIPE-KING-CATALOG.json` (après provision).
 

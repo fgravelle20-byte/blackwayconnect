@@ -5,12 +5,12 @@ Compte unique : acct_1U1zzdEWku3DPVf3
 
 Règle d'or :
   - Un seul catalogue PRICE_IDS pour le site marketing
+  - Grow Hub = abonnements mensuel OU annuel (−12 % sur 12 × mensuel)
+  - Projets d'activation = paiement unique (one-time)
   - payment_link + price_id DOIVENT matcher amount (affichage)
-  - Ne jamais réutiliser les liens "launch_pricing" 69/129/199
   - Ancien compte acct_1TDZjzAG7HUL9Rtr = FERMÉ / ne plus utiliser
   - Provisionner via : scripts/provision-stripe-king-catalog.py
   - Webhook canonical : https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe
-  - (api.blackwayconnect.com/webhooks/stripe bloqué par Cloudflare challenge — ne pas réutiliser tant que CF n'est pas corrigé)
 """
 import os
 import stripe
@@ -24,97 +24,106 @@ STRIPE_ACCOUNT_ID = "acct_1U1zzdEWku3DPVf3"
 STRIPE_ACCOUNT_NAME = "BlackWayConnect"
 CANONICAL_WEBHOOK_URL = "https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe"
 
-# Catalogue canonique — montants = ce que le site affiche (CAD)
-# price_id / payment_link : à remplir après `scripts/provision-stripe-king-catalog.py`
-# (sans IDs → Checkout Session via price_data si STRIPE_SECRET_KEY est présent)
+ANNUAL_DISCOUNT = 0.12  # 12 % si engagement 12 mois (Grow Hub)
+
+
+def annual_from_monthly(monthly: float) -> float:
+    """Montant facturé une fois par an (CAD), rabais 12 % sur 12 × mensuel."""
+    return round(float(monthly) * 12 * (1.0 - ANNUAL_DISCOUNT), 2)
+
+
+def _sub_plan(*, name: str, monthly: float, bw_forfait: str, delai_jours: int):
+    annual = annual_from_monthly(monthly)
+    return {
+        "name": name,
+        "type": "abonnement",
+        "category": "grow_hub",
+        "bw_forfait": bw_forfait,
+        "delai_jours": delai_jours,
+        "amount": monthly,
+        "amount_monthly": monthly,
+        "amount_annual": annual,
+        "stripe_amount": monthly,
+        "stripe_amount_monthly": monthly,
+        "stripe_amount_annual": annual,
+        "monthly": None,
+        "annual": None,
+        "id": None,
+        "one_time": None,
+        "payment_link": None,
+        "payment_link_monthly": None,
+        "payment_link_annual": None,
+        "payment_link_id": None,
+        "payment_link_id_monthly": None,
+        "payment_link_id_annual": None,
+        "buyable": True,
+        "canonical": True,
+        "billing_options": ["monthly", "annual"],
+        "annual_discount": ANNUAL_DISCOUNT,
+    }
+
+
+def _activation_plan(*, name: str, amount: float, bw_forfait: str, delai_jours: int):
+    return {
+        "name": name,
+        "type": "activation",
+        "category": "activation",
+        "bw_forfait": bw_forfait,
+        "delai_jours": delai_jours,
+        "amount": amount,
+        "amount_monthly": None,
+        "amount_annual": None,
+        "stripe_amount": amount,
+        "one_time": None,
+        "monthly": None,
+        "annual": None,
+        "id": None,
+        "payment_link": None,
+        "payment_link_id": None,
+        "buyable": True,
+        "canonical": True,
+        "billing_options": ["one_time"],
+        "annual_discount": 0,
+    }
+
+
 PRICE_IDS = {
-    "website_lead_launch": {
-        "one_time": None,
-        "id": None,
-        "amount": 1995.00,
-        "stripe_amount": 1995.00,
-        "name": "Site haute conversion",
-        "type": "activation",
-        "bw_forfait": "website_lead_launch",
-        "delai_jours": 21,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
-    "revenue_system": {
-        "one_time": None,
-        "id": None,
-        "amount": 4995.00,
-        "stripe_amount": 4995.00,
-        "name": "Système de revenus complet",
-        "type": "activation",
-        "bw_forfait": "revenue_system",
-        "delai_jours": 35,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
-    "ai_scale": {
-        "one_time": None,
-        "id": None,
-        "amount": 7995.00,
-        "stripe_amount": 7995.00,
-        "name": "Application mobile iOS & Android",
-        "type": "activation",
-        "bw_forfait": "ai_scale",
-        "delai_jours": 45,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
-    "grow_hub_launch": {
-        "monthly": None,
-        "id": None,
-        "one_time": None,
-        "amount": 299.00,
-        "stripe_amount": 299.00,
-        "name": "Grow Hub Launch",
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_launch",
-        "delai_jours": 7,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
-    "grow_hub_growth": {
-        "monthly": None,
-        "id": None,
-        "one_time": None,
-        "amount": 749.00,
-        "stripe_amount": 749.00,
-        "name": "Grow Hub Growth",
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_growth",
-        "delai_jours": 7,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
-    "grow_hub_scale": {
-        "monthly": None,
-        "id": None,
-        "one_time": None,
-        "amount": 1495.00,
-        "stripe_amount": 1495.00,
-        "name": "Grow Hub Scale",
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_scale",
-        "delai_jours": 7,
-        "payment_link": None,
-        "payment_link_id": None,
-        "buyable": True,
-        "canonical": True,
-    },
+    "grow_hub_launch": _sub_plan(
+        name="Grow Hub Launch",
+        monthly=299.00,
+        bw_forfait="grow_hub_launch",
+        delai_jours=7,
+    ),
+    "grow_hub_growth": _sub_plan(
+        name="Grow Hub Growth",
+        monthly=749.00,
+        bw_forfait="grow_hub_growth",
+        delai_jours=7,
+    ),
+    "grow_hub_scale": _sub_plan(
+        name="Grow Hub Scale",
+        monthly=1495.00,
+        bw_forfait="grow_hub_scale",
+        delai_jours=7,
+    ),
+    "website_lead_launch": _activation_plan(
+        name="Site haute conversion",
+        amount=1995.00,
+        bw_forfait="website_lead_launch",
+        delai_jours=21,
+    ),
+    "revenue_system": _activation_plan(
+        name="Système de revenus complet",
+        amount=4995.00,
+        bw_forfait="revenue_system",
+        delai_jours=35,
+    ),
+    "ai_scale": _activation_plan(
+        name="Application mobile iOS & Android",
+        amount=7995.00,
+        bw_forfait="ai_scale",
+        delai_jours=45,
+    ),
 }
 
 BRAND_URL = os.environ.get("BRAND_URL", "https://blackwayconnect.com")
@@ -124,49 +133,87 @@ RAILWAY_PUBLIC = os.environ.get(
 )
 
 
-def _price_aligned(meta: dict) -> bool:
-    return abs(float(meta["amount"]) - float(meta.get("stripe_amount", meta["amount"]))) < 0.01
+def normalize_billing(billing: Optional[str], meta: Optional[dict] = None) -> str:
+    """Return monthly|annual|one_time based on plan type."""
+    b = (billing or "").strip().lower()
+    if meta and meta.get("type") == "activation":
+        return "one_time"
+    if b in ("annual", "annuel", "year", "yearly", "annee", "année"):
+        return "annual"
+    if b in ("one_time", "once", "unique", "activation"):
+        return "one_time"
+    return "monthly"
 
 
 def _is_subscription(meta: dict) -> bool:
     return meta.get("type") == "abonnement"
 
 
-def _line_item_for_plan(meta: dict) -> dict:
-    unit_amount = int(round(float(meta["amount"]) * 100))
+def _price_aligned(meta: dict, billing: str = "monthly") -> bool:
+    if billing == "annual":
+        return abs(float(meta["amount_annual"]) - float(meta.get("stripe_amount_annual", meta["amount_annual"]))) < 0.01
+    if billing == "one_time":
+        return abs(float(meta["amount"]) - float(meta.get("stripe_amount", meta["amount"]))) < 0.01
+    return abs(float(meta["amount_monthly"]) - float(meta.get("stripe_amount_monthly", meta["amount_monthly"]))) < 0.01
+
+
+def _display_amount(meta: dict, billing: str) -> float:
+    if billing == "annual":
+        return float(meta["amount_annual"])
+    return float(meta["amount"] if billing == "one_time" else meta["amount_monthly"])
+
+
+def _payment_link_for(meta: dict, billing: str) -> Optional[str]:
+    if billing == "annual":
+        return meta.get("payment_link_annual")
+    if billing == "one_time":
+        return meta.get("payment_link")
+    return meta.get("payment_link_monthly") or meta.get("payment_link")
+
+
+def _price_id_for(meta: dict, billing: str) -> Optional[str]:
+    if billing == "annual":
+        return meta.get("annual")
+    if billing == "one_time":
+        return meta.get("one_time") or meta.get("id")
+    return meta.get("monthly") or meta.get("id")
+
+
+def _line_item_for_plan(meta: dict, billing: str) -> dict:
+    amount = _display_amount(meta, billing)
+    unit_amount = int(round(amount * 100))
     product_data = {
         "name": meta["name"],
         "metadata": {
             "bw_forfait": meta.get("bw_forfait", ""),
             "platform": "blackwayconnect",
             "canonical": "true",
+            "billing": billing,
         },
     }
-    if _is_subscription(meta):
+    if billing == "one_time":
         return {
             "price_data": {
                 "currency": "cad",
                 "unit_amount": unit_amount,
-                "recurring": {"interval": "month"},
                 "product_data": product_data,
             },
             "quantity": 1,
         }
+    recurring = {"interval": "year"} if billing == "annual" else {"interval": "month"}
     return {
         "price_data": {
             "currency": "cad",
             "unit_amount": unit_amount,
+            "recurring": recurring,
             "product_data": product_data,
         },
         "quantity": 1,
     }
 
 
-def _line_item_from_price_id(meta: dict) -> Optional[dict]:
-    if _is_subscription(meta):
-        price_id = meta.get("monthly") or meta.get("id")
-    else:
-        price_id = meta.get("one_time") or meta.get("id")
+def _line_item_from_price_id(meta: dict, billing: str) -> Optional[dict]:
+    price_id = _price_id_for(meta, billing)
     if not price_id:
         return None
     return {"price": price_id, "quantity": 1}
@@ -178,39 +225,38 @@ async def create_public_checkout(
     client_id: Optional[str] = None,
     success_url: Optional[str] = None,
     cancel_url: Optional[str] = None,
+    billing: Optional[str] = None,
 ):
     meta = PRICE_IDS.get(plan_key)
     if not meta:
         return {"error": "Plan invalide"}
 
-    # Prefer Payment Link when price-aligned (no secret key required)
-    if _price_aligned(meta) and meta.get("payment_link"):
+    billing = normalize_billing(billing, meta)
+    amount = _display_amount(meta, billing)
+    link = _payment_link_for(meta, billing)
+
+    if _price_aligned(meta, billing) and link:
         return {
-            "url": meta["payment_link"],
+            "url": link,
             "via": "payment_link",
-            "amount": meta["amount"],
+            "amount": amount,
+            "billing": billing,
             "canonical": True,
         }
 
     if not stripe.api_key:
         return {"error": "Stripe non configuré (STRIPE_SECRET_KEY manquante)"}
 
-    mode = "subscription" if _is_subscription(meta) else "payment"
     plan_meta = meta.get("bw_forfait", plan_key)
-
-    if _price_aligned(meta) and (meta.get("monthly") or meta.get("one_time") or meta.get("id")):
-        from_price = _line_item_from_price_id(meta)
-        if from_price:
-            line_items = [from_price]
-            via = "price_id"
-        else:
-            line_items = [_line_item_for_plan(meta)]
-            via = "price_data"
+    from_price = _line_item_from_price_id(meta, billing) if _price_aligned(meta, billing) else None
+    if from_price:
+        line_items = [from_price]
+        via = "price_id"
     else:
-        line_items = [_line_item_for_plan(meta)]
+        line_items = [_line_item_for_plan(meta, billing)]
         via = "price_data"
 
-    # Omit payment_method_types → Stripe dynamic payment methods
+    mode = "subscription" if billing in ("monthly", "annual") else "payment"
     params = {
         "mode": mode,
         "line_items": line_items,
@@ -220,7 +266,9 @@ async def create_public_checkout(
             "bw_forfait": plan_meta,
             "platform": "blackwayconnect",
             "canonical": "true",
-            "displayed_amount": str(meta["amount"]),
+            "billing": billing,
+            "annual_discount": str(ANNUAL_DISCOUNT) if billing == "annual" else "0",
+            "displayed_amount": str(amount),
         },
         "success_url": success_url or f"{RAILWAY_PUBLIC}/?paid=1&session_id={{CHECKOUT_SESSION_ID}}",
         "cancel_url": cancel_url or f"{RAILWAY_PUBLIC}/forfaits?canceled=1",
@@ -228,38 +276,61 @@ async def create_public_checkout(
         "billing_address_collection": "required",
         "locale": "fr",
     }
+    if mode == "subscription":
+        params["subscription_data"] = {
+            "metadata": {
+                "bw_forfait": plan_meta,
+                "billing": billing,
+                "platform": "blackwayconnect",
+                "canonical": "true",
+            }
+        }
     if client_email:
         params["customer_email"] = client_email
 
     try:
         session = stripe.checkout.Session.create(**params)
-        return {"url": session.url, "session_id": session.id, "via": via, "amount": meta["amount"]}
+        return {
+            "url": session.url,
+            "session_id": session.id,
+            "via": via,
+            "amount": amount,
+            "billing": billing,
+        }
     except Exception as e:
         logger.error(f"public checkout error: {e}")
-        if meta.get("payment_link"):
-            return {"url": meta["payment_link"], "via": "payment_link_fallback", "warning": str(e)}
+        if link:
+            return {"url": link, "via": "payment_link_fallback", "warning": str(e), "billing": billing}
         return {"error": str(e)}
 
 
-async def create_checkout_session(plan_key, client_email, client_id, mode="payment"):
+async def create_checkout_session(plan_key, client_email, client_id, mode="payment", billing=None):
     return await create_public_checkout(
         plan_key,
         client_email=client_email,
         client_id=client_id,
+        billing=billing,
     )
 
 
-async def create_subscription(client_email, price_id, client_id):
-    return await create_checkout_session(price_id, client_email, client_id, mode="subscription")
+async def create_subscription(client_email, price_id, client_id, billing="monthly"):
+    if price_id in PRICE_IDS:
+        return await create_public_checkout(
+            price_id,
+            client_email=client_email,
+            client_id=client_id,
+            billing=billing,
+        )
+    return await create_checkout_session(price_id, client_email, client_id, billing=billing)
 
 
 async def audit_stripe_health():
-    """Audit lecture seule — pour rassurer et détecter une dérive."""
     report = {
         "account_expected": STRIPE_ACCOUNT_ID,
         "account_name_expected": STRIPE_ACCOUNT_NAME,
         "canonical_webhook": CANONICAL_WEBHOOK_URL,
         "secret_key_configured": bool(stripe.api_key),
+        "annual_discount": ANNUAL_DISCOUNT,
         "plans": [],
         "charges_count": None,
         "paid_sessions_count": None,
@@ -267,17 +338,29 @@ async def audit_stripe_health():
         "warnings": [],
     }
     for key, meta in PRICE_IDS.items():
-        report["plans"].append({
+        entry = {
             "id": key,
+            "type": meta["type"],
             "amount": meta["amount"],
-            "stripe_amount": meta.get("stripe_amount"),
-            "aligned": _price_aligned(meta),
-            "payment_link": meta.get("payment_link"),
             "buyable": meta.get("buyable"),
             "canonical": meta.get("canonical"),
-        })
-        if not _price_aligned(meta):
-            report["warnings"].append(f"{key}: affichage {meta['amount']} ≠ stripe {meta.get('stripe_amount')}")
+            "billing_options": meta.get("billing_options"),
+        }
+        if _is_subscription(meta):
+            entry.update({
+                "amount_monthly": meta["amount_monthly"],
+                "amount_annual": meta["amount_annual"],
+                "aligned_monthly": _price_aligned(meta, "monthly"),
+                "aligned_annual": _price_aligned(meta, "annual"),
+                "payment_link_monthly": meta.get("payment_link_monthly"),
+                "payment_link_annual": meta.get("payment_link_annual"),
+            })
+        else:
+            entry.update({
+                "aligned": _price_aligned(meta, "one_time"),
+                "payment_link": meta.get("payment_link"),
+            })
+        report["plans"].append(entry)
 
     if not stripe.api_key:
         report["warnings"].append("STRIPE_SECRET_KEY manquante sur ce runtime")
@@ -291,11 +374,10 @@ async def audit_stripe_health():
         report["charges_count"] = len(charges.data)
         sessions = stripe.checkout.Session.list(limit=100)
         report["paid_sessions_count"] = sum(1 for s in sessions.data if s.payment_status == "paid")
-        # webhook check
         hooks = stripe.WebhookEndpoint.list(limit=100)
         canonical = [h for h in hooks.data if h.url == CANONICAL_WEBHOOK_URL]
         report["canonical_webhook_enabled"] = bool(canonical and canonical[0].status == "enabled")
-        stale_enabled = [
+        report["other_enabled_webhooks"] = [
             {"id": h.id, "url": h.url}
             for h in hooks.data
             if h.status == "enabled"
@@ -303,8 +385,6 @@ async def audit_stripe_health():
             and "blackway" not in (h.url or "").lower()
             and "api.blackwayconnect.com" not in (h.url or "")
         ]
-        # Keep non-BW hooks listed but don't fail — multi-product account
-        report["other_enabled_webhooks"] = stale_enabled
         if not report["canonical_webhook_enabled"]:
             report["warnings"].append(
                 "Webhook canonical blackway-pipe.workers.dev absent ou disabled"
@@ -356,6 +436,7 @@ async def get_payment_history(client_id: str, limit: int = 10):
                     "currency": (s.currency or "cad").upper(),
                     "status": s.payment_status,
                     "plan": s.metadata.get("bw_forfait") or s.metadata.get("plan"),
+                    "billing": s.metadata.get("billing"),
                 })
             if len(out) >= limit:
                 break

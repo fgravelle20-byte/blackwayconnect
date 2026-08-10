@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Provision the 6 KING products / prices / payment links + webhook
-on the sole Stripe account: acct_1U1zzdEWku3DPVf3.
+Provision KING catalog on acct_1U1zzdEWku3DPVf3:
+
+  - Grow Hub × 3 : prix mensuel + annuel (−12 %) + Payment Links
+  - Projets activation × 3 : prix one-time + Payment Link
+  - Webhook canonical blackway-pipe
 
 Usage:
-  export STRIPE_SECRET_KEY=sk_test_...   # or sk_live_...
-  python3 scripts/provision-stripe-king-catalog.py
-
-Writes:
-  artifacts/STRIPE-KING-CATALOG.json
-  and prints a Python snippet to paste into modules/payments/payments.py
+  export STRIPE_SECRET_KEY=sk_test_...
+  .venv/bin/python scripts/provision-stripe-king-catalog.py
 """
 from __future__ import annotations
 
@@ -21,13 +20,13 @@ from pathlib import Path
 try:
     import stripe
 except ImportError:
-    print("pip install stripe", file=sys.stderr)
+    print("pip install stripe (use .venv)", file=sys.stderr)
     sys.exit(1)
 
 EXPECTED_ACCOUNT = "acct_1U1zzdEWku3DPVf3"
 CURRENCY = "cad"
+ANNUAL_DISCOUNT = 0.12
 SUCCESS_URL = "https://dependable-spirit-production.up.railway.app/?paid=1"
-CANCEL_URL = "https://dependable-spirit-production.up.railway.app/forfaits?canceled=1"
 WEBHOOK_URL = "https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe"
 WEBHOOK_EVENTS = [
     "checkout.session.completed",
@@ -36,59 +35,30 @@ WEBHOOK_EVENTS = [
     "checkout.session.expired",
     "invoice.paid",
     "invoice.payment_failed",
+    "customer.subscription.created",
+    "customer.subscription.updated",
+    "customer.subscription.deleted",
 ]
 
-# Canonical KING catalogue (display amounts CAD)
-CATALOG = [
-    {
-        "key": "grow_hub_launch",
-        "name": "Grow Hub Launch",
-        "amount": 29900,
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_launch",
-        "delai_jours": 7,
-    },
-    {
-        "key": "grow_hub_growth",
-        "name": "Grow Hub Growth",
-        "amount": 74900,
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_growth",
-        "delai_jours": 7,
-    },
-    {
-        "key": "grow_hub_scale",
-        "name": "Grow Hub Scale",
-        "amount": 149500,
-        "type": "abonnement",
-        "bw_forfait": "grow_hub_scale",
-        "delai_jours": 7,
-    },
-    {
-        "key": "website_lead_launch",
-        "name": "Site haute conversion",
-        "amount": 199500,
-        "type": "activation",
-        "bw_forfait": "website_lead_launch",
-        "delai_jours": 21,
-    },
-    {
-        "key": "revenue_system",
-        "name": "Système de revenus complet",
-        "amount": 499500,
-        "type": "activation",
-        "bw_forfait": "revenue_system",
-        "delai_jours": 35,
-    },
-    {
-        "key": "ai_scale",
-        "name": "Application mobile iOS & Android",
-        "amount": 799500,
-        "type": "activation",
-        "bw_forfait": "ai_scale",
-        "delai_jours": 45,
-    },
+GROW_HUB = [
+    {"key": "grow_hub_launch", "name": "Grow Hub Launch", "monthly": 299.00, "delai_jours": 7},
+    {"key": "grow_hub_growth", "name": "Grow Hub Growth", "monthly": 749.00, "delai_jours": 7},
+    {"key": "grow_hub_scale", "name": "Grow Hub Scale", "monthly": 1495.00, "delai_jours": 7},
 ]
+
+ACTIVATIONS = [
+    {"key": "website_lead_launch", "name": "Site haute conversion", "amount": 1995.00, "delai_jours": 21},
+    {"key": "revenue_system", "name": "Système de revenus complet", "amount": 4995.00, "delai_jours": 35},
+    {"key": "ai_scale", "name": "Application mobile iOS & Android", "amount": 7995.00, "delai_jours": 45},
+]
+
+
+def annual_amount(monthly: float) -> float:
+    return round(float(monthly) * 12 * (1.0 - ANNUAL_DISCOUNT), 2)
+
+
+def cents(amount: float) -> int:
+    return int(round(float(amount) * 100))
 
 
 def require_key() -> str:
@@ -96,96 +66,91 @@ def require_key() -> str:
     if not key:
         print("STRIPE_SECRET_KEY is required", file=sys.stderr)
         sys.exit(2)
-    if key.startswith("sk_live_") or key.startswith("rk_live_"):
-        mode = "live"
-    elif key.startswith("sk_test_") or key.startswith("rk_test_"):
-        mode = "test"
-    else:
-        print("Unexpected key prefix — expected sk_/rk_ test or live", file=sys.stderr)
-        sys.exit(2)
-    return mode
+    if key.startswith(("sk_live_", "rk_live_")):
+        return "live"
+    if key.startswith(("sk_test_", "rk_test_")):
+        return "test"
+    print("Unexpected key prefix", file=sys.stderr)
+    sys.exit(2)
 
 
-def assert_account() -> dict:
+def assert_account():
     acct = stripe.Account.retrieve()
     if acct.id != EXPECTED_ACCOUNT:
-        print(
-            f"Refusing to provision: connected to {acct.id} ({acct.get('settings', {}).get('dashboard', {}).get('display_name')}), "
-            f"expected {EXPECTED_ACCOUNT}",
-            file=sys.stderr,
-        )
+        print(f"Refusing: connected to {acct.id}, expected {EXPECTED_ACCOUNT}", file=sys.stderr)
         sys.exit(3)
     return acct
 
 
-def find_product_by_forfait(bw_forfait: str):
-    products = stripe.Product.list(limit=100, active=True)
-    for p in products.auto_paging_iter():
+def find_product(bw_forfait: str):
+    for p in stripe.Product.list(limit=100, active=True).auto_paging_iter():
         meta = p.get("metadata") or {}
         if meta.get("bw_forfait") == bw_forfait and meta.get("canonical") == "true":
             return p
     return None
 
 
-def ensure_product(item: dict):
-    existing = find_product_by_forfait(item["bw_forfait"])
+def ensure_product(name: str, bw_forfait: str, *, category: str, delai_jours: int, typ: str):
     metadata = {
-        "bw_forfait": item["bw_forfait"],
+        "bw_forfait": bw_forfait,
         "platform": "blackwayconnect",
         "canonical": "true",
-        "delai_jours": str(item["delai_jours"]),
-        "type": item["type"],
+        "delai_jours": str(delai_jours),
+        "category": category,
+        "type": typ,
     }
+    existing = find_product(bw_forfait)
     if existing:
-        return stripe.Product.modify(
-            existing.id,
-            name=item["name"],
-            metadata=metadata,
-        )
-    return stripe.Product.create(
-        name=item["name"],
-        metadata=metadata,
-    )
+        return stripe.Product.modify(existing.id, name=name, metadata=metadata)
+    return stripe.Product.create(name=name, metadata=metadata)
 
 
-def find_matching_price(product_id: str, item: dict):
-    prices = stripe.Price.list(product=product_id, active=True, limit=100)
-    for price in prices.auto_paging_iter():
-        recurring = price.get("recurring")
-        want_recurring = item["type"] == "abonnement"
-        if want_recurring:
-            if not recurring or recurring.get("interval") != "month":
-                continue
-        else:
-            if recurring:
-                continue
-        if price.unit_amount == item["amount"] and price.currency == CURRENCY:
+def find_price(product_id: str, unit_amount: int, *, recurring_interval=None):
+    for price in stripe.Price.list(product=product_id, active=True, limit=100).auto_paging_iter():
+        if price.unit_amount != unit_amount or price.currency != CURRENCY:
+            continue
+        rec = price.get("recurring")
+        if recurring_interval is None and not rec:
+            return price
+        if rec and rec.get("interval") == recurring_interval:
             return price
     return None
 
 
-def ensure_price(product_id: str, item: dict):
-    existing = find_matching_price(product_id, item)
+def ensure_recurring_price(product_id: str, bw_forfait: str, amount: float, interval: str, billing: str):
+    unit = cents(amount)
+    existing = find_price(product_id, unit, recurring_interval=interval)
     if existing:
         return existing
-    params = {
-        "product": product_id,
-        "currency": CURRENCY,
-        "unit_amount": item["amount"],
-        "metadata": {
-            "bw_forfait": item["bw_forfait"],
+    return stripe.Price.create(
+        product=product_id,
+        currency=CURRENCY,
+        unit_amount=unit,
+        recurring={"interval": interval},
+        metadata={
+            "bw_forfait": bw_forfait,
             "canonical": "true",
+            "billing": billing,
+            "annual_discount": str(ANNUAL_DISCOUNT) if billing == "annual" else "0",
         },
-    }
-    if item["type"] == "abonnement":
-        params["recurring"] = {"interval": "month"}
-    return stripe.Price.create(**params)
+    )
+
+
+def ensure_one_time_price(product_id: str, bw_forfait: str, amount: float):
+    unit = cents(amount)
+    existing = find_price(product_id, unit, recurring_interval=None)
+    if existing:
+        return existing
+    return stripe.Price.create(
+        product=product_id,
+        currency=CURRENCY,
+        unit_amount=unit,
+        metadata={"bw_forfait": bw_forfait, "canonical": "true", "billing": "one_time"},
+    )
 
 
 def find_payment_link(price_id: str):
-    links = stripe.PaymentLink.list(limit=100, active=True)
-    for link in links.auto_paging_iter():
-        # PaymentLink.list does not expand line_items; retrieve each candidate lightly
+    for link in stripe.PaymentLink.list(limit=100, active=True).auto_paging_iter():
         full = stripe.PaymentLink.retrieve(link.id, expand=["line_items"])
         items = (full.get("line_items") or {}).get("data") or []
         if len(items) == 1 and items[0].get("price") and items[0]["price"].get("id") == price_id:
@@ -193,42 +158,36 @@ def find_payment_link(price_id: str):
     return None
 
 
-def ensure_payment_link(price_id: str, item: dict):
+def ensure_payment_link(price_id: str, bw_forfait: str, billing: str):
     existing = find_payment_link(price_id)
-    mode_meta = {
-        "bw_forfait": item["bw_forfait"],
+    metadata = {
+        "bw_forfait": bw_forfait,
         "platform": "blackwayconnect",
         "canonical": "true",
+        "billing": billing,
     }
     if existing:
         return stripe.PaymentLink.modify(
             existing.id,
-            metadata=mode_meta,
-            after_completion={
-                "type": "redirect",
-                "redirect": {"url": SUCCESS_URL},
-            },
+            metadata=metadata,
+            after_completion={"type": "redirect", "redirect": {"url": SUCCESS_URL}},
         )
-    params = {
-        "line_items": [{"price": price_id, "quantity": 1}],
-        "metadata": mode_meta,
-        "after_completion": {
-            "type": "redirect",
-            "redirect": {"url": SUCCESS_URL},
-        },
-        "allow_promotion_codes": True,
-        "billing_address_collection": "required",
-    }
-    return stripe.PaymentLink.create(**params)
+    return stripe.PaymentLink.create(
+        line_items=[{"price": price_id, "quantity": 1}],
+        metadata=metadata,
+        after_completion={"type": "redirect", "redirect": {"url": SUCCESS_URL}},
+        allow_promotion_codes=True,
+        billing_address_collection="required",
+    )
 
 
 def ensure_webhook():
-    hooks = stripe.WebhookEndpoint.list(limit=100)
-    for h in hooks.auto_paging_iter():
+    for h in stripe.WebhookEndpoint.list(limit=100).auto_paging_iter():
         if h.url == WEBHOOK_URL:
             if h.status != "enabled":
-                return stripe.WebhookEndpoint.modify(h.id, disabled=False, enabled_events=WEBHOOK_EVENTS), False
-            # Cannot re-read secret; return existing without secret
+                return stripe.WebhookEndpoint.modify(
+                    h.id, disabled=False, enabled_events=WEBHOOK_EVENTS
+                ), False
             return h, False
     created = stripe.WebhookEndpoint.create(
         url=WEBHOOK_URL,
@@ -243,41 +202,57 @@ def main():
     mode = require_key()
     stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
     acct = assert_account()
-    display = getattr(acct, "business_profile", None)
-    display_name = None
-    if display:
-        display_name = getattr(display, "name", None)
-    if not display_name:
-        display_name = acct.get("settings", {}).get("dashboard", {}).get("display_name") or "BlackWayConnect"
-
-    print(f"Account OK: {acct.id} ({display_name}) mode={mode}")
+    print(f"Account OK: {acct.id} mode={mode} annual_discount={int(ANNUAL_DISCOUNT*100)}%")
 
     results = {
         "account_id": acct.id,
-        "account_name": display_name,
         "mode": mode,
+        "annual_discount": ANNUAL_DISCOUNT,
         "webhook_url": WEBHOOK_URL,
         "plans": {},
     }
 
-    for item in CATALOG:
-        product = ensure_product(item)
-        price = ensure_price(product.id, item)
-        link = ensure_payment_link(price.id, item)
-        plan = {
-            "key": item["key"],
+    for item in GROW_HUB:
+        product = ensure_product(
+            item["name"], item["key"], category="grow_hub", delai_jours=item["delai_jours"], typ="abonnement"
+        )
+        mo_amt = float(item["monthly"])
+        yr_amt = annual_amount(mo_amt)
+        mo_price = ensure_recurring_price(product.id, item["key"], mo_amt, "month", "monthly")
+        yr_price = ensure_recurring_price(product.id, item["key"], yr_amt, "year", "annual")
+        mo_link = ensure_payment_link(mo_price.id, item["key"], "monthly")
+        yr_link = ensure_payment_link(yr_price.id, item["key"], "annual")
+        results["plans"][item["key"]] = {
+            "type": "abonnement",
             "name": item["name"],
-            "amount": item["amount"] / 100.0,
-            "type": item["type"],
-            "bw_forfait": item["bw_forfait"],
-            "delai_jours": item["delai_jours"],
+            "amount_monthly": mo_amt,
+            "amount_annual": yr_amt,
+            "product_id": product.id,
+            "price_id_monthly": mo_price.id,
+            "price_id_annual": yr_price.id,
+            "payment_link_monthly": mo_link.url,
+            "payment_link_annual": yr_link.url,
+            "payment_link_id_monthly": mo_link.id,
+            "payment_link_id_annual": yr_link.id,
+        }
+        print(f"  {item['key']}: mo={mo_amt} yr={yr_amt} (−12%)")
+
+    for item in ACTIVATIONS:
+        product = ensure_product(
+            item["name"], item["key"], category="activation", delai_jours=item["delai_jours"], typ="activation"
+        )
+        price = ensure_one_time_price(product.id, item["key"], item["amount"])
+        link = ensure_payment_link(price.id, item["key"], "one_time")
+        results["plans"][item["key"]] = {
+            "type": "activation",
+            "name": item["name"],
+            "amount": item["amount"],
             "product_id": product.id,
             "price_id": price.id,
-            "payment_link_id": link.id,
             "payment_link": link.url,
+            "payment_link_id": link.id,
         }
-        results["plans"][item["key"]] = plan
-        print(f"  {item['key']}: {price.id} → {link.url}")
+        print(f"  {item['key']}: one_time={item['amount']}")
 
     hook, created_new = ensure_webhook()
     results["webhook"] = {
@@ -285,54 +260,14 @@ def main():
         "url": hook.url,
         "status": hook.status,
         "secret": getattr(hook, "secret", None) if created_new else None,
-        "secret_note": "whsec only returned on create — copy now if present"
-        if created_new
-        else "existing endpoint — rotate secret in Dashboard if needed",
     }
-    print(f"Webhook: {hook.id} status={hook.status} new={created_new}")
+    print(f"Webhook: {hook.id} new={created_new}")
     if results["webhook"]["secret"]:
         print(f"STRIPE_WEBHOOK_SECRET={results['webhook']['secret']}")
 
     out = Path("artifacts/STRIPE-KING-CATALOG.json")
-    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(results, indent=2) + "\n")
     print(f"Wrote {out}")
-
-    # Emit payments.py PRICE_IDS block
-    print("\n# --- paste into modules/payments/payments.py PRICE_IDS ---\n")
-    print("PRICE_IDS = {")
-    order = [
-        "website_lead_launch",
-        "revenue_system",
-        "ai_scale",
-        "grow_hub_launch",
-        "grow_hub_growth",
-        "grow_hub_scale",
-    ]
-    for key in order:
-        p = results["plans"][key]
-        is_sub = p["type"] == "abonnement"
-        print(f'    "{key}": {{')
-        if is_sub:
-            print(f'        "monthly": "{p["price_id"]}",')
-            print(f'        "id": "{p["price_id"]}",')
-            print(f'        "one_time": "{p["price_id"]}",')
-        else:
-            print(f'        "one_time": "{p["price_id"]}",')
-            print(f'        "id": "{p["price_id"]}",')
-        print(f'        "amount": {p["amount"]:.2f},')
-        print(f'        "stripe_amount": {p["amount"]:.2f},')
-        print(f'        "name": {json.dumps(p["name"], ensure_ascii=False)},')
-        print(f'        "type": "{p["type"]}",')
-        print(f'        "bw_forfait": "{p["bw_forfait"]}",')
-        print(f'        "delai_jours": {p["delai_jours"]},')
-        print(f'        "payment_link": "{p["payment_link"]}",')
-        print(f'        "payment_link_id": "{p["payment_link_id"]}",')
-        print(f'        "product_id": "{p["product_id"]}",')
-        print('        "buyable": True,')
-        print('        "canonical": True,')
-        print("    },")
-    print("}")
 
 
 if __name__ == "__main__":
