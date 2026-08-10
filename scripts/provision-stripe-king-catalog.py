@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Provision KING catalog on acct_1U1zzdEWku3DPVf3:
+Provision ALL 6 KING forfaits as subscriptions on acct_1U1zzdEWku3DPVf3:
 
-  - Grow Hub × 3 : prix mensuel + annuel (−12 %) + Payment Links
-  - Projets activation × 3 : prix one-time + Payment Link
-  - Webhook canonical blackway-pipe
+  - Each product: monthly price + annual price (−12 %)
+  - Payment Link for each price
+  - Canonical webhook
 
 Usage:
   export STRIPE_SECRET_KEY=sk_test_...
@@ -40,16 +40,13 @@ WEBHOOK_EVENTS = [
     "customer.subscription.deleted",
 ]
 
-GROW_HUB = [
-    {"key": "grow_hub_launch", "name": "Grow Hub Launch", "monthly": 299.00, "delai_jours": 7},
-    {"key": "grow_hub_growth", "name": "Grow Hub Growth", "monthly": 749.00, "delai_jours": 7},
-    {"key": "grow_hub_scale", "name": "Grow Hub Scale", "monthly": 1495.00, "delai_jours": 7},
-]
-
-ACTIVATIONS = [
-    {"key": "website_lead_launch", "name": "Site haute conversion", "amount": 1995.00, "delai_jours": 21},
-    {"key": "revenue_system", "name": "Système de revenus complet", "amount": 4995.00, "delai_jours": 35},
-    {"key": "ai_scale", "name": "Application mobile iOS & Android", "amount": 7995.00, "delai_jours": 45},
+CATALOG = [
+    {"key": "grow_hub_launch", "name": "Grow Hub Launch", "monthly": 299.00, "delai_jours": 7, "category": "grow_hub"},
+    {"key": "grow_hub_growth", "name": "Grow Hub Growth", "monthly": 749.00, "delai_jours": 7, "category": "grow_hub"},
+    {"key": "grow_hub_scale", "name": "Grow Hub Scale", "monthly": 1495.00, "delai_jours": 7, "category": "grow_hub"},
+    {"key": "website_lead_launch", "name": "Site haute conversion", "monthly": 1995.00, "delai_jours": 21, "category": "activation"},
+    {"key": "revenue_system", "name": "Système de revenus complet", "monthly": 4995.00, "delai_jours": 35, "category": "activation"},
+    {"key": "ai_scale", "name": "Application mobile iOS & Android", "monthly": 7995.00, "delai_jours": 45, "category": "activation"},
 ]
 
 
@@ -90,63 +87,53 @@ def find_product(bw_forfait: str):
     return None
 
 
-def ensure_product(name: str, bw_forfait: str, *, category: str, delai_jours: int, typ: str):
+def ensure_product(item: dict):
     metadata = {
-        "bw_forfait": bw_forfait,
+        "bw_forfait": item["key"],
         "platform": "blackwayconnect",
         "canonical": "true",
-        "delai_jours": str(delai_jours),
-        "category": category,
-        "type": typ,
+        "delai_jours": str(item["delai_jours"]),
+        "category": item["category"],
+        "type": "abonnement",
     }
-    existing = find_product(bw_forfait)
+    existing = find_product(item["key"])
     if existing:
-        return stripe.Product.modify(existing.id, name=name, metadata=metadata)
-    return stripe.Product.create(name=name, metadata=metadata)
+        return stripe.Product.modify(existing.id, name=item["name"], metadata=metadata)
+    return stripe.Product.create(name=item["name"], metadata=metadata)
 
 
-def find_price(product_id: str, unit_amount: int, *, recurring_interval=None):
+def find_price(product_id: str, unit_amount: int, interval: str):
     for price in stripe.Price.list(product=product_id, active=True, limit=100).auto_paging_iter():
-        if price.unit_amount != unit_amount or price.currency != CURRENCY:
-            continue
-        rec = price.get("recurring")
-        if recurring_interval is None and not rec:
-            return price
-        if rec and rec.get("interval") == recurring_interval:
+        rec = price.get("recurring") or {}
+        if (
+            price.unit_amount == unit_amount
+            and price.currency == CURRENCY
+            and rec.get("interval") == interval
+        ):
             return price
     return None
 
 
-def ensure_recurring_price(product_id: str, bw_forfait: str, amount: float, interval: str, billing: str):
+def ensure_price(product_id: str, item: dict, billing: str):
+    amount = annual_amount(item["monthly"]) if billing == "annual" else float(item["monthly"])
+    interval = "year" if billing == "annual" else "month"
     unit = cents(amount)
-    existing = find_price(product_id, unit, recurring_interval=interval)
+    existing = find_price(product_id, unit, interval)
     if existing:
-        return existing
-    return stripe.Price.create(
+        return existing, amount
+    price = stripe.Price.create(
         product=product_id,
         currency=CURRENCY,
         unit_amount=unit,
         recurring={"interval": interval},
         metadata={
-            "bw_forfait": bw_forfait,
+            "bw_forfait": item["key"],
             "canonical": "true",
             "billing": billing,
             "annual_discount": str(ANNUAL_DISCOUNT) if billing == "annual" else "0",
         },
     )
-
-
-def ensure_one_time_price(product_id: str, bw_forfait: str, amount: float):
-    unit = cents(amount)
-    existing = find_price(product_id, unit, recurring_interval=None)
-    if existing:
-        return existing
-    return stripe.Price.create(
-        product=product_id,
-        currency=CURRENCY,
-        unit_amount=unit,
-        metadata={"bw_forfait": bw_forfait, "canonical": "true", "billing": "one_time"},
-    )
+    return price, amount
 
 
 def find_payment_link(price_id: str):
@@ -158,10 +145,10 @@ def find_payment_link(price_id: str):
     return None
 
 
-def ensure_payment_link(price_id: str, bw_forfait: str, billing: str):
+def ensure_payment_link(price_id: str, item: dict, billing: str):
     existing = find_payment_link(price_id)
     metadata = {
-        "bw_forfait": bw_forfait,
+        "bw_forfait": item["key"],
         "platform": "blackwayconnect",
         "canonical": "true",
         "billing": billing,
@@ -212,18 +199,15 @@ def main():
         "plans": {},
     }
 
-    for item in GROW_HUB:
-        product = ensure_product(
-            item["name"], item["key"], category="grow_hub", delai_jours=item["delai_jours"], typ="abonnement"
-        )
-        mo_amt = float(item["monthly"])
-        yr_amt = annual_amount(mo_amt)
-        mo_price = ensure_recurring_price(product.id, item["key"], mo_amt, "month", "monthly")
-        yr_price = ensure_recurring_price(product.id, item["key"], yr_amt, "year", "annual")
-        mo_link = ensure_payment_link(mo_price.id, item["key"], "monthly")
-        yr_link = ensure_payment_link(yr_price.id, item["key"], "annual")
+    for item in CATALOG:
+        product = ensure_product(item)
+        mo_price, mo_amt = ensure_price(product.id, item, "monthly")
+        yr_price, yr_amt = ensure_price(product.id, item, "annual")
+        mo_link = ensure_payment_link(mo_price.id, item, "monthly")
+        yr_link = ensure_payment_link(yr_price.id, item, "annual")
         results["plans"][item["key"]] = {
             "type": "abonnement",
+            "category": item["category"],
             "name": item["name"],
             "amount_monthly": mo_amt,
             "amount_annual": yr_amt,
@@ -235,24 +219,7 @@ def main():
             "payment_link_id_monthly": mo_link.id,
             "payment_link_id_annual": yr_link.id,
         }
-        print(f"  {item['key']}: mo={mo_amt} yr={yr_amt} (−12%)")
-
-    for item in ACTIVATIONS:
-        product = ensure_product(
-            item["name"], item["key"], category="activation", delai_jours=item["delai_jours"], typ="activation"
-        )
-        price = ensure_one_time_price(product.id, item["key"], item["amount"])
-        link = ensure_payment_link(price.id, item["key"], "one_time")
-        results["plans"][item["key"]] = {
-            "type": "activation",
-            "name": item["name"],
-            "amount": item["amount"],
-            "product_id": product.id,
-            "price_id": price.id,
-            "payment_link": link.url,
-            "payment_link_id": link.id,
-        }
-        print(f"  {item['key']}: one_time={item['amount']}")
+        print(f"  {item['key']}: mo={mo_amt} / yr={yr_amt} (−12%)")
 
     hook, created_new = ensure_webhook()
     results["webhook"] = {

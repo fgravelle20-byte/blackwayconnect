@@ -18,26 +18,18 @@ Dashboard test keys : https://dashboard.stripe.com/acct_1U1zzdEWku3DPVf3/test/ap
 5. Vérifier `/api/v1/payments/buy/grow_hub_launch` → Checkout du **nouveau** compte
 6. Seulement ensuite : fermer les autres comptes Stripe
 
-## Catalogue KING (montants site = CAD)
-
-### Grow Hub — abonnements (mensuel **ou** annuel −12 %)
+## Catalogue KING — TOUS abonnements (mensuel **ou** annuel −12 %)
 
 | Forfait | Mensuel | Annuel (−12 %) |
 |---|---|---|
 | Grow Hub Launch | 299 $/mois | 3 157,44 $/an |
 | Grow Hub Growth | 749 $/mois | 7 909,44 $/an |
 | Grow Hub Scale | 1 495 $/mois | 15 787,20 $/an |
+| Site haute conversion | 1 995 $/mois | 21 067,20 $/an |
+| Système de revenus | 4 995 $/mois | 52 747,20 $/an |
+| App mobile / IA | 7 995 $/mois | 84 427,20 $/an |
 
-Buy : `/api/v1/payments/buy/{plan}?billing=monthly` ou `billing=annual`
-
-### Projets — paiement unique
-
-| Projet | Montant |
-|---|---|
-| Site haute conversion | 1 995 $ |
-| Système de revenus | 4 995 $ |
-| App mobile / IA | 7 995 $ |
-
+Buy : `/api/v1/payments/buy/{plan}?billing=monthly` ou `billing=annual`  
 Liens Stripe : `artifacts/STRIPE-KING-CATALOG.json` (après provision).
 
 Source générée : `artifacts/STRIPE-KING-CATALOG.json` (après provision).
