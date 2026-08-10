@@ -1,12 +1,14 @@
 """
 Paiements Stripe — BlackWay Connect (CANONICAL LOCK)
 ====================================================
-Compte LIVE unique : acct_1TDZjzAG7HUL9Rtr (BlackWayConnect Inc)
+Compte unique : acct_1U1zzdEWku3DPVf3
 
 Règle d'or :
   - Un seul catalogue PRICE_IDS pour le site marketing
   - payment_link + price_id DOIVENT matcher amount (affichage)
   - Ne jamais réutiliser les liens "launch_pricing" 69/129/199
+  - Ancien compte acct_1TDZjzAG7HUL9Rtr = FERMÉ / ne plus utiliser
+  - Provisionner via : scripts/provision-stripe-king-catalog.py
   - Webhook canonical : https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe
   - (api.blackwayconnect.com/webhooks/stripe bloqué par Cloudflare challenge — ne pas réutiliser tant que CF n'est pas corrigé)
 """
@@ -18,97 +20,98 @@ from utils.logger import logger
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-STRIPE_ACCOUNT_ID = "acct_1TDZjzAG7HUL9Rtr"
-STRIPE_ACCOUNT_NAME = "BlackWayConnect Inc"
+STRIPE_ACCOUNT_ID = "acct_1U1zzdEWku3DPVf3"
+STRIPE_ACCOUNT_NAME = "BlackWayConnect"
 CANONICAL_WEBHOOK_URL = "https://blackway-pipe.f-gravelle20.workers.dev/webhooks/stripe"
 
 # Catalogue canonique — montants = ce que le site affiche (CAD)
-# Créé / verrouillé 2026-08-09 (metadata canonical=true, tier=site_affiche)
+# price_id / payment_link : à remplir après `scripts/provision-stripe-king-catalog.py`
+# (sans IDs → Checkout Session via price_data si STRIPE_SECRET_KEY est présent)
 PRICE_IDS = {
     "website_lead_launch": {
-        "one_time": "price_1U2WJaAG7HUL9RtrT7JQxyFD",
-        "id": "price_1U2WJaAG7HUL9RtrT7JQxyFD",
+        "one_time": None,
+        "id": None,
         "amount": 1995.00,
         "stripe_amount": 1995.00,
         "name": "Site haute conversion",
         "type": "activation",
         "bw_forfait": "website_lead_launch",
         "delai_jours": 21,
-        "payment_link": "https://buy.stripe.com/7sY28qgyx5B10Rw04SeIw0M",
-        "payment_link_id": "plink_1U2WJnAG7HUL9Rtr68g02qdc",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
     "revenue_system": {
-        "one_time": "price_1U0CWYAG7HUL9RtrqiOYoSVL",
-        "id": "price_1U0CWYAG7HUL9RtrqiOYoSVL",
+        "one_time": None,
+        "id": None,
         "amount": 4995.00,
         "stripe_amount": 4995.00,
         "name": "Système de revenus complet",
         "type": "activation",
         "bw_forfait": "revenue_system",
         "delai_jours": 35,
-        "payment_link": "https://buy.stripe.com/eVq6oGdmld3tcAe8BoeIw0L",
-        "payment_link_id": "plink_1U2WJnAG7HUL9RtrGhu8Gedz",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
     "ai_scale": {
-        "one_time": "price_1U0CWYAG7HUL9RtrEHxzww0T",
-        "id": "price_1U0CWYAG7HUL9RtrEHxzww0T",
+        "one_time": None,
+        "id": None,
         "amount": 7995.00,
         "stripe_amount": 7995.00,
         "name": "Application mobile iOS & Android",
         "type": "activation",
         "bw_forfait": "ai_scale",
         "delai_jours": 45,
-        "payment_link": "https://buy.stripe.com/00w9AS4PPbZpdEibNAeIw0N",
-        "payment_link_id": "plink_1U2WJoAG7HUL9RtrPghkD6hV",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
     "grow_hub_launch": {
-        "monthly": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
-        "id": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
-        "one_time": "price_1U2WJaAG7HUL9Rtr0rBQf7Cp",
+        "monthly": None,
+        "id": None,
+        "one_time": None,
         "amount": 299.00,
         "stripe_amount": 299.00,
         "name": "Grow Hub Launch",
         "type": "abonnement",
         "bw_forfait": "grow_hub_launch",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/4gM8wO8216F52ZEeZMeIw0J",
-        "payment_link_id": "plink_1U2WJmAG7HUL9Rtr0rs8hTp5",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
     "grow_hub_growth": {
-        "monthly": "price_1U2WJbAG7HUL9Rtry31Accba",
-        "id": "price_1U2WJbAG7HUL9Rtry31Accba",
-        "one_time": "price_1U2WJbAG7HUL9Rtry31Accba",
+        "monthly": None,
+        "id": None,
+        "one_time": None,
         "amount": 749.00,
         "stripe_amount": 749.00,
         "name": "Grow Hub Growth",
         "type": "abonnement",
         "bw_forfait": "grow_hub_growth",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/eVq9AScihfbBbwa5pceIw0I",
-        "payment_link_id": "plink_1U2WJlAG7HUL9RtrFQjbB6P1",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
     "grow_hub_scale": {
-        "monthly": "price_1U2WJaAG7HUL9RtrFwUU08yf",
-        "id": "price_1U2WJaAG7HUL9RtrFwUU08yf",
-        "one_time": "price_1U2WJaAG7HUL9RtrFwUU08yf",
+        "monthly": None,
+        "id": None,
+        "one_time": None,
         "amount": 1495.00,
         "stripe_amount": 1495.00,
         "name": "Grow Hub Scale",
         "type": "abonnement",
         "bw_forfait": "grow_hub_scale",
         "delai_jours": 7,
-        "payment_link": "https://buy.stripe.com/bJedR81DD8Nd57M3h4eIw0K",
-        "payment_link_id": "plink_1U2WJmAG7HUL9RtrKSoJ6eaI",
+        "payment_link": None,
+        "payment_link_id": None,
         "buyable": True,
         "canonical": True,
     },
@@ -159,11 +162,13 @@ def _line_item_for_plan(meta: dict) -> dict:
     }
 
 
-def _line_item_from_price_id(meta: dict) -> dict:
+def _line_item_from_price_id(meta: dict) -> Optional[dict]:
     if _is_subscription(meta):
         price_id = meta.get("monthly") or meta.get("id")
     else:
         price_id = meta.get("one_time") or meta.get("id")
+    if not price_id:
+        return None
     return {"price": price_id, "quantity": 1}
 
 
@@ -194,14 +199,19 @@ async def create_public_checkout(
     plan_meta = meta.get("bw_forfait", plan_key)
 
     if _price_aligned(meta) and (meta.get("monthly") or meta.get("one_time") or meta.get("id")):
-        line_items = [_line_item_from_price_id(meta)]
-        via = "price_id"
+        from_price = _line_item_from_price_id(meta)
+        if from_price:
+            line_items = [from_price]
+            via = "price_id"
+        else:
+            line_items = [_line_item_for_plan(meta)]
+            via = "price_data"
     else:
         line_items = [_line_item_for_plan(meta)]
         via = "price_data"
 
+    # Omit payment_method_types → Stripe dynamic payment methods
     params = {
-        "payment_method_types": ["card"],
         "mode": mode,
         "line_items": line_items,
         "metadata": {

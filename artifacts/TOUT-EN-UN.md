@@ -19,7 +19,7 @@ Email unique : **`serviceclient@blackwayconnect.com`**
 | **Santé** | https://dependable-spirit-production.up.railway.app/health |
 | **Acheter (exemple)** | https://dependable-spirit-production.up.railway.app/api/v1/payments/buy/grow_hub_launch |
 | **Repo code** | https://github.com/fgravelle20-byte/blackwayconnect (`main`) |
-| **Compte Stripe** | `acct_1TDZjzAG7HUL9Rtr` — BlackWayConnect Inc (CA / CAD) |
+| **Compte Stripe** | `acct_1U1zzdEWku3DPVf3` — **seul** compte (CA / CAD). Ancien `…AG7HUL9Rtr` à fermer. |
 | **HubSpot** | Portail `343472254` — BlackWayConnect |
 | **Leads + webhook paiements** | https://blackway-pipe.f-gravelle20.workers.dev |
 | **Domaine public cible** | https://www.blackwayconnect.com (cutover Cloudflare **à faire**) |
@@ -32,12 +32,14 @@ Ancien `blackwayconnect-production.up.railway.app` = **MORT**. Ne plus utiliser.
 
 | Forfait | Prix | Lien / buy |
 |---|---|---|
-| Grow Hub Launch | 299 $/mois | https://buy.stripe.com/4gM8wO8216F52ZEeZMeIw0J |
-| Grow Hub Growth | 749 $/mois | https://buy.stripe.com/eVq9AScihfbBbwa5pceIw0I |
-| Grow Hub Scale | 1 495 $/mois | https://buy.stripe.com/bJedR81DD8Nd57M3h4eIw0K |
-| Site haute conversion | 1 995 $ | https://buy.stripe.com/7sY28qgyx5B10Rw04SeIw0M |
-| Système de revenus | 4 995 $ | https://buy.stripe.com/eVq6oGdmld3tcAe8BoeIw0L |
-| App mobile / IA | 7 995 $ | https://buy.stripe.com/00w9AS4PPbZpdEibNAeIw0N |
+| Grow Hub Launch | 299 $/mois | Voir `artifacts/STRIPE-KING-CATALOG.json` (après provision) |
+| Grow Hub Growth | 749 $/mois | idem |
+| Grow Hub Scale | 1 495 $/mois | idem |
+| Site haute conversion | 1 995 $ | idem |
+| Système de revenus | 4 995 $ | idem |
+| App mobile / IA | 7 995 $ | idem |
+
+**Provision :** `python3 scripts/provision-stripe-king-catalog.py` avec `STRIPE_SECRET_KEY` du compte `acct_1U1zzdEWku3DPVf3`.
 
 Ou via site :  
 `/api/v1/payments/buy/{plan_id}`  
@@ -69,7 +71,7 @@ Formulaire lead → blackway-pipe /lead → HubSpot (contact)
 ### Railway (service `dependable-spirit`)
 | Variable | Statut |
 |---|---|
-| `STRIPE_SECRET_KEY` | **Mettre la vraie** `sk_live_…` (pas le placeholder) |
+| `STRIPE_SECRET_KEY` | **Mettre** `sk_test_…` puis `sk_live_…` du compte `acct_1U1zzdEWku3DPVf3` |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` (si webhook aussi sur Railway) |
 | `HUBSPOT_TOKEN` | optionnel si leads via pipe seulement |
 | Port / start | Procfile / FastAPI déjà OK |
@@ -117,15 +119,14 @@ Détail : `artifacts/FAUX-BLACKWAY-BLACKLIST.md`
 | Item | GO ? |
 |---|---|
 | Stripe charges + payouts | **GO** |
-| 6 liens KING actifs | **GO** |
-| Railway `/buy` → Stripe | **GO** |
-| Webhook pipe | **GO** |
+| 6 liens KING sur `acct_1U1zzdEWku3DPVf3` | **À provisionner** |
+| Railway `/buy` → Stripe | **Après clé + catalog** |
+| Webhook pipe | **À recréer** sur le nouveau compte |
 | HubSpot leads | **GO** |
 | www.blackwayconnect.com = Railway | **NO** (cutover CF) |
-| `sk_live` réelle sur Railway | **À coller** (placeholder aujourd’hui) |
+| `sk_*` réelle sur Railway | **À coller** depuis le nouveau compte |
 
-**Tu peux encaisser MAINTENANT** avec les liens KING / Railway.  
-Le domaine officiel + vraie clé Stripe Railway = finition.
+**Cutover en cours** — ne plus partager les anciens `buy.stripe.com` du compte `…AG7HUL9Rtr`.
 
 ---
 
@@ -146,7 +147,10 @@ Le domaine officiel + vraie clé Stripe Railway = finition.
 ---
 
 ## 10) ACTION IMMÉDIATE (ordre)
-1. Vendre avec liens §3 ou Railway `/buy/…`
-2. Coller `sk_live_…` dans Railway Variables
-3. Cutover `www.blackwayconnect.com` (token Cloudflare)
-4. Ranger les deals HubSpot (forfait + proprio)
+1. Coller `sk_test_…` (puis live) de `acct_1U1zzdEWku3DPVf3` → env + Railway
+2. `python3 scripts/provision-stripe-king-catalog.py` → maj `payments.py`
+3. Coller `STRIPE_WEBHOOK_SECRET` sur Railway + blackway-pipe
+4. Tester `/buy/grow_hub_launch` en mode test
+5. Copier produits test → live (Dashboard) ou re-run script en live
+6. **Fermer** les autres comptes Stripe seulement après GO
+7. Cutover `www.blackwayconnect.com` (token Cloudflare)
