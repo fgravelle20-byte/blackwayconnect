@@ -8,7 +8,7 @@
 
 | Rôle | URL / ID | Statut |
 |---|---|---|
-| **Compte Stripe** | `acct_1TDZjzAG7HUL9Rtr` | LIVE |
+| **Compte Stripe** | `acct_1U1zzdEWku3DPVf3` | UNIQUE (cutover) |
 | **Code repo** | GitHub `fgravelle20-byte/blackwayconnect` branche à merger : `cursor/stripe-plumbing-lock-381b` (PR #13) | KING |
 | **Site / API prod** | `https://dependable-spirit-production.up.railway.app` | KING (deploy) |
 | **Domaine public** | `https://blackwayconnect.com` | KING **après** cutover CF → Railway |
