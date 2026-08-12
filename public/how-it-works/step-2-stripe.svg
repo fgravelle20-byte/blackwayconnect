@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Paiement Stripe sécurisé">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Paiement Stripe sï¿½curisï¿½">
   <rect width="640" height="400" fill="#0b0b0c"/>
   <rect x="24" y="24" width="592" height="352" rx="8" fill="#121214" stroke="#2a2a2e"/>
   <text x="48" y="64" fill="#f7f4ef" font-family="Arial Black, Impact, sans-serif" font-size="22" letter-spacing="1">STRIPE CHECKOUT</text>
-  <text x="48" y="92" fill="#9a958c" font-family="Arial, sans-serif" font-size="14">Paiement sécurisé · CAD · annulable</text>
+  <text x="48" y="92" fill="#9a958c" font-family="Arial, sans-serif" font-size="14">Paiement sï¿½curisï¿½ ï¿½ CAD ï¿½ annulable</text>
   <rect x="160" y="120" width="320" height="200" rx="10" fill="#1a1a1d" stroke="#3a3a40"/>
   <rect x="184" y="148" width="272" height="36" rx="4" fill="#0b0b0c" stroke="#2a2a2e"/>
-  <text x="196" y="172" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">carte · Apple Pay · etc.</text>
+  <text x="196" y="172" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">carte ï¿½ Apple Pay ï¿½ etc.</text>
   <rect x="184" y="200" width="272" height="48" rx="6" fill="#e10600"/>
   <text x="248" y="230" fill="#fff" font-family="Arial, sans-serif" font-size="16" font-weight="700">Payer labonnement</text>
-  <text x="200" y="280" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">HTTPS · Stripe · pas de carte chez nous</text>
+  <text x="200" y="280" fill="#9a958c" font-family="Arial, sans-serif" font-size="13">HTTPS ï¿½ Stripe ï¿½ pas de carte chez nous</text>
 </svg>

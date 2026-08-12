@@ -713,10 +713,20 @@ async function claimPortal(env, p) {
   } else if (emailIn) {
     if (!emailIn.includes("@")) throw new Error("courriel invalide");
     contact = await searchHsContact(env, "email", emailIn);
-    if (!contact) throw new Error("Aucun compte client pour ce courriel");
+    // Soft fallback: HubSpot sometimes stores mixed-case emails; retry original casing.
+    if (!contact && p.email && String(p.email).trim() !== emailIn) {
+      contact = await searchHsContact(env, "email", String(p.email).trim());
+    }
+    if (!contact) {
+      throw new Error(
+        "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Stripe, ou rouvre le lien /portail?session_id=cs_…",
+      );
+    }
     const props = contact.properties || {};
     if (!contactHasCustomerAccess(props)) {
-      throw new Error("Acces reserve aux clients actifs (paiement requis)");
+      throw new Error(
+        "Compte trouvé mais pas encore client actif — paiement Stripe requis (ou activation ops).",
+      );
     }
     email = emailIn;
     forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
@@ -950,6 +960,40 @@ export default {
         return json(await portalMe(env, token));
       } catch (e) {
         return json({ erreur: String(e.message || e) }, 401);
+      }
+    }
+
+    /**
+     * Admin/ops: activate portal access for an email without waiting for Stripe webhook.
+     * Auth: X-BW-Key = BW_LEAD_KEY. Creates/updates HubSpot contact as customer + paid deal.
+     */
+    if (url.pathname === "/portal/provision" && request.method === "POST") {
+      try {
+        if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+          return json({ erreur: "cle invalide" }, 401);
+        }
+        const p = await request.json();
+        const email = String(p.email || "").trim().toLowerCase();
+        if (!email.includes("@")) return json({ erreur: "courriel invalide" }, 400);
+        const forfait = resoudreForfait(p.forfait || p.plan) || "grow_hub_growth";
+        const paymentId =
+          String(p.payment_id || "").trim() ||
+          `manual:${email}:${forfait}:${new Date().toISOString().slice(0, 10)}`;
+        const result = await traiterPaiement(env, {
+          email,
+          forfait,
+          payment_id: paymentId,
+          montant: p.montant,
+          entreprise: p.entreprise || "AlphaVit Lab",
+          prenom: p.prenom || "",
+          nom: p.nom || "",
+          segment: p.segment || "provision manuelle portail",
+          checkout_session_id: p.session_id || p.checkout_session_id || "",
+        });
+        const session = await claimPortal(env, { email });
+        return json({ ok: true, provision: result, portal: session });
+      } catch (e) {
+        return json({ erreur: String(e.message || e) }, 400);
       }
     }
 
