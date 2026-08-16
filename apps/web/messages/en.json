@@ -1,8 +1,8 @@
 {
   "brand": {
-    "name": "NoirRoutes",
+    "name": "VORIXA",
     "slogan": "Create. Automate. Scale.",
-    "domains": "noirroutes.com"
+    "domains": "vorixa.ca"
   },
   "nav": {
     "platform": "Platform",
@@ -11,7 +11,7 @@
     "products": "Products",
     "services": "Services",
     "caseStudies": "Case studies",
-    "why": "Why NoirRoutes",
+    "why": "Why VORIXA",
     "faq": "FAQ",
     "support": "Support",
     "requestQuote": "Request a quote",
@@ -22,7 +22,7 @@
   },
   "home": {
     "title": "The autonomous AI platform for your entire growth stack",
-    "subtitle": "NoirRoutes is not a brochure — it is an intelligent platform that builds websites, chatbots, phone assistants, Google review workflows, online stores, leads, SEO, and social — then runs them autonomously.",
+    "subtitle": "VORIXA is not a brochure — it is an intelligent platform that builds websites, chatbots, phone assistants, Google review workflows, online stores, leads, SEO, and social — then runs them autonomously.",
     "ctaPrimary": "View pricing",
     "ctaSecondary": "Request a quote",
     "feature1Title": "Create autonomously",
@@ -30,7 +30,7 @@
     "feature2Title": "Capture every lead",
     "feature2Body": "Leads flow in from website forms, chatbots, phone, review campaigns, and quotes — scored and managed without fake CRM theater.",
     "feature3Title": "Scale with Studio",
-    "feature3Body": "Need experts to ship a custom site, app, or launch package? NoirRoutes Studio delivers on quote.",
+    "feature3Body": "Need experts to ship a custom site, app, or launch package? VORIXA Studio delivers on quote.",
     "socialProof": "Built for founders, agencies, and enterprises ready to run on AI — not demos."
   },
   "platform": {
@@ -40,7 +40,7 @@
     "modulesBody": "Start with what you need. Upgrade when your usage and team grow."
   },
   "studio": {
-    "title": "NoirRoutes Studio",
+    "title": "VORIXA Studio",
     "subtitle": "When you want experts to build it for you — websites, apps, SEO, automation, branding, and custom digital systems.",
     "cta": "Request a quote"
   },
@@ -50,7 +50,7 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "section1": "Use the platform yourself",
-    "section2": "Let NoirRoutes build it for you",
+    "section2": "Let VORIXA build it for you",
     "section3": "Launch faster with a package",
     "section4": "Scale with automation",
     "section5": "For agencies",
@@ -66,15 +66,17 @@
     "enterprise": "Custom",
     "modulesTitle": "Buy a single module",
     "modulesSubtitle": "No full plan required — unlock Website, Chatbot, Store, Leads, Phone, Google Reviews… individually or as packs.",
-    "buyModule": "Buy this module"
+    "buyModule": "Buy this module",
+    "maintenanceExtra": "Optional long-term maintenance",
+    "addMaintenance": "Add maintenance"
   },
   "caseStudies": {
     "title": "Case studies",
-    "subtitle": "Selected outcomes from NoirRoutes Platform and Studio engagements.",
+    "subtitle": "Selected outcomes from VORIXA Platform and Studio engagements.",
     "empty": "Published case studies will appear here as we ship public references."
   },
   "why": {
-    "title": "Why NoirRoutes",
+    "title": "Why VORIXA",
     "subtitle": "A serious commercial SaaS — not a mockup. Real billing, real entitlements, real Studio delivery.",
     "point1": "Create — ship sites, apps, and content systems faster",
     "point2": "Automate — subscriptions, onboarding, and support that run themselves",
@@ -121,7 +123,7 @@
   "services": {
     "web": {
       "title": "Web development",
-      "body": "Production websites and web apps delivered by NoirRoutes Studio."
+      "body": "Production websites and web apps delivered by VORIXA Studio."
     },
     "app": {
       "title": "App development",
@@ -159,25 +161,25 @@
     "q2": "Can I cancel anytime?",
     "a2": "Yes. Manage billing in the Stripe Customer Portal from your dashboard.",
     "q3": "Do you offer custom work?",
-    "a3": "Yes — NoirRoutes Studio delivers websites, apps, SEO, and custom systems on quote.",
+    "a3": "Yes — VORIXA Studio delivers websites, apps, SEO, and custom systems on quote.",
     "q4": "Which languages are supported?",
     "a4": "English and French for marketing and product UI in Phase 1."
   },
   "supportPage": {
     "title": "Support",
-    "subtitle": "Signed-in customers can open tickets from the dashboard. For pre-sales, use Request a quote or email support@noirroutes.com."
+    "subtitle": "Signed-in customers can open tickets from the dashboard. For pre-sales, use Request a quote or email support@VORIXA.com."
   },
   "legal": {
     "termsTitle": "Terms of Service",
     "privacyTitle": "Privacy Policy",
-    "termsBody": "By using NoirRoutes (noirroutes.com / app.noirroutes.com) you agree to these terms. Subscriptions are billed via Stripe. You are responsible for account access and lawful use of the platform. Studio work is governed by the accepted quote or contract.",
-    "privacyBody": "We process account data (via Clerk), billing data (via Stripe), and application data (via Supabase) to provide the service. Analytics may use PostHog and error monitoring via Sentry. Contact privacy@noirroutes.com for data requests."
+    "termsBody": "By using VORIXA (VORIXA.com / app.VORIXA.com) you agree to these terms. Subscriptions are billed via Stripe. You are responsible for account access and lawful use of the platform. Studio work is governed by the accepted quote or contract.",
+    "privacyBody": "We process account data (via Clerk), billing data (via Stripe), and application data (via Supabase) to provide the service. Analytics may use PostHog and error monitoring via Sentry. Contact privacy@VORIXA.com for data requests."
   },
   "footer": {
     "product": "Product",
     "company": "Company",
     "legal": "Legal",
-    "rights": "© NoirRoutes. All rights reserved."
+    "rights": "© VORIXA. All rights reserved."
   },
   "dashboard": {
     "overview": "Overview",
@@ -256,6 +258,39 @@
     "reviewCustomerContact": "Customer email / phone",
     "createReviewRequest": "Create request + suggestion",
     "businessHint": "Clients + deals + pipeline (auto-seeded on onboarding). Invoices via /dashboard/invoices.",
+    "roi": "ROI",
+    "roiSubtitle": "Automatic real profitability per client: marketing spend vs generated revenue.",
+    "roiHint": "Revenue = paid invoices + won deals + manual entries. Profit = revenue − marketing spend. ROI % = profit ÷ marketing spend.",
+    "roiMarketingSpend": "Marketing spend",
+    "roiRevenue": "Revenue",
+    "roiProfit": "Profit",
+    "roiPercent": "ROI",
+    "roiProfitableClients": "profitable clients",
+    "roiAddEntry": "Add marketing spend or revenue",
+    "roiExpense": "Marketing expense",
+    "roiManualRevenue": "Manual revenue",
+    "roiSelectClient": "Select client",
+    "roiAmount": "Amount",
+    "roiNote": "Note (optional)",
+    "roiSave": "Save",
+    "roiSaving": "Saving…",
+    "roiInvalidAmount": "Enter a valid amount",
+    "roiByClient": "ROI by client",
+    "roiEmpty": "No clients yet",
+    "roiEmptyHint": "Create clients in Business, then log marketing spend to see ROI.",
+    "roiBreakdown": "Revenue breakdown",
+    "roiInvoices": "Paid invoices",
+    "roiDeals": "Won deals",
+    "roiManual": "Manual",
+    "roiInfinite": "∞ (no spend)",
+    "roiChannelAds": "Ads",
+    "roiChannelSeo": "SEO",
+    "roiChannelSocial": "Social",
+    "roiChannelEmail": "Email",
+    "roiChannelReferral": "Referral",
+    "roiChannelEvents": "Events",
+    "roiChannelContent": "Content",
+    "roiChannelOther": "Other",
     "clients": "Clients",
     "clientsEmpty": "No clients yet.",
     "clientName": "Client name",
@@ -268,7 +303,7 @@
   },
   "setup": {
     "title": "Connect your engines",
-    "subtitle": "NoirRoutes needs real Clerk + Stripe keys for auth and billing. Local Supabase can be synced with pnpm db:sync-env. We never invent credentials.",
+    "subtitle": "VORIXA needs real Clerk + Stripe keys for auth and billing. Local Supabase can be synced with pnpm db:sync-env. We never invent credentials.",
     "credentialsTitle": "Required credentials",
     "credentialsBody": "Paste keys into apps/web/.env.local. Links open the official dashboards — copy your own test keys.",
     "clerkPublishable": "Clerk publishable key (pk_test_…)",
@@ -289,7 +324,7 @@
     "backHome": "Back to home"
   },
   "onboarding": {
-    "title": "Welcome to NoirRoutes",
+    "title": "Welcome to VORIXA",
     "subtitle": "A few details so we can tailor your workspace.",
     "orgName": "Organization name",
     "industry": "Industry",

@@ -40,7 +40,7 @@ export function EngineStatus() {
       <CardHeader>
         <CardTitle className="text-lg tracking-wide">ENGINE STATUS</CardTitle>
         <CardDescription>
-          {health?.service ?? "NoirRoutes"} · {health?.appEnv ?? "DEV"} — live integration checks
+          {health?.service ?? "VORIXA"} · {health?.appEnv ?? "DEV"} — live integration checks
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

@@ -7,6 +7,7 @@ import { resolveOrganization } from "@/lib/auth/session";
 const bodySchema = z
   .object({
     mode: z.enum(["subscription", "payment"]).default("subscription"),
+    ui_mode: z.enum(["embedded", "hosted"]).default("embedded"),
     plan_price_id: z.string().uuid().optional(),
     add_on_price_id: z.string().uuid().optional(),
     service_order_id: z.string().uuid().optional(),
@@ -94,16 +95,29 @@ export async function POST(req: Request) {
     user?.emailAddresses.find((e) => e.id === user.primaryEmailAddressId)?.emailAddress ??
     user?.emailAddresses[0]?.emailAddress;
 
-  const result = await createCheckoutSession({
-    ...parsed.data,
-    userId,
-    clerkOrgId: org.clerk_org_id,
-    customerEmail: email,
-  });
+  try {
+    const result = await createCheckoutSession({
+      ...parsed.data,
+      userId,
+      clerkOrgId: org.clerk_org_id,
+      customerEmail: email,
+    });
 
-  if (!result.ok) {
-    return NextResponse.json({ error: result.error }, { status: result.status });
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
+    }
+
+    return NextResponse.json({
+      url: result.url,
+      id: result.id,
+      clientSecret: result.clientSecret,
+      ui_mode: parsed.data.ui_mode,
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Checkout failed";
+    if (message.includes("STRIPE_SECRET_KEY")) {
+      return NextResponse.json({ error: message }, { status: 503 });
+    }
+    return NextResponse.json({ error: message }, { status: 502 });
   }
-
-  return NextResponse.json({ url: result.url, id: result.id });
 }

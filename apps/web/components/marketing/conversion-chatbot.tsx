@@ -30,8 +30,8 @@ export function ConversionChatbot() {
   const greeting = useMemo(
     () =>
       locale === "fr"
-        ? "Bonjour — je suis le Master Chatbot BLACKWAYCONNECT. Je convertis vos questions en plan d'action (site, chatbot, boutique, leads…)."
-        : "Hi — I'm the BLACKWAYCONNECT Master Chatbot. I turn questions into a buy plan (website, chatbot, store, leads…).",
+        ? "Bonjour — je suis le Master Chatbot VORIXA. Je convertis vos questions en plan d'action (site, chatbot, boutique, leads…)."
+        : "Hi — I'm the VORIXA Master Chatbot. I turn questions into a buy plan (website, chatbot, store, leads…).",
     [locale],
   );
   const [messages, setMessages] = useState<Msg[]>([{ role: "assistant", content: greeting }]);
@@ -86,7 +86,7 @@ export function ConversionChatbot() {
           <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
             <div>
               <p className="text-xs font-bold tracking-[0.14em]">MASTER CHATBOT</p>
-              <p className="text-[11px] text-muted-foreground">Conversion · BLACKWAYCONNECT</p>
+              <p className="text-[11px] text-muted-foreground">Conversion · VORIXA</p>
             </div>
             <button
               type="button"

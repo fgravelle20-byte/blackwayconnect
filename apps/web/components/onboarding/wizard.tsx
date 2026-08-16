@@ -127,7 +127,7 @@ export function OnboardingWizard({
   return (
     <div className="w-full space-y-6">
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary">NoirRoutes</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary">VORIXA</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
         {checkoutSuccess ? (
@@ -144,7 +144,7 @@ export function OnboardingWizard({
       {step === "welcome" ? (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Set up your NoirRoutes workspace in a few steps.
+            Set up your VORIXA workspace in a few steps.
           </p>
         </div>
       ) : null}

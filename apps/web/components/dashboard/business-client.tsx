@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -76,7 +77,12 @@ export function BusinessClient() {
 
   return (
     <div className="space-y-8">
-      <p className="text-sm text-muted-foreground">{t("businessHint")}</p>
+      <p className="text-sm text-muted-foreground">
+        {t("businessHint")}{" "}
+        <Link href="/dashboard/roi" className="underline underline-offset-4">
+          {t("roi")} →
+        </Link>
+      </p>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <section className="space-y-4">

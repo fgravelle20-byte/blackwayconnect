@@ -52,6 +52,8 @@ Vérifier : http://localhost:3000/api/commerce/catalog → doit renvoyer les 6 p
 3. Créer Products/Prices pour Starter…Agency
 4. Mettre les vrais `stripe_price_id` dans la table `plan_prices` (Admin → Plans ou SQL)
 5. Stripe CLI : `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
+6. Checkout embarqué : `/en/checkout?plan_price_id=<uuid>` (défaut) — retour `/en/checkout/return`
+7. Taxe auto optionnelle : `STRIPE_AUTOMATIC_TAX=true` uniquement si une registration Stripe Tax est active
 
 ## Step 5 — Vérification Definition of Done
 

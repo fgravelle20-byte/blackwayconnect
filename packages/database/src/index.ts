@@ -63,6 +63,14 @@ export interface AddOn {
   limit_key: string | null;
   increment_value: number;
   is_active: boolean;
+  category?: string | null;
+  unlocks_feature?: string | null;
+  sort_order?: number | null;
+  is_public?: boolean | null;
+  headline?: string | null;
+  badge?: string | null;
+  applies_to_plan_tier?: string | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface AddOnPrice {

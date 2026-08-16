@@ -124,7 +124,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <CardHeader>
           <CardTitle>Subscription</CardTitle>
           <CardDescription>
-            Current plan and billing status for your BLACKWAYCONNECT organization.
+            Current plan and billing status for your VORIXA organization.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">

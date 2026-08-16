@@ -23,7 +23,7 @@ test.describe("marketing pricing", () => {
         page.getByRole("heading", { name: /Use the platform yourself/i }),
       ).toBeVisible({ timeout: 15_000 });
       await expect(
-        page.getByRole("heading", { name: /Let BLACKWAYCONNECT build it for you/i }),
+        page.getByRole("heading", { name: /Let VORIXA build it for you/i }),
       ).toBeVisible();
       await expect(
         page.getByRole("heading", { name: /Launch faster with a package/i }),

@@ -77,8 +77,8 @@ export async function GET() {
     return NextResponse.json({
       ok: true,
       motor: "ONLINE",
-      service: "NoirRoutes",
-      platform: "MASTER_AUTONOMOUS",
+      service: "VORIXA",
+      platform: "MASTER",
       appEnv: process.env.APP_ENV ?? "DEV",
       integrations,
       journey: [
@@ -120,7 +120,9 @@ export async function GET() {
         "/api/phone-assistants",
         "/api/review-campaigns",
         "/api/clients",
+        "/api/business/roi",
         "/api/stripe/checkout",
+        "/api/stripe/session-status",
         "/api/webhooks/clerk",
         "/api/webhooks/stripe",
         "/api/engine/status",

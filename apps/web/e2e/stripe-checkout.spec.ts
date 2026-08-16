@@ -46,12 +46,45 @@ test.describe("stripe checkout", () => {
     test.skip(!price?.id, "no active monthly plan price in catalog");
 
     const res = await page.request.post("/api/stripe/checkout", {
-      data: { mode: "subscription", plan_price_id: price.id, locale: "en" },
+      data: { mode: "subscription", plan_price_id: price.id, locale: "en", ui_mode: "embedded" },
     });
 
-    // 200 = Checkout Session URL (Stripe test mode configured)
+    // 200 = Embedded Checkout client secret (Stripe test mode configured)
     // 400 = org/stripe price issues
     // 503 = Stripe secret missing
+    expect([200, 400, 503]).toContain(res.status());
+    const body = await res.json();
+    if (res.status() === 200) {
+      expect(body.clientSecret).toMatch(/^cs_(test|live)_/);
+      expect(body.id).toMatch(/^cs_/);
+      expect(body.ui_mode).toBe("embedded");
+    } else {
+      expect(body.error).toBeTruthy();
+    }
+  });
+
+  test("hosted checkout still returns Stripe-hosted URL when requested", async ({ page }) => {
+    test.skip(!hasClerkTestCreds(), "needs E2E_CLERK_TEST_USER_EMAIL/PASSWORD");
+
+    await signInWithTestUser(page);
+    const catalogRes = await page.request.get("/api/commerce/catalog");
+    test.skip(!catalogRes.ok(), "commerce catalog unavailable");
+
+    const catalog = await catalogRes.json();
+    const plan = (catalog.plans ?? []).find(
+      (p: { is_public?: boolean; prices?: { id: string; is_active?: boolean }[] }) =>
+        p.is_public && (p.prices ?? []).some((pr) => pr.is_active),
+    );
+    const price = plan?.prices?.find(
+      (pr: { interval?: string; is_active?: boolean }) =>
+        pr.is_active && pr.interval === "month",
+    );
+    test.skip(!price?.id, "no active monthly plan price in catalog");
+
+    const res = await page.request.post("/api/stripe/checkout", {
+      data: { mode: "subscription", plan_price_id: price.id, locale: "en", ui_mode: "hosted" },
+    });
+
     expect([200, 400, 503]).toContain(res.status());
     const body = await res.json();
     if (res.status() === 200) {

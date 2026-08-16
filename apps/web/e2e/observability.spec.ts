@@ -10,7 +10,7 @@ test.describe("observability integrations", () => {
     expect(res.ok()).toBeTruthy();
     const body = await res.json();
     expect(body.ok).toBe(true);
-    expect(body.service).toBe("NoirRoutes");
+    expect(body.service).toBe("VORIXA");
     expect(body.integrations).toBeTruthy();
     expect(typeof body.integrations.resend).toBe("boolean");
     expect(typeof body.integrations.sentry).toBe("boolean");
@@ -21,7 +21,7 @@ test.describe("observability integrations", () => {
 
   test("marketing home loads PostHog provider without breaking render", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.getByText("NoirRoutes").first()).toBeVisible();
+    await expect(page.getByText("VORIXA").first()).toBeVisible();
     // PostHog client is optional; page must still render when key is absent
     await expect(page.locator("body")).toBeVisible();
   });

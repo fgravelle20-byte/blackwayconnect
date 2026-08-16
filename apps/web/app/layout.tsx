@@ -18,8 +18,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "NoirRoutes",
-    template: "%s · NoirRoutes",
+    default: "VORIXA",
+    template: "%s · VORIXA",
   },
   description: "Create. Automate. Scale. — AI SaaS platform and Studio.",
   metadataBase: new URL(

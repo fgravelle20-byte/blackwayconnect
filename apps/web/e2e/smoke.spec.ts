@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("landing page loads", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByText("NoirRoutes").first()).toBeVisible();
+  await expect(page.getByText("VORIXA").first()).toBeVisible();
 });
 
 test("pricing page loads", async ({ page }) => {
@@ -38,7 +38,7 @@ test("health endpoint", async ({ request }) => {
   expect(res.ok()).toBeTruthy();
   const body = await res.json();
   expect(body.ok).toBe(true);
-  expect(body.service).toBe("NoirRoutes");
+  expect(body.service).toBe("VORIXA");
   expect(body.integrations).toBeTruthy();
 });
 
@@ -77,14 +77,14 @@ test("admin route blocked without auth", async ({ page }) => {
 });
 
 test("why page loads", async ({ page }) => {
-  await page.goto("/en/why-noirroutes");
+  await page.goto("/en/why-VORIXA");
   await expect(page.locator("body")).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Why NoirRoutes/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Why VORIXA/i })).toBeVisible();
 });
 
-test("legacy why-noirroutes redirects to why-noirroutes", async ({ page }) => {
-  await page.goto("/en/why-noirroutes");
-  await expect(page).toHaveURL(/why-noirroutes/);
+test("legacy why-VORIXA redirects to why-VORIXA", async ({ page }) => {
+  await page.goto("/en/why-VORIXA");
+  await expect(page).toHaveURL(/why-VORIXA/);
 });
 
 test("catalog API responds", async ({ request }) => {

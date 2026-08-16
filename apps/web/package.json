@@ -27,6 +27,8 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-toast": "^1.2.14",
     "@sentry/nextjs": "^9.29.0",
+    "@stripe/react-stripe-js": "^6.8.1",
+    "@stripe/stripe-js": "^9.13.0",
     "@supabase/supabase-js": "^2.50.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -38,7 +40,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "resend": "^4.5.2",
-    "stripe": "^18.2.1",
+    "stripe": "^22.5.0",
     "svix": "^1.66.0",
     "tailwind-merge": "^3.3.1",
     "zod": "^3.25.56"

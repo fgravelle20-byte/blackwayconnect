@@ -1,8 +1,8 @@
 {
   "brand": {
-    "name": "NoirRoutes",
+    "name": "VORIXA",
     "slogan": "Créer. Automatiser. Propulser.",
-    "domains": "noirroutes.com"
+    "domains": "vorixa.ca"
   },
   "nav": {
     "platform": "Plateforme",
@@ -11,7 +11,7 @@
     "products": "Produits",
     "services": "Services",
     "caseStudies": "Réalisations",
-    "why": "Pourquoi NoirRoutes",
+    "why": "Pourquoi VORIXA",
     "faq": "FAQ",
     "support": "Support",
     "requestQuote": "Demander une soumission",
@@ -22,7 +22,7 @@
   },
   "home": {
     "title": "La plateforme IA autonome pour toute votre croissance",
-    "subtitle": "NoirRoutes n'est pas une brochure — c'est une plateforme intelligente qui crée sites, chatbots, assistance téléphonique, avis Google, boutiques en ligne, leads, SEO et social, puis les fait tourner de façon autonome.",
+    "subtitle": "VORIXA n'est pas une brochure — c'est une plateforme intelligente qui crée sites, chatbots, assistance téléphonique, avis Google, boutiques en ligne, leads, SEO et social, puis les fait tourner de façon autonome.",
     "ctaPrimary": "Voir les tarifs",
     "ctaSecondary": "Demander une soumission",
     "feature1Title": "Créer en autonomie",
@@ -30,7 +30,7 @@
     "feature2Title": "Capturer chaque lead",
     "feature2Body": "Les leads arrivent des formulaires, chatbots, téléphone, campagnes d'avis et devis — sans faux CRM.",
     "feature3Title": "Scaler avec le Studio",
-    "feature3Body": "Besoin d'experts pour un site, une app ou un package de lancement ? Le Studio NoirRoutes livre sur devis.",
+    "feature3Body": "Besoin d'experts pour un site, une app ou un package de lancement ? Le Studio VORIXA livre sur devis.",
     "socialProof": "Conçu pour fondateurs, agences et entreprises qui veulent tourner sur l'IA — pas des démos."
   },
   "platform": {
@@ -40,7 +40,7 @@
     "modulesBody": "Commencez avec l'essentiel. Évoluez quand votre usage et votre équipe grandissent."
   },
   "studio": {
-    "title": "NoirRoutes Studio",
+    "title": "VORIXA Studio",
     "subtitle": "Quand vous voulez que des experts le construisent pour vous — sites, apps, SEO, automatisation, branding et systèmes sur mesure.",
     "cta": "Demander une soumission"
   },
@@ -50,7 +50,7 @@
     "monthly": "Mensuel",
     "yearly": "Annuel",
     "section1": "Utilisez la plateforme vous-même",
-    "section2": "Laissez NoirRoutes construire pour vous",
+    "section2": "Laissez VORIXA construire pour vous",
     "section3": "Lancez plus vite avec un package",
     "section4": "Scalez avec l'automatisation",
     "section5": "Pour les agences",
@@ -66,15 +66,17 @@
     "enterprise": "Sur mesure",
     "modulesTitle": "Achetez un seul module",
     "modulesSubtitle": "Pas besoin du forfait complet — activez Site, Chatbot, Boutique, Leads, Téléphone, Avis Google… à l'unité ou en packs.",
-    "buyModule": "Acheter ce module"
+    "buyModule": "Acheter ce module",
+    "maintenanceExtra": "Maintenance optionnelle (long terme)",
+    "addMaintenance": "Ajouter la maintenance"
   },
   "caseStudies": {
     "title": "Réalisations",
-    "subtitle": "Résultats sélectionnés de la plateforme et du Studio NoirRoutes.",
+    "subtitle": "Résultats sélectionnés de la plateforme et du Studio VORIXA.",
     "empty": "Les études de cas publiques apparaîtront ici."
   },
   "why": {
-    "title": "Pourquoi NoirRoutes",
+    "title": "Pourquoi VORIXA",
     "subtitle": "Un SaaS commercial sérieux — pas une maquette. Vraie facturation, vrais droits, vrai Studio.",
     "point1": "Créer — livrez sites, apps et contenus plus vite",
     "point2": "Automatiser — abonnements, onboarding et support qui tournent",
@@ -159,25 +161,25 @@
     "q2": "Puis-je annuler ?",
     "a2": "Oui. Gérez la facturation via le portail Stripe depuis le tableau de bord.",
     "q3": "Travaux sur mesure ?",
-    "a3": "Oui — le Studio NoirRoutes livre sur devis.",
+    "a3": "Oui — le Studio VORIXA livre sur devis.",
     "q4": "Langues ?",
     "a4": "Anglais et français pour le marketing et l'UI en Phase 1."
   },
   "supportPage": {
     "title": "Support",
-    "subtitle": "Les clients connectés ouvrent des tickets depuis le tableau de bord. Prévente : soumission ou support@noirroutes.com."
+    "subtitle": "Les clients connectés ouvrent des tickets depuis le tableau de bord. Prévente : soumission ou support@VORIXA.com."
   },
   "legal": {
     "termsTitle": "Conditions d'utilisation",
     "privacyTitle": "Politique de confidentialité",
-    "termsBody": "En utilisant NoirRoutes (noirroutes.com / app.noirroutes.com), vous acceptez ces conditions. Les abonnements sont facturés via Stripe. Vous êtes responsable de l'accès au compte et d'une utilisation légale. Le Studio est régi par le devis ou contrat accepté.",
-    "privacyBody": "Nous traitons les données de compte (Clerk), de facturation (Stripe) et applicatives (Supabase). Analytics via PostHog et erreurs via Sentry. Contact : privacy@noirroutes.com."
+    "termsBody": "En utilisant VORIXA (VORIXA.com / app.VORIXA.com), vous acceptez ces conditions. Les abonnements sont facturés via Stripe. Vous êtes responsable de l'accès au compte et d'une utilisation légale. Le Studio est régi par le devis ou contrat accepté.",
+    "privacyBody": "Nous traitons les données de compte (Clerk), de facturation (Stripe) et applicatives (Supabase). Analytics via PostHog et erreurs via Sentry. Contact : privacy@VORIXA.com."
   },
   "footer": {
     "product": "Produit",
     "company": "Entreprise",
     "legal": "Légal",
-    "rights": "© NoirRoutes. Tous droits réservés."
+    "rights": "© VORIXA. Tous droits réservés."
   },
   "dashboard": {
     "overview": "Vue d'ensemble",
@@ -256,6 +258,39 @@
     "reviewCustomerContact": "Email / téléphone client",
     "createReviewRequest": "Créer demande + suggestion",
     "businessHint": "Clients + deals + pipeline (seed auto à l'onboarding). Factures via /dashboard/invoices.",
+    "roi": "ROI",
+    "roiSubtitle": "Rentabilité réelle automatique par client : dépenses marketing vs revenus générés.",
+    "roiHint": "Revenus = factures payées + deals gagnés + saisies manuelles. Profit = revenus − dépenses marketing. ROI % = profit ÷ dépenses.",
+    "roiMarketingSpend": "Dépenses marketing",
+    "roiRevenue": "Revenus",
+    "roiProfit": "Profit",
+    "roiPercent": "ROI",
+    "roiProfitableClients": "clients rentables",
+    "roiAddEntry": "Ajouter une dépense ou un revenu",
+    "roiExpense": "Dépense marketing",
+    "roiManualRevenue": "Revenu manuel",
+    "roiSelectClient": "Choisir un client",
+    "roiAmount": "Montant",
+    "roiNote": "Note (optionnel)",
+    "roiSave": "Enregistrer",
+    "roiSaving": "Enregistrement…",
+    "roiInvalidAmount": "Montant invalide",
+    "roiByClient": "ROI par client",
+    "roiEmpty": "Aucun client",
+    "roiEmptyHint": "Créez des clients dans Affaires, puis saisissez les dépenses marketing pour voir le ROI.",
+    "roiBreakdown": "Détail des revenus",
+    "roiInvoices": "Factures payées",
+    "roiDeals": "Deals gagnés",
+    "roiManual": "Manuel",
+    "roiInfinite": "∞ (sans dépense)",
+    "roiChannelAds": "Pubs",
+    "roiChannelSeo": "SEO",
+    "roiChannelSocial": "Social",
+    "roiChannelEmail": "Courriel",
+    "roiChannelReferral": "Référence",
+    "roiChannelEvents": "Événements",
+    "roiChannelContent": "Contenu",
+    "roiChannelOther": "Autre",
     "clients": "Clients",
     "clientsEmpty": "Aucun client.",
     "clientName": "Nom du client",
@@ -268,7 +303,7 @@
   },
   "setup": {
     "title": "Connectez vos moteurs",
-    "subtitle": "NoirRoutes exige de vraies clés Clerk + Stripe pour l'auth et la facturation. Supabase local : pnpm db:sync-env. Nous n'inventons jamais de credentials.",
+    "subtitle": "VORIXA exige de vraies clés Clerk + Stripe pour l'auth et la facturation. Supabase local : pnpm db:sync-env. Nous n'inventons jamais de credentials.",
     "credentialsTitle": "Credentials requis",
     "credentialsBody": "Collez les clés dans apps/web/.env.local. Les liens ouvrent les dashboards officiels — copiez vos propres clés test.",
     "clerkPublishable": "Clé publique Clerk (pk_test_…)",
@@ -289,7 +324,7 @@
     "backHome": "Retour à l'accueil"
   },
   "onboarding": {
-    "title": "Bienvenue sur NoirRoutes",
+    "title": "Bienvenue sur VORIXA",
     "subtitle": "Quelques détails pour configurer votre espace.",
     "orgName": "Nom de l'organisation",
     "industry": "Industrie",

@@ -1,6 +1,12 @@
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe/client";
-import { checkoutCancelUrl, checkoutSuccessUrl } from "@/lib/stripe/config";
+import {
+  checkoutCancelUrl,
+  checkoutIntegrationIdentifier,
+  checkoutReturnUrl,
+  checkoutSuccessUrl,
+  stripeAutomaticTaxEnabled,
+} from "@/lib/stripe/config";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { captureServerEvent } from "@/lib/posthog/server";
 
@@ -11,8 +17,11 @@ export type ServicePaymentType =
   | "one_time"
   | "recurring";
 
+export type CheckoutUiMode = "embedded" | "hosted";
+
 export type CheckoutModeInput = {
   mode: "subscription" | "payment";
+  ui_mode?: CheckoutUiMode;
   plan_price_id?: string;
   add_on_price_id?: string;
   service_order_id?: string;
@@ -25,8 +34,35 @@ export type CheckoutModeInput = {
 };
 
 export type CheckoutResult =
-  | { ok: true; url: string | null; id: string }
+  | { ok: true; url: string | null; id: string; clientSecret: string | null }
   | { ok: false; status: number; error: string };
+
+function applyCheckoutSurface(
+  params: Stripe.Checkout.SessionCreateParams,
+  uiMode: CheckoutUiMode,
+  locale: string,
+): Stripe.Checkout.SessionCreateParams {
+  const withTax: Stripe.Checkout.SessionCreateParams = {
+    ...params,
+    integration_identifier: checkoutIntegrationIdentifier(uiMode),
+  };
+
+  if (stripeAutomaticTaxEnabled()) {
+    withTax.automatic_tax = { enabled: true };
+  }
+
+  if (uiMode === "embedded") {
+    withTax.ui_mode = "embedded_page";
+    withTax.return_url = checkoutReturnUrl(locale);
+    delete withTax.success_url;
+    delete withTax.cancel_url;
+  } else {
+    withTax.success_url = withTax.success_url ?? checkoutSuccessUrl(locale);
+    withTax.cancel_url = withTax.cancel_url ?? checkoutCancelUrl(locale);
+  }
+
+  return withTax;
+}
 
 type OrgRow = {
   id: string;
@@ -75,6 +111,7 @@ function resolveStudioAmount(
 export async function createCheckoutSession(input: CheckoutModeInput): Promise<CheckoutResult> {
   const {
     mode,
+    ui_mode = "embedded",
     plan_price_id,
     add_on_price_id,
     service_order_id,
@@ -133,37 +170,49 @@ export async function createCheckoutSession(input: CheckoutModeInput): Promise<C
         };
       }
 
-      const session = await stripe.checkout.sessions.create({
-        mode: "subscription",
-        customer: customerId,
-        line_items: [{ price: planPrice.stripe_price_id, quantity: 1 }],
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        metadata: {
-          ...baseMeta,
-          type: "subscription",
-          plan_price_id,
-          plan_id: planPrice.plan_id,
-        },
-        subscription_data: {
-          metadata: {
-            ...baseMeta,
-            plan_price_id,
-            plan_id: planPrice.plan_id,
+      const session = await stripe.checkout.sessions.create(
+        applyCheckoutSurface(
+          {
+            mode: "subscription",
+            customer: customerId,
+            line_items: [{ price: planPrice.stripe_price_id, quantity: 1 }],
+            success_url: successUrl,
+            cancel_url: cancelUrl,
+            metadata: {
+              ...baseMeta,
+              type: "subscription",
+              plan_price_id,
+              plan_id: planPrice.plan_id,
+            },
+            subscription_data: {
+              metadata: {
+                ...baseMeta,
+                plan_price_id,
+                plan_id: planPrice.plan_id,
+              },
+              trial_period_days:
+                (planPrice.plans as { trial_days?: number } | null)?.trial_days || undefined,
+            },
           },
-          trial_period_days:
-            (planPrice.plans as { trial_days?: number } | null)?.trial_days || undefined,
-        },
-      });
+          ui_mode,
+          locale,
+        ),
+      );
 
       await captureServerEvent(userId, "checkout_started", {
         mode: "subscription",
         type: "subscription",
+        ui_mode,
         plan_price_id,
         plan_id: planPrice.plan_id,
       });
 
-      return { ok: true, url: session.url, id: session.id };
+      return {
+        ok: true,
+        url: session.url,
+        id: session.id,
+        clientSecret: session.client_secret,
+      };
     }
 
     // Add-on (subscription or one-time payment)
@@ -214,16 +263,24 @@ export async function createCheckoutSession(input: CheckoutModeInput): Promise<C
         sessionParams.payment_intent_data = { metadata: addonMeta };
       }
 
-      const session = await stripe.checkout.sessions.create(sessionParams);
+      const session = await stripe.checkout.sessions.create(
+        applyCheckoutSurface(sessionParams, ui_mode, locale),
+      );
 
       await captureServerEvent(userId, "checkout_started", {
         mode: checkoutMode,
         type: "addon",
+        ui_mode,
         add_on_price_id,
         add_on_id: addOnPrice.add_on_id,
       });
 
-      return { ok: true, url: session.url, id: session.id };
+      return {
+        ok: true,
+        url: session.url,
+        id: session.id,
+        clientSecret: session.client_secret,
+      };
     }
 
     // Studio service order payment (by payment id or order id)
@@ -354,40 +411,52 @@ export async function createCheckoutSession(input: CheckoutModeInput): Promise<C
         service_payment_type: paymentType,
       };
 
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        customer: customerId,
-        line_items: [
+      const session = await stripe.checkout.sessions.create(
+        applyCheckoutSurface(
           {
-            quantity: 1,
-            price_data: {
-              currency: "usd",
-              unit_amount: amountCents,
-              product_data: {
-                name: `${brand} Studio — ${paymentType}`,
-                metadata: {
-                  service_order_payment_id: payment.id,
-                  service_order_id: payment.service_order_id,
+            mode: "payment",
+            customer: customerId,
+            line_items: [
+              {
+                quantity: 1,
+                price_data: {
+                  currency: "usd",
+                  unit_amount: amountCents,
+                  product_data: {
+                    name: `${brand} Studio — ${paymentType}`,
+                    metadata: {
+                      service_order_payment_id: payment.id,
+                      service_order_id: payment.service_order_id,
+                    },
+                  },
                 },
               },
-            },
+            ],
+            success_url: successUrl,
+            cancel_url: cancelUrl,
+            metadata: studioMeta,
+            payment_intent_data: { metadata: studioMeta },
           },
-        ],
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        metadata: studioMeta,
-        payment_intent_data: { metadata: studioMeta },
-      });
+          ui_mode,
+          locale,
+        ),
+      );
 
       await captureServerEvent(userId, "checkout_started", {
         mode: "payment",
         type: "studio",
+        ui_mode,
         service_order_id: payment.service_order_id,
         service_order_payment_id: payment.id,
         service_payment_type: paymentType,
       });
 
-      return { ok: true, url: session.url, id: session.id };
+      return {
+        ok: true,
+        url: session.url,
+        id: session.id,
+        clientSecret: session.client_secret,
+      };
     }
 
     return { ok: false, status: 400, error: "No checkout target specified" };

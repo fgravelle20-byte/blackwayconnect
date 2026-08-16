@@ -7,8 +7,8 @@ export function getStripe(): Stripe {
     const key = process.env.STRIPE_SECRET_KEY;
     if (!key) throw new Error("Missing STRIPE_SECRET_KEY");
     stripe = new Stripe(key, {
-      // Pin when upgrading; cast keeps SDK upgrades from blocking Phase 1 builds
-      apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion,
+      // Latest Dahlia pin for embedded_page + integration_identifier
+      apiVersion: "2026-07-29.dahlia" as Stripe.LatestApiVersion,
       typescript: true,
     });
   }

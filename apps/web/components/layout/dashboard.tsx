@@ -9,6 +9,7 @@ const items = [
   { href: "/dashboard/seo", label: "SEO Engine" },
   { href: "/dashboard/chatbots", label: "Chatbots" },
   { href: "/dashboard/business", label: "Business" },
+  { href: "/dashboard/roi", label: "ROI" },
   { href: "/dashboard/social", label: "Social" },
   { href: "/dashboard/quotes", label: "Quotes" },
   { href: "/dashboard/invoices", label: "Invoices" },
@@ -25,7 +26,7 @@ export function DashboardSidebar({ pathname }: { pathname: string }) {
     <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-800 bg-neutral-950">
       <div className="border-b border-neutral-800 px-4 py-4">
         <Link href="/dashboard" className="text-xs font-bold tracking-[0.18em]">
-          NoirRoutes
+          VORIXA
         </Link>
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-2">

@@ -11,8 +11,8 @@ export function getResend(): Resend | null {
 
 export const fromEmail = env.RESEND_FROM_EMAIL;
 
-const brand = process.env.NEXT_PUBLIC_APP_NAME || "NoirRoutes";
-const domain = "noirroutes.com";
+const brand = process.env.NEXT_PUBLIC_APP_NAME || "VORIXA";
+const domain = "VORIXA.ca";
 
 export type EmailLocale = "en" | "fr";
 

@@ -43,8 +43,8 @@ function script(locale: "en" | "fr", stage: string, intent: string, message: str
     return {
       stage: "qualify",
       reply: fr
-        ? "Bienvenue chez BLACKWAYCONNECT — plateforme IA autonome. Je peux vous aider à : créer un site, chatbot qui convertit, boutique, leads, assistance téléphonique, avis Google. Que voulez-vous accomplir en premier ?"
-        : "Welcome to BLACKWAYCONNECT — autonomous AI platform. I can help with: website, conversion chatbot, store, leads, phone assistance, Google reviews. What do you want first?",
+        ? "Bienvenue chez VORIXA — plateforme IA autonome. Je peux vous aider à : créer un site, chatbot qui convertit, boutique, leads, assistance téléphonique, avis Google. Que voulez-vous accomplir en premier ?"
+        : "Welcome to VORIXA — autonomous AI platform. I can help with: website, conversion chatbot, store, leads, phone assistance, Google reviews. What do you want first?",
       cta: { label: fr ? "Voir les forfaits" : "See plans", href: `/${locale}/pricing` },
     };
   }

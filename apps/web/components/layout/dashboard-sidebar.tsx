@@ -15,6 +15,7 @@ const items = [
   { href: "/dashboard/phone-assistance", key: "phoneAssistance" as const },
   { href: "/dashboard/google-reviews", key: "googleReviews" as const },
   { href: "/dashboard/business", key: "business" as const },
+  { href: "/dashboard/roi", key: "roi" as const },
   { href: "/dashboard/social", key: "social" as const },
   { href: "/dashboard/quotes", key: "quotes" as const },
   { href: "/dashboard/invoices", key: "invoices" as const },

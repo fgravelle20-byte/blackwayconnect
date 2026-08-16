@@ -51,6 +51,9 @@ export function PricingSections() {
   const moduleAddOns = addOns
     .filter((a) => a.is_public !== false && (a.category === "module" || a.category === "growth" || a.slug?.startsWith("module_") || a.slug?.startsWith("pack_")))
     .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100));
+  const maintenanceAddOns = addOns
+    .filter((a) => a.is_public !== false && (a.category === "maintenance" || a.slug?.startsWith("maintenance_")))
+    .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100));
   const packageOffer = offers.find((o) => o.slug === "branding_launch_package");
   const customOffer = offers.find((o) => o.slug === "custom_digital_system");
   const agency = plans.find((p) => p.tier === "agency");
@@ -106,6 +109,38 @@ export function PricingSections() {
                         </li>
                       ))}
                     </ul>
+                    {(() => {
+                      const maintenance = maintenanceAddOns.find(
+                        (a) => a.applies_to_plan_tier === plan.tier,
+                      );
+                      const mPrice = maintenance?.prices?.find(
+                        (p) => p.is_active && (p.interval === interval || (!p.interval && interval === "month")),
+                      ) ?? maintenance?.prices?.find((p) => p.is_active && p.interval === "month");
+                      if (!maintenance || !mPrice) return null;
+                      return (
+                        <div className="mt-4 rounded-lg border border-dashed border-border/80 p-3">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            {t("maintenanceExtra")}
+                          </p>
+                          <p className="mt-1 text-sm font-medium">{maintenance.name}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {maintenance.headline || maintenance.description}
+                          </p>
+                          <p className="mt-2 text-lg font-semibold">
+                            +{formatCents(mPrice.amount_cents)}
+                            <span className="text-sm font-normal text-muted-foreground">
+                              {interval === "month" ? t("perMonth") : t("perYear")}
+                            </span>
+                          </p>
+                          <CheckoutButton
+                            addOnPriceId={mPrice.id}
+                            label={t("addMaintenance")}
+                            className="mt-3 w-full"
+                            mode="subscription"
+                          />
+                        </div>
+                      );
+                    })()}
                   </CardContent>
                   <CardFooter>
                     {price?.id ? (

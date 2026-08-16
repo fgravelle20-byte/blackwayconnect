@@ -4,7 +4,7 @@ import { env } from "@/lib/env";
 export async function GET() {
   return NextResponse.json({
     ok: true,
-    service: "NoirRoutes",
+    service: "VORIXA",
     appEnv: env.APP_ENV,
     time: new Date().toISOString(),
     integrations: {

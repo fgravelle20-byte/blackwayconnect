@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const BRAND = "NoirRoutes";
+const BRAND = "VORIXA";
 
 const nav = (locale: string) => [
   { href: `/${locale}/platform`, label: "Platform" },

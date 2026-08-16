@@ -90,7 +90,7 @@ export default async function SetupPage({ params }: { params: Promise<{ locale: 
   return (
     <div className="mx-auto max-w-3xl space-y-8 px-4 py-16">
       <div className="space-y-3">
-        <p className="text-xs font-bold tracking-[0.2em]">BLACKWAYCONNECT</p>
+        <p className="text-xs font-bold tracking-[0.2em]">VORIXA</p>
         <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
