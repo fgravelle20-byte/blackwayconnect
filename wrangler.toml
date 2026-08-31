@@ -1,7 +1,13 @@
 name = "blackwayconnect"
 main = "src/index.js"
 compatibility_date = "2026-08-05"
+account_id = "eda7fc96b400297aaa0b185a26ad1846"
+workers_dev = true
 
-# Domaine custom : à attacher dans Cloudflare Workers → Domains
-# puis remplacer le CNAME www (custom-domains.chatgpt.site)
-# par le routage Worker / Railway.
+# Domaines apex/www : les attacher AU DASHBOARD après suppression des CNAME
+# ChatGPT Sites (custom-domains.chatgpt.site). Ne PAS les mettre ici tant que
+# ces CNAME existent — `custom_domain = true` fait échouer Workers Builds
+# (Custom Domains refuse un hostname qui a déjà un CNAME).
+#
+# Cutover : artifacts/CUTOVER-CLOUDFLARE.md
+# Vérif: curl -sI https://blackwayconnect.f-gravelle20.workers.dev/health | grep x-bw-proxy
