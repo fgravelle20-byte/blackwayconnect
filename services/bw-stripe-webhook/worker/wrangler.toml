@@ -4,6 +4,12 @@ compatibility_date = "2026-08-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
+# Production custom domain. Cloudflare creates the DNS record and TLS certificate
+# automatically when this Worker is deployed.
+[[routes]]
+pattern = "webhooks.blackwayconnect.com"
+custom_domain = true
+
 # Secrets (a definir avec : wrangler secret put <NOM>)
 #   STRIPE_SECRET_KEY
 #   STRIPE_WEBHOOK_SECRET
