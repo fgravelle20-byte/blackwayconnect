@@ -1,0 +1,15 @@
+// wrangler.jsonc
+{
+  "name": "blackway-sentinel",
+  "main": "./index.js",
+  "compatibility_date": "2026-08-05",
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
+  "vars": {
+    "TARGETS": "https://blackwayconnect.com,https://api.blackwayconnect.com"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
