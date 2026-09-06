@@ -1,11 +1,6 @@
 name: Deploy pipe (blackway-pipe)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pipe/**"
-      - ".github/workflows/deploy-pipe.yml"
   workflow_dispatch: {}
 
 jobs:
