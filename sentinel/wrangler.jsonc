@@ -1,8 +1,9 @@
-// wrangler.jsonc
 {
   "name": "blackway-sentinel",
   "main": "./index.js",
   "compatibility_date": "2026-08-05",
+  "workers_dev": true,
+  "preview_urls": true,
   "triggers": {
     "crons": ["*/5 * * * *"]
   },
