@@ -3,5 +3,7 @@ Allow: /
 Allow: /og.png
 Allow: /og.svg
 Allow: /sitemap.xml
+Disallow: /maquettes
+Disallow: /maquettes/
 
 Sitemap: https://blackwayconnect.com/sitemap.xml
