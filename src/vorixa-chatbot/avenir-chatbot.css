@@ -149,8 +149,18 @@
   color: var(--vx-muted);
 }
 
+.vx-entity__hint {
+  font-size: 0.72rem;
+  color: #71717a;
+  line-height: 1.4;
+}
+
 .vx-req {
   color: #f472b6;
+}
+
+.av-site__hero h1 span {
+  display: block;
 }
 
 .vx-entity input,

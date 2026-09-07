@@ -29,7 +29,10 @@ export function ClinicPreview({ state, onState, widgetRef }: Props) {
 
       <section className="av-site__hero">
         <p className="av-site__eyebrow">Laval · {CLINIC.address}</p>
-        <h1>Un sourire soigné, une clinique qui rappelle.</h1>
+        <h1>
+          Un sourire soigné.
+          <span>La clinique vous rappelle.</span>
+        </h1>
         <p>
           Besoin d’un rendez-vous, d’une urgence ou d’un soin CEREC ? L’assistant Vorixa capture le
           besoin — nom et téléphone — pendant que vous consultez le site.

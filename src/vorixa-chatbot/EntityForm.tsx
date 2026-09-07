@@ -118,6 +118,10 @@ export function EntityForm({ state, onChange, onSubmit, savedAt }: Props) {
       <label>
         <span>embed_code</span>
         <textarea readOnly rows={3} value={bot.embed_code} />
+        <small className="vx-entity__hint">
+          Généré automatiquement. Sur vorixa.ca, coller le même script avec le vrai id Base44 de
+          l’entité après Soumettre dans l’éditeur.
+        </small>
       </label>
 
       <button type="submit" className="vx-entity__submit">
