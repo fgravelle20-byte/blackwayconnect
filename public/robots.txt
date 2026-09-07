@@ -3,5 +3,9 @@ Allow: /
 Allow: /og.png
 Allow: /og.svg
 Allow: /sitemap.xml
+Disallow: /vorixa
+Disallow: /vorixa/
+Disallow: /maquettes
+Disallow: /maquettes/
 
 Sitemap: https://blackwayconnect.com/sitemap.xml
