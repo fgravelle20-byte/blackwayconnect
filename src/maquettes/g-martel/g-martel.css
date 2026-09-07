@@ -175,6 +175,16 @@
   padding: 1rem;
 }
 
+@media (max-width: 959px) {
+  .gm-ctas {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background: linear-gradient(180deg, rgba(7, 7, 6, 0) 0%, #070706 22%);
+    padding-bottom: 1.15rem;
+  }
+}
+
 .gm-btn {
   display: flex;
   align-items: center;

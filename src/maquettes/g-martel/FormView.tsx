@@ -134,13 +134,12 @@ export function FormView() {
       <div className="gm-field">
         <span>Niveau d’urgence</span>
         <div className="gm-chips" role="group" aria-label="Niveau d’urgence">
-          {URGENCY_OPTIONS.map((opt) => (
+          {(lockedUrgency ? URGENCY_OPTIONS.filter((opt) => opt.value === "now") : URGENCY_OPTIONS).map((opt) => (
             <button
               key={opt.value}
               type="button"
               className="gm-chip"
               aria-pressed={urgency === opt.value}
-              disabled={lockedUrgency && opt.value !== "now"}
               onClick={() => setUrgency(opt.value)}
             >
               {opt.label}

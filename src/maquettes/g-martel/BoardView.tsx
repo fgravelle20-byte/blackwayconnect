@@ -24,7 +24,8 @@ export function BoardView() {
       <h2>Tableau de suivi — {GM.owner}</h2>
       <p>
         Les urgences restent en haut. Chaque ligne est une fiche déjà triée : propriété, travail, zone,
-        photo, délai promis.
+        photo, délai promis. Les actions grisées sont la montée d’une coche — récupérer la soumission, gagner
+        du temps sur la route, bâtir l’avis local.
       </p>
 
       {focusReq ? (
