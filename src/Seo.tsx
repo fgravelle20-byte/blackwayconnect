@@ -346,17 +346,33 @@ export function Seo() {
     const canonical = `${SITE}${lang === "en" ? enPath : frPath}`;
 
     const pageKey = bare.replace(/^\//, "") || "home";
+    const isVorixaStudio =
+      bare === "/vorixa/chatbot" ||
+      bare.startsWith("/vorixa/chatbot/") ||
+      bare === "/maquettes/l-avenir" ||
+      bare.startsWith("/maquettes/");
     const { title: pageTitle, description, ogTitle } = pageSeo(pageKey, lang, t.heroBody);
 
-    if (pageKey === "confidentialite") {
+    if (isVorixaStudio) {
+      document.title = "VORIXA | Assistant L'Avenir Clinique Dentaire";
+      upsertMeta(
+        "name",
+        "description",
+        "Configuration VorixaChatbot — Assistant L'Avenir Clinique Dentaire, capture de leads.",
+      );
+      upsertMeta("name", "robots", "noindex, nofollow");
+    } else if (pageKey === "confidentialite") {
       document.title = `${t.brand} | ${t.privacy}`;
       upsertMeta("name", "description", t.privacyBody.slice(0, 160));
+      upsertMeta("name", "robots", "index, follow");
     } else if (pageKey === "conditions") {
       document.title = `${t.brand} | ${t.terms}`;
       upsertMeta("name", "description", t.termsBody.slice(0, 160));
+      upsertMeta("name", "robots", "index, follow");
     } else {
       document.title = `${t.brand} | ${pageTitle}`;
       upsertMeta("name", "description", description);
+      upsertMeta("name", "robots", "index, follow");
     }
 
     const resolvedOgTitle =
