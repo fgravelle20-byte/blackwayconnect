@@ -346,25 +346,39 @@ export function Seo() {
     const canonical = `${SITE}${lang === "en" ? enPath : frPath}`;
 
     const pageKey = bare.replace(/^\//, "") || "home";
+    const isMaquette = bare === "/maquettes" || bare.startsWith("/maquettes/");
     const { title: pageTitle, description, ogTitle } = pageSeo(pageKey, lang, t.heroBody);
 
-    if (pageKey === "confidentialite") {
+    if (isMaquette) {
+      document.title = "VORIXA | Maquette de prospection";
+      upsertMeta(
+        "name",
+        "description",
+        "Proposition de démonstration commerciale Vorixa — pas un livrable déjà construit ni une promesse de résultats.",
+      );
+      upsertMeta("name", "robots", "noindex, nofollow");
+    } else if (pageKey === "confidentialite") {
       document.title = `${t.brand} | ${t.privacy}`;
       upsertMeta("name", "description", t.privacyBody.slice(0, 160));
+      upsertMeta("name", "robots", "index, follow");
     } else if (pageKey === "conditions") {
       document.title = `${t.brand} | ${t.terms}`;
       upsertMeta("name", "description", t.termsBody.slice(0, 160));
+      upsertMeta("name", "robots", "index, follow");
     } else {
       document.title = `${t.brand} | ${pageTitle}`;
       upsertMeta("name", "description", description);
+      upsertMeta("name", "robots", "index, follow");
     }
 
-    const resolvedOgTitle =
-      pageKey === "confidentialite" || pageKey === "conditions"
+    const resolvedOgTitle = isMaquette
+      ? document.title
+      : pageKey === "confidentialite" || pageKey === "conditions"
         ? document.title
         : ogTitle || document.title;
-    const ogDesc =
-      pageKey === "confidentialite"
+    const ogDesc = isMaquette
+      ? "Proposition de démonstration commerciale Vorixa — pas un livrable déjà construit ni une promesse de résultats."
+      : pageKey === "confidentialite"
         ? t.privacyBody.slice(0, 160)
         : pageKey === "conditions"
           ? t.termsBody.slice(0, 160)
@@ -372,7 +386,7 @@ export function Seo() {
 
     document.documentElement.lang = lang === "en" ? "en" : "fr";
 
-    upsertMeta("property", "og:site_name", "BlackWayConnect");
+    upsertMeta("property", "og:site_name", isMaquette ? "VORIXA" : "BlackWayConnect");
     upsertMeta("property", "og:title", resolvedOgTitle);
     upsertMeta("property", "og:description", ogDesc);
     upsertMeta("property", "og:url", canonical);
@@ -409,7 +423,12 @@ export function Seo() {
     upsertLink("alternate", `${SITE}${enPath}`, "en");
     upsertLink("alternate", `${SITE}/`, "x-default");
 
-    upsertJsonLd("bw-jsonld", buildJsonLd(lang, canonical, pageKey));
+    if (isMaquette) {
+      const el = document.getElementById("bw-jsonld");
+      if (el) el.textContent = "";
+    } else {
+      upsertJsonLd("bw-jsonld", buildJsonLd(lang, canonical, pageKey));
+    }
   }, [lang, pathname, t]);
 
   return null;
