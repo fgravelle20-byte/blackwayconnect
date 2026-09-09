@@ -47,8 +47,17 @@ const PRICE_TO_FORFAIT = {
   price_1U1FLfAG7HUL9RtruTYWaERD: "grow_hub_partner",
 };
 
-// Payment Link IDs (Grow Hub live) — session.payment_link quand line_items non expandés.
+// Payment Link IDs → forfait. Live ids from src/stripeConfig.ts PLUS the 2026-09-06
+// deactivated generation (still present on older Checkout Sessions).
 const PLINK_TO_FORFAIT = {
+  // Live (replaced 2026-09-06)
+  plink_1UCmB6AG7HUL9RtrpvUpROqh: "grow_hub_spark",
+  plink_1UCmBxAG7HUL9RtrUdOVuMNm: "grow_hub_launch",
+  plink_1UCmBzAG7HUL9RtrG7wA53Aq: "grow_hub_growth",
+  plink_1UCmC0AG7HUL9RtrSOaDDzbo: "grow_hub_scale",
+  plink_1UCmBJAG7HUL9RtrnvIfFOMn: "grow_hub_command",
+  plink_1UCmBKAG7HUL9RtrFzh2ZDB1: "grow_hub_partner",
+  // Legacy (deactivated public URLs — keep for webhook fallback)
   plink_1U1FMTAG7HUL9RtrDCjxRIl6: "grow_hub_spark",
   plink_1U1FMUAG7HUL9RtrqsOarwY3: "grow_hub_launch",
   plink_1U1FMTAG7HUL9RtrDvKqcL9e: "grow_hub_growth",

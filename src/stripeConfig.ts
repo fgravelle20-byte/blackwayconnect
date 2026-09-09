@@ -1,4 +1,14 @@
-/** Stripe Grow Hub catalog — live Payment Links (acct BlackWayConnect). */
+/**
+ * Stripe Grow Hub catalog — live Payment Links on merchant acct_1TDZjzAG7HUL9Rtr.
+ *
+ * Public URLs here are the single source of truth for site CTAs, `/api/config`,
+ * and mobile bootstrap. Do not hardcode a parallel buy.stripe.com list in the worker.
+ *
+ * `plink_1UDT7lAG7HUL9Rtr6j7UWahF` is NOT a valid live Payment Link on this
+ * account (Stripe `resource_missing`). Do not wire it. Create replacements in
+ * **Live** mode on this same account (not Test, not a Connect platform account),
+ * then paste both the `plink_…` id and the `https://buy.stripe.com/…` URL here.
+ */
 
 export type PlanKey =
   | "grow_hub_spark"
@@ -89,6 +99,39 @@ export const PLAN_ORDER: PlanKey[] = [
 ];
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
+
+/** Public Checkout URLs for `/api/config` and mobile bootstrap. */
+export const CHECKOUT_LINKS = {
+  grow_hub_spark: PLANS.grow_hub_spark.paymentLink,
+  grow_hub_launch: PLANS.grow_hub_launch.paymentLink,
+  grow_hub_growth: PLANS.grow_hub_growth.paymentLink,
+  grow_hub_scale: PLANS.grow_hub_scale.paymentLink,
+  grow_hub_command: PLANS.grow_hub_command.paymentLink,
+  grow_hub_partner: PLANS.grow_hub_partner.paymentLink,
+  currency: "cad" as const,
+};
+
+/**
+ * Previous Payment Link IDs (public URLs deactivated 2026-09-06).
+ * Keep for webhook forfait resolution on older Checkout Sessions.
+ */
+export const LEGACY_PAYMENT_LINK_IDS: Record<string, PlanKey> = {
+  plink_1U1FMTAG7HUL9RtrDCjxRIl6: "grow_hub_spark",
+  plink_1U1FMUAG7HUL9RtrqsOarwY3: "grow_hub_launch",
+  plink_1U1FMTAG7HUL9RtrDvKqcL9e: "grow_hub_growth",
+  plink_1U1FMzAG7HUL9RtrIPzQYi9n: "grow_hub_scale",
+  plink_1U1FMTAG7HUL9RtrODdZgiSo: "grow_hub_command",
+  plink_1U1FMYAG7HUL9RtruMZLdQo2: "grow_hub_partner",
+};
+
+/** Live + legacy Payment Link IDs → Grow Hub forfait (pipe webhook fallback). */
+export function paymentLinkToForfait(): Record<string, PlanKey> {
+  const map: Record<string, PlanKey> = { ...LEGACY_PAYMENT_LINK_IDS };
+  for (const plan of Object.values(PLANS)) {
+    map[plan.paymentLinkId] = plan.key;
+  }
+  return map;
+}
 
 export const STRIPE_WEBHOOK = "https://api.blackwayconnect.com/webhooks/stripe";
 /** Primary post-checkout destination — Client Master Portal (session_id when Payment Link supports it). */

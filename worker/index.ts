@@ -1,3 +1,5 @@
+import { CELLULAIRE_PLANS } from "../src/cellulaireConfig";
+import { CHECKOUT_LINKS, PLANS } from "../src/stripeConfig";
 import { handleChat, type ChatLang, type ChatMessage } from "./chat";
 import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
 
@@ -22,38 +24,15 @@ const SITE_ORIGIN = "https://blackwayconnect.com";
 const DEFAULT_APP = "https://blackwayconnect.com/portail";
 const BASE44_PREVIEW = "https://black-way-link.base44.app/";
 
-const CHECKOUT = {
-  grow_hub_spark: "https://buy.stripe.com/00w14m2HH4wX57M2d0eIw0w",
-  grow_hub_launch: "https://buy.stripe.com/aFaaEWeqpd3t57M6tgeIw0z",
-  grow_hub_growth: "https://buy.stripe.com/28E8wO8218NdfMq5pceIw0x",
-  grow_hub_scale: "https://buy.stripe.com/3cI5kC0zz5B143IbNAeIw0B",
-  grow_hub_command: "https://buy.stripe.com/fZucN4eqp7J97fU18WeIw0y",
-  grow_hub_partner: "https://buy.stripe.com/6oUaEW9655B11VA4l8eIw0A",
-  currency: "cad" as const,
-};
-
-const PLAN_AMOUNTS: Record<string, number> = {
-  grow_hub_spark: 99,
-  grow_hub_launch: 249,
-  grow_hub_growth: 499,
-  grow_hub_scale: 749,
-  grow_hub_command: 1249,
-  grow_hub_partner: 2499,
-};
+/** Live Payment Links — imported from `src/stripeConfig.ts` (do not fork URLs here). */
+const CHECKOUT = CHECKOUT_LINKS;
 
 /** Type B — cellulaire (Payment Links empty until Stripe created). */
-const CELLULAIRE_AMOUNTS: Record<string, number> = {
-  cell_signal: 79,
-  cell_route: 199,
-  cell_fleet: 399,
-  cell_command: 799,
-};
-
 const CELLULAIRE_CHECKOUT: Record<string, string> = {
-  cell_signal: "",
-  cell_route: "",
-  cell_fleet: "",
-  cell_command: "",
+  cell_signal: CELLULAIRE_PLANS.cell_signal.paymentLink,
+  cell_route: CELLULAIRE_PLANS.cell_route.paymentLink,
+  cell_fleet: CELLULAIRE_PLANS.cell_fleet.paymentLink,
+  cell_command: CELLULAIRE_PLANS.cell_command.paymentLink,
 };
 
 function isAllowedOrigin(origin: string | null): boolean {
@@ -145,21 +124,21 @@ function mobileBootstrap(env: Env) {
       {
         key: "grow_hub_spark",
         name: "Spark",
-        amountCad: PLAN_AMOUNTS.grow_hub_spark,
+        amountCad: PLANS.grow_hub_spark.amountCad,
         paymentLink: CHECKOUT.grow_hub_spark,
         line: "web",
       },
       {
         key: "grow_hub_launch",
         name: "Launch",
-        amountCad: PLAN_AMOUNTS.grow_hub_launch,
+        amountCad: PLANS.grow_hub_launch.amountCad,
         paymentLink: CHECKOUT.grow_hub_launch,
         line: "web",
       },
       {
         key: "grow_hub_growth",
         name: "Growth",
-        amountCad: PLAN_AMOUNTS.grow_hub_growth,
+        amountCad: PLANS.grow_hub_growth.amountCad,
         paymentLink: CHECKOUT.grow_hub_growth,
         featured: true,
         line: "web",
@@ -167,21 +146,21 @@ function mobileBootstrap(env: Env) {
       {
         key: "grow_hub_scale",
         name: "Scale",
-        amountCad: PLAN_AMOUNTS.grow_hub_scale,
+        amountCad: PLANS.grow_hub_scale.amountCad,
         paymentLink: CHECKOUT.grow_hub_scale,
         line: "web",
       },
       {
         key: "grow_hub_command",
         name: "Command",
-        amountCad: PLAN_AMOUNTS.grow_hub_command,
+        amountCad: PLANS.grow_hub_command.amountCad,
         paymentLink: CHECKOUT.grow_hub_command,
         line: "web",
       },
       {
         key: "grow_hub_partner",
         name: "Partner",
-        amountCad: PLAN_AMOUNTS.grow_hub_partner,
+        amountCad: PLANS.grow_hub_partner.amountCad,
         paymentLink: CHECKOUT.grow_hub_partner,
         line: "web",
       },
@@ -191,7 +170,7 @@ function mobileBootstrap(env: Env) {
       {
         key: "cell_signal",
         name: "Cell Signal",
-        amountCad: CELLULAIRE_AMOUNTS.cell_signal,
+        amountCad: CELLULAIRE_PLANS.cell_signal.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_signal || null,
         line: "cellulaire",
         tools: ["cell_capture"],
@@ -199,7 +178,7 @@ function mobileBootstrap(env: Env) {
       {
         key: "cell_route",
         name: "Cell Route",
-        amountCad: CELLULAIRE_AMOUNTS.cell_route,
+        amountCad: CELLULAIRE_PLANS.cell_route.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_route || null,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout"],
@@ -207,7 +186,7 @@ function mobileBootstrap(env: Env) {
       {
         key: "cell_fleet",
         name: "Cell Fleet",
-        amountCad: CELLULAIRE_AMOUNTS.cell_fleet,
+        amountCad: CELLULAIRE_PLANS.cell_fleet.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_fleet || null,
         featured: true,
         line: "cellulaire",
@@ -216,7 +195,7 @@ function mobileBootstrap(env: Env) {
       {
         key: "cell_command",
         name: "Cell Command",
-        amountCad: CELLULAIRE_AMOUNTS.cell_command,
+        amountCad: CELLULAIRE_PLANS.cell_command.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_command || null,
         line: "cellulaire",
         tools: [
