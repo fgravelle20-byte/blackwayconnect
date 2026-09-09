@@ -26,6 +26,11 @@ export type ChatResult = {
 };
 
 type CheckoutLinks = Record<PlanKey, string>;
+
+const PLANS: Record<
+  PlanKey,
+  { name: string; amountCad: number; blurbFr: string; blurbEn: string }
+> = {
   grow_hub_spark: {
     name: "Spark",
     amountCad: 99,
