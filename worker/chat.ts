@@ -69,15 +69,6 @@ const PLANS: Record<
   },
 };
 
-const DEFAULT_CHECKOUT: CheckoutLinks = {
-  grow_hub_spark: "https://buy.stripe.com/00w14m2HH4wX57M2d0eIw0w",
-  grow_hub_launch: "https://buy.stripe.com/aFaaEWeqpd3t57M6tgeIw0z",
-  grow_hub_growth: "https://buy.stripe.com/28E8wO8218NdfMq5pceIw0x",
-  grow_hub_scale: "https://buy.stripe.com/3cI5kC0zz5B143IbNAeIw0B",
-  grow_hub_command: "https://buy.stripe.com/fZucN4eqp7J97fU18WeIw0y",
-  grow_hub_partner: "https://buy.stripe.com/6oUaEW9655B11VA4l8eIw0A",
-};
-
 function knowledge(lang: ChatLang): string {
   const priceLine = Object.values(PLANS)
     .map((p) => `${p.name}: $${p.amountCad} CAD/mo`)
@@ -386,7 +377,6 @@ export async function handleChat(opts: {
 }): Promise<ChatResult> {
   const lang = opts.lang;
   const lastUser = [...opts.messages].reverse().find((m) => m.role === "user")?.content || "";
-  void DEFAULT_CHECKOUT;
   void opts.checkout;
 
   if (opts.ai) {

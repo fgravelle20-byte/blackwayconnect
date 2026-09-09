@@ -27,16 +27,18 @@ Worker `blackwayconnect` is **not** used and must not be modified/deleted.
 
 ## Grow Hub Stripe checkout (live)
 
-Payment Links (CAD monthly) on account BlackWayConnect. Site CTAs open these with UTM + `client_reference_id`.
+Payment Links (CAD monthly) on merchant `acct_1TDZjzAG7HUL9Rtr`. Site CTAs open these with UTM + `client_reference_id`.
+
+**Do not use** `plink_1UDT7lAG7HUL9Rtr6j7UWahF` — Stripe returns `resource_missing` on this account (deleted, Test-mode ID, or created on a different/Connect account).
 
 | Plan | CAD/mo | Payment Link |
 |------|--------|--------------|
-| Spark | 99 | https://buy.stripe.com/00w14m2HH4wX57M2d0eIw0w |
-| Launch | 249 | https://buy.stripe.com/aFaaEWeqpd3t57M6tgeIw0z |
-| Growth ★ | 499 | https://buy.stripe.com/28E8wO8218NdfMq5pceIw0x |
-| Scale | 749 | https://buy.stripe.com/3cI5kC0zz5B143IbNAeIw0B |
-| Command | 1249 | https://buy.stripe.com/fZucN4eqp7J97fU18WeIw0y |
-| Partner | 2499 | https://buy.stripe.com/6oUaEW9655B11VA4l8eIw0A |
+| Spark | 99 | https://buy.stripe.com/28EeVc0zz9Rhas604SeIw1U |
+| Launch | 249 | https://buy.stripe.com/3cI3cueqp0gH57McREeIw1X |
+| Growth ★ | 499 | https://buy.stripe.com/aFa5kC6XX8Nd43IdVIeIw1Y |
+| Scale | 749 | https://buy.stripe.com/9B600i1DD8Ndbwa6tgeIw1Z |
+| Command | 1249 | https://buy.stripe.com/14A6oGfut0gHgQubNAeIw1V |
+| Partner | 2499 | https://buy.stripe.com/eVq7sK9658Nd43IeZMeIw1W |
 | Entreprise | — | Consultation `/contact` |
 
 Catalog in code: `src/stripeConfig.ts`. Public mirror: `GET /api/config` → `checkout` · Mobile: `GET /api/mobile/bootstrap`.
@@ -46,14 +48,14 @@ Catalog in code: `src/stripeConfig.ts`. Public mirror: `GET /api/config` → `ch
 All 6 Grow Hub Payment Links redirect after payment to  
 `https://blackwayconnect.com/portail?session_id={CHECKOUT_SESSION_ID}`.
 
-| Plan | Payment Link ID |
+| Plan | Payment Link ID (live, 2026-09-06) |
 |------|-----------------|
-| Spark | `plink_1U1FMTAG7HUL9RtrDCjxRIl6` |
-| Launch | `plink_1U1FMUAG7HUL9RtrqsOarwY3` |
-| Growth | `plink_1U1FMTAG7HUL9RtrDvKqcL9e` |
-| Scale | `plink_1U1FMzAG7HUL9RtrIPzQYi9n` |
-| Command | `plink_1U1FMTAG7HUL9RtrODdZgiSo` |
-| Partner | `plink_1U1FMYAG7HUL9RtruMZLdQo2` |
+| Spark | `plink_1UCmB6AG7HUL9RtrpvUpROqh` |
+| Launch | `plink_1UCmBxAG7HUL9RtrUdOVuMNm` |
+| Growth | `plink_1UCmBzAG7HUL9RtrG7wA53Aq` |
+| Scale | `plink_1UCmC0AG7HUL9RtrSOaDDzbo` |
+| Command | `plink_1UCmBJAG7HUL9RtrnvIfFOMn` |
+| Partner | `plink_1UCmBKAG7HUL9RtrFzh2ZDB1` |
 
 **Portal unlock after pay (no `STRIPE_SECRET_KEY` required):**  
 1. Stripe webhook → pipe stores `cs_…` → email/forfait in Worker Cache (24h) **synchronously**, then HubSpot deal `bw_stripe_payment_id` + contact (async).  
@@ -89,18 +91,20 @@ Paiement Stripe du forfait choisi → pipe active **ce** forfait (pas un statut 
 
 Spark payé → Spark. Growth payé → Growth. Idempotent (`bw_idempotency_key` / `bw_stripe_payment_id`).
 
+Unmapped Stripe amounts (e.g. a $999 CAD invoice PaymentIntent) do **not** unlock a forfait. Pipe returns `ignore: paiement sans forfait resolu` instead of defaulting to Growth.
+
 Pipe resolve order: metadata `bw_forfait` → `client_reference_id` → `payment_link` (plink map) → price id → line description → amount cents.
 
 ## Parcours E2E — checklist forfaits (2026-08-06)
 
 | Forfait | Lien Stripe | Webhook map | Portail unlock | Statut |
 |---------|-------------|-------------|----------------|--------|
-| Spark `grow_hub_spark` | [buy…](https://buy.stripe.com/00w14m2HH4wX57M2d0eIw0w) · plink `…DCjxRIl6` · price `…C2bJrFVP` | metadata + plink + price + 9900¢ | rank 1 (diagnostic, outils, checklist, secrétaire, forfaits, support) | **OK** |
-| Launch `grow_hub_launch` | [buy…](https://buy.stripe.com/aFaaEWeqpd3t57M6tgeIw0z) · plink `…qsOarwY3` · price `…3QF6c4pC` | idem | rank 2 (+ relance, soumission, roi, comparer, grow_hub) | **OK** |
-| Growth `grow_hub_growth` | [buy…](https://buy.stripe.com/28E8wO8218NdfMq5pceIw0x) · plink `…DvKqcL9e` · price `…gSob9cmw` | idem (+ landing `/grow-hub-growth`) | rank 3 (tous outils web) | **OK** |
-| Scale `grow_hub_scale` | [buy…](https://buy.stripe.com/3cI5kC0zz5B143IbNAeIw0B) · plink `…IPzQYi9n` · price `…WL5IQyME` | idem | rank 4 (tous outils web) | **OK** |
-| Command `grow_hub_command` | [buy…](https://buy.stripe.com/fZucN4eqp7J97fU18WeIw0y) · plink `…ODdZgiSo` · price `…c8R6DEdZ` | idem | rank 5 (tous outils web) | **OK** |
-| Partner `grow_hub_partner` | [buy…](https://buy.stripe.com/6oUaEW9655B11VA4l8eIw0A) · plink `…uMZLdQo2` · price `…uTYWaERD` | idem | rank 6 (tous outils web) | **OK** |
+| Spark `grow_hub_spark` | [buy…](https://buy.stripe.com/28EeVc0zz9Rhas604SeIw1U) · plink `…pvUpROqh` · price `…C2bJrFVP` | metadata + plink + price + 9900¢ | rank 1 (diagnostic, outils, checklist, secrétaire, forfaits, support) | **OK** |
+| Launch `grow_hub_launch` | [buy…](https://buy.stripe.com/3cI3cueqp0gH57McREeIw1X) · plink `…UdOVuMNm` · price `…3QF6c4pC` | idem | rank 2 (+ relance, soumission, roi, comparer, grow_hub) | **OK** |
+| Growth `grow_hub_growth` | [buy…](https://buy.stripe.com/aFa5kC6XX8Nd43IdVIeIw1Y) · plink `…G7wA53Aq` · price `…gSob9cmw` | idem (+ landing `/grow-hub-growth`) | rank 3 (tous outils web) | **OK** |
+| Scale `grow_hub_scale` | [buy…](https://buy.stripe.com/9B600i1DD8Ndbwa6tgeIw1Z) · plink `…SOaDDzbo` · price `…WL5IQyME` | idem | rank 4 (tous outils web) | **OK** |
+| Command `grow_hub_command` | [buy…](https://buy.stripe.com/14A6oGfut0gHgQubNAeIw1V) · plink `…nvIfFOMn` · price `…c8R6DEdZ` | idem | rank 5 (tous outils web) | **OK** |
+| Partner `grow_hub_partner` | [buy…](https://buy.stripe.com/eVq7sK9658Nd43IeZMeIw1W) · plink `…Fzh2ZDB1` · price `…uTYWaERD` | idem | rank 6 (tous outils web) | **OK** |
 | Entreprise | `/contact` (pas de Payment Link) | N/A | consultation | **OK** (hors Stripe) |
 | Cell Signal | — | pipe prêt (`cell_signal`) | rank cell 1 | **GAP** — Payment Link à créer |
 | Cell Route | — | pipe prêt (`cell_route`) | rank cell 2 | **GAP** — Payment Link à créer |

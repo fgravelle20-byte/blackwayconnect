@@ -47,8 +47,17 @@ const PRICE_TO_FORFAIT = {
   price_1U1FLfAG7HUL9RtruTYWaERD: "grow_hub_partner",
 };
 
-// Payment Link IDs (Grow Hub live) — session.payment_link quand line_items non expandés.
+// Payment Link IDs → forfait. Live ids from src/stripeConfig.ts PLUS the 2026-09-06
+// deactivated generation (still present on older Checkout Sessions).
 const PLINK_TO_FORFAIT = {
+  // Live (replaced 2026-09-06)
+  plink_1UCmB6AG7HUL9RtrpvUpROqh: "grow_hub_spark",
+  plink_1UCmBxAG7HUL9RtrUdOVuMNm: "grow_hub_launch",
+  plink_1UCmBzAG7HUL9RtrG7wA53Aq: "grow_hub_growth",
+  plink_1UCmC0AG7HUL9RtrSOaDDzbo: "grow_hub_scale",
+  plink_1UCmBJAG7HUL9RtrnvIfFOMn: "grow_hub_command",
+  plink_1UCmBKAG7HUL9RtrFzh2ZDB1: "grow_hub_partner",
+  // Legacy (deactivated public URLs — keep for webhook fallback)
   plink_1U1FMTAG7HUL9RtrDCjxRIl6: "grow_hub_spark",
   plink_1U1FMUAG7HUL9RtrqsOarwY3: "grow_hub_launch",
   plink_1U1FMTAG7HUL9RtrDvKqcL9e: "grow_hub_growth",
@@ -58,6 +67,7 @@ const PLINK_TO_FORFAIT = {
 };
 
 // Montants CAD (cents) — dernier filet invoices / sessions sans price id.
+// 99900 ($999) is NOT a Grow Hub price — do not map it (unmapped invoice / other product).
 const AMOUNT_CENTS_TO_FORFAIT = {
   9900: "grow_hub_spark",
   24900: "grow_hub_launch",
@@ -214,7 +224,9 @@ function forfaitFromStripeObject(s) {
     const fromLineAmt = forfaitFromAmountCents(line.amount_total ?? line.amount);
     if (fromLineAmt) return fromLineAmt;
   }
-  const fromAmt = forfaitFromAmountCents(s.amount_total ?? s.amount_paid ?? s.total);
+  const fromAmt = forfaitFromAmountCents(
+    s.amount_total ?? s.amount_paid ?? s.total ?? s.amount_due ?? s.amount,
+  );
   if (fromAmt) return fromAmt;
   return resoudreForfait(s.lines?.data?.[0]?.description) || null;
 }
@@ -793,6 +805,8 @@ async function signatureValide(secret, payload, header) {
   return hex === parts.v1;
 }
 
+export { forfaitFromStripeObject, forfaitFromAmountCents };
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -912,7 +926,18 @@ export default {
       const cd = s.customer_details || {};
       const nom = (cd.name || s.customer_name || "").trim().split(" ");
       // Forfait EXACT paye (price id / metadata / client_reference_id) — pas un statut unique.
-      const forfait = forfaitFromStripeObject(s) || "";
+      const forfait = resoudreForfait(forfaitFromStripeObject(s) || "");
+      if (!forfait) {
+        // e.g. invoice PaymentIntent $999 (99900¢) — not in Grow Hub catalog.
+        // Never invent grow_hub_growth; that would unlock the wrong portal tier.
+        return json({
+          recu: true,
+          ignore: "paiement sans forfait resolu",
+          type: evt.type,
+          payment_id: s.id || evt.id,
+          amount_cents: s.amount_total ?? s.amount_paid ?? s.total ?? s.amount_due ?? s.amount ?? null,
+        });
+      }
       const isInvoice = evt.type === "invoice.paid" || evt.type === "invoice.payment_succeeded";
       const isRenewal = isInvoice && (s.billing_reason === "subscription_cycle" || s.billing_reason === "subscription_update");
       // Cle stable (session / invoice), pas l'event id — rejeux Stripe = zero doublon.
@@ -923,7 +948,7 @@ export default {
       const checkoutSessionId = String(s.id || "").startsWith("cs_")
         ? s.id
         : String(s.checkout_session || "");
-      const forfaitForCache = resoudreForfait(forfait) || "grow_hub_growth";
+      const forfaitForCache = forfait;
       // Sync before HubSpot waitUntil — claim by session_id must work without Stripe API.
       await putSessionMap(env, checkoutSessionId, { email, forfait: forfaitForCache });
 
@@ -935,7 +960,7 @@ export default {
         forfait,
         payment_id: paymentKey,
         checkout_session_id: checkoutSessionId,
-        montant: (s.amount_total ?? s.amount_paid ?? 0) / 100,
+        montant: (s.amount_total ?? s.amount_paid ?? s.total ?? s.amount ?? 0) / 100,
         renouvellement: isRenewal,
         segment: isRenewal ? "renouvellement stripe" : "paiement stripe",
       }).catch((e) => console.log("erreur traitement", e)));
