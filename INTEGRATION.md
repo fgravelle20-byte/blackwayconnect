@@ -91,6 +91,8 @@ Paiement Stripe du forfait choisi → pipe active **ce** forfait (pas un statut 
 
 Spark payé → Spark. Growth payé → Growth. Idempotent (`bw_idempotency_key` / `bw_stripe_payment_id`).
 
+Unmapped Stripe amounts (e.g. a $999 CAD invoice PaymentIntent) do **not** unlock a forfait. Pipe returns `ignore: paiement sans forfait resolu` instead of defaulting to Growth.
+
 Pipe resolve order: metadata `bw_forfait` → `client_reference_id` → `payment_link` (plink map) → price id → line description → amount cents.
 
 ## Parcours E2E — checklist forfaits (2026-08-06)
