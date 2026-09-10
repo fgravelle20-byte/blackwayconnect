@@ -9,6 +9,8 @@ export const MAQUETTES: MaquetteEntry[] = [
     title: "Centre de demandes électriques VORIXA",
     irritant: "Appel hors heures, demande vague, soumission non suivie",
     status: "ready",
+    cleDossier: "g-martel-electricien",
+    statutRelation: "À valider",
   },
 ];
 

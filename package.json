@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "upsert:g-martel-vorixa": "node scripts/upsert-g-martel-vorixa.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

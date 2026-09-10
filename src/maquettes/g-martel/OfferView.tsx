@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { GM_CRM, GM_DOSSIER } from "./crm";
 
 export function OfferView() {
   return (
@@ -37,12 +38,18 @@ export function OfferView() {
 
       <p className="gm-disclaimer">
         Avant envoi au prospect : valider l’identité, le bon décideur (Guillaume Martel) et le besoin réel lors d’un
-        court échange. Maquette conceptuelle — pas un livrable déjà construit.
+        court échange. Maquette conceptuelle — pas un livrable déjà construit. Dossier CRM{" "}
+        <code>{GM_CRM.cleDossier}</code> · {GM_DOSSIER.statut_relation}.
       </p>
 
-      <Link className="gm-btn gm-btn--quote" to="/maquettes/g-martel">
-        Rejouer l’accueil client
-      </Link>
+      <div className="gm-offer__actions">
+        <Link className="gm-btn gm-btn--quote" to="/maquettes/g-martel/dossier">
+          Ouvrir le dossier CRM
+        </Link>
+        <Link className="gm-btn gm-btn--call" to="/maquettes/g-martel">
+          Rejouer l’accueil client
+        </Link>
+      </div>
     </div>
   );
 }

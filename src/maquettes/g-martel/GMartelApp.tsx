@@ -6,17 +6,19 @@ import { GMartelContext } from "./context";
 import { callbackFor } from "./copy";
 import { BoardView } from "./BoardView";
 import { ConfirmView } from "./ConfirmView";
+import { DossierView } from "./DossierView";
 import { FormView } from "./FormView";
 import { HomeView } from "./HomeView";
 import { OfferView } from "./OfferView";
 import "../maquettes.css";
 import "./g-martel.css";
 
-function viewFromPath(pathname: string): "home" | "form" | "confirm" | "board" | "offer" {
+function viewFromPath(pathname: string): "home" | "form" | "confirm" | "board" | "offer" | "dossier" {
   if (pathname.includes("/demande")) return "form";
   if (pathname.includes("/confirmation")) return "confirm";
   if (pathname.includes("/tableau")) return "board";
   if (pathname.includes("/offre")) return "offer";
+  if (pathname.includes("/dossier")) return "dossier";
   return "home";
 }
 
@@ -119,9 +121,10 @@ export function GMartelApp() {
     [requests, lastRequest, highlightedId, addRequest, playEveningJourney, resetDemo, markCallbackSent],
   );
 
-  const showPhone = view !== "offer";
-  const showBoard = view !== "offer";
+  const showPhone = view !== "offer" && view !== "dossier";
+  const showBoard = view !== "offer" && view !== "dossier";
   const showOffer = view === "offer";
+  const showDossier = view === "dossier";
 
   return (
     <GMartelContext.Provider value={value}>
@@ -145,6 +148,7 @@ export function GMartelApp() {
               <NavLink to="/maquettes/g-martel/demande?intent=urgence">Demande</NavLink>
               <NavLink to="/maquettes/g-martel/tableau">Tableau Guillaume</NavLink>
               <NavLink to="/maquettes/g-martel/offre">Offre</NavLink>
+              <NavLink to="/maquettes/g-martel/dossier">Dossier CRM</NavLink>
             </div>
             <div className="vx-chrome__actions">
               <button type="button" onClick={playEveningJourney}>
@@ -157,7 +161,11 @@ export function GMartelApp() {
           </div>
         </div>
 
-        <div className={`gm-stage${showOffer ? "" : " gm-stage--split"}${view === "board" ? " gm-stage--board" : ""}`}>
+        <div
+          className={`gm-stage${showOffer || showDossier ? "" : " gm-stage--split"}${
+            view === "board" ? " gm-stage--board" : ""
+          }`}
+        >
           {showPhone ? (
             <PhoneFrame evening={evening}>
               {view === "form" ? <FormView /> : null}
@@ -184,6 +192,7 @@ export function GMartelApp() {
           ) : null}
 
           {showOffer ? <OfferView /> : null}
+          {showDossier ? <DossierView /> : null}
         </div>
       </div>
     </GMartelContext.Provider>

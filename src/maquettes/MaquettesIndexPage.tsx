@@ -38,6 +38,11 @@ export function MaquettesIndexPage() {
               <h2>{m.prospect}</h2>
               <p>{m.title}</p>
               <p>Irritant ciblé : {m.irritant}</p>
+              {m.cleDossier ? (
+                <p>
+                  Dossier CRM : {m.statutRelation ?? "Prospect"} · <code>{m.cleDossier}</code>
+                </p>
+              ) : null}
               {m.status === "ready" ? (
                 <Link to={`/maquettes/${m.slug}`}>Ouvrir la démonstration</Link>
               ) : (

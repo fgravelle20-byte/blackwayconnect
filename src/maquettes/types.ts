@@ -7,6 +7,9 @@ export type MaquetteEntry = {
   title: string;
   irritant: string;
   status: MaquetteStatus;
+  /** Clé stable `vorixa-dossier-client.cle_dossier` when the prospect is in Vorixa CRM. */
+  cleDossier?: string;
+  statutRelation?: string;
 };
 
 export type RequestIntent = "soumission" | "urgence" | "rappel";
