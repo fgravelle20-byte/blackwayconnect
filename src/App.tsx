@@ -29,6 +29,7 @@ import { GMartelApp } from "./maquettes/g-martel/GMartelApp";
 import { useLang } from "./i18n";
 import { Seo } from "./Seo";
 import { initTracking, trackPageView } from "./tracking";
+import { AvenirChatbotApp } from "./vorixa-chatbot/AvenirChatbotApp";
 
 function LangSync() {
   const { pathname } = useLocation();
@@ -104,6 +105,9 @@ export default function App() {
       <TrackingBoot />
       <Seo />
       <Routes>
+        <Route path="/vorixa/chatbot" element={<AvenirChatbotApp />} />
+        <Route path="/vorixa/chatbot/*" element={<AvenirChatbotApp />} />
+        <Route path="/maquettes/l-avenir" element={<Navigate to="/vorixa/chatbot/apercu" replace />} />
         <Route path="/maquettes" element={<MaquettesIndexPage />} />
         <Route path="/maquettes/g-martel/*" element={<GMartelApp />} />
         <Route path="/maquettes/:slug/*" element={<UpcomingMaquette />} />

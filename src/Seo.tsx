@@ -346,10 +346,23 @@ export function Seo() {
     const canonical = `${SITE}${lang === "en" ? enPath : frPath}`;
 
     const pageKey = bare.replace(/^\//, "") || "home";
+    const isAvenirChatbot =
+      bare === "/vorixa/chatbot" ||
+      bare.startsWith("/vorixa/chatbot/") ||
+      bare === "/maquettes/l-avenir";
     const isMaquette = bare === "/maquettes" || bare.startsWith("/maquettes/");
+    const isVorixaDemo = isAvenirChatbot || isMaquette;
     const { title: pageTitle, description, ogTitle } = pageSeo(pageKey, lang, t.heroBody);
 
-    if (isMaquette) {
+    if (isAvenirChatbot) {
+      document.title = "VORIXA | Assistant L'Avenir Clinique Dentaire";
+      upsertMeta(
+        "name",
+        "description",
+        "Configuration VorixaChatbot — Assistant L'Avenir Clinique Dentaire, capture de leads.",
+      );
+      upsertMeta("name", "robots", "noindex, nofollow");
+    } else if (isMaquette) {
       document.title = "VORIXA | Maquette de prospection";
       upsertMeta(
         "name",
@@ -371,12 +384,14 @@ export function Seo() {
       upsertMeta("name", "robots", "index, follow");
     }
 
-    const resolvedOgTitle = isMaquette
+    const resolvedOgTitle = isVorixaDemo
       ? document.title
       : pageKey === "confidentialite" || pageKey === "conditions"
         ? document.title
         : ogTitle || document.title;
-    const ogDesc = isMaquette
+    const ogDesc = isAvenirChatbot
+      ? "Configuration VorixaChatbot — Assistant L'Avenir Clinique Dentaire, capture de leads."
+      : isMaquette
       ? "Proposition de démonstration commerciale Vorixa — pas un livrable déjà construit ni une promesse de résultats."
       : pageKey === "confidentialite"
         ? t.privacyBody.slice(0, 160)
@@ -386,7 +401,7 @@ export function Seo() {
 
     document.documentElement.lang = lang === "en" ? "en" : "fr";
 
-    upsertMeta("property", "og:site_name", isMaquette ? "VORIXA" : "BlackWayConnect");
+    upsertMeta("property", "og:site_name", isVorixaDemo ? "VORIXA" : "BlackWayConnect");
     upsertMeta("property", "og:title", resolvedOgTitle);
     upsertMeta("property", "og:description", ogDesc);
     upsertMeta("property", "og:url", canonical);
@@ -423,7 +438,7 @@ export function Seo() {
     upsertLink("alternate", `${SITE}${enPath}`, "en");
     upsertLink("alternate", `${SITE}/`, "x-default");
 
-    if (isMaquette) {
+    if (isVorixaDemo) {
       const el = document.getElementById("bw-jsonld");
       if (el) el.textContent = "";
     } else {
