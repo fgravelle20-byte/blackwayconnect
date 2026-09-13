@@ -8,6 +8,11 @@
  * account (Stripe `resource_missing`). Do not wire it. Create replacements in
  * **Live** mode on this same account (not Test, not a Connect platform account),
  * then paste both the `plink_…` id and the `https://buy.stripe.com/…` URL here.
+ *
+ * 2026-09-13: the six `plink_1UCmB*` URLs were briefly `active: false` on
+ * this account (Stripe listed them deactivated). They were reactivated the
+ * same day. Vorixa service-géré checkout is a separate catalog —
+ * see `pipe/vorixaManaged.js`.
  */
 
 export type PlanKey =

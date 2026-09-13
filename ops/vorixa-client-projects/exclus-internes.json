@@ -1,0 +1,307 @@
+{
+  "count": 43,
+  "note": "Ne pas créer de facture ni de projet de paiement pour ces 43 customers Stripe (tests Francis, emails service, démos).",
+  "customers": [
+    {
+      "stripe_customer_id": "cus_UhLGMJa63i5mVo",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLN60Pq65k6L6",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLNk2OOcoYagZ",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLNDdcuaOfNwm",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLN1IfL9b0PGA",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLN3xwiN8uEde",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLNloyacbvFpm",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLWSlVMfmdNEc",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLWsY9seP7Yh9",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLWnISQIRp77i",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLW1G38Di2DtK",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLWJpfSdOp9DL",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLWekjTfirY8d",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLmqe07DOttBE",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLmOrCILTWz81",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLmH6HkJh51nI",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLmp0eG3cLCzF",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLmJmJvkqWq3x",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLml8M4f2mIa2",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLnZndp6N7LhP",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLol45no6nHoX",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLof82672oErW",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLqWXINmGWgDY",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLqA5YCSoM6It",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLql9omrNKsda",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLqLZZiiXBhGj",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLqzANEt9o71w",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLq03YHIkQNzw",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLrG650Zz6mIP",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLrYEwxMREVhx",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLruddBWX1Xsc",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLr7PIyWieSW2",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLr3heA5kYznk",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UhLrGIaHebicLi",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UjMrp8EHLOpXs6",
+      "name": "Flow Co",
+      "email": "flow@demo.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "user_b13f77112871447e"
+    },
+    {
+      "stripe_customer_id": "cus_UjMvYMCO5ogo6G",
+      "name": "SUB User",
+      "email": "sub_0e2c7aed4f@example.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "user_1f0864d25bf14193"
+    },
+    {
+      "stripe_customer_id": "cus_UjMzbNo8lbGlgW",
+      "name": "Flow Co",
+      "email": "flow@demo.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "user_b13f77112871447e"
+    },
+    {
+      "stripe_customer_id": "cus_UtE6OQsD8UCTjC",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UtE6czNhjBKoxV",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_UtE7ozYc1qIwzt",
+      "name": "f.gravelle20@icloud.com",
+      "email": "f.gravelle20@icloud.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a2a047fbc1c05e8396f0ad3"
+    },
+    {
+      "stripe_customer_id": "cus_VB48gEBk9hArkh",
+      "name": "Service Client",
+      "email": "serviceclient@blackwayconnect.com",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a8079e3f06ccb3941c492d3"
+    },
+    {
+      "stripe_customer_id": "cus_VBRqxN49KK0ftL",
+      "name": "Customer SERVICE",
+      "email": "infoserviceclient@vorixa.ca",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": "6a8d1274222bea99781f1276"
+    },
+    {
+      "stripe_customer_id": "cus_VDNLIwBtmesYms",
+      "name": "Vorixa ",
+      "email": "infoserviceclient@vorixa.ca",
+      "reason": "compte_interne_test_ou_service",
+      "base44_user_id": null
+    }
+  ]
+}

@@ -12,7 +12,12 @@
  * Activation auto (signature verifiee): checkout.session.completed | async_payment_succeeded
  * | invoice.paid | invoice.payment_succeeded → bw_forfait + bw_forfait_paye = forfait paye
  * (grow_hub_spark … partner). Idempotent via bw_idempotency_key.
+ *
+ * Vorixa service géré invoices ($499 / $999 / $1500 / $3000) are NOT Grow Hub.
+ * See vorixaManaged.js — they must not unlock the BlackWay portail.
  */
+
+import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -68,6 +73,8 @@ const PLINK_TO_FORFAIT = {
 
 // Montants CAD (cents) — dernier filet invoices / sessions sans price id.
 // 99900 ($999) is NOT a Grow Hub price — do not map it (unmapped invoice / other product).
+// 49900 is Grow Hub Growth AND Vorixa Départ géré — Vorixa objects are excluded
+// before this fallback (isVorixaManagedStripeObject).
 const AMOUNT_CENTS_TO_FORFAIT = {
   9900: "grow_hub_spark",
   24900: "grow_hub_launch",
@@ -196,6 +203,7 @@ function forfaitFromAmountCents(cents) {
 
 /** Resolve forfait from Checkout Session / Invoice / Subscription payload. */
 function forfaitFromStripeObject(s) {
+  if (isVorixaManagedStripeObject(s)) return null;
   const meta = s.metadata || {};
   const subMeta = s.subscription_details?.metadata || {};
   const fromMeta = resoudreForfait(
@@ -805,7 +813,7 @@ async function signatureValide(secret, payload, header) {
   return hex === parts.v1;
 }
 
-export { forfaitFromStripeObject, forfaitFromAmountCents };
+export { forfaitFromStripeObject, forfaitFromAmountCents, isVorixaManagedStripeObject };
 
 export default {
   async fetch(request, env, ctx) {
@@ -929,10 +937,13 @@ export default {
       const forfait = resoudreForfait(forfaitFromStripeObject(s) || "");
       if (!forfait) {
         // e.g. invoice PaymentIntent $999 (99900¢) — not in Grow Hub catalog.
+        // Vorixa service géré ($499/$999/$1500/$3000) is handled by Vorixa, not this portail.
         // Never invent grow_hub_growth; that would unlock the wrong portal tier.
         return json({
           recu: true,
-          ignore: "paiement sans forfait resolu",
+          ignore: isVorixaManagedStripeObject(s)
+            ? "vorixa_service_gere"
+            : "paiement sans forfait resolu",
           type: evt.type,
           payment_id: s.id || evt.id,
           amount_cents: s.amount_total ?? s.amount_paid ?? s.total ?? s.amount_due ?? s.amount ?? null,

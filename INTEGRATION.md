@@ -93,7 +93,18 @@ Spark payé → Spark. Growth payé → Growth. Idempotent (`bw_idempotency_key`
 
 Unmapped Stripe amounts (e.g. a $999 CAD invoice PaymentIntent) do **not** unlock a forfait. Pipe returns `ignore: paiement sans forfait resolu` instead of defaulting to Growth.
 
-Pipe resolve order: metadata `bw_forfait` → `client_reference_id` → `payment_link` (plink map) → price id → line description → amount cents.
+Vorixa **service géré** invoices / Payment Links ($499 Départ, $999 Croissance, $1500, $3000) are detected in `pipe/vorixaManaged.js` and return `ignore: vorixa_service_gere`. They must not unlock Grow Hub Growth ($499 collision). Collection playbook: `ops/vorixa-client-projects/`.
+
+Live Vorixa service-géré checkout (Managed Payments, 2026-09-13):
+
+| Plan | CAD | Payment Link |
+|------|-----|--------------|
+| Départ | 499 | https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t |
+| Croissance | 999 | https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u |
+| Personnalisé | 1500 | https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v |
+| Personnalisé | 3000 | https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w |
+
+Pipe resolve order: Vorixa guard → metadata `bw_forfait` → `client_reference_id` → `payment_link` (plink map) → price id → line description → amount cents.
 
 ## Parcours E2E — checklist forfaits (2026-08-06)
 
