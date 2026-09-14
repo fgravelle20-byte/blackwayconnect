@@ -24,6 +24,8 @@ import { HowItWorksPage } from "./pages/HowItWorksPage";
 import { RelancePanierPage } from "./pages/RelancePanierPage";
 import { SoumissionPage } from "./pages/SoumissionPage";
 import { ChecklistPage } from "./pages/ChecklistPage";
+import { MaquettesIndexPage, UpcomingMaquette } from "./maquettes/MaquettesIndexPage";
+import { GMartelApp } from "./maquettes/g-martel/GMartelApp";
 import { useLang } from "./i18n";
 import { Seo } from "./Seo";
 import { initTracking, trackPageView } from "./tracking";
@@ -106,6 +108,9 @@ export default function App() {
         <Route path="/vorixa/chatbot" element={<AvenirChatbotApp />} />
         <Route path="/vorixa/chatbot/*" element={<AvenirChatbotApp />} />
         <Route path="/maquettes/l-avenir" element={<Navigate to="/vorixa/chatbot/apercu" replace />} />
+        <Route path="/maquettes" element={<MaquettesIndexPage />} />
+        <Route path="/maquettes/g-martel/*" element={<GMartelApp />} />
+        <Route path="/maquettes/:slug/*" element={<UpcomingMaquette />} />
         <Route path="/" element={<Layout />}>
           {routes()}
         </Route>
