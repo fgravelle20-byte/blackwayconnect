@@ -5,6 +5,7 @@ Production marketing site for [blackwayconnect.com](https://blackwayconnect.com)
 - Vite + React SPA (FR/EN)
 - Cloudflare Worker `blackway-site` — static assets + `/api/lead` + `/api/chat` (AI Secretary 24h / Workers AI) → `blackway-pipe`
 - Canonical host: `blackwayconnect.com` (`www` → 301 via `blackway-www`)
+- **`blackway.ca` is FORBIDDEN** — do not attach, create CF zone, or revive (see `ops/BLACKWAY-CA-FORBIDDEN.md`)
 - Checkout CTAs → Paddle storefront `vorixa.ca/pricing`
 - Mobile app CTAs → [Base44 preview](https://black-way-link.base44.app/) with UTM provenance
 - Pipe source (sanitized health): [`pipe/`](./pipe/) → Worker `blackway-pipe` only
