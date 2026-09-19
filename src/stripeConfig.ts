@@ -1,4 +1,19 @@
-/** Stripe Grow Hub catalog — live Payment Links (acct BlackWayConnect). */
+/**
+ * Stripe Grow Hub catalog — live Payment Links on merchant acct_1TDZjzAG7HUL9Rtr.
+ *
+ * Public URLs here are the single source of truth for site CTAs, `/api/config`,
+ * and mobile bootstrap. Do not hardcode a parallel buy.stripe.com list in the worker.
+ *
+ * `plink_1UDT7lAG7HUL9Rtr6j7UWahF` is NOT a valid live Payment Link on this
+ * account (Stripe `resource_missing`). Do not wire it. Create replacements in
+ * **Live** mode on this same account (not Test, not a Connect platform account),
+ * then paste both the `plink_…` id and the `https://buy.stripe.com/…` URL here.
+ *
+ * 2026-09-13: the six `plink_1UCmB*` URLs were briefly `active: false` on
+ * this account (Stripe listed them deactivated). They were reactivated the
+ * same day. Vorixa service-géré checkout is a separate catalog —
+ * see `pipe/vorixaManaged.js`.
+ */
 
 export type PlanKey =
   | "grow_hub_spark"
@@ -90,6 +105,57 @@ export const PLAN_ORDER: PlanKey[] = [
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
+/**
+ * BlackWay domains are Paddle-approved. Site checkouts use the live Paddle
+ * storefront on vorixa.ca until dedicated BlackWay Paddle prices exist.
+ */
+export const PADDLE_STOREFRONT = "https://vorixa.ca/pricing";
+
+function paddleCheckoutUrl(plan: PlanKey): string {
+  const url = new URL(PADDLE_STOREFRONT);
+  url.searchParams.set("bw_from", "blackwayconnect");
+  url.searchParams.set("bw_plan", plan);
+  url.searchParams.set("utm_source", "blackwayconnect_site");
+  url.searchParams.set("utm_medium", "checkout_paddle");
+  url.searchParams.set("utm_campaign", plan);
+  return url.toString();
+}
+
+/** Public Checkout URLs for `/api/config` and mobile bootstrap — Paddle handoff. */
+export const CHECKOUT_LINKS = {
+  grow_hub_spark: paddleCheckoutUrl("grow_hub_spark"),
+  grow_hub_launch: paddleCheckoutUrl("grow_hub_launch"),
+  grow_hub_growth: paddleCheckoutUrl("grow_hub_growth"),
+  grow_hub_scale: paddleCheckoutUrl("grow_hub_scale"),
+  grow_hub_command: paddleCheckoutUrl("grow_hub_command"),
+  grow_hub_partner: paddleCheckoutUrl("grow_hub_partner"),
+  currency: "cad" as const,
+  processor: "paddle" as const,
+  storefront: PADDLE_STOREFRONT,
+};
+
+/**
+ * Previous Payment Link IDs (public URLs deactivated 2026-09-06).
+ * Keep for webhook forfait resolution on older Checkout Sessions.
+ */
+export const LEGACY_PAYMENT_LINK_IDS: Record<string, PlanKey> = {
+  plink_1U1FMTAG7HUL9RtrDCjxRIl6: "grow_hub_spark",
+  plink_1U1FMUAG7HUL9RtrqsOarwY3: "grow_hub_launch",
+  plink_1U1FMTAG7HUL9RtrDvKqcL9e: "grow_hub_growth",
+  plink_1U1FMzAG7HUL9RtrIPzQYi9n: "grow_hub_scale",
+  plink_1U1FMTAG7HUL9RtrODdZgiSo: "grow_hub_command",
+  plink_1U1FMYAG7HUL9RtruMZLdQo2: "grow_hub_partner",
+};
+
+/** Live + legacy Payment Link IDs → Grow Hub forfait (pipe webhook fallback). */
+export function paymentLinkToForfait(): Record<string, PlanKey> {
+  const map: Record<string, PlanKey> = { ...LEGACY_PAYMENT_LINK_IDS };
+  for (const plan of Object.values(PLANS)) {
+    map[plan.paymentLinkId] = plan.key;
+  }
+  return map;
+}
+
 export const STRIPE_WEBHOOK = "https://api.blackwayconnect.com/webhooks/stripe";
 /** Primary post-checkout destination — Client Master Portal (session_id when Payment Link supports it). */
 export const PORTAL_URL = "https://blackwayconnect.com/portail";
@@ -103,22 +169,14 @@ export function checkoutUrl(
   plan: PlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ) {
-  const link = PLANS[plan].paymentLink;
-  if (!link) {
-    const path = opts.lang === "en" ? "/en/contact" : "/contact";
-    return `https://blackwayconnect.com${path}?forfait=${plan}`;
-  }
-  const url = new URL(link);
+  const url = new URL(paddleCheckoutUrl(plan));
   const source = opts.source || "site_web";
   url.searchParams.set("client_reference_id", `${source}:${plan}`);
-  url.searchParams.set("utm_source", "blackwayconnect_site");
-  url.searchParams.set("utm_medium", "checkout");
-  url.searchParams.set("utm_campaign", plan);
   if (opts.content) url.searchParams.set("utm_content", opts.content);
   if (opts.lang) url.searchParams.set("locale", opts.lang === "fr" ? "fr-CA" : "en-CA");
   return url.toString();
 }
 
-export function isCheckoutReady(plan: PlanKey): boolean {
-  return !!PLANS[plan].paymentLink;
+export function isCheckoutReady(_plan: PlanKey): boolean {
+  return true;
 }

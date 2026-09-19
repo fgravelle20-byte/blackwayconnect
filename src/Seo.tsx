@@ -378,6 +378,10 @@ export function Seo() {
       document.title = `${t.brand} | ${t.terms}`;
       upsertMeta("name", "description", t.termsBody.slice(0, 160));
       upsertMeta("name", "robots", "index, follow");
+    } else if (pageKey === "remboursement" || pageKey === "refund") {
+      document.title = `${t.brand} | ${t.refund}`;
+      upsertMeta("name", "description", t.refundBody.slice(0, 160));
+      upsertMeta("name", "robots", "index, follow");
     } else {
       document.title = `${t.brand} | ${pageTitle}`;
       upsertMeta("name", "description", description);
@@ -386,7 +390,10 @@ export function Seo() {
 
     const resolvedOgTitle = isVorixaDemo
       ? document.title
-      : pageKey === "confidentialite" || pageKey === "conditions"
+      : pageKey === "confidentialite" ||
+          pageKey === "conditions" ||
+          pageKey === "remboursement" ||
+          pageKey === "refund"
         ? document.title
         : ogTitle || document.title;
     const ogDesc = isAvenirChatbot
@@ -397,7 +404,9 @@ export function Seo() {
         ? t.privacyBody.slice(0, 160)
         : pageKey === "conditions"
           ? t.termsBody.slice(0, 160)
-          : description;
+          : pageKey === "remboursement" || pageKey === "refund"
+            ? t.refundBody.slice(0, 160)
+            : description;
 
     document.documentElement.lang = lang === "en" ? "en" : "fr";
 

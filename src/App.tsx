@@ -13,6 +13,7 @@ import {
   ServicesPage,
   TeamPage,
   TermsPage,
+  RefundPage,
 } from "./pages/OtherPages";
 import { DiagnosticPage } from "./pages/DiagnosticPage";
 import { ToolsPage } from "./pages/ToolsPage";
@@ -93,6 +94,8 @@ function routes(prefix = "") {
       <Route path="thank-you" element={<MerciPage />} />
       <Route path="confidentialite" element={<PrivacyPage />} />
       <Route path="conditions" element={<TermsPage />} />
+      <Route path="remboursement" element={<RefundPage />} />
+      <Route path="refund" element={<RefundPage />} />
       {prefix === "" ? null : <Route path="*" element={<Navigate to="/en" replace />} />}
     </>
   );
