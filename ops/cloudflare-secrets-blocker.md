@@ -49,6 +49,14 @@ Runs :
 4. Workers → `blackway-site` → Deploy latest from `main` (si Builds Git connecté)  
    sinon Option A étape 5 une fois le token bon
 
+## Note deploy
+
+Les workflows GitHub `Deploy site` échouent depuis le **6 sept.** (même token cassé).  
+Le site live `blackwayconnect.com` est très probablement poussé via **Cloudflare Workers Builds** (Git connecté au Dash), pas via Actions.
+
+Après fix du token : Attach débloque `.ca` ; Deploy Actions devient un backup.  
+Sinon : Dash → Workers → `blackway-site` → Redeploy / Builds → latest `main` (Paddle checkout déjà dans le code).
+
 ## Après fix
 
 ```bash
