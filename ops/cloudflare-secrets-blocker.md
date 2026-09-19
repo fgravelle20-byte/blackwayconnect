@@ -1,6 +1,9 @@
-# Cloudflare secrets — blocker attach blackway.ca
+# Cloudflare secrets — secondaire (après domaine .ca actif)
 
-## Diagnostic (19 sept. 2026 — post PR #28)
+> **D’abord :** si `dig blackway.ca` = NXDOMAIN, lire [`ops/blackway-ca-nxdomain.md`](./blackway-ca-nxdomain.md).  
+> Ce fichier ne sert **qu’après** que le domaine existe au registre.
+
+## Diagnostic token (19 sept. 2026 — post PR #28)
 
 | Check | Résultat |
 |-------|----------|
