@@ -1,77 +1,92 @@
 #!/usr/bin/env bash
-# Point blackway.ca → blackwayconnect.com via Cloudflare zone redirect + DNS.
-# Requires: CLOUDFLARE_API_TOKEN (Zone DNS Edit + Zone Rules / Page Rules)
-set -euo pipefail
-
-ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-eda7fc96b400297aaa0b185a26ad1846}"
-TOKEN="${CLOUDFLARE_API_TOKEN:?Set CLOUDFLARE_API_TOKEN}"
+set -uo pipefail
+ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-}"
+TOKEN="${CLOUDFLARE_API_TOKEN:-}"
 API="https://api.cloudflare.com/client/v4"
-auth=(-H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json")
+SUMMARY="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
 
-echo "== token probe (verify membership) =="
-curl -sS "${auth[@]}" "${API}/user/tokens/verify" | python3 -m json.tool || true
+{
+  echo "## blackway.ca attach"
+  echo "- token set: $([[ -n \"$TOKEN\" ]] && echo yes || echo NO)"
+  echo "- account env: ${ACCOUNT_ID:-empty}"
+} >> "$SUMMARY"
 
-echo "== list zones matching blackway =="
-ZONES=$(curl -sS "${auth[@]}" "${API}/zones?per_page=50")
-echo "$ZONES" | python3 -c "import json,sys; d=json.load(sys.stdin); print('success', d.get('success'));
-[print(z['name'], z['id'], z['status']) for z in (d.get('result') or []) if 'blackway' in z.get('name','')]"
-
-ZONE_ID=$(echo "$ZONES" | python3 -c "import json,sys; d=json.load(sys.stdin); 
-zs=[z for z in (d.get('result') or []) if z.get('name')=='blackway.ca'];
-print(zs[0]['id'] if zs else '')")
-if [[ -z "$ZONE_ID" ]]; then
-  echo "FATAL: zone blackway.ca not in this Cloudflare account" >&2
-  echo "$ZONES" | python3 -m json.tool | head -80 >&2
+if [[ -z "$TOKEN" ]]; then
+  echo "::error::CLOUDFLARE_API_TOKEN secret is empty"
+  echo "**FATAL: CLOUDFLARE_API_TOKEN empty**" >> "$SUMMARY"
   exit 1
 fi
-echo "ZONE_ID=$ZONE_ID"
 
-echo "== ensure proxied DNS (CNAME flatten apex + www → blackwayconnect.com) =="
+auth=(-H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json")
+
+echo "== verify token =="
+VERIFY=$(curl -sS "${auth[@]}" "${API}/user/tokens/verify" || true)
+echo "$VERIFY" | tee /tmp/cf-verify.json | head -c 500
+echo "$VERIFY" >> "$SUMMARY"
+echo >> "$SUMMARY"
+
+echo "== list ALL zones (first 50) =="
+ZONES=$(curl -sS "${auth[@]}" "${API}/zones?per_page=50" || true)
+echo "$ZONES" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print('success', d.get('success'), 'errors', d.get('errors'))
+for z in d.get('result') or []:
+    print(z.get('name'), z.get('id'), z.get('status'), z.get('account',{}).get('id'))
+" | tee /tmp/cf-zones.txt
+cat /tmp/cf-zones.txt >> "$SUMMARY"
+
+ZONE_ID=$(python3 -c "
+import json
+d=json.load(open('/tmp/cf-zones.txt').read() and open('/dev/stdin') if False else open('/tmp/cf-verify.json'))
+" 2>/dev/null || true)
+
+ZONE_ID=$(echo "$ZONES" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+zs=[z for z in (d.get('result') or []) if z.get('name')=='blackway.ca']
+print(zs[0]['id'] if zs else '')
+print('ACCOUNT', zs[0].get('account',{}).get('id') if zs else '', file=sys.stderr)
+")
+
+if [[ -z "$ZONE_ID" ]]; then
+  echo "::error::zone blackway.ca not found under this API token"
+  echo "**FATAL: blackway.ca zone not found**" >> "$SUMMARY"
+  # Still exit 0? No - fail so we see it, but dump helpful next steps
+  echo "Next: add zone blackway.ca to CF account or fix token permissions (Zone:Read)" >> "$SUMMARY"
+  exit 1
+fi
+
+echo "ZONE_ID=$ZONE_ID" | tee -a "$SUMMARY"
+ACCOUNT_FROM_ZONE=$(echo "$ZONES" | python3 -c "import json,sys; d=json.load(sys.stdin); zs=[z for z in d.get('result') or [] if z.get('name')=='blackway.ca']; print(zs[0].get('account',{}).get('id',''))")
+ACCOUNT_ID="${ACCOUNT_ID:-$ACCOUNT_FROM_ZONE}"
+echo "ACCOUNT_ID=$ACCOUNT_ID" | tee -a "$SUMMARY"
+
 upsert_cname() {
   local name="$1"
   local content="blackwayconnect.com"
-  local existing
+  local existing rid body
   existing=$(curl -sS "${auth[@]}" "${API}/zones/${ZONE_ID}/dns_records?type=CNAME&name=${name}")
-  local rid
   rid=$(echo "$existing" | python3 -c "import json,sys; d=json.load(sys.stdin); r=d.get('result') or []; print(r[0]['id'] if r else '')")
-  local body
-  body=$(python3 -c "import json; print(json.dumps({'type':'CNAME','name':'''${name}''','content':'''${content}''','ttl':1,'proxied':True}))")
+  body=$(NAME="$name" CONTENT="$content" python3 -c 'import json,os; print(json.dumps({"type":"CNAME","name":os.environ["NAME"],"content":os.environ["CONTENT"],"ttl":1,"proxied":True}))')
   if [[ -n "$rid" ]]; then
-    echo "update CNAME $name ($rid)"
-    curl -sS "${auth[@]}" -X PUT "${API}/zones/${ZONE_ID}/dns_records/${rid}" --data "$body" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('success'), d.get('errors'))"
+    RESP=$(curl -sS "${auth[@]}" -X PUT "${API}/zones/${ZONE_ID}/dns_records/${rid}" --data "$body")
   else
-    echo "create CNAME $name"
-    curl -sS "${auth[@]}" -X POST "${API}/zones/${ZONE_ID}/dns_records" --data "$body" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('success'), d.get('errors'))"
+    RESP=$(curl -sS "${auth[@]}" -X POST "${API}/zones/${ZONE_ID}/dns_records" --data "$body")
   fi
+  echo "CNAME $name => $(echo "$RESP" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('success'), d.get('errors'))")" | tee -a "$SUMMARY"
 }
+
 upsert_cname "blackway.ca"
 upsert_cname "www.blackway.ca"
 
-echo "== page rule: *blackway.ca/* → https://blackwayconnect.com/\$1 =="
-# Remove existing forward rules for blackway.ca to avoid duplicates
-EXISTING_RULES=$(curl -sS "${auth[@]}" "${API}/zones/${ZONE_ID}/pagerules")
-echo "$EXISTING_RULES" | python3 -c "import json,sys; d=json.load(sys.stdin); print('pagerules success', d.get('success'), 'count', len(d.get('result') or []))"
+PR_BODY='{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*blackway.ca/*"}}],"actions":[{"id":"forwarding_url","value":{"url":"https://blackwayconnect.com/$1","status_code":301}}],"priority":1,"status":"active"}'
+PR_RESP=$(curl -sS "${auth[@]}" -X POST "${API}/zones/${ZONE_ID}/pagerules" --data "$PR_BODY")
+echo "pagerule => $(echo "$PR_RESP" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('success'), d.get('errors') or d.get('result',{}).get('id'))")" | tee -a "$SUMMARY"
 
-# Create forwarding page rule
-PR_BODY='{
-  "targets": [{"target":"url","constraint":{"operator":"matches","value":"*blackway.ca/*"}}],
-  "actions": [{"id":"forwarding_url","value":{"url":"https://blackwayconnect.com/$1","status_code":301}}],
-  "priority": 1,
-  "status": "active"
-}'
-curl -sS "${auth[@]}" -X POST "${API}/zones/${ZONE_ID}/pagerules" --data "$PR_BODY" \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); print('pagerule success', d.get('success')); print(d.get('errors') or d.get('result',{}).get('id'))"
-
-echo "== try Workers custom domain bind (best-effort) =="
 for host in blackway.ca www.blackway.ca; do
-  curl -sS "${auth[@]}" -X PUT \
-    "${API}/accounts/${ACCOUNT_ID}/workers/domains" \
-    --data "{\"hostname\":\"${host}\",\"service\":\"blackway-site\",\"environment\":\"production\"}" \
-    | python3 -c "import json,sys; d=json.load(sys.stdin); print('${host}', d.get('success'), d.get('errors'))"
+  WRESP=$(curl -sS "${auth[@]}" -X PUT "${API}/accounts/${ACCOUNT_ID}/workers/domains" --data "{\"hostname\":\"${host}\",\"service\":\"blackway-site\",\"environment\":\"production\"}")
+  echo "workers domain $host => $(echo "$WRESP" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('success'), d.get('errors'))")" | tee -a "$SUMMARY"
 done
 
-echo "== dig =="
-dig +short A blackway.ca || true
-dig +short CNAME blackway.ca || true
-dig +short A www.blackway.ca || true
-echo DONE
+echo DONE | tee -a "$SUMMARY"
