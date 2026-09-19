@@ -19,7 +19,7 @@ Ce n’est **pas** un problème de Worker, ni de page-rule, ni de secret GitHub.
 | PR #22 Unblock Vorixa collection | **MERGED** |
 | Pack légal Paddle (ToS/Privacy/Refund) | **MERGED** + déployé Workers Builds |
 | Checkouts `.com` → `vorixa.ca/pricing` | **dans main** + Workers Builds ✅ |
-| Domaines approuvés Paddle (owner) | `.com` + `.ca` (approval ≠ DNS live) |
+| Domaines approuvés Paddle (owner confirmé) | `.com` + `.ca` **LOCK — ne pas resoumettre** (approval ≠ DNS live) |
 
 ## Action propriétaire — UNE seule (dans l’ordre)
 

@@ -60,7 +60,7 @@ vorixa.ca
 
 Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent être soumis séparément.
 
-**BlackWay domains :** `blackwayconnect.com` + `blackway.ca` déjà **approuvés Paddle** (owner). Canonical = `.com`. Checkouts site → `vorixa.ca/pricing`.
+**BlackWay domains Paddle :** `blackwayconnect.com` + `blackway.ca` = **APPROUVÉS** (owner confirmé). **Ne pas resoumettre.** Canonical = `.com`. Checkouts → `vorixa.ca/pricing`.
 
 **Vorixa domaine Paddle :** si encore en revue, laisser tourner — ne pas resoumettre en boucle.
 
