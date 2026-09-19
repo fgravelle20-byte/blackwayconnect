@@ -5,7 +5,9 @@
 > Les 4 Payment Links Managed Payments restent **actifs**.  
 > **Blocage virement Scotia :** Connect `acct_1Ti57RAGy4rgDDOf` (`9495-5457 Quebec Inc`) = `rejected.fraud` · `charges_enabled=false` · `payouts_enabled=false`.  
 > Action obligatoire propriétaire : formulaire Stripe **supportability rejection appeal** (deadline ~19 sept. 2026).  
-> Voir [`STATUS-LIVE.md`](./STATUS-LIVE.md). **Paddle n’est pas branché** dans ce dépôt — tout l’encaissement client est Stripe.
+> Voir [`STATUS-LIVE.md`](./STATUS-LIVE.md).  
+> **Ces 26 factures = Stripe** (Payment Links / invoices ouverts).  
+> **Nouveaux checkouts site BlackWay = Paddle** (`vorixa.ca/pricing`). Courriels prêts : [`COURRIELS-PRETS.md`](./COURRIELS-PRETS.md).
 
 Snapshot catalogue du 13 sept. 2026, compte Stripe **Vorixa** `acct_1TDZjzAG7HUL9Rtr`.
 

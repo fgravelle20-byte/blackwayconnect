@@ -1,6 +1,6 @@
 # Vorixa — statut encaissement (live)
 
-Vérifié via Stripe MCP le **19 septembre 2026** sur le compte plateforme **Vorixa** `acct_1TDZjzAG7HUL9Rtr` (livemode).
+Vérifié via Stripe MCP le **19 septembre 2026** (soir, re-check) sur le compte plateforme **Vorixa** `acct_1TDZjzAG7HUL9Rtr` (livemode).
 
 ## Preuve : l’argent n’est pas rentré
 
@@ -60,9 +60,16 @@ vorixa.ca
 
 Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent être soumis séparément.
 
-**Prochaine étape propriétaire (hors code) :** resoumettre `vorixa.ca` dans Paddle pour approbation site.
+**BlackWay domains :** `blackwayconnect.com` + `blackway.ca` déjà **approuvés Paddle** (owner). Canonical = `.com`. Checkouts site → `vorixa.ca/pricing`.
 
+**Vorixa domaine Paddle :** si encore en revue, laisser tourner — ne pas resoumettre en boucle.
 
+## Blocker Cloudflare (19 sept. soir)
+
+`blackway.ca` a les NS Cloudflare mais **aucun record DNS** → le domaine ne résout pas.  
+Le workflow Attach échoue parce que le secret GitHub **`CLOUDFLARE_API_TOKEN` est vide**.
+
+→ Guide : [`ops/cloudflare-secrets-blocker.md`](../cloudflare-secrets-blocker.md)
 
 ## Encaisser **maintenant** (côté clients — Stripe)
 
