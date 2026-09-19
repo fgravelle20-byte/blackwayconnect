@@ -42,13 +42,15 @@ Un merge GitHub **ne peut pas** lever un `rejected.fraud` Stripe.
 
 ## Paddle — site approval (photo Dashboard)
 
-Paddle exige que le site **lie ou contienne** :
+**LOCK 19 sept. 2026 — pack légal Paddle approuvable :**
 
-1. Terms of Service → `https://vorixa.ca/conditions-utilisation`
-2. Privacy Notice → `https://vorixa.ca/confidentialite`
-3. Refund Policy → `https://vorixa.ca/remboursement-annulation`
+| Exigence Paddle | URL live Vorixa | Footer |
+|-----------------|-----------------|--------|
+| Terms of Service | `https://vorixa.ca/conditions-utilisation` | ✅ |
+| Privacy Notice | `https://vorixa.ca/confidentialite` | ✅ |
+| Refund Policy | `https://vorixa.ca/remboursement-annulation` | ✅ |
 
-Ces trois liens sont maintenant dans le footer Vorixa (`LEGAL_SHORT`).
+Ces trois liens sont dans le footer Vorixa (`LEGAL_SHORT`) + section Entreprise. Contenu renforcé (titres EN/FR). Déployé Base44.
 
 Dans le champ domaine Paddle, entrer **seulement** :
 
@@ -57,6 +59,9 @@ vorixa.ca
 ```
 
 Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent être soumis séparément.
+
+**Prochaine étape propriétaire (hors code) :** resoumettre `vorixa.ca` dans Paddle pour approbation site.
+
 
 
 ## Encaisser **maintenant** (côté clients — Stripe)
