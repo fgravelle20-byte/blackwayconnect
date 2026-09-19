@@ -188,6 +188,7 @@ export function Layout() {
               <Link to={path("/contact")}>{t.nav.contact}</Link>
               <Link to={path("/confidentialite")}>{t.privacy}</Link>
               <Link to={path("/conditions")}>{t.terms}</Link>
+              <Link to={path("/remboursement")}>{t.refund}</Link>
             </nav>
           </div>
 

@@ -566,21 +566,46 @@ export function MerciPage() {
 }
 
 export function PrivacyPage() {
-  const { t } = useLang();
+  const { t, path } = useLang();
   return (
     <div className="shell legal">
       <h1>{t.privacy}</h1>
       <p>{t.privacyBody}</p>
+      <p>
+        <Link to={path("/conditions")}>{t.terms}</Link>
+        {" · "}
+        <Link to={path("/remboursement")}>{t.refund}</Link>
+      </p>
     </div>
   );
 }
 
 export function TermsPage() {
-  const { t } = useLang();
+  const { t, path } = useLang();
   return (
     <div className="shell legal">
       <h1>{t.terms}</h1>
       <p>{t.termsBody}</p>
+      <p>
+        <Link to={path("/confidentialite")}>{t.privacy}</Link>
+        {" · "}
+        <Link to={path("/remboursement")}>{t.refund}</Link>
+      </p>
+    </div>
+  );
+}
+
+export function RefundPage() {
+  const { t, path } = useLang();
+  return (
+    <div className="shell legal">
+      <h1>{t.refund}</h1>
+      <p>{t.refundBody}</p>
+      <p>
+        <Link to={path("/confidentialite")}>{t.privacy}</Link>
+        {" · "}
+        <Link to={path("/conditions")}>{t.terms}</Link>
+      </p>
     </div>
   );
 }

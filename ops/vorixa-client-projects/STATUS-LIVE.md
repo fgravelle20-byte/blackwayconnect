@@ -40,19 +40,24 @@ Les factures clients encaissent sur le **compte plateforme**. Tant que l’appel
 
 Un merge GitHub **ne peut pas** lever un `rejected.fraud` Stripe.
 
-## Paddle
+## Paddle — site approval (photo Dashboard)
 
-Il n’y a **aucune** intégration Paddle dans `blackwayconnect` ni dans les liens des 26 projets (tous `buy.stripe.com` / factures Stripe).
+Paddle exige que le site **lie ou contienne** :
 
-Pour router l’encaissement **vers Paddle** il faut, dans l’ordre :
+1. Terms of Service → `https://vorixa.ca/conditions-utilisation`
+2. Privacy Notice → `https://vorixa.ca/confidentialite`
+3. Refund Policy → `https://vorixa.ca/remboursement-annulation`
 
-1. Compte vendeur Paddle (seller) actif + API key / client token.
-2. Créer les produits / prix CAD (499 / 999 / 1500 / 3000 + one-off).
-3. Générer les pay links / checkout Paddle par client.
-4. Remplacer les URLs dans `ops/vorixa-client-projects/` + Base44 Vorixa.
-5. Confirmer explicitement la bascule (Stripe reste live tant que ce n’est pas fait).
+Ces trois liens sont maintenant dans le footer Vorixa (`LEGAL_SHORT`).
 
-Sans credentials Paddle, un agent ne peut pas encaisser sur Paddle.
+Dans le champ domaine Paddle, entrer **seulement** :
+
+```
+vorixa.ca
+```
+
+Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent être soumis séparément.
+
 
 ## Encaisser **maintenant** (côté clients — Stripe)
 

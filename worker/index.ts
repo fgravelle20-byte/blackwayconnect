@@ -109,6 +109,8 @@ function mobileBootstrap(env: Env) {
       pricingCellulaire: `${SITE_ORIGIN}/forfaits-cellulaire`,
       contact: `${SITE_ORIGIN}/contact`,
       privacy: `${SITE_ORIGIN}/confidentialite`,
+      terms: `${SITE_ORIGIN}/conditions`,
+      refund: `${SITE_ORIGIN}/remboursement`,
       thankYou: `${SITE_ORIGIN}/portail`,
       portal: `${SITE_ORIGIN}/portail`,
       growHub: `${SITE_ORIGIN}/grow-hub`,

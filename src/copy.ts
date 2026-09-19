@@ -114,8 +114,10 @@ export type Copy = {
   footerQrHint: string;
   privacy: string;
   terms: string;
+  refund: string;
   privacyBody: string;
   termsBody: string;
+  refundBody: string;
 };
 
 export const copy: Record<Lang, Copy> = {
@@ -408,12 +410,15 @@ export const copy: Record<Lang, Copy> = {
     footer: "Du lead au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
-    privacy: "Confidentialité",
-    terms: "Conditions",
+    privacy: "Confidentialité (Privacy Notice)",
+    terms: "Conditions (Terms of Service)",
+    refund: "Remboursement (Refund Policy)",
     privacyBody:
-      "BlackWayConnect traite les données de contact pour répondre à vos demandes et opérer le Grow Hub. Aucune vente de listes. Contact : serviceclient@blackwayconnect.com.",
+      "Privacy Notice — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Stripe). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
     termsBody:
-      "Les services sont fournis selon les forfaits convenus. Les montants sont en CAD sauf indication contraire. BlackWayConnect Inc., Canada.",
+      "Terms of Service — L'utilisation du site et des services BlackWayConnect implique l'acceptation des présentes conditions, de la Privacy Notice et de la Refund Policy. Les services sont fournis selon les forfaits convenus ; montants en CAD sauf indication contraire. Usage interdit à des fins illégales ou abusives. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact : serviceclient@blackwayconnect.com.",
+    refundBody:
+      "Refund Policy — Vous pouvez annuler un abonnement selon les modalités de l'offre ; l'accès demeure en général jusqu'à la fin de la période déjà payée. Les frais déjà engagés ne sont pas automatiquement remboursables ; chaque demande est évaluée selon la loi applicable (incluant la protection du consommateur au Québec/Canada) et les services fournis. Demande : serviceclient@blackwayconnect.com (idéalement sous 14 jours) avec date, montant et référence de transaction.",
   },
   en: {
     brand: "BlackWayConnect",
@@ -704,11 +709,14 @@ export const copy: Record<Lang, Copy> = {
     footer: "From lead to revenue. One connected growth system.",
     footerQrTitle: "Client portal",
     footerQrHint: "Scan to open the Client Master Portal — included with your plan.",
-    privacy: "Privacy",
-    terms: "Terms",
+    privacy: "Privacy Notice",
+    terms: "Terms of Service",
+    refund: "Refund Policy",
     privacyBody:
-      "BlackWayConnect processes contact data to answer requests and operate Grow Hub. No list selling. Contact: serviceclient@blackwayconnect.com.",
+      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Stripe). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
     termsBody:
-      "Services are delivered per agreed plans. Amounts are CAD unless stated otherwise. BlackWayConnect Inc., Canada.",
+      "Terms of Service — Use of the BlackWayConnect site and services means you accept these Terms, the Privacy Notice and the Refund Policy. Services are delivered per agreed plans; amounts are CAD unless stated otherwise. Illegal or abusive use is prohibited. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact: serviceclient@blackwayconnect.com.",
+    refundBody:
+      "Refund Policy — You may cancel a subscription per the offer terms; access usually continues through the paid period. Fees already charged are not automatically refundable; each request is reviewed under applicable law (including Québec/Canada consumer protection) and services delivered. Request: serviceclient@blackwayconnect.com (ideally within 14 days) with date, amount and transaction reference.",
   },
 };
