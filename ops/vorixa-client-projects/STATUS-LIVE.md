@@ -60,19 +60,12 @@ vorixa.ca
 
 Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent être soumis séparément.
 
-**BlackWay domains Paddle :** `blackwayconnect.com` + `blackway.ca` = **APPROUVÉS** (owner confirmé). **Ne pas resoumettre.** Canonical = `.com`. Checkouts → `vorixa.ca/pricing`.
+**BlackWay domaine Paddle :** `blackwayconnect.com` = **APPROUVÉ**. Canonical = `.com`. Checkouts → `vorixa.ca/pricing`.
 
 **Vorixa domaine Paddle :** si encore en revue, laisser tourner — ne pas resoumettre en boucle.
 
-## Blocker #1 — blackway.ca = NXDOMAIN (19 sept. soir)
-
-`dig @8.8.8.8 blackway.ca NS` → **NXDOMAIN** (domaine absent du registre .ca).
-
-→ **UNE action :** [`ops/blackway-ca-nxdomain.md`](../blackway-ca-nxdomain.md)  
-(renouveler/restaurer au registraire, puis DNS+301. Ne pas mélanger avec autre chose.)
-
 PR #22 **MERGED**. Workers Builds `blackway-site` / `pipe` / `sentinel` = **success** sur `main`.  
-Checkouts Paddle sur `.com` = live. Token Actions CF invalide = secondaire (seulement pour script Attach).
+Checkouts Paddle sur `.com` = live.
 
 ## Encaisser **maintenant** (côté clients — Stripe)
 

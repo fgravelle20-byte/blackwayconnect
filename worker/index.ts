@@ -247,12 +247,6 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // blackway.ca → blackwayconnect.com (both Paddle-approved; one canonical BlackWay host).
-    if (url.hostname === "blackway.ca" || url.hostname === "www.blackway.ca") {
-      url.hostname = "blackwayconnect.com";
-      return Response.redirect(url.toString(), 301);
-    }
-
     // Force canonical host (www → apex) if somehow hit on www via this worker
     if (url.hostname === "www.blackwayconnect.com") {
       url.hostname = "blackwayconnect.com";
