@@ -37,3 +37,5 @@ echo "== DNS check =="
 dig +short A blackway.ca || true
 dig +short A www.blackway.ca || true
 echo "Done. Expect Cloudflare anycast A records within ~1–2 min."
+
+# trigger: attach on merge to main

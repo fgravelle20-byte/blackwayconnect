@@ -2,6 +2,11 @@ name: Attach blackway.ca to blackway-site
 
 on:
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/attach-blackway-ca.yml"
+      - "scripts/attach-blackway-ca.sh"
 
 jobs:
   attach:
