@@ -106,8 +106,8 @@ export const PLAN_ORDER: PlanKey[] = [
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
 /**
- * BlackWay site checkouts are routed to Vorixa/Paddle while Stripe Connect
- * payouts are blocked (rejected.fraud / multi-account cleanup).
+ * BlackWay domains are Paddle-approved. Site checkouts use the live Paddle
+ * storefront on vorixa.ca until dedicated BlackWay Paddle prices exist.
  */
 export const PADDLE_STOREFRONT = "https://vorixa.ca/pricing";
 
