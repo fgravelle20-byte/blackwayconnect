@@ -1,6 +1,13 @@
 # Projets clients Vorixa — encaissement
 
-Snapshot live du 13 sept. 2026, compte Stripe **Vorixa** `acct_1TDZjzAG7HUL9Rtr`.
+> **AUDIT LIVE 19 sept. 2026** — preuve confirmée sur Stripe `acct_1TDZjzAG7HUL9Rtr` :  
+> **26 factures `open` · 27 093,83 $ CAD dû · 0 $ payé · solde plateforme −0,66 $ CAD.**  
+> Les 4 Payment Links Managed Payments restent **actifs**.  
+> **Blocage virement Scotia :** Connect `acct_1Ti57RAGy4rgDDOf` (`9495-5457 Quebec Inc`) = `rejected.fraud` · `charges_enabled=false` · `payouts_enabled=false`.  
+> Action obligatoire propriétaire : formulaire Stripe **supportability rejection appeal** (deadline ~19 sept. 2026).  
+> Voir [`STATUS-LIVE.md`](./STATUS-LIVE.md). **Paddle n’est pas branché** dans ce dépôt — tout l’encaissement client est Stripe.
+
+Snapshot catalogue du 13 sept. 2026, compte Stripe **Vorixa** `acct_1TDZjzAG7HUL9Rtr`.
 
 **69 customers Stripe ≠ 69 clients qui vont payer.**  
 43 sont des comptes internes / tests (surtout `f.gravelle20@icloud.com`).  

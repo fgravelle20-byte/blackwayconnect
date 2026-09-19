@@ -38,7 +38,26 @@
       "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
       "plink_1UCmBKAG7HUL9RtrFzh2ZDB1"
     ],
-    "managed_payments": "Les 4 liens de plan Vorixa du 31 août ne se réactivent pas (aucun moyen de paiement valide sur ces objets). Remplacés le 13 sept. 2026 par des Payment Links Managed Payments (actifs). Les 6 liens Grow Hub ont été réactivés le même jour."
+    "managed_payments": "Les 4 liens de plan Vorixa du 31 août ne se réactivent pas (aucun moyen de paiement valide sur ces objets). Remplacés le 13 sept. 2026 par des Payment Links Managed Payments (actifs). Les 6 liens Grow Hub ont été réactivés le même jour.",
+    "live_audit": {
+      "audited_at": "2026-09-19",
+      "open_invoices": 26,
+      "amount_due_cad": 27093.83,
+      "amount_paid_cad": 0,
+      "platform_balance_available_cad": -0.66,
+      "payment_links_still_active": true,
+      "connect_fraud_block": {
+        "account": "acct_1Ti57RAGy4rgDDOf",
+        "business": "9495-5457 Quebec Inc",
+        "disabled_reason": "rejected.fraud",
+        "charges_enabled": false,
+        "payouts_enabled": false,
+        "bank": "THE BANK OF NOVA SCOTIA ····3617",
+        "required": "supportability_rejection_appeal.form",
+        "note": "GitHub cannot lift this. Owner must appeal in Stripe Dashboard."
+      },
+      "paddle": "not_integrated_in_repo"
+    }
   },
   "projects": [
     {
