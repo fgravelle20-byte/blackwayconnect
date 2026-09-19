@@ -46,6 +46,7 @@ Vorixa
 ## VX-PRJ-23 — Atelier J.Fred — 499 $ CAD
 
 **À :** atelierjfred@gmail.com  
+**Tél :** +1 450-278-5702  
 **Objet :** Paiement Vorixa 499 $ — lien sécurisé
 
 Bonjour,
