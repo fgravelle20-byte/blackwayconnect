@@ -35,11 +35,19 @@ fi
 auth=(-H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json")
 
 echo "== verify token =="
-VERIFY=$(curl -sS --max-time 30 "${auth[@]}" "${API}/user/tokens/verify" || echo '{"success":false,"errors":[{"message":"curl failed"}]}')
-section "token verify"
+# Account-owned tokens (dash .../api-tokens/create) verify on /accounts/{id}/tokens/verify.
+# User tokens (profile/api-tokens) verify on /user/tokens/verify. Try account first.
+VERIFY=$(curl -sS --max-time 30 "${auth[@]}" "${API}/accounts/${ACCOUNT_ID}/tokens/verify" || echo '{"success":false,"errors":[{"message":"curl failed"}]}')
+VERIFY_KIND="account"
+VERIFY_OK=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))" 2>/dev/null || echo false)
+if [[ "$VERIFY_OK" != "True" && "$VERIFY_OK" != "true" ]]; then
+  VERIFY=$(curl -sS --max-time 30 "${auth[@]}" "${API}/user/tokens/verify" || echo '{"success":false,"errors":[{"message":"curl failed"}]}')
+  VERIFY_KIND="user"
+  VERIFY_OK=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))" 2>/dev/null || echo false)
+fi
+section "token verify (${VERIFY_KIND})"
 echo "$VERIFY" | python3 -m json.tool 2>/dev/null | tee -a "$SUMMARY" || echo "$VERIFY" | tee -a "$SUMMARY"
 endsec
-VERIFY_OK=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))" 2>/dev/null || echo false)
 if [[ "$VERIFY_OK" != "True" && "$VERIFY_OK" != "true" ]]; then
   ERR_MSG=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); errs=d.get('errors') or []; print(errs[0].get('message') if errs else d)" 2>/dev/null || echo "$VERIFY")
   echo "::error::Cloudflare token verify failed — ${ERR_MSG}"
@@ -48,6 +56,7 @@ if [[ "$VERIFY_OK" != "True" && "$VERIFY_OK" != "true" ]]; then
   sum "verify error: ${ERR_MSG}"
   exit 1
 fi
+sum "- token verify: OK via ${VERIFY_KIND} endpoint"
 
 echo "== list zones =="
 ZONES=$(curl -sS --max-time 30 "${auth[@]}" "${API}/zones?per_page=50" || echo '{"success":false,"result":[]}')
