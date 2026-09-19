@@ -87,10 +87,32 @@ print((zs[0].get("account") or {}).get("id","") if zs else "")
 ACCOUNT_ID="${ACCOUNT_ID:-$ACCOUNT_FROM_ZONE}"
 
 if [[ -z "$ZONE_ID" ]]; then
-  echo "::error::zone blackway.ca not found under this API token"
-  sum "**FATAL: blackway.ca zone not found**"
-  sum "NS are already Cloudflare (quincy/lana). Add the zone to this account or grant the token Zone:Read + Zone:DNS:Edit on blackway.ca."
-  exit 1
+  echo "== create zone blackway.ca (missing) =="
+  CREATE=$(curl -sS --max-time 60 "${auth[@]}" -X POST "${API}/zones" \
+    --data "{\"name\":\"blackway.ca\",\"account\":{\"id\":\"${ACCOUNT_ID}\"},\"jump_start\":false,\"type\":\"full\"}" \
+    || echo '{"success":false,"errors":[{"message":"curl failed"}]}')
+  section "create zone"
+  echo "$CREATE" | python3 -m json.tool 2>/dev/null | tee -a "$SUMMARY" || echo "$CREATE" | tee -a "$SUMMARY"
+  endsec
+  ZONE_ID=$(echo "$CREATE" | python3 -c "import json,sys; d=json.load(sys.stdin); print((d.get('result') or {}).get('id') or '')" 2>/dev/null || true)
+  CREATE_OK=$(echo "$CREATE" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))" 2>/dev/null || echo false)
+  if [[ -z "$ZONE_ID" || ( "$CREATE_OK" != "True" && "$CREATE_OK" != "true" ) ]]; then
+    ERR_MSG=$(echo "$CREATE" | python3 -c "import json,sys; d=json.load(sys.stdin); errs=d.get('errors') or []; print(errs[0].get('message') if errs else d)" 2>/dev/null || echo "$CREATE")
+    echo "::error::cannot create/find zone blackway.ca — ${ERR_MSG}"
+    sum "**FATAL: blackway.ca zone missing and create failed**"
+    sum "Public DNS is NXDOMAIN (domaine absent/expiré au registre .ca)."
+    sum "Owner action: restaurer/renouveler blackway.ca chez le registraire, pointer NS Cloudflare, puis re-run Attach."
+    sum "create error: ${ERR_MSG}"
+    exit 1
+  fi
+  sum "- created zone blackway.ca id=$ZONE_ID"
+  # refresh zone list name servers for the summary
+  ZDETAIL=$(curl -sS --max-time 30 "${auth[@]}" "${API}/zones/${ZONE_ID}" || echo '{}')
+  echo "$ZDETAIL" | python3 -c '
+import json,sys
+d=json.load(sys.stdin).get("result") or {}
+print("status", d.get("status"), "ns", ",".join(d.get("name_servers") or []))
+' | tee -a "$SUMMARY"
 fi
 
 sum "ZONE_ID=$ZONE_ID ACCOUNT_ID=$ACCOUNT_ID"
@@ -176,9 +198,3 @@ fi
 
 sum "**PARTIAL FAILURE** — see CNAME/pagerule lines above."
 exit 1
-
-# re-run attach after CLOUDFLARE_API_TOKEN update (2026-09-19T20:21:25Z)
-
-# token check 2026-09-19T20:26:00Z
-
-# secret updated by owner 2026-09-19T20:35:59Z
