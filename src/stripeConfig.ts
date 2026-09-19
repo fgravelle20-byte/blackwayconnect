@@ -105,15 +105,33 @@ export const PLAN_ORDER: PlanKey[] = [
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
-/** Public Checkout URLs for `/api/config` and mobile bootstrap. */
+/**
+ * BlackWay site checkouts are routed to Vorixa/Paddle while Stripe Connect
+ * payouts are blocked (rejected.fraud / multi-account cleanup).
+ */
+export const PADDLE_STOREFRONT = "https://vorixa.ca/pricing";
+
+function paddleCheckoutUrl(plan: PlanKey): string {
+  const url = new URL(PADDLE_STOREFRONT);
+  url.searchParams.set("bw_from", "blackwayconnect");
+  url.searchParams.set("bw_plan", plan);
+  url.searchParams.set("utm_source", "blackwayconnect_site");
+  url.searchParams.set("utm_medium", "checkout_paddle");
+  url.searchParams.set("utm_campaign", plan);
+  return url.toString();
+}
+
+/** Public Checkout URLs for `/api/config` and mobile bootstrap — Paddle handoff. */
 export const CHECKOUT_LINKS = {
-  grow_hub_spark: PLANS.grow_hub_spark.paymentLink,
-  grow_hub_launch: PLANS.grow_hub_launch.paymentLink,
-  grow_hub_growth: PLANS.grow_hub_growth.paymentLink,
-  grow_hub_scale: PLANS.grow_hub_scale.paymentLink,
-  grow_hub_command: PLANS.grow_hub_command.paymentLink,
-  grow_hub_partner: PLANS.grow_hub_partner.paymentLink,
+  grow_hub_spark: paddleCheckoutUrl("grow_hub_spark"),
+  grow_hub_launch: paddleCheckoutUrl("grow_hub_launch"),
+  grow_hub_growth: paddleCheckoutUrl("grow_hub_growth"),
+  grow_hub_scale: paddleCheckoutUrl("grow_hub_scale"),
+  grow_hub_command: paddleCheckoutUrl("grow_hub_command"),
+  grow_hub_partner: paddleCheckoutUrl("grow_hub_partner"),
   currency: "cad" as const,
+  processor: "paddle" as const,
+  storefront: PADDLE_STOREFRONT,
 };
 
 /**
@@ -151,22 +169,14 @@ export function checkoutUrl(
   plan: PlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ) {
-  const link = PLANS[plan].paymentLink;
-  if (!link) {
-    const path = opts.lang === "en" ? "/en/contact" : "/contact";
-    return `https://blackwayconnect.com${path}?forfait=${plan}`;
-  }
-  const url = new URL(link);
+  const url = new URL(paddleCheckoutUrl(plan));
   const source = opts.source || "site_web";
   url.searchParams.set("client_reference_id", `${source}:${plan}`);
-  url.searchParams.set("utm_source", "blackwayconnect_site");
-  url.searchParams.set("utm_medium", "checkout");
-  url.searchParams.set("utm_campaign", plan);
   if (opts.content) url.searchParams.set("utm_content", opts.content);
   if (opts.lang) url.searchParams.set("locale", opts.lang === "fr" ? "fr-CA" : "en-CA");
   return url.toString();
 }
 
-export function isCheckoutReady(plan: PlanKey): boolean {
-  return !!PLANS[plan].paymentLink;
+export function isCheckoutReady(_plan: PlanKey): boolean {
+  return true;
 }

@@ -247,10 +247,25 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    // blackway.ca → Vorixa/Paddle (encaissement actif). Unify the two BlackWay domains.
+    if (url.hostname === "blackway.ca" || url.hostname === "www.blackway.ca") {
+      return Response.redirect("https://vorixa.ca/", 301);
+    }
+
     // Force canonical host (www → apex) if somehow hit on www via this worker
     if (url.hostname === "www.blackwayconnect.com") {
       url.hostname = "blackwayconnect.com";
       return Response.redirect(url.toString(), 301);
+    }
+
+    // Explicit Paddle handoff paths on the .com site
+    if (
+      url.pathname === "/paddle" ||
+      url.pathname === "/acheter" ||
+      url.pathname === "/checkout" ||
+      url.pathname === "/encaisser"
+    ) {
+      return Response.redirect("https://vorixa.ca/pricing", 302);
     }
 
     if (request.method === "OPTIONS" && url.pathname.startsWith("/api/")) {
