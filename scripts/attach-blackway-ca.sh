@@ -167,3 +167,5 @@ fi
 
 sum "**PARTIAL FAILURE** — see CNAME/pagerule lines above."
 exit 1
+
+# re-run attach after CLOUDFLARE_API_TOKEN update (2026-09-19T20:21:25Z)
