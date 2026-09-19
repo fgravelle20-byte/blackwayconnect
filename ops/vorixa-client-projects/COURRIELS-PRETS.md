@@ -26,6 +26,7 @@ Vorixa / BlackWay Connect
 ## VX-PRJ-08 — Protech Construction — 1 500 $ CAD
 
 **À :** info@protechconstruction.ca  
+**Tél :** +1 450-929-0613  
 **Objet :** Paiement Vorixa 1 500 $ — lien sécurisé
 
 Bonjour,

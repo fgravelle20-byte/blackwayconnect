@@ -64,12 +64,12 @@ Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent êt
 
 **Vorixa domaine Paddle :** si encore en revue, laisser tourner — ne pas resoumettre en boucle.
 
-## Blocker Cloudflare (19 sept. soir)
+## Blocker Cloudflare (19 sept. soir — PR #28)
 
 `blackway.ca` a les NS Cloudflare mais **aucun record DNS** → le domaine ne résout pas.  
-Le workflow Attach échoue parce que le secret GitHub **`CLOUDFLARE_API_TOKEN` est vide**.
+Secret Actions `CLOUDFLARE_API_TOKEN` est **présent mais invalide** (`tokens/verify` fail → Attach + Deploy KO).
 
-→ Guide : [`ops/cloudflare-secrets-blocker.md`](../cloudflare-secrets-blocker.md)
+→ Guide : [`ops/cloudflare-secrets-blocker.md`](../cloudflare-secrets-blocker.md) — **régénérer le token** ou Dash CNAME+301.
 
 ## Encaisser **maintenant** (côté clients — Stripe)
 
