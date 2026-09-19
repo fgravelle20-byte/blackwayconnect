@@ -18,3 +18,10 @@ Zone `blackway.ca` a déjà les NS Cloudflare. Attacher custom domains au Worker
 ## Paths Paddle sur .com
 
 `/paddle` `/acheter` `/checkout` `/encaisser` → `https://vorixa.ca/pricing`
+
+## Wrangler routes
+
+Production `wrangler.jsonc` binds **only** `blackwayconnect.com` until `blackway.ca` is attached as a Worker custom domain.
+
+Worker code still 301s `blackway.ca` → `.com` once DNS/custom domain points at `blackway-site`.
+Use `scripts/attach-blackway-ca.sh` (needs `CLOUDFLARE_API_TOKEN`) then re-add zone routes if desired.

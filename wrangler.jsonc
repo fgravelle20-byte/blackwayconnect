@@ -21,11 +21,7 @@
   "workers_dev": true,
   "routes": [
     { "pattern": "blackwayconnect.com", "custom_domain": true },
-    { "pattern": "blackwayconnect.com/*", "zone_name": "blackwayconnect.com" },
-    { "pattern": "blackway.ca", "custom_domain": true },
-    { "pattern": "blackway.ca/*", "zone_name": "blackway.ca" },
-    { "pattern": "www.blackway.ca", "custom_domain": true },
-    { "pattern": "www.blackway.ca/*", "zone_name": "blackway.ca" }
+    { "pattern": "blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
   ],
   "ai": {
     "binding": "AI"
