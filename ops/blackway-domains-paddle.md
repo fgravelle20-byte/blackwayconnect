@@ -7,14 +7,12 @@
 - `blackway.ca` / `www.blackway.ca` → **301** vers `blackwayconnect.com` (même path)
 - Checkouts site : storefront Paddle `https://vorixa.ca/pricing` (catalogue Paddle live) jusqu’à catalogue Grow Hub dédié côté Paddle
 
-## Cloudflare (blocker actif)
+## Cloudflare — `blackway.ca`
 
-Zone `blackway.ca` a déjà les NS Cloudflare (`quincy` / `lana`) mais **apex/www sans records** → NXDOMAIN.
+**2026-09-19 :** `dig blackway.ca` = **NXDOMAIN** (registre .ca).  
+Voir [`ops/blackway-ca-nxdomain.md`](./blackway-ca-nxdomain.md) — restaurer le domaine **avant** tout Attach/DNS.
 
-**Cause :** secret Actions `CLOUDFLARE_API_TOKEN` **présent mais invalide** (`tokens/verify` fail sur run [35456045771](https://github.com/fgravelle20-byte/blackwayconnect/actions/runs/35456045771)).
-
-**Fix :** voir [`ops/cloudflare-secrets-blocker.md`](./cloudflare-secrets-blocker.md)  
-(Option A = régénérer token + Run Attach ; Option B = Dash manuel CNAME + 301).
+Secondaire : secret Actions `CLOUDFLARE_API_TOKEN` invalide → [`ops/cloudflare-secrets-blocker.md`](./cloudflare-secrets-blocker.md).
 
 ## Paths Paddle sur .com
 

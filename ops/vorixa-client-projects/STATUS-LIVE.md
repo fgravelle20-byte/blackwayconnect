@@ -64,12 +64,15 @@ Pas `https://`, pas `www.`, pas de chemin de page. Les sous-domaines doivent êt
 
 **Vorixa domaine Paddle :** si encore en revue, laisser tourner — ne pas resoumettre en boucle.
 
-## Blocker Cloudflare (19 sept. soir — PR #28)
+## Blocker #1 — blackway.ca = NXDOMAIN (19 sept. soir)
 
-`blackway.ca` a les NS Cloudflare mais **aucun record DNS** → le domaine ne résout pas.  
-Secret Actions `CLOUDFLARE_API_TOKEN` est **présent mais invalide** (`tokens/verify` fail → Attach + Deploy KO).
+`dig @8.8.8.8 blackway.ca NS` → **NXDOMAIN** (domaine absent du registre .ca).
 
-→ Guide : [`ops/cloudflare-secrets-blocker.md`](../cloudflare-secrets-blocker.md) — **régénérer le token** ou Dash CNAME+301.
+→ **UNE action :** [`ops/blackway-ca-nxdomain.md`](../blackway-ca-nxdomain.md)  
+(renouveler/restaurer au registraire, puis DNS+301. Ne pas mélanger avec autre chose.)
+
+PR #22 **MERGED**. Workers Builds `blackway-site` / `pipe` / `sentinel` = **success** sur `main`.  
+Checkouts Paddle sur `.com` = live. Token Actions CF invalide = secondaire (seulement pour script Attach).
 
 ## Encaisser **maintenant** (côté clients — Stripe)
 
