@@ -7,13 +7,14 @@
 - `blackway.ca` / `www.blackway.ca` → **301** vers `blackwayconnect.com` (même path)
 - Checkouts site : storefront Paddle `https://vorixa.ca/pricing` (catalogue Paddle live) jusqu’à catalogue Grow Hub dédié côté Paddle
 
-## Cloudflare (à attacher si pas déjà fait)
+## Cloudflare (blocker actif)
 
-Zone `blackway.ca` a déjà les NS Cloudflare. Attacher custom domains au Worker `blackway-site` :
+Zone `blackway.ca` a déjà les NS Cloudflare (`quincy` / `lana`) mais **apex/www sans records** → NXDOMAIN.
 
-1. Dash → Workers → `blackway-site` → Domains
-2. Add `blackway.ca` + `www.blackway.ca`
-3. Deploy cette branche
+**Cause :** secret Actions `CLOUDFLARE_API_TOKEN` vide → `scripts/attach-blackway-ca.sh` abort.
+
+**Fix :** voir [`ops/cloudflare-secrets-blocker.md`](./cloudflare-secrets-blocker.md)  
+(Option A = set secrets + Run workflow Attach ; Option B = Dash manuel CNAME + 301).
 
 ## Paths Paddle sur .com
 
