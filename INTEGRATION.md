@@ -1,5 +1,11 @@
 # BlackWayConnect — revenue plumbing
 
+> **2026-09-19 — Paddle cutover (BlackWay domains approved):**  
+> `blackwayconnect.com` + `blackway.ca` are Paddle-approved. Canonical host = `.com`.  
+> `.ca` 301 → `.com`. Site checkouts → `https://vorixa.ca/pricing` (Paddle MoR).  
+> Stripe Grow Hub plinks remain in catalog for webhook legacy only.
+
+
 Marketing site (`blackway-site`) ↔ `blackway-pipe` (`api.blackwayconnect.com`) ↔ HubSpot ↔ mobile app (Base44).
 
 ## Live endpoints
