@@ -11,10 +11,10 @@
 
 Zone `blackway.ca` a déjà les NS Cloudflare (`quincy` / `lana`) mais **apex/www sans records** → NXDOMAIN.
 
-**Cause :** secret Actions `CLOUDFLARE_API_TOKEN` vide → `scripts/attach-blackway-ca.sh` abort.
+**Cause :** secret Actions `CLOUDFLARE_API_TOKEN` **présent mais invalide** (`tokens/verify` fail sur run [35456045771](https://github.com/fgravelle20-byte/blackwayconnect/actions/runs/35456045771)).
 
 **Fix :** voir [`ops/cloudflare-secrets-blocker.md`](./cloudflare-secrets-blocker.md)  
-(Option A = set secrets + Run workflow Attach ; Option B = Dash manuel CNAME + 301).
+(Option A = régénérer token + Run Attach ; Option B = Dash manuel CNAME + 301).
 
 ## Paths Paddle sur .com
 

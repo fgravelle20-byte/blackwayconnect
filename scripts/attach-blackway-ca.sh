@@ -41,8 +41,11 @@ echo "$VERIFY" | python3 -m json.tool 2>/dev/null | tee -a "$SUMMARY" || echo "$
 endsec
 VERIFY_OK=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))" 2>/dev/null || echo false)
 if [[ "$VERIFY_OK" != "True" && "$VERIFY_OK" != "true" ]]; then
-  echo "::error::Cloudflare token verify failed"
-  sum "**FATAL: token verify failed** — regenerate API token with Zone DNS Edit on blackway.ca"
+  ERR_MSG=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); errs=d.get('errors') or []; print(errs[0].get('message') if errs else d)" 2>/dev/null || echo "$VERIFY")
+  echo "::error::Cloudflare token verify failed — ${ERR_MSG}"
+  sum "**FATAL: token verify failed**"
+  sum "Le secret existe mais le token est invalide/expiré. Régénérer \`CLOUDFLARE_API_TOKEN\` (voir ops/cloudflare-secrets-blocker.md)."
+  sum "verify error: ${ERR_MSG}"
   exit 1
 fi
 
