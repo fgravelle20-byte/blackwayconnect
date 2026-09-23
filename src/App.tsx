@@ -18,6 +18,7 @@ import {
 import { DiagnosticPage } from "./pages/DiagnosticPage";
 import { ToolsPage } from "./pages/ToolsPage";
 import { PortalPage } from "./pages/PortalPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
 import { AppPlansPage } from "./pages/AppPlansPage";
 import { CellulairePlansPage } from "./pages/CellulairePlansPage";
 import { GrowthLandingPage } from "./pages/GrowthLandingPage";
@@ -84,6 +85,7 @@ function routes(prefix = "") {
       <Route path="diagnostic" element={<DiagnosticPage />} />
       <Route path="score" element={<Navigate to="diagnostic" replace />} />
       <Route path="portail" element={<PortalPage />} />
+      <Route path="payer" element={<CheckoutPage />} />
       <Route path="portal" element={<PortalPage />} />
       <Route path="equipe" element={<TeamPage />} />
       <Route path="qui-sommes-nous" element={<MissionPage />} />
