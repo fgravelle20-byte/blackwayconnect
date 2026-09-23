@@ -1,3 +1,5 @@
+import { paddlePlanUrl } from "./paddleCatalog";
+
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
  * Distinct from Grow Hub web (Type A). Same Portail / HubSpot can hold both.
@@ -146,22 +148,9 @@ export function cellulaireCheckoutUrl(
   plan: CellulairePlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ): string {
-  const link = CELLULAIRE_PLANS[plan].paymentLink;
-  if (!link) {
-    const path = opts.lang === "en" ? "/en/contact" : "/contact";
-    return `https://blackwayconnect.com${path}?forfait=${plan}&bw_source=cellulaire`;
-  }
-  const url = new URL(link);
-  const source = opts.source || "cellulaire";
-  url.searchParams.set("client_reference_id", `${source}:${plan}`);
-  url.searchParams.set("utm_source", "blackwayconnect_cellulaire");
-  url.searchParams.set("utm_medium", "checkout");
-  url.searchParams.set("utm_campaign", plan);
-  if (opts.content) url.searchParams.set("utm_content", opts.content);
-  if (opts.lang) url.searchParams.set("locale", opts.lang === "fr" ? "fr-CA" : "en-CA");
-  return url.toString();
+  return paddlePlanUrl(plan, opts);
 }
 
 export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
-  return !!CELLULAIRE_PLANS[plan].paymentLink;
+  return !!plan;
 }
