@@ -35,7 +35,7 @@ export function CheckoutPage() {
   const plan = params.get("plan") || "";
   const valid = isPaddlePlanKey(plan);
   useEffect(() => {
-    if (!valid) return;
+    if (!isPaddlePlanKey(plan)) return;
     let cancelled = false;
     const open = async () => {
       try {
