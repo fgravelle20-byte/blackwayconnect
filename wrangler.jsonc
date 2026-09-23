@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "blackway-site",
+  "account_id": "eda7fc96b400297aaa0b185a26ad1846",
   "compatibility_date": "2026-08-05",
   "main": "./worker/index.ts",
   "assets": {

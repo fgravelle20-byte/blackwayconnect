@@ -253,14 +253,14 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
-    // Explicit Paddle handoff paths on the .com site
+    // Buy-intent shortcuts → BlackWay's own pricing page (never vorixa.ca).
     if (
       url.pathname === "/paddle" ||
       url.pathname === "/acheter" ||
       url.pathname === "/checkout" ||
       url.pathname === "/encaisser"
     ) {
-      return Response.redirect("https://vorixa.ca/pricing", 302);
+      return Response.redirect(`${SITE_ORIGIN}/forfaits`, 302);
     }
 
     if (request.method === "OPTIONS" && url.pathname.startsWith("/api/")) {

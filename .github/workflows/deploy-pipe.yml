@@ -11,6 +11,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Verify Cloudflare token (account then user)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: eda7fc96b400297aaa0b185a26ad1846
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN empty — cannot wrangler deploy"
+            exit 1
+          fi
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json")
+          resp="$(curl -sS "${auth[@]}" "${api}/accounts/${CF_ACCOUNT_ID}/tokens/verify")"
+          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
+            resp="$(curl -sS "${auth[@]}" "${api}/user/tokens/verify")"
+          fi
+          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
+            echo "::error::Cloudflare token rejected — fix CLOUDFLARE_API_TOKEN. Details: $(echo "${resp}" | jq -c '.errors')"
+            exit 1
+          fi
+          echo "- Cloudflare token: OK" >> "$GITHUB_STEP_SUMMARY"
       - run: npm ci
       - name: Install Paddle secrets
         run: |
