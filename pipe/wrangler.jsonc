@@ -1,5 +1,6 @@
 {
   "name": "blackway-pipe",
+  "account_id": "eda7fc96b400297aaa0b185a26ad1846",
   "main": "index.js",
   "compatibility_date": "2025-08-01",
   "workers_dev": true,
