@@ -52,8 +52,8 @@ const TOOL_COPY: Partial<
     en: { title: "Cart recovery", body: "Abandoned quotes → recoverable $ → Growth.", cta: "Estimate" },
   },
   soumission: {
-    fr: { title: "Soumission → Stripe", body: "Générer une soumission + lien paiement Growth.", cta: "Créer" },
-    en: { title: "Quote → Stripe", body: "Generate a quote + Growth payment link.", cta: "Create" },
+    fr: { title: "Soumission → Paddle", body: "Générer une soumission + lien paiement Growth.", cta: "Créer" },
+    en: { title: "Quote → Paddle", body: "Generate a quote + Growth payment link.", cta: "Create" },
   },
   checklist: {
     fr: { title: "Checklist 7 jours", body: "Lead magnet — actions pour fermer sans fuite.", cta: "Ouvrir" },
@@ -76,8 +76,8 @@ const TOOL_COPY: Partial<
     en: { title: "AI Secretary 24/7", body: "Floating advisor — qualify and subscribe.", cta: "Open chat" },
   },
   forfaits: {
-    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Spark → Partner.", cta: "Voir forfaits web" },
-    en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
+    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Launch → Automation.", cta: "Voir forfaits web" },
+    en: { title: "Grow Hub web plans", body: "Revenue #1 — Launch → Automation.", cta: "See web plans" },
   },
   support: {
     fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
@@ -92,8 +92,8 @@ const TOOL_COPY: Partial<
     en: { title: "Mobile pipeline", body: "Advance deals on the road.", cta: "Open" },
   },
   cell_checkout: {
-    fr: { title: "Checkout prospect", body: "Envoyer un Payment Link depuis le terrain.", cta: "Ouvrir" },
-    en: { title: "Prospect checkout", body: "Send a Payment Link from the field.", cta: "Open" },
+    fr: { title: "Checkout prospect", body: "Envoyer un lien de paiement depuis le terrain.", cta: "Ouvrir" },
+    en: { title: "Prospect checkout", body: "Send a lien de paiement from the field.", cta: "Open" },
   },
   cell_streak: {
     fr: { title: "Streak terrain", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
@@ -164,7 +164,7 @@ export function PortalPage() {
     async (body: Record<string, string>) => {
       setBusy(true);
       setError(null);
-      const attempts = body.session_id || body.sessionId ? 4 : 1;
+      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 5 : 1;
       let lastErr = fr ? "Accès refusé" : "Access denied";
       try {
         for (let i = 0; i < attempts; i++) {
@@ -196,7 +196,7 @@ export function PortalPage() {
               amountCadCellulaire: data.amountCadCellulaire,
               exp: data.exp,
             });
-            if (params.get("session_id") || params.get("sessionId")) {
+            if (params.get("session_id") || params.get("sessionId") || params.get("transaction_id") || params.get("transactionId")) {
               navigate(path("/portail"), { replace: true });
             }
             return;
@@ -219,10 +219,16 @@ export function PortalPage() {
   useEffect(() => {
     const stored = readStored();
     const sessionId = params.get("session_id") || params.get("sessionId");
+    const transactionId = params.get("transaction_id") || params.get("transactionId");
     const plan = params.get("plan") || "";
     const emailParam = (params.get("email") || "").trim();
     if (emailParam && emailParam.includes("@")) {
       setEmail(emailParam);
+    }
+    if (transactionId) {
+      void claim({ transaction_id: transactionId, plan });
+      setBooting(false);
+      return;
     }
     if (sessionId) {
       void claim({ session_id: sessionId, plan });

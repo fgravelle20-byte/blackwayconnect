@@ -21,7 +21,7 @@ export function DiagnosticPage() {
       </section>
       <ConvertStickyBar
         primaryHref={path("/forfaits-growth")}
-        primaryLabel={fr ? "Voir Growth — 499 $" : "See Growth — $499"}
+        primaryLabel={fr ? "Voir Growth — 349 $" : "See Growth — $349"}
       />
     </>
   );

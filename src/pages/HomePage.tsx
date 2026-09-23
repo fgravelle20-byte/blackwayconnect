@@ -25,7 +25,7 @@ export function HomePage() {
           </ul>
           <div className="cta-row" style={{ marginTop: "1.75rem" }}>
             <Link className="btn btn--primary" to={path("/forfaits-growth")}>
-              {lang === "fr" ? "Commencer avec Growth — 499 $/mois" : "Start with Growth — $499/mo"}
+              {lang === "fr" ? "Commencer avec Growth — 349 $/mois" : "Start with Growth — $349/mo"}
             </Link>
             <Link className="btn btn--ghost" to={path("/forfaits")}>
               {t.ctaPricing}

@@ -4,7 +4,10 @@ import { useLang } from "../i18n";
 import { isPaddlePlanKey, PADDLE_PRICES } from "../paddleCatalog";
 
 type PaddleClient = {
-  Initialize(options: { token: string }): void;
+  Initialize(options: {
+    token: string;
+    eventCallback?: (event: { name?: string; data?: { transaction_id?: string } }) => void;
+  }): void;
   Checkout: { open(options: {
     items: { priceId: string; quantity: number }[];
     customData: Record<string, string>;
@@ -44,7 +47,17 @@ export function CheckoutPage() {
         await loadPaddle();
         if (cancelled || !window.Paddle) return;
         if (!initialized) {
-          window.Paddle.Initialize({ token });
+          window.Paddle.Initialize({
+            token,
+            eventCallback: (event) => {
+              if (event.name !== "checkout.completed") return;
+              const transactionId = String(event.data?.transaction_id || "");
+              if (!transactionId.startsWith("txn_")) return;
+              const portal = new URL(path("/portail"), window.location.origin);
+              portal.searchParams.set("transaction_id", transactionId);
+              window.location.assign(portal.toString());
+            },
+          });
           initialized = true;
         }
         const successUrl = new URL(path("/merci"), window.location.origin);

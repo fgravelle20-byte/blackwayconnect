@@ -1,9 +1,7 @@
-import { paddlePlanUrl } from "./paddleCatalog";
-
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
  * Distinct from Grow Hub web (Type A). Same Portail / HubSpot can hold both.
- * Stripe Payment Links: empty until created in Dashboard — see STRIPE_CELLULAIRE_TODO.
+ * Stripe lien de paiements: empty until created in Dashboard — see STRIPE_CELLULAIRE_TODO.
  */
 
 export type CellulairePlanKey =
@@ -28,7 +26,7 @@ export type CellulairePlan = {
   nameFr: string;
   nameEn: string;
   amountCad: number;
-  /** Empty until Stripe Payment Link created — checkout falls back to contact. */
+  /** Empty until Stripe lien de paiement created — checkout falls back to contact. */
   paymentLink: string;
   priceId: string;
   productId: string;
@@ -127,7 +125,7 @@ export const CELLULAIRE_RANK: Record<string, number> = {
   cell_command: 4,
 };
 
-/** Stripe Dashboard — create these Payment Links (CAD monthly), success → /portail?session_id={CHECKOUT_SESSION_ID} */
+/** Stripe Dashboard — create these lien de paiements (CAD monthly), success → /portail?session_id={CHECKOUT_SESSION_ID} */
 export const STRIPE_CELLULAIRE_TODO = [
   { key: "cell_signal", name: "Cell Signal", amountCad: 79, metadata: "bw_forfait=cell_signal" },
   { key: "cell_route", name: "Cell Route", amountCad: 199, metadata: "bw_forfait=cell_route" },
@@ -148,9 +146,15 @@ export function cellulaireCheckoutUrl(
   plan: CellulairePlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ): string {
-  return paddlePlanUrl(plan, opts);
+  const path = opts.lang === "en" ? "/en/contact" : "/contact";
+  const url = new URL(path, "https://blackwayconnect.com");
+  url.searchParams.set("forfait", plan);
+  url.searchParams.set("bw_source", opts.source || "cellulaire");
+  if (opts.content) url.searchParams.set("utm_content", opts.content);
+  return url.toString();
 }
 
 export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
-  return !!plan;
+  void plan;
+  return false;
 }

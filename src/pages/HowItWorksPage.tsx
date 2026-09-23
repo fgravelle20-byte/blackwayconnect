@@ -8,23 +8,23 @@ const STEPS = [
     img: "/how-it-works/step-1-plans.svg",
     fr: {
       title: "Choisis ton forfait",
-      body: "Spark → Partner. Un seul système commercial. Tu prends le palier qui ferme tes fuites — pas une pile d’outils.",
+      body: "Launch, Growth ou Automation. Un seul système commercial, avec essai 14 jours.",
     },
     en: {
       title: "Pick your plan",
-      body: "Spark → Partner. One commercial system. Choose the tier that closes your leaks — not a tool pile.",
+      body: "Launch, Growth, or Automation. One commercial system with a 14-day trial.",
     },
   },
   {
     n: "02",
     img: "/how-it-works/step-2-stripe.svg",
     fr: {
-      title: "Tu paies sur Stripe",
-      body: "Checkout sécurisé en CAD. Annulable. Ta carte ne transite pas chez nous — Stripe gère le paiement.",
+      title: "Tu paies avec Paddle",
+      body: "Checkout sécurisé en CAD. Annulable. Ta carte ne transite pas chez nous — Paddle gère le paiement.",
     },
     en: {
-      title: "You pay on Stripe",
-      body: "Secure CAD checkout. Cancel anytime. Your card never hits our servers — Stripe handles payment.",
+      title: "You pay with Paddle",
+      body: "Secure CAD checkout. Cancel anytime. Your card never hits our servers — Paddle handles payment.",
     },
   },
   {
@@ -32,11 +32,11 @@ const STEPS = [
     img: "/how-it-works/step-3-unlock.svg",
     fr: {
       title: "Ça se déclenche tout seul",
-      body: "Webhook Stripe → HubSpot + Portail. Le forfait payé (bw_forfait) s’active automatiquement. Rien à demander à la main.",
+      body: "Webhook Paddle → HubSpot + Portail. Le forfait payé s’active automatiquement.",
     },
     en: {
       title: "It unlocks automatically",
-      body: "Stripe webhook → HubSpot + Portal. The paid plan (bw_forfait) activates itself. No manual handoff.",
+      body: "Paddle webhook → HubSpot + Portal. The paid plan (bw_forfait) activates itself. No manual handoff.",
     },
   },
   {
@@ -94,15 +94,15 @@ export function HowItWorksPage() {
           <h2>{fr ? "Prêt à encaisser ?" : "Ready to get paid?"}</h2>
           <p>
             {fr
-              ? "Choisis ton palier. Paiement Stripe → activation auto du Portail."
-              : "Pick your tier. Stripe payment → Portal auto-activates."}
+              ? "Choisis ton palier. Paiement Paddle → activation auto du Portail."
+              : "Pick your tier. Paddle payment → Portal auto-activates."}
           </p>
           <div className="cta-row">
             <Link className="btn btn--primary" to={path("/forfaits")}>
               {fr ? "Voir les forfaits" : "See plans"}
             </Link>
             <Link className="btn btn--ghost" to={path("/forfaits-growth")}>
-              {fr ? "Growth 499 $/mois" : "Growth $499/mo"}
+              {fr ? "Growth 349 $/mois" : "Growth $349/mo"}
             </Link>
             <a className="btn btn--ghost" href={PHONES.tollFree.href}>
               {PHONES.tollFree.display}

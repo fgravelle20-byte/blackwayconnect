@@ -197,7 +197,7 @@ export function GrowHubPreview() {
                 {gh.activate}
               </a>
               <p className="ghp__hint-sm">
-                {PLANS[recommended].amountCad}$ CAD · Stripe Checkout
+                {PLANS[recommended].amountCad}$ CAD · Paddle Checkout
               </p>
             </div>
 

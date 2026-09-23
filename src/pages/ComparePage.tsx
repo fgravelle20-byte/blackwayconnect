@@ -7,7 +7,7 @@ type Row = { label: string; bwc: string; ghl: string; hub: string; agency: strin
 const ROWS_FR: Row[] = [
   {
     label: "Prix typique / mois",
-    bwc: "99 $ → 2 499 $ CAD (+ Entreprise)",
+    bwc: "99 $ → 2 349 $ CAD (+ Entreprise)",
     ghl: "~136–697 $ CAD (outil seul)",
     hub: "Marketing Pro ~1 200 $ CAD + sièges",
     agency: "1 500–6 000 $ CAD (mandat)",
@@ -52,7 +52,7 @@ const ROWS_FR: Row[] = [
 const ROWS_EN: Row[] = [
   {
     label: "Typical monthly price",
-    bwc: "$99 → $2,499 CAD (+ Enterprise)",
+    bwc: "$149 → $699 CAD (+ Enterprise)",
     ghl: "~CAD $136–697 (tool only)",
     hub: "Marketing Pro ~CAD $1,200 + seats",
     agency: "CAD $1,500–6,000 (retainer)",

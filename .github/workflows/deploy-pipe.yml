@@ -12,6 +12,15 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
+      - name: Install Paddle secrets
+        run: |
+          printf '%s' "$PADDLE_API_KEY" | npx wrangler secret put PADDLE_API_KEY -c pipe/wrangler.jsonc
+          printf '%s' "$PADDLE_WEBHOOK_SECRET" | npx wrangler secret put PADDLE_WEBHOOK_SECRET -c pipe/wrangler.jsonc
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PADDLE_API_KEY: ${{ secrets.PADDLE_API_KEY }}
+          PADDLE_WEBHOOK_SECRET: ${{ secrets.PADDLE_WEBHOOK_SECRET }}
       - run: npx wrangler deploy -c pipe/wrangler.jsonc
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

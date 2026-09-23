@@ -30,9 +30,9 @@ const FORFAITS = {
   revenue_system:      { label: "Systeme Revenu",            prix: 7500, delai: 35, recurrent: false, score: 85 },
   ai_scale:            { label: "Application mobile & IA",   prix: 7995, delai: 45, recurrent: false, score: 95 },
   grow_hub_spark:      { label: "Grow Hub Spark",            prix: 99,   delai: 7,  recurrent: true,  score: 55, line: "web" },
-  grow_hub_launch:     { label: "Grow Hub Launch",           prix: 249,  delai: 7,  recurrent: true,  score: 65, line: "web" },
-  grow_hub_growth:     { label: "Grow Hub Growth",           prix: 499,  delai: 7,  recurrent: true,  score: 80, line: "web" },
-  grow_hub_scale:      { label: "Grow Hub Scale",            prix: 749,  delai: 7,  recurrent: true,  score: 88, line: "web" },
+  grow_hub_launch:     { label: "BlackWayConnect Launch",    prix: 149,  delai: 7,  recurrent: true,  score: 65, line: "web" },
+  grow_hub_growth:     { label: "BlackWayConnect Growth",    prix: 349,  delai: 7,  recurrent: true,  score: 80, line: "web" },
+  grow_hub_scale:      { label: "BlackWayConnect Automation",prix: 699,  delai: 7,  recurrent: true,  score: 88, line: "web" },
   grow_hub_command:    { label: "Grow Hub Command",          prix: 1249, delai: 7,  recurrent: true,  score: 93, line: "web" },
   grow_hub_partner:    { label: "Grow Hub Partner",          prix: 2499, delai: 7,  recurrent: true,  score: 97, line: "web" },
   cell_signal:         { label: "Cell Signal",               prix: 79,   delai: 7,  recurrent: true,  score: 58, line: "cellulaire" },
@@ -50,6 +50,16 @@ const PRICE_TO_FORFAIT = {
   price_1U1FLdAG7HUL9RtrWL5IQyME: "grow_hub_scale",
   price_1U1FLeAG7HUL9Rtrc8R6DEdZ: "grow_hub_command",
   price_1U1FLfAG7HUL9RtruTYWaERD: "grow_hub_partner",
+};
+
+// Existing Paddle live catalog (monthly + yearly). No duplicate prices are created.
+const PADDLE_PRICE_TO_FORFAIT = {
+  pri_01kxtn6asavavmqv54407h464b: "grow_hub_launch",
+  pri_01kxtn6avpw2gpgrmaxax9tmwy: "grow_hub_launch",
+  pri_01kxtn6b41wzt07rnzvyte4sn8: "grow_hub_growth",
+  pri_01kxtn6b6ba8szneb21wx51dz6: "grow_hub_growth",
+  pri_01kxtn6befjw8m8gz9a5vwf0wf: "grow_hub_scale",
+  pri_01kxtn6bgrd0wwv1sdsqjv5ry2: "grow_hub_scale",
 };
 
 // Payment Link IDs → forfait. Live ids from src/stripeConfig.ts PLUS the 2026-09-06
@@ -339,7 +349,8 @@ async function traiterPaiement(env, p) {
   const f = FORFAITS[forfait];
   const sc = score(forfait, p.email, p.montant, f.recurrent);
   const cell = isCellulaireForfait(forfait);
-  const segment = p.segment || (cell ? "cellulaire" : "paiement stripe");
+  const processor = p.processor === "paddle" ? "paddle" : "stripe";
+  const segment = p.segment || (cell ? "cellulaire" : `paiement ${processor}`);
   const dealLabel = p.renouvellement
     ? `${f.label} - RENOUVELLEMENT - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`
     : `${f.label} - PAYE - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`;
@@ -347,7 +358,7 @@ async function traiterPaiement(env, p) {
   const contactProps = {
     firstname: p.prenom || "", lastname: p.nom || "", company: p.entreprise || "",
     bw_forfait_paye: forfait,
-    bw_source: cell ? "cellulaire" : "stripe",
+    bw_source: cell ? "cellulaire" : processor,
     bw_lead_score: sc, lifecyclestage: "customer",
   };
   if (cell) {
@@ -374,7 +385,7 @@ async function traiterPaiement(env, p) {
   }
   const d = await createDeal(env, dealLabel, ST_PAID, {
     amount: p.montant || f.prix, bw_forfait: forfait,
-    bw_source: cell ? "cellulaire" : "stripe", bw_urgence: "elevee",
+    bw_source: cell ? "cellulaire" : processor, bw_urgence: "elevee",
     bw_lead_score: sc, bw_deadline: dateISO(f.delai), bw_livraison_statut: "non_demarre",
     bw_stripe_payment_id: p.payment_id, bw_idempotency_key: `pay:${p.payment_id}`,
     bw_segment: segment,
@@ -383,7 +394,7 @@ async function traiterPaiement(env, p) {
   await hs(env, "POST", "/crm/v3/objects/notes", {
     properties: {
       hs_timestamp: new Date().toISOString(),
-      hs_note_body: `Paiement Stripe ${p.payment_id} - ${f.label} - ${p.montant}$ CAD.\nPortail Client Master : https://blackwayconnect.com/portail\n${p.renouvellement ? "Renouvellement abonnement." : `Livraison a demarrer, echeance ${dateISO(f.delai)}.`}`,
+      hs_note_body: `Paiement ${processor === "paddle" ? "Paddle" : "Stripe"} ${p.payment_id} - ${f.label} - ${p.montant}$ CAD.\nPortail Client Master : https://blackwayconnect.com/portail\n${p.renouvellement ? "Renouvellement abonnement." : `Livraison a demarrer, echeance ${dateISO(f.delai)}.`}`,
     },
     associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
   });
@@ -493,13 +504,17 @@ async function searchHsContact(env, propertyName, value) {
 }
 
 function sessionCacheRequest(sessionId) {
-  return new Request(`${SESSION_CACHE_ORIGIN}/cs/${encodeURIComponent(sessionId)}`);
+  return new Request(`${SESSION_CACHE_ORIGIN}/payment/${encodeURIComponent(sessionId)}`);
 }
 
-/** Persist cs_… → email/forfait for claim before HubSpot finishes (Cache API; KV if bound). */
+function isPaymentReference(id) {
+  return String(id || "").startsWith("cs_") || String(id || "").startsWith("txn_");
+}
+
+/** Persist Stripe cs_… or Paddle txn_… → email/forfait before HubSpot finishes. */
 async function putSessionMap(env, sessionId, payload) {
   const id = String(sessionId || "").trim();
-  if (!id.startsWith("cs_")) return;
+  if (!isPaymentReference(id)) return;
   const email = String(payload?.email || "").trim().toLowerCase();
   if (!email || !email.includes("@")) return;
   const body = JSON.stringify({
@@ -509,7 +524,7 @@ async function putSessionMap(env, sessionId, payload) {
   });
   if (env.BW_SESSIONS) {
     try {
-      await env.BW_SESSIONS.put(`cs:${id}`, body, { expirationTtl: SESSION_CACHE_TTL_SEC });
+      await env.BW_SESSIONS.put(`payment:${id}`, body, { expirationTtl: SESSION_CACHE_TTL_SEC });
     } catch (e) {
       console.log("session kv put", e);
     }
@@ -531,11 +546,13 @@ async function putSessionMap(env, sessionId, payload) {
 
 async function getSessionMap(env, sessionId) {
   const id = String(sessionId || "").trim();
-  if (!id.startsWith("cs_")) return null;
+  if (!isPaymentReference(id)) return null;
   if (env.BW_SESSIONS) {
     try {
-      const v = await env.BW_SESSIONS.get(`cs:${id}`, "json");
+      const v = await env.BW_SESSIONS.get(`payment:${id}`, "json");
       if (v?.email) return v;
+      const legacy = id.startsWith("cs_") ? await env.BW_SESSIONS.get(`cs:${id}`, "json") : null;
+      if (legacy?.email) return legacy;
     } catch {
       /* ignore */
     }
@@ -663,20 +680,44 @@ async function fetchStripeCheckoutSession(env, sessionId) {
   return r.json();
 }
 
+function forfaitFromPaddleTransaction(transaction) {
+  const fromCustom = resoudreForfait(
+    transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait,
+  );
+  if (fromCustom) return fromCustom;
+  const items = transaction?.items || transaction?.details?.line_items || [];
+  for (const item of items) {
+    const priceId = item?.price?.id || item?.price_id;
+    if (priceId && PADDLE_PRICE_TO_FORFAIT[priceId]) return PADDLE_PRICE_TO_FORFAIT[priceId];
+  }
+  return null;
+}
+
+async function paddleCustomerEmail(env, customerId) {
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key || !String(customerId || "").startsWith("ctm_")) return "";
+  const r = await fetch(`https://api.paddle.com/customers/${encodeURIComponent(customerId)}`, {
+    headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
+  });
+  if (!r.ok) throw new Error(`client Paddle introuvable (${r.status})`);
+  const body = await r.json();
+  return String(body?.data?.email || "").trim().toLowerCase();
+}
+
 /**
  * Claim portal access.
  * session_id path: Cache/KV → HubSpot bw_last_checkout_session → Stripe API (only if STRIPE_SECRET_KEY).
  * No Stripe secret required after webhook has stored the mapping.
  */
 async function claimPortal(env, p) {
-  const sessionId = String(p.session_id || p.sessionId || "").trim();
+  const sessionId = String(p.transaction_id || p.transactionId || p.session_id || p.sessionId || "").trim();
   const emailIn = String(p.email || "").trim().toLowerCase();
   let email = "";
   let forfait = null;
   let contact = null;
 
   if (sessionId) {
-    if (!sessionId.startsWith("cs_")) throw new Error("session_id invalide");
+    if (!isPaymentReference(sessionId)) throw new Error("reference paiement invalide");
 
     const cached = await getSessionMap(env, sessionId);
     if (cached?.email) {
@@ -684,7 +725,7 @@ async function claimPortal(env, p) {
       forfait = resoudreForfait(cached.forfait || p.plan);
     }
 
-    if (!email) {
+    if (!email && sessionId.startsWith("cs_")) {
       await ensureBwLastCheckoutSessionProp(env);
       contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
       if (contact) {
@@ -695,7 +736,7 @@ async function claimPortal(env, p) {
     }
 
     // Deal payment id = session id on checkout.session.* paths (survives without contact prop).
-    if (!email) {
+    if (!email && sessionId.startsWith("cs_")) {
       try {
         const fromDeal = await claimFromDealSession(env, sessionId);
         if (fromDeal?.email) {
@@ -707,7 +748,7 @@ async function claimPortal(env, p) {
       }
     }
 
-    if (!email) {
+    if (!email && sessionId.startsWith("cs_")) {
       let stripeSession = null;
       try {
         stripeSession = await fetchStripeCheckoutSession(env, sessionId);
@@ -727,7 +768,7 @@ async function claimPortal(env, p) {
 
     if (!email) {
       throw new Error(
-        "Session introuvable. Attendez quelques secondes apres le paiement, ou utilisez le courriel du compte payeur.",
+        "Paiement introuvable. Attendez quelques secondes apres le paiement, ou utilisez le courriel du compte payeur.",
       );
     }
   } else if (emailIn) {
@@ -739,13 +780,13 @@ async function claimPortal(env, p) {
     }
     if (!contact) {
       throw new Error(
-        "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Stripe, ou rouvre le lien /portail?session_id=cs_…",
+        "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Paddle.",
       );
     }
     const props = contact.properties || {};
     if (!contactHasCustomerAccess(props)) {
       throw new Error(
-        "Compte trouvé mais pas encore client actif — paiement Stripe requis (ou activation ops).",
+        "Compte trouvé mais pas encore client actif — paiement Paddle requis (ou activation ops).",
       );
     }
     email = emailIn;
@@ -813,7 +854,33 @@ async function signatureValide(secret, payload, header) {
   return hex === parts.v1;
 }
 
-export { forfaitFromStripeObject, forfaitFromAmountCents, isVorixaManagedStripeObject };
+/** Paddle-Signature: ts=<unix>;h1=<hex>, signed payload = ts:rawBody. */
+async function signaturePaddleValide(secret, payload, header) {
+  if (!secret || !header) return false;
+  const parts = Object.fromEntries(
+    String(header).split(";").map((part) => {
+      const i = part.indexOf("=");
+      return i > 0 ? [part.slice(0, i).trim(), part.slice(i + 1).trim()] : ["", ""];
+    }),
+  );
+  if (!parts.ts || !parts.h1) return false;
+  const timestamp = Number(parts.ts);
+  if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300) return false;
+  const key = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(String(secret).trim()),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+  );
+  const sig = await crypto.subtle.sign(
+    "HMAC", key, new TextEncoder().encode(`${parts.ts}:${payload}`),
+  );
+  const expected = [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  if (expected.length !== parts.h1.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) mismatch |= expected.charCodeAt(i) ^ parts.h1.charCodeAt(i);
+  return mismatch === 0;
+}
+
+export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, signaturePaddleValide, isVorixaManagedStripeObject };
 
 export default {
   async fetch(request, env, ctx) {
@@ -834,8 +901,10 @@ export default {
       }
       const stripeSecretKey = !!String(env.STRIPE_SECRET_KEY || "").trim();
       const stripeWebhookSecret = !!String(env.STRIPE_WEBHOOK_SECRET || "").trim();
+      const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
+      const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
-      const portal_claim_ready = hubspot === "connecte" && !!stripeWebhookSecret;
+      const portal_claim_ready = hubspot === "connecte" && (stripeWebhookSecret || (paddleApiKey && paddleWebhookSecret));
       return json({
         service: "blackway-pipe",
         ok: hubspot === "connecte",
@@ -853,6 +922,9 @@ export default {
         // Compat aliases — stripe_secret = API key (not webhook)
         stripe_secret: stripeSecretKey,
         stripe_webhook: stripeWebhookSecret,
+        paddle_api_key: paddleApiKey,
+        paddle_webhook_secret: paddleWebhookSecret,
+        paddle_ready: paddleApiKey && paddleWebhookSecret,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
@@ -867,6 +939,49 @@ export default {
         if (!p.email) return json({ erreur: "courriel requis" }, 400);
         return json(await traiterLead(env, p));
       } catch (e) { return json({ erreur: String(e) }, 500); }
+    }
+
+    if (url.pathname === "/webhooks/paddle" && request.method === "POST") {
+      const body = await request.text();
+      const ok = await signaturePaddleValide(
+        env.PADDLE_WEBHOOK_SECRET,
+        body,
+        request.headers.get("paddle-signature"),
+      );
+      if (!ok) return json({ erreur: "signature Paddle invalide" }, 400);
+      let evt;
+      try { evt = JSON.parse(body); } catch { return json({ erreur: "json invalide" }, 400); }
+      if (evt.event_type !== "transaction.completed") return json({ ignore: evt.event_type });
+
+      const transaction = evt.data || {};
+      const forfait = forfaitFromPaddleTransaction(transaction);
+      if (!forfait) {
+        return json({ recu: true, ignore: "prix Paddle non BlackWay", transaction_id: transaction.id || null });
+      }
+      const transactionId = String(transaction.id || "");
+      if (!transactionId.startsWith("txn_")) return json({ erreur: "transaction Paddle invalide" }, 400);
+      const amountCents = Number(transaction?.details?.totals?.total || transaction?.details?.totals?.grand_total || 0);
+      const renouvellement = ["subscription_recurring", "subscription_update", "subscription_charge"].includes(transaction.origin);
+
+      ctx.waitUntil((async () => {
+        const email = await paddleCustomerEmail(env, transaction.customer_id);
+        if (!email) throw new Error("paiement Paddle sans courriel");
+        await putSessionMap(env, transactionId, { email, forfait });
+        await traiterPaiement(env, {
+          email,
+          prenom: "",
+          nom: "Client",
+          entreprise: transaction.custom_data?.entreprise || "",
+          forfait,
+          payment_id: transactionId,
+          checkout_session_id: transactionId,
+          montant: Number.isFinite(amountCents) ? amountCents / 100 : FORFAITS[forfait].prix,
+          renouvellement,
+          processor: "paddle",
+          segment: renouvellement ? "renouvellement paddle" : "paiement paddle",
+        });
+      })().catch((e) => console.log("erreur traitement Paddle", e)));
+      return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
     if (url.pathname === "/webhooks/stripe" && request.method === "POST") {

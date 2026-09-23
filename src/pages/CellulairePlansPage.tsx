@@ -52,8 +52,8 @@ export function CellulairePlansPage() {
         {!anyLive ? (
           <p className="form-status" role="status">
             {fr
-              ? "Checkout Stripe Pack Cellulaire en préparation — demandez Cell Fleet ci-dessous. Les Payment Links seront branchés dès création."
-              : "Cellular Pack Stripe checkout pending — request Cell Fleet below. Payment Links wire in when created."}
+              ? "Checkout Stripe Pack Cellulaire en préparation — demandez Cell Fleet ci-dessous. Les lien de paiements seront branchés dès création."
+              : "Cellular Pack Stripe checkout pending — request Cell Fleet below. lien de paiements wire in when created."}
           </p>
         ) : null}
 
@@ -128,8 +128,8 @@ export function CellulairePlansPage() {
         <details style={{ marginTop: "2rem" }}>
           <summary className="lede">
             {fr
-              ? "Stripe à créer (Payment Links Pack Cellulaire)"
-              : "Stripe to create (Cellular Pack Payment Links)"}
+              ? "Stripe à créer (lien de paiements Pack Cellulaire)"
+              : "Stripe to create (Cellular Pack lien de paiements)"}
           </summary>
           <ul className="lede">
             {STRIPE_CELLULAIRE_TODO.map((row) => (
