@@ -1,3 +1,5 @@
+import { paddlePlanUrl } from "./paddleCatalog";
+
 /**
  * Stripe Grow Hub catalog — live Payment Links on merchant acct_1TDZjzAG7HUL9Rtr.
  *
@@ -105,33 +107,17 @@ export const PLAN_ORDER: PlanKey[] = [
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
-/**
- * BlackWay domains are Paddle-approved. Site checkouts use the live Paddle
- * storefront on vorixa.ca until dedicated BlackWay Paddle prices exist.
- */
-export const PADDLE_STOREFRONT = "https://vorixa.ca/pricing";
-
-function paddleCheckoutUrl(plan: PlanKey): string {
-  const url = new URL(PADDLE_STOREFRONT);
-  url.searchParams.set("bw_from", "blackwayconnect");
-  url.searchParams.set("bw_plan", plan);
-  url.searchParams.set("utm_source", "blackwayconnect_site");
-  url.searchParams.set("utm_medium", "checkout_paddle");
-  url.searchParams.set("utm_campaign", plan);
-  return url.toString();
-}
-
-/** Public Checkout URLs for `/api/config` and mobile bootstrap — Paddle handoff. */
+/** The web and mobile bootstrap use the same BlackWay checkout route. */
 export const CHECKOUT_LINKS = {
-  grow_hub_spark: paddleCheckoutUrl("grow_hub_spark"),
-  grow_hub_launch: paddleCheckoutUrl("grow_hub_launch"),
-  grow_hub_growth: paddleCheckoutUrl("grow_hub_growth"),
-  grow_hub_scale: paddleCheckoutUrl("grow_hub_scale"),
-  grow_hub_command: paddleCheckoutUrl("grow_hub_command"),
-  grow_hub_partner: paddleCheckoutUrl("grow_hub_partner"),
+  grow_hub_spark: paddlePlanUrl("grow_hub_spark"),
+  grow_hub_launch: paddlePlanUrl("grow_hub_launch"),
+  grow_hub_growth: paddlePlanUrl("grow_hub_growth"),
+  grow_hub_scale: paddlePlanUrl("grow_hub_scale"),
+  grow_hub_command: paddlePlanUrl("grow_hub_command"),
+  grow_hub_partner: paddlePlanUrl("grow_hub_partner"),
   currency: "cad" as const,
   processor: "paddle" as const,
-  storefront: PADDLE_STOREFRONT,
+  storefront: "https://blackwayconnect.com/forfaits",
 };
 
 /**
@@ -169,12 +155,7 @@ export function checkoutUrl(
   plan: PlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ) {
-  const url = new URL(paddleCheckoutUrl(plan));
-  const source = opts.source || "site_web";
-  url.searchParams.set("client_reference_id", `${source}:${plan}`);
-  if (opts.content) url.searchParams.set("utm_content", opts.content);
-  if (opts.lang) url.searchParams.set("locale", opts.lang === "fr" ? "fr-CA" : "en-CA");
-  return url.toString();
+  return paddlePlanUrl(plan, opts);
 }
 
 export function isCheckoutReady(_plan: PlanKey): boolean {
