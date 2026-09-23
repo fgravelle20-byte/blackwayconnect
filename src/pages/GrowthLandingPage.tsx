@@ -6,7 +6,7 @@ import { EMAILS, PHONES } from "../siteContact";
 import { checkoutUrl, PLANS } from "../stripeConfig";
 import { trackInitiateCheckout, trackViewContent } from "../tracking";
 
-/** Paid-ads landing — single offer Growth 499 CAD. */
+/** Paid-ads landing — single offer Growth 349 CAD. */
 export function GrowthLandingPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -35,13 +35,13 @@ export function GrowthLandingPage() {
             </p>
             <h1 className="display page-hero__title">
               {fr
-                ? "Les leads entrent. Toi, tu encaisses. 499 $/mois."
-                : "Leads come in. You get paid. $499/mo."}
+                ? "Les leads entrent. Toi, tu encaisses. 349 $/mois."
+                : "Leads come in. You get paid. $349/mo."}
             </h1>
             <p className="lede">
               {fr
-                ? "Un clic Stripe : score, relances, soumissions, paiements — Portail Client Master + mobile inclus. Annulable. Pas une pile d’outils : un système qui ferme."
-                : "One Stripe click: scoring, follow-ups, quotes, payments — Client Master Portal + mobile included. Cancel anytime. Not a tool pile — a system that closes."}
+                ? "Un clic Paddle : score, relances, soumissions, paiements — Portail Client Master + mobile inclus. Annulable. Pas une pile d’outils : un système qui ferme."
+                : "One Paddle click: scoring, follow-ups, quotes, payments — Client Master Portal + mobile included. Cancel anytime. Not a tool pile — a system that closes."}
             </p>
             <div className="cta-row" style={{ marginTop: "1.5rem" }}>
               <a
@@ -51,7 +51,7 @@ export function GrowthLandingPage() {
                 target="_blank"
                 onClick={onBuy}
               >
-                {fr ? "S’abonner Growth — 499 $/mois" : "Subscribe Growth — $499/mo"}
+                {fr ? "S’abonner Growth — 349 $/mois" : "Subscribe Growth — $349/mo"}
               </a>
               <a className="btn btn--ghost" href={PHONES.tollFree.href}>
                 {fr ? `Appeler ${PHONES.tollFree.display}` : `Call ${PHONES.tollFree.display}`}
@@ -75,12 +75,12 @@ export function GrowthLandingPage() {
             <li>{fr ? "Pipeline + CRM HubSpot branché — l’action est forcée" : "Pipeline + HubSpot wired — action is forced"}</li>
             <li>{fr ? "Portail Master + accès mobile le jour 1" : "Master Portal + mobile access on day one"}</li>
             <li>{fr ? "Secrétaire IA 24h sur le site" : "AI Secretary 24/7 on the site"}</li>
-            <li>{fr ? "Stripe. Annulable. Upsell Cellulaire optionnel." : "Stripe. Cancel anytime. Optional Cellular upsell."}</li>
+            <li>{fr ? "Paddle. Annulable. Upsell Cellulaire optionnel." : "Paddle. Cancel anytime. Optional Cellular upsell."}</li>
           </ul>
 
           <p className="lede" style={{ marginTop: "2rem" }}>
             <Link to={path("/forfaits")}>
-              {fr ? "Voir tous les paliers Spark → Partner" : "See all tiers Spark → Partner"}
+              {fr ? "Voir tous les paliers Launch → Automation" : "See all tiers Launch → Automation"}
             </Link>
             {" · "}
             <Link to={path("/contact")}>{fr ? "Formulaire contact" : "Contact form"}</Link>
@@ -90,7 +90,7 @@ export function GrowthLandingPage() {
 
       <ConvertStickyBar
         primaryHref={href}
-        primaryLabel={fr ? "Acheter Growth — 499 $" : "Buy Growth — $499"}
+        primaryLabel={fr ? "Acheter Growth — 349 $" : "Buy Growth — $349"}
         external
         onPrimaryClick={onBuy}
       />

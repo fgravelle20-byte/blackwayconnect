@@ -26,7 +26,7 @@ export function Hero() {
         <p className="lede">{t.heroBody}</p>
         <div className="cta-row">
           <Link className="btn btn--primary" to={path("/forfaits-growth")}>
-            {lang === "fr" ? "Commencer avec Growth — 499 $/mois" : "Start with Growth — $499/mo"}
+            {lang === "fr" ? "Commencer avec Growth — 349 $/mois" : "Start with Growth — $349/mo"}
           </Link>
           <Link className="btn btn--ghost" to={howPath}>
             {t.nav.how}

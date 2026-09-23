@@ -17,7 +17,7 @@ const CHECKLIST_FR = [
   "Formulaire site → HubSpot en moins de 60 s",
   "Première relance planifiée (SMS ou courriel) sous 15 min",
   "Score lead (chaud / tiède / froid) visible dans le pipeline",
-  "Soumission avec lien de paiement Stripe — pas de PDF mort",
+  "Soumission avec lien de paiement Paddle — pas de PDF mort",
   "Devis abandonné = séquence de relance 3 touches / 7 jours",
   "Paiement confirmé → étape Won + tâche d’activation",
   "Portail Client Master ouvert pour le client (session)",

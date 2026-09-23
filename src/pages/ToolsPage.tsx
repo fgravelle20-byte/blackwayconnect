@@ -15,7 +15,7 @@ type Row = { label: string; bwc: string; ghl: string; hub: string; agency: strin
 const COMPARE_FR: Row[] = [
   {
     label: "Prix typique / mois",
-    bwc: "99 $ → 2 499 $ CAD (+ Entreprise)",
+    bwc: "99 $ → 2 349 $ CAD (+ Entreprise)",
     ghl: "~136–697 $ CAD (outil seul)",
     hub: "Marketing Pro ~1 200 $ CAD + sièges",
     agency: "1 500–6 000 $ CAD (mandat)",
@@ -60,7 +60,7 @@ const COMPARE_FR: Row[] = [
 const COMPARE_EN: Row[] = [
   {
     label: "Typical monthly price",
-    bwc: "$99 → $2,499 CAD (+ Enterprise)",
+    bwc: "$149 → $699 CAD (+ Enterprise)",
     ghl: "~CAD $136–697 (tool only)",
     hub: "Marketing Pro ~CAD $1,200 + seats",
     agency: "CAD $1,500–6,000 (retainer)",
@@ -264,8 +264,8 @@ export function ToolsPage() {
       eyebrow: "03",
       title: fr ? "Relance panier / devis" : "Cart / quote recovery",
       body: fr
-        ? "Devis abandonnés → $ exposés → gain Growth. Capture lead + checkout 499 $."
-        : "Abandoned quotes → $ exposed → Growth lift. Lead capture + $499 checkout.",
+        ? "Devis abandonnés → $ exposés → gain Growth. Capture lead + checkout 349 $."
+        : "Abandoned quotes → $ exposed → Growth lift. Lead capture + $349 checkout.",
       to: path("/outils/relance-panier"),
       cta: fr ? "Estimer ma relance" : "Estimate recovery",
       primary: true,
@@ -274,9 +274,9 @@ export function ToolsPage() {
       id: "soumission",
       featured: true,
       eyebrow: "04",
-      title: fr ? "Générateur de soumission → Stripe" : "Quote generator → Stripe",
+      title: fr ? "Générateur de soumission → Paddle" : "Quote generator → Paddle",
       body: fr
-        ? "Rédigez, copiez, ouvrez le lien Stripe Growth. Suivi CRM inclus."
+        ? "Rédigez, copiez, ouvrez le lien Paddle Growth. Suivi CRM inclus."
         : "Draft, copy, open the Stripe Growth link. CRM follow-up included.",
       to: path("/outils/soumission"),
       cta: fr ? "Créer une soumission" : "Create a quote",
@@ -342,8 +342,8 @@ export function ToolsPage() {
       eyebrow: "09",
       title: fr ? "Packs et forfaits" : "Packs and plans",
       body: fr
-        ? "Spark → Partner + Entreprise. Options site, IA et système revenu."
-        : "Spark → Partner + Enterprise. Site, AI and revenue-system options.",
+        ? "Launch → Automation + Entreprise. Options site, IA et système revenu."
+        : "Launch → Automation + Enterprise. Site, AI and revenue-system options.",
       to: path("/forfaits"),
       cta: fr ? "Voir les forfaits" : "See plans",
       primary: false,
@@ -360,7 +360,7 @@ export function ToolsPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Neuf outils lead-to-revenue — diagnostic, pipeline, relance panier, soumission Stripe, checklist, ROI, comparateur, secrétaire IA, forfaits. Chaque parcours mène à Growth, Portail ou Pack Cellulaire."
+              ? "Neuf outils lead-to-revenue — diagnostic, pipeline, relance panier, soumission Paddle, checklist, ROI, comparateur, secrétaire IA, forfaits. Chaque parcours mène à Growth, Portail ou Pack Cellulaire."
               : "Nine lead-to-revenue tools — diagnostic, pipeline, cart recovery, Stripe quote, checklist, ROI, comparer, AI secretary, plans. Every path leads to Growth, Portal or Cellular Pack."}
           </p>
         </div>

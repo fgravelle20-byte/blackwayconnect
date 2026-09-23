@@ -56,8 +56,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "BlackWayConnect — fermez plus, sans empiler d’outils"
         : "BlackWayConnect — close more without tool sprawl",
       description: fr
-        ? "Plateforme bilingue FR/EN lead-to-revenue : site, CRM, soumissions et paiements Stripe. Née au Québec — vendue partout dans le monde, Europe incluse."
-        : "Bilingual FR/EN lead-to-revenue platform: site, CRM, quotes and Stripe payments. Born in Québec — sold worldwide, including Europe.",
+        ? "Plateforme bilingue FR/EN lead-to-revenue : site, CRM, soumissions et paiements Paddle. Née au Québec — vendue partout dans le monde, Europe incluse."
+        : "Bilingual FR/EN lead-to-revenue platform: site, CRM, quotes and Paddle payments. Born in Québec — sold worldwide, including Europe.",
     },
     outils: {
       title: fr ? "Master Tools — arsenal lead-to-revenue" : "Master Tools — lead-to-revenue toolkit",
@@ -65,22 +65,22 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, relance panier, générateur de soumission Stripe, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
-        : "Leak Score, cart recovery, Stripe quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
+        ? "Leak Score, relance panier, générateur de soumission Paddle, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
+        : "Leak Score, cart recovery, Paddle quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
     },
     "outils/relance-panier": {
       title: fr ? "Relance panier / devis abandonnés" : "Abandoned cart / quote recovery",
       ogTitle: fr ? "Relance panier — combien dorment ?" : "Cart recovery — how much sits idle?",
       description: fr
-        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 499 $."
-        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $499 lift.",
+        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 349 $."
+        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $349 lift.",
     },
     "outils/soumission": {
-      title: fr ? "Générateur de soumission → Stripe" : "Quote generator → Stripe",
-      ogTitle: fr ? "Soumission → lien Stripe Growth" : "Quote → Stripe Growth link",
+      title: fr ? "Générateur de soumission → Paddle" : "Quote generator → Paddle",
+      ogTitle: fr ? "Soumission → lien Paddle Growth" : "Quote → Paddle Growth link",
       description: fr
-        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Stripe Growth. Capture CRM incluse."
-        : "Draft a quote, copy the text and open Stripe Growth payment. CRM capture included.",
+        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Paddle Growth. Capture CRM incluse."
+        : "Draft a quote, copy the text and open Paddle Growth payment. CRM capture included.",
     },
     "outils/checklist": {
       title: fr ? "Checklist fermeture 7 jours" : "7-day close checklist",
@@ -105,20 +105,20 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         : "Interactive bilingual pipeline: next actions, stages and a path to Grow Hub subscribe.",
     },
     forfaits: {
-      title: fr ? "Forfaits Grow Hub · Spark → Partner" : "Grow Hub plans · Spark → Partner",
+      title: fr ? "Forfaits BlackWayConnect · Launch, Growth, Automation" : "BlackWayConnect plans · Launch, Growth, Automation",
       ogTitle: fr
-        ? "Forfaits Grow Hub — 99 $ à 2 499 $ CAD/mois"
-        : "Grow Hub plans — $99 to $2,499 CAD/mo",
+        ? "Forfaits BlackWayConnect — 149 $ à 699 $ CAD/mois"
+        : "BlackWayConnect plans — $149 to $699 CAD/mo",
       description: fr
-        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Choisissez le palier qui ferme vos fuites — Stripe Checkout, sans changer de système."
-        : "Spark $99 to Partner $2,499 CAD/mo. Pick the tier that closes your leaks — Stripe Checkout, same system as you grow.",
+        ? "Launch 149 $, Growth 349 $ ou Automation 699 $ CAD/mois, avec essai 14 jours et paiement Paddle."
+        : "Launch $149, Growth $349, or Automation $699 CAD/mo, with a 14-day trial and Paddle Checkout.",
     },
     "forfaits-growth": {
-      title: fr ? "Grow Hub Growth · 499 $/mois" : "Grow Hub Growth · $499/mo",
-      ogTitle: fr ? "Growth 499 $ — ferme plus de leads" : "Growth $499 — close more leads",
+      title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
+      ogTitle: fr ? "Growth 349 $ — ferme plus de leads" : "Growth $349 — close more leads",
       description: fr
-        ? "Landing pub : Grow Hub Growth 499 $ CAD/mois. Portail + dashboard mobile inclus. Stripe."
-        : "Ad landing: Grow Hub Growth $499 CAD/mo. Portal + mobile dashboard included. Stripe.",
+        ? "Landing pub : Grow Hub Growth 349 $ CAD/mois. Essai 14 jours, Portail + dashboard mobile inclus. Paddle."
+        : "Ad landing: Grow Hub Growth $349 CAD/mo. 14-day trial, Portal + mobile dashboard included. Paddle.",
     },
     "forfaits-cellulaire": {
       title: fr
@@ -143,8 +143,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment ça marche — paie, le forfait s’active"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis ton forfait, paie sur Stripe, activation auto du Portail (bw_forfait), puis tu contrôles. Spark → Partner."
-        : "Pick a plan, pay on Stripe, Portal auto-activates (bw_forfait), then you control. Spark → Partner.",
+        ? "Choisis Launch, Growth ou Automation, paie avec Paddle, puis le Portail s’active automatiquement."
+        : "Pick Launch, Growth, or Automation, pay with Paddle, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
@@ -152,8 +152,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment ça marche — paie, le forfait s’active"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis ton forfait, paie sur Stripe, activation auto du Portail (bw_forfait), puis tu contrôles."
-        : "Pick a plan, pay on Stripe, Portal auto-activates (bw_forfait), then you control.",
+        ? "Choisis ton forfait, paie avec Paddle, activation auto du Portail (bw_forfait), puis tu contrôles."
+        : "Pick a plan, pay on Paddle, Portal auto-activates (bw_forfait), then you control.",
     },
     diagnostic: {
       title: fr ? "Revenue Leak Score · 60 secondes" : "Revenue Leak Score · 60 seconds",
@@ -215,8 +215,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     faq: {
       title: "FAQ",
       description: fr
-        ? "Abonnement Stripe, service 24h, bureaux, leads, bilingue FR/EN et choix de forfait — réponses courtes."
-        : "Stripe subscribe, 24/7 service, office, leads, bilingual FR/EN and plan choice — short answers.",
+        ? "Abonnement Paddle, service 24h, bureaux, leads, bilingue FR/EN et choix de forfait — réponses courtes."
+        : "Paddle subscribe, 24/7 service, office, leads, bilingual FR/EN and plan choice — short answers.",
     },
     contact: {
       title: fr ? "Consultation stratégique" : "Strategic consultation",

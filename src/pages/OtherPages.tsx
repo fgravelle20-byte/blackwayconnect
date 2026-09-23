@@ -80,8 +80,8 @@ export function PricingPage() {
             </h1>
             <p className="lede">
               {fr
-                ? "Spark → Partner. La plupart des PME partent sur Growth (499 $/mois) — score, relances, Portail + mobile inclus. Stripe. Annulable."
-                : "Spark → Partner. Most SMBs start on Growth ($499/mo) — scoring, follow-ups, Portal + mobile included. Stripe. Cancel anytime."}
+                ? "Launch, Growth ou Automation. La plupart des PME partent sur Growth (349 $/mois) — essai 14 jours, Portail + mobile inclus. Paddle. Annulable."
+                : "Launch, Growth, or Automation. Most SMBs start on Growth ($349/mo) — 14-day trial, Portal + mobile included. Paddle. Cancel anytime."}
             </p>
             <div className="cta-row" style={{ marginTop: "1.25rem" }}>
               <a
@@ -93,7 +93,7 @@ export function PricingPage() {
                   trackInitiateCheckout({ plan: "grow_hub_growth", value: PLANS.grow_hub_growth.amountCad })
                 }
               >
-                {fr ? "Essayer Growth — 499 $/mois" : "Try Growth — $499/mo"}
+                {fr ? "Essayer Growth — 349 $/mois" : "Try Growth — $349/mo"}
               </a>
               <a className="btn btn--ghost" href={PHONES.tollFree.href}>
                 {fr ? `Appeler ${PHONES.tollFree.display}` : `Call ${PHONES.tollFree.display}`}
@@ -154,7 +154,7 @@ export function PricingPage() {
                 trackInitiateCheckout({ plan: "grow_hub_growth", value: PLANS.grow_hub_growth.amountCad })
               }
             >
-              {lang === "fr" ? "S’abonner Growth — 499 $/mois" : "Subscribe Growth — $499/mo"}
+              {lang === "fr" ? "S’abonner Growth — 349 $/mois" : "Subscribe Growth — $349/mo"}
             </a>
             <Link className="btn btn--ghost" to={path("/diagnostic")}>
               {fr ? "Leak Score 60 s" : "60s Leak Score"}
@@ -168,7 +168,7 @@ export function PricingPage() {
       </section>
       <ConvertStickyBar
         primaryHref={growthHref}
-        primaryLabel={fr ? "Acheter Growth — 499 $" : "Buy Growth — $499"}
+        primaryLabel={fr ? "Essayer Growth — 349 $" : "Try Growth — $349"}
         external
         onPrimaryClick={() =>
           trackInitiateCheckout({ plan: "grow_hub_growth", value: PLANS.grow_hub_growth.amountCad })

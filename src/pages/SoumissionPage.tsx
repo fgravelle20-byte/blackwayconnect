@@ -125,12 +125,12 @@ export function SoumissionPage() {
         <div className="page-hero">
           <p className="eyebrow">{fr ? "Master Tools · Soumission" : "Master Tools · Quote"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Générateur de soumission → lien Stripe" : "Quote generator → Stripe link"}
+            {fr ? "Générateur de soumission → lien Paddle" : "Quote generator → Paddle link"}
           </h1>
           <p className="lede">
             {fr
-              ? "Rédigez une soumission propre, copiez-la, et poussez le paiement vers Growth (499 $/mois) — même fil que le Portail."
-              : "Draft a clean quote, copy it, and push payment toward Growth ($499/mo) — same thread as the Portal."}
+              ? "Rédigez une soumission propre, copiez-la, et poussez le paiement vers Growth (349 $/mois) — même fil que le Portail."
+              : "Draft a clean quote, copy it, and push payment toward Growth ($349/mo) — same thread as the Portal."}
           </p>
         </div>
 
@@ -178,13 +178,13 @@ export function SoumissionPage() {
                 target="_blank"
                 onClick={() => trackInitiateCheckout({ plan: FEATURED_PLAN, value: PLANS[FEATURED_PLAN].amountCad })}
               >
-                {fr ? "Ouvrir lien Stripe Growth" : "Open Stripe Growth link"}
+                {fr ? "Ouvrir lien Paddle Growth" : "Open Stripe Growth link"}
               </a>
             </div>
             <p className="roi-result__note">
               {fr
-                ? "Démo : le lien active Grow Hub Growth. En production, vos clients paient depuis le Portail / Payment Links."
-                : "Demo: link activates Grow Hub Growth. In production, clients pay from Portal / Payment Links."}
+                ? "Démo : le lien active Grow Hub Growth. En production, vos clients paient depuis le Portail / lien de paiements."
+                : "Demo: link activates Grow Hub Growth. In production, clients pay from Portal / lien de paiements."}
             </p>
           </aside>
         </div>

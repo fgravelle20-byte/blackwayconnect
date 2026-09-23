@@ -153,7 +153,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Mondial",
     heroTitle: "Du lead au revenu, sans fuite.",
     heroBody:
-      "Système commercial bilingue FR/EN : scoring, relances, soumissions et paiements. Grow Hub Growth — 499 $/mois, Stripe, annulable. Portail inclus dès le jour 1.",
+      "Système commercial bilingue FR/EN : scoring, relances, soumissions et paiements. Grow Hub Growth — 349 $/mois, Paddle, annulable. Portail inclus dès le jour 1.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
@@ -192,43 +192,25 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Commencez léger. Montez sans changer de système.",
     plansBody:
-      "Abonnement mensuel en CAD via Stripe. Portail Client Master + accès mobile inclus (surplus). Chaque palier ajoute de la capacité — pas une nouvelle plateforme. Pack Cellulaire = outils terrain optionnels.",
+      "Abonnement mensuel en CAD via Paddle avec essai de 14 jours. Portail Client Master + accès mobile inclus. Une seule plateforme, trois offres claires.",
     plans: [
-      {
-        key: "grow_hub_spark",
-        name: "Spark",
-        price: "99 $ / mois",
-        blurb: "Pipeline + secrétaire IA 24h — validez le stack sans engagement lourd.",
-      },
       {
         key: "grow_hub_launch",
         name: "Launch",
-        price: "249 $ / mois",
+        price: "149 $ / mois",
         blurb: "Pipeline structuré, relances cadrées, soumissions suivies.",
       },
       {
         key: "grow_hub_growth",
         name: "Growth",
-        price: "499 $ / mois",
+        price: "349 $ / mois",
         blurb: "Score, relances, soumissions et paiements mesurés — le moteur recommandé.",
       },
       {
         key: "grow_hub_scale",
-        name: "Scale",
-        price: "749 $ / mois",
+        name: "Automation",
+        price: "699 $ / mois",
         blurb: "Multi-équipes et automatisations avancées — une seule plateforme revenu.",
-      },
-      {
-        key: "grow_hub_command",
-        name: "Command",
-        price: "1 249 $ / mois",
-        blurb: "Ops CRM + acquisition gérée — exécution, pas seulement un logiciel.",
-      },
-      {
-        key: "grow_hub_partner",
-        name: "Partner",
-        price: "2 499 $ / mois",
-        blurb: "Plateforme + mandat niveau agence — pour remplacer le patchwork.",
       },
     ],
     servicesTitle: "Une plateforme. Une équipe pour bâtir autour.",
@@ -254,7 +236,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     marketTitle: "Né au Québec. Vendu partout dans le monde.",
     marketBody:
-      "Europe, Amériques, ailleurs — si un client veut Grow Hub, il s’abonne. Paiement Stripe mondial, parcours bilingues FR/EN, un seul système.",
+      "Europe, Amériques, ailleurs — si un client veut Grow Hub, il s’abonne. Paiement Paddle mondial, parcours bilingues FR/EN, un seul système.",
     consultTitle: "Parlez à l’équipe BlackWay.",
     consultBody:
       "Décrivez votre pipeline et votre volume de leads — nous recommandons le forfait Grow Hub adapté, ou une consultation stratégique avant d’acheter.",
@@ -311,7 +293,7 @@ export const copy: Record<Lang, Copy> = {
       heroBody: "Connect. Build. Grow. — une marque noire et rouge, une promesse claire : fermer plus sans empiler d’outils.",
       visionTitle: "La vision",
       visionBody:
-        "Un seul fil du premier clic au paiement Stripe. Moins de friction, plus de provenance revenu — pour les équipes qui vendent vraiment.",
+        "Un seul fil du premier clic au paiement Paddle. Moins de friction, plus de provenance revenu — pour les équipes qui vendent vraiment.",
       valuesTitle: "Ce qui nous guide",
       values: [
         {
@@ -366,7 +348,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "Infrastructure commerciale, pas une pile d’outils.",
     proofBody: "Paiements, CRM et portail client — un fil continu du premier clic à l’encaissement.",
     proofItems: [
-      "Stripe : abonnements et paiements en CAD, annulables, sans friction.",
+      "Paddle : abonnements et paiements en CAD, annulables, sans friction.",
       "HubSpot : pipeline et opportunités synchronisés avec le dossier prospect.",
       "Portail Client Master : dashboard web et mobile inclus avec Grow Hub.",
       "Parcours bilingue FR/EN — une source de vérité, partout dans le monde.",
@@ -378,7 +360,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Puis-je m’abonner sans appel ?",
-        a: "Oui. Les forfaits Spark à Partner s’ouvrent en Stripe Checkout. L’offre Entreprise se discute en consultation. Les Master Tools (/outils) aident à choisir le palier.",
+        a: "Oui. Les forfaits Spark à Partner s’ouvrent en Paddle Checkout. L’offre Entreprise se discute en consultation. Les Master Tools (/outils) aident à choisir le palier.",
       },
       {
         q: "Avez-vous un service client 24h ?",
@@ -390,11 +372,11 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Où vont mes leads et paiements ?",
-        a: "Le site et l’app envoient les demandes vers HubSpot via notre couche d’intégration. Les webhooks Stripe alimentent le même CRM — paiements et abandons visibles rapidement.",
+        a: "Le site et l’app envoient les demandes vers HubSpot via notre couche d’intégration. Les webhooks Paddle alimentent le même CRM — paiements et abandons visibles rapidement.",
       },
       {
         q: "Le français et l’anglais sont-ils supportés ?",
-        a: "Oui. Français et anglais sur le site, les parcours et le CRM. Un client en Europe, au Canada ou ailleurs s’abonne via Stripe comme tout le monde.",
+        a: "Oui. Français et anglais sur le site, les parcours et le CRM. Un client en Europe, au Canada ou ailleurs s’abonne via Paddle comme tout le monde.",
       },
       {
         q: "Quel forfait choisir ?",
@@ -406,7 +388,7 @@ export const copy: Record<Lang, Copy> = {
       },
     ],
     contactAside: "Préférez démarrer tout de suite ?",
-    contactFast: "Choisissez un forfait — paiement sécurisé Stripe, sans formulaire long.",
+    contactFast: "Choisissez un forfait — paiement sécurisé Paddle, sans formulaire long.",
     footer: "Du lead au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
@@ -414,7 +396,7 @@ export const copy: Record<Lang, Copy> = {
     terms: "Conditions (Terms of Service)",
     refund: "Remboursement (Refund Policy)",
     privacyBody:
-      "Privacy Notice — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Stripe). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
+      "Privacy Notice — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Paddle). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
     termsBody:
       "Terms of Service — L'utilisation du site et des services BlackWayConnect implique l'acceptation des présentes conditions, de la Privacy Notice et de la Refund Policy. Les services sont fournis selon les forfaits convenus ; montants en CAD sauf indication contraire. Usage interdit à des fins illégales ou abusives. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact : serviceclient@blackwayconnect.com.",
     refundBody:
@@ -452,7 +434,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Global",
     heroTitle: "From lead to revenue, without leakage.",
     heroBody:
-      "Bilingual FR/EN commercial system: scoring, follow-ups, quotes and payments. Grow Hub Growth — $499/mo, Stripe, cancel anytime. Portal included on day one.",
+      "Bilingual FR/EN commercial system: scoring, follow-ups, quotes and payments. Grow Hub Growth — $349/mo, Paddle, cancel anytime. Portal included on day one.",
     office: {
       eyebrow: "BlackWayConnect office",
       title: "A day inside the system.",
@@ -491,43 +473,25 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Start light. Scale without switching systems.",
     plansBody:
-      "Monthly CAD via Stripe. Client Master Portal + mobile access included (surplus). Each tier adds capacity — not a new platform. Cellular Pack = optional field tools.",
+      "Monthly CAD via Paddle with a 14-day trial. Client Master Portal + mobile access included. One platform, three clear offers.",
     plans: [
-      {
-        key: "grow_hub_spark",
-        name: "Spark",
-        price: "$99 / mo",
-        blurb: "Pipeline + 24/7 AI secretary — prove the stack without overcommitting.",
-      },
       {
         key: "grow_hub_launch",
         name: "Launch",
-        price: "$249 / mo",
+        price: "$149 / mo",
         blurb: "Structured pipeline, disciplined follow-ups, quotes tracked.",
       },
       {
         key: "grow_hub_growth",
         name: "Growth",
-        price: "$499 / mo",
+        price: "$349 / mo",
         blurb: "Scoring, follow-ups, quotes and payments measured — the recommended engine.",
       },
       {
         key: "grow_hub_scale",
-        name: "Scale",
-        price: "$749 / mo",
+        name: "Automation",
+        price: "$699 / mo",
         blurb: "Multi-team advanced automation — one revenue platform.",
-      },
-      {
-        key: "grow_hub_command",
-        name: "Command",
-        price: "$1,249 / mo",
-        blurb: "CRM ops + managed acquisition — execution, not software alone.",
-      },
-      {
-        key: "grow_hub_partner",
-        name: "Partner",
-        price: "$2,499 / mo",
-        blurb: "Platform + agency retainer — replace the tool patchwork.",
       },
     ],
     servicesTitle: "One platform. One team to build around it.",
@@ -553,7 +517,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     marketTitle: "Born in Québec. Sold worldwide.",
     marketBody:
-      "Europe, the Americas, anywhere — if a client wants Grow Hub, they subscribe. Global Stripe checkout, bilingual FR/EN journeys, one system.",
+      "Europe, the Americas, anywhere — if a client wants Grow Hub, they subscribe. Global Paddle checkout, bilingual FR/EN journeys, one system.",
     consultTitle: "Talk to the BlackWay team.",
     consultBody:
       "Share your pipeline and lead volume — we’ll recommend the right Grow Hub plan, or a strategy consult before you buy.",
@@ -610,7 +574,7 @@ export const copy: Record<Lang, Copy> = {
       heroBody: "Connect. Build. Grow. — black and red brand, clear promise: close more without stacking tools.",
       visionTitle: "The vision",
       visionBody:
-        "One thread from first click to Stripe payment. Less friction, more revenue provenance — for teams that actually sell.",
+        "One thread from first click to Paddle payment. Less friction, more revenue provenance — for teams that actually sell.",
       valuesTitle: "What guides us",
       values: [
         {
@@ -665,7 +629,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "Commercial infrastructure, not a tool stack.",
     proofBody: "Payments, CRM and client portal — one continuous thread from first click to cash.",
     proofItems: [
-      "Stripe: CAD subscriptions and payments, cancel anytime, no friction.",
+      "Paddle: CAD subscriptions and payments, cancel anytime, no friction.",
       "HubSpot: pipeline and opportunities synced to the prospect record.",
       "Client Master Portal: web and mobile dashboard included with Grow Hub.",
       "Bilingual FR/EN journeys — one source of truth, worldwide.",
@@ -677,7 +641,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Can I subscribe without a call?",
-        a: "Yes. Spark through Partner open in Stripe Checkout. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
+        a: "Yes. Spark through Partner open in Paddle Checkout. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
       },
       {
         q: "Do you offer 24/7 client service?",
@@ -689,11 +653,11 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Where do leads and payments go?",
-        a: "The site and app send inquiries into HubSpot through our integration layer. Stripe webhooks feed the same CRM — payments and abandonments visible quickly.",
+        a: "The site and app send inquiries into HubSpot through our integration layer. Paddle webhooks feed the same CRM — payments and abandonments visible quickly.",
       },
       {
         q: "Are French and English supported?",
-        a: "Yes. French and English on the site, journeys and CRM. A client in Europe, Canada or anywhere else subscribes via Stripe like everyone else.",
+        a: "Yes. French and English on the site, journeys and CRM. A client in Europe, Canada or anywhere else subscribes via Paddle like everyone else.",
       },
       {
         q: "Which plan should I pick?",
@@ -705,7 +669,7 @@ export const copy: Record<Lang, Copy> = {
       },
     ],
     contactAside: "Prefer to start now?",
-    contactFast: "Pick a plan — secure Stripe checkout, no long form.",
+    contactFast: "Pick a plan — secure Paddle checkout, no long form.",
     footer: "From lead to revenue. One connected growth system.",
     footerQrTitle: "Client portal",
     footerQrHint: "Scan to open the Client Master Portal — included with your plan.",
@@ -713,7 +677,7 @@ export const copy: Record<Lang, Copy> = {
     terms: "Terms of Service",
     refund: "Refund Policy",
     privacyBody:
-      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Stripe). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
+      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Paddle). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
     termsBody:
       "Terms of Service — Use of the BlackWayConnect site and services means you accept these Terms, the Privacy Notice and the Refund Policy. Services are delivered per agreed plans; amounts are CAD unless stated otherwise. Illegal or abusive use is prohibited. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact: serviceclient@blackwayconnect.com.",
     refundBody:
