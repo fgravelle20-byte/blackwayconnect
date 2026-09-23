@@ -140,7 +140,7 @@ export const copy: Record<Lang, Copy> = {
     ctaConsult: "Réserver une consultation",
     ctaGrow: "Voir Grow Hub en action",
     ctaPricing: "Comparer les forfaits",
-    ctaBuy: "S’abonner — Stripe",
+    ctaBuy: "S’abonner — Paddle",
     ctaApp: "Ouvrir le portail",
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
@@ -421,7 +421,7 @@ export const copy: Record<Lang, Copy> = {
     ctaConsult: "Book a consultation",
     ctaGrow: "See Grow Hub in action",
     ctaPricing: "Compare plans",
-    ctaBuy: "Subscribe — Stripe",
+    ctaBuy: "Subscribe — Paddle",
     ctaApp: "Open the portal",
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
@@ -518,169 +518,3 @@ export const copy: Record<Lang, Copy> = {
     marketTitle: "Born in Québec. Sold worldwide.",
     marketBody:
       "Europe, the Americas, anywhere — if a client wants Grow Hub, they subscribe. Global Paddle checkout, bilingual FR/EN journeys, one system.",
-    consultTitle: "Talk to the BlackWay team.",
-    consultBody:
-      "Share your pipeline and lead volume — we’ll recommend the right Grow Hub plan, or a strategy consult before you buy.",
-    form: {
-      first: "First name",
-      last: "Last name",
-      email: "Email",
-      company: "Company",
-      phone: "Phone",
-      message: "Message",
-      plan: "Target plan",
-      submit: "Send request",
-      success: "Request received. We will reach out shortly.",
-      error: "Could not send. Retry or email serviceclient@blackwayconnect.com.",
-    },
-    teamTitle: "The team behind the system.",
-    teamBody:
-      "Strategists, builders and operators focused on cash collected — not collecting trendy tools.",
-    teamGallery: [
-      {
-        src: "/office-team.jpg",
-        title: "Ops that closes the day",
-        body: "Screens on, priorities scored — the team reads the pipeline, not a tab jungle.",
-      },
-      {
-        src: "/team/team-collab.jpg",
-        title: "One table, one source of truth",
-        body: "Connect. Build. Grow. — strategy and build on the same prospect record.",
-      },
-      {
-        src: "/office-ops.jpg",
-        title: "Pipeline focus",
-        body: "One file at a time — read, score, next action. No theatre.",
-      },
-      {
-        src: "/photos/slot-atelier.jpg",
-        title: "Field atelier",
-        body: "Next photo: drop it in public/photos/incoming/ — the slot activates itself.",
-        optional: true,
-      },
-      {
-        src: "/photos/slot-ops.jpg",
-        title: "Live ops",
-        body: "Slot ready for IMG_2084 / IMG_2068 — professional caption on drop.",
-        optional: true,
-      },
-    ],
-    mission: {
-      eyebrow: "Who we are",
-      title: "Our mission: lead to revenue, no leakage.",
-      body: "BlackWayConnect builds the bilingual commercial system that turns every inquiry into the next action that collects — from Québec to the world.",
-      heroSrc: "/photos/brand-pillar.jpg",
-      heroTitle: "Your vision. Our solution. Your success.",
-      heroBody: "Connect. Build. Grow. — black and red brand, clear promise: close more without stacking tools.",
-      visionTitle: "The vision",
-      visionBody:
-        "One thread from first click to Paddle payment. Less friction, more revenue provenance — for teams that actually sell.",
-      valuesTitle: "What guides us",
-      values: [
-        {
-          title: "Proof before gadgets",
-          body: "We diagnose the leak before selling tech noise.",
-        },
-        {
-          title: "One revenue provenance",
-          body: "Site, CRM, quotes and payments in one system — zero conflicting versions.",
-        },
-        {
-          title: "Bilingual by design",
-          body: "FR/EN, CA/US — journeys and messaging adapted without duplicating the stack.",
-        },
-      ],
-      photos: [
-        {
-          src: "/team/team-collab.jpg",
-          title: "The team that runs the system",
-          body: "Seven stares, one table, one world map — BlackWayConnect in commercial formation.",
-        },
-        {
-          src: "/office-ops.jpg",
-          title: "Connected to collect",
-          body: "Infrastructure, branding, collaboration: the field where revenue decides.",
-        },
-        {
-          src: "/photos/slot-mission.jpg",
-          title: "Next mission frame",
-          body: "Open slot — drop IMG_2275 or EA1F9549 into public/photos/incoming/.",
-          optional: true,
-        },
-      ],
-    },
-    field: {
-      eyebrow: "In the field",
-      title: "The team in action — not a brochure.",
-      body: "Behind Grow Hub: humans who align pipeline, ops and brand. This is BlackWay on the ground.",
-      items: [
-        {
-          src: "/photos/field-01.jpg",
-          title: "Commercial war room",
-          body: "Around the wood, facing the map — every lead gets a next action.",
-        },
-        {
-          src: "/photos/brand-pillar.jpg",
-          title: "The brand that stands",
-          body: "Black, red #e10600, sharp message — your vision becomes our execution.",
-        },
-      ],
-    },
-    proofTitle: "Commercial infrastructure, not a tool stack.",
-    proofBody: "Payments, CRM and client portal — one continuous thread from first click to cash.",
-    proofItems: [
-      "Paddle: CAD subscriptions and payments, cancel anytime, no friction.",
-      "HubSpot: pipeline and opportunities synced to the prospect record.",
-      "Client Master Portal: web and mobile dashboard included with Grow Hub.",
-      "Bilingual FR/EN journeys — one source of truth, worldwide.",
-    ],
-    proofQuotes: [],
-    proofNote: "",
-    faqTitle: "Questions before you start.",
-    faqBody: "Clear answers to pick a plan, a diagnostic or a consultation.",
-    faq: [
-      {
-        q: "Can I subscribe without a call?",
-        a: "Yes. Spark through Partner open in Paddle Checkout. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
-      },
-      {
-        q: "Do you offer 24/7 client service?",
-        a: "Yes. The BlackWay AI Secretary (Advisor 24h) answers around the clock — plans, diagnostic, Grow Hub and lead capture. For a human: serviceclient@blackwayconnect.com.",
-      },
-      {
-        q: "Where is your office?",
-        a: "313 Cuvillier Ouest, suite 302, J4L 0B2, Québec, Canada. See the Google Map in the footer and on the Contact page.",
-      },
-      {
-        q: "Where do leads and payments go?",
-        a: "The site and app send inquiries into HubSpot through our integration layer. Paddle webhooks feed the same CRM — payments and abandonments visible quickly.",
-      },
-      {
-        q: "Are French and English supported?",
-        a: "Yes. French and English on the site, journeys and CRM. A client in Europe, Canada or anywhere else subscribes via Paddle like everyone else.",
-      },
-      {
-        q: "Which plan should I pick?",
-        a: "Spark to test, Launch to structure, Growth (recommended) to sell and measure, Scale / Command / Partner for multi-team, ops and retainer. Compare on /forfaits or /how-it-works.",
-      },
-      {
-        q: "Billing issue?",
-        a: "Email accounting@blackwayconnect.com. For general support: serviceclient@blackwayconnect.com.",
-      },
-    ],
-    contactAside: "Prefer to start now?",
-    contactFast: "Pick a plan — secure Paddle checkout, no long form.",
-    footer: "From lead to revenue. One connected growth system.",
-    footerQrTitle: "Client portal",
-    footerQrHint: "Scan to open the Client Master Portal — included with your plan.",
-    privacy: "Privacy Notice",
-    terms: "Terms of Service",
-    refund: "Refund Policy",
-    privacyBody:
-      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Paddle). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
-    termsBody:
-      "Terms of Service — Use of the BlackWayConnect site and services means you accept these Terms, the Privacy Notice and the Refund Policy. Services are delivered per agreed plans; amounts are CAD unless stated otherwise. Illegal or abusive use is prohibited. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact: serviceclient@blackwayconnect.com.",
-    refundBody:
-      "Refund Policy — You may cancel a subscription per the offer terms; access usually continues through the paid period. Fees already charged are not automatically refundable; each request is reviewed under applicable law (including Québec/Canada consumer protection) and services delivered. Request: serviceclient@blackwayconnect.com (ideally within 14 days) with date, amount and transaction reference.",
-  },
-};
