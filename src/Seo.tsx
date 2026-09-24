@@ -50,14 +50,14 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
   const map: Record<string, PageSeo> = {
     home: {
       title: fr
-        ? "Plateforme lead-to-revenue · Mondiale"
-        : "Lead-to-revenue platform · Global",
+        ? "Master Leads · Twin Turbo Full Performance"
+        : "Master Leads · Twin Turbo Full Performance",
       ogTitle: fr
-        ? "BlackWayConnect — fermez plus, sans empiler d’outils"
-        : "BlackWayConnect — close more without tool sprawl",
+        ? "BlackWayConnect — Master Leads Twin Turbo"
+        : "BlackWayConnect — Master Leads Twin Turbo",
       description: fr
-        ? "Plateforme bilingue FR/EN lead-to-revenue : site, CRM, soumissions et paiements Paddle. Née au Québec — vendue partout dans le monde, Europe incluse."
-        : "Bilingual FR/EN lead-to-revenue platform: site, CRM, quotes and Paddle payments. Born in Québec — sold worldwide, including Europe.",
+        ? "Master Leads Platform : Twin Turbo Volume + Qualité, scoring HubSpot, checkout Paddle, Portail Client. Née au Québec — vendue mondialement."
+        : "Master Leads Platform: Twin Turbo Volume + Quality, HubSpot scoring, Paddle checkout, Client Portal. Born in Québec — sold worldwide.",
     },
     outils: {
       title: fr ? "Master Tools — arsenal lead-to-revenue" : "Master Tools — lead-to-revenue toolkit",

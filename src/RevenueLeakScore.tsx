@@ -6,7 +6,6 @@ import { checkoutUrl, PLANS, type PlanKey } from "./stripeConfig";
 import { copy } from "./copy";
 import {
   computeLeakScore,
-  recommendPlan,
   scoreCopy,
 } from "./scoreCopy";
 import { computeTwinTurbo, twinTurboLeadFields } from "./leadEngines";
@@ -44,12 +43,13 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [score, setScore] = useState(0);
+  const [leakRaw, setLeakRaw] = useState(0);
   const [plan, setPlan] = useState<PlanKey>("grow_hub_growth");
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const animated = useAnimatedScore(score, phase === "result");
-  const twin = computeTwinTurbo({ leakScore: score, answers });
+  const twin = computeTwinTurbo({ leakScore: leakRaw || score, answers });
   const band = twin.band;
   const planMeta = plans.find((p) => p.key === plan)!;
 
@@ -60,9 +60,10 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
       setStep((s) => s + 1);
     } else {
       const s = computeLeakScore(next, sc.questions);
-      const rec = recommendPlan(s, next);
-      setScore(s);
-      setPlan(rec);
+      const twinR = computeTwinTurbo({ leakScore: s, answers: next });
+      setLeakRaw(s);
+      setScore(twinR.twinScore);
+      setPlan(twinR.recommendedPlan);
       setPhase("result");
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     }
@@ -107,7 +108,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
       bw_ref: "site",
       icp: "oui_pme",
       ...twinTurboLeadFields(twin, answers),
-      leak_score: score,
+      leak_score: leakRaw || score,
     };
 
     try {
@@ -129,6 +130,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
     setStep(0);
     setAnswers({});
     setScore(0);
+    setLeakRaw(0);
     setStatus("idle");
   }
 
@@ -220,9 +222,9 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
                 <span className="eyebrow">{lang === "fr" ? "Turbo Qualité" : "Quality Turbo"}</span>
                 <strong>{twin.qualityTurbo}</strong>
               </div>
-              <div className="rls__twin-cell rls__twin-cell--blend">
-                <span className="eyebrow">Twin</span>
-                <strong>{twin.twinScore}</strong>
+              <div className="rls__twin-cell">
+                <span className="eyebrow">{lang === "fr" ? "Fuite brute" : "Raw leak"}</span>
+                <strong>{leakRaw}</strong>
               </div>
             </div>
           ) : null}

@@ -156,7 +156,7 @@ const CORS = {
 };
 
 const PORTAL_TTL_SEC = 30 * 24 * 3600; // ~30 days
-const SESSION_CACHE_TTL_SEC = 24 * 3600; // webhook → claim race (24h)
+const SESSION_CACHE_TTL_SEC = 90 * 24 * 3600; // webhook → claim durable (90 jours)
 const SESSION_CACHE_ORIGIN = "https://bw-pipe-session-cache.internal";
 const HS_PORTAL_PROPS = [
   "email",
@@ -570,10 +570,13 @@ async function putSessionMap(env, sessionId, payload) {
     email,
     forfait: payload?.forfait || null,
     at: Date.now(),
+    payment_id: id,
   });
   if (env.BW_SESSIONS) {
     try {
       await env.BW_SESSIONS.put(`payment:${id}`, body, { expirationTtl: SESSION_CACHE_TTL_SEC });
+      // Email index — claim by email still works if txn link lost from browser.
+      await env.BW_SESSIONS.put(`email:${email}`, body, { expirationTtl: SESSION_CACHE_TTL_SEC });
     } catch (e) {
       console.log("session kv put", e);
     }
@@ -662,7 +665,7 @@ async function ensureBwLastCheckoutSessionProp(env) {
           type: "string",
           fieldType: "text",
           groupName: g,
-          description: "Stripe Checkout Session ID (cs_) for Client Master Portal claim",
+          description: "Last Stripe cs_… or Paddle txn_… for Client Master Portal claim",
         }),
       });
       if (create.status === 200 || create.status === 201) {
@@ -753,9 +756,65 @@ async function paddleCustomerEmail(env, customerId) {
   return String(body?.data?.email || "").trim().toLowerCase();
 }
 
+/** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
+async function listPortalLeads(env, token) {
+  const session = await verifyPortalToken(env, token);
+  const contact = await searchHsContact(env, "email", session.email);
+  if (!contact?.id) {
+    return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
+  }
+  const assoc = await hs(env, "GET", `/crm/v3/objects/contacts/${contact.id}/associations/deals`);
+  const dealIds = (assoc.data?.results || [])
+    .map((r) => String(r.toObjectId || r.id || ""))
+    .filter(Boolean)
+    .slice(0, 25);
+  if (!dealIds.length) {
+    return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
+  }
+  const batch = await hs(env, "POST", "/crm/v3/objects/deals/batch/read", {
+    inputs: dealIds.map((id) => ({ id })),
+    properties: [
+      "dealname",
+      "dealstage",
+      "amount",
+      "bw_forfait",
+      "bw_lead_score",
+      "bw_livraison_statut",
+      "bw_source",
+      "bw_segment",
+      "createdate",
+      "hs_lastmodifieddate",
+    ],
+  });
+  const leads = (batch.data?.results || [])
+    .map((d) => ({
+      id: d.id,
+      name: d.properties?.dealname || "",
+      stage: d.properties?.dealstage || "",
+      amount: d.properties?.amount || null,
+      forfait: d.properties?.bw_forfait || null,
+      score: d.properties?.bw_lead_score ? Number(d.properties.bw_lead_score) : null,
+      delivery: d.properties?.bw_livraison_statut || null,
+      source: d.properties?.bw_source || null,
+      segment: d.properties?.bw_segment || null,
+      createdAt: d.properties?.createdate || null,
+      updatedAt: d.properties?.hs_lastmodifieddate || null,
+    }))
+    .sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
+  const scored = leads.map((l) => l.score).filter((n) => Number.isFinite(n));
+  return {
+    email: session.email,
+    engine: "twin_turbo_full_performance",
+    empty: leads.length === 0,
+    count: leads.length,
+    avgScore: scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : null,
+    leads,
+  };
+}
+
 /**
  * Claim portal access.
- * session_id path: Cache/KV → HubSpot bw_last_checkout_session → Stripe API (only if STRIPE_SECRET_KEY).
+ * session_id path: Cache/KV → HubSpot bw_last_checkout_session → deal payment id → Stripe API (only if STRIPE_SECRET_KEY).
  * No Stripe secret required after webhook has stored the mapping.
  */
 async function claimPortal(env, p) {
@@ -774,7 +833,7 @@ async function claimPortal(env, p) {
       forfait = resoudreForfait(cached.forfait || p.plan);
     }
 
-    if (!email && sessionId.startsWith("cs_")) {
+    if (!email) {
       await ensureBwLastCheckoutSessionProp(env);
       contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
       if (contact) {
@@ -784,8 +843,8 @@ async function claimPortal(env, p) {
       }
     }
 
-    // Deal payment id = session id on checkout.session.* paths (survives without contact prop).
-    if (!email && sessionId.startsWith("cs_")) {
+    // Deal payment id = cs_… or txn_… (durable HubSpot path — survives Cache TTL).
+    if (!email) {
       try {
         const fromDeal = await claimFromDealSession(env, sessionId);
         if (fromDeal?.email) {
@@ -1231,6 +1290,17 @@ export default {
         const token = auth.replace(/^Bearer\s+/i, "").trim();
         if (!token) return json({ erreur: "token requis" }, 401);
         return json(await portalMe(env, token));
+      } catch (e) {
+        return json({ erreur: String(e.message || e) }, 401);
+      }
+    }
+
+    if (url.pathname === "/portal/leads" && request.method === "GET") {
+      try {
+        const auth = request.headers.get("Authorization") || "";
+        const token = auth.replace(/^Bearer\s+/i, "").trim();
+        if (!token) return json({ erreur: "token requis" }, 401);
+        return json(await listPortalLeads(env, token));
       } catch (e) {
         return json({ erreur: String(e.message || e) }, 401);
       }

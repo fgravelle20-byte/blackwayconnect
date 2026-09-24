@@ -2,10 +2,7 @@ name: BlackWay public journey smoke
 
 on:
   push:
-    branches: [codex/blackway-owner-console]
-    paths:
-      - scripts/smoke-blackway.mjs
-      - .github/workflows/smoke-blackway.yml
+    branches: [main]
   workflow_dispatch: {}
 
 jobs:
@@ -13,7 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check public pages and private API denial
-        env:
-          BW_PREVIEW_URL: https://codex-blackway-owner-console-blackway-site.f-gravelle20.workers.dev
+      - name: Check public funnel + Paddle routing
         run: node scripts/smoke-blackway.mjs

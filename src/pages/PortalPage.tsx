@@ -36,6 +36,20 @@ type PortalSession = {
   exp: number;
 };
 
+type PortalLead = {
+  id: string;
+  name: string;
+  stage: string;
+  amount: string | null;
+  forfait: string | null;
+  score: number | null;
+  delivery: string | null;
+  source: string | null;
+  segment: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
 const TOOL_COPY: Partial<
   Record<PortalToolId, { fr: { title: string; body: string; cta: string }; en: { title: string; body: string; cta: string } }>
 > = {
@@ -154,11 +168,50 @@ export function PortalPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
+  const [leads, setLeads] = useState<PortalLead[]>([]);
+  const [leadsMeta, setLeadsMeta] = useState<{ empty: boolean; avgScore: number | null; count: number } | null>(null);
+  const [leadsBusy, setLeadsBusy] = useState(false);
 
   const persist = useCallback((s: PortalSession) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
     setSession(s);
   }, []);
+
+  const loadLeads = useCallback(async (token: string) => {
+    setLeadsBusy(true);
+    try {
+      const res = await fetch("/api/portal/leads", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = (await res.json()) as {
+        leads?: PortalLead[];
+        empty?: boolean;
+        avgScore?: number | null;
+        count?: number;
+        erreur?: string;
+      };
+      if (!res.ok) {
+        setLeads([]);
+        setLeadsMeta({ empty: true, avgScore: null, count: 0 });
+        return;
+      }
+      setLeads(data.leads || []);
+      setLeadsMeta({
+        empty: !!data.empty || !(data.leads || []).length,
+        avgScore: data.avgScore ?? null,
+        count: data.count ?? (data.leads || []).length,
+      });
+    } catch {
+      setLeads([]);
+      setLeadsMeta({ empty: true, avgScore: null, count: 0 });
+    } finally {
+      setLeadsBusy(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (session?.token) void loadLeads(session.token);
+  }, [session?.token, loadLeads]);
 
   const claim = useCallback(
     async (body: Record<string, string>) => {
@@ -259,6 +312,8 @@ export function PortalPage() {
   function logout() {
     localStorage.removeItem(STORAGE_KEY);
     setSession(null);
+    setLeads([]);
+    setLeadsMeta(null);
   }
 
   function openSecretary() {
@@ -362,8 +417,8 @@ export function PortalPage() {
             <p className="lede portal-head__meta">{session.email}</p>
             <p className="lede" style={{ marginTop: "0.5rem" }}>
               {fr
-                ? "Pitch : contrôle ton dashboard peu importe où tu es — accès mobile inclus avec ton forfait."
-                : "Pitch: control your dashboard wherever you are — mobile access included with your plan."}
+                ? "Master Leads — dashboard web + mobile (ajoute cette page à l’écran d’accueil). Les apps stores arrivent ensuite."
+                : "Master Leads — web + mobile dashboard (add this page to your home screen). App stores come next."}
             </p>
           </div>
           <button type="button" className="btn btn--ghost" onClick={logout}>
@@ -374,9 +429,76 @@ export function PortalPage() {
         <div className="portal-status" role="status">
           <span className="portal-status__dot" aria-hidden />
           {fr
-            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile dashboard: inclus · Pack Cellulaire: ${hasCell ? "oui" : "non"}`
-            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile dashboard: included · Cellular Pack: ${hasCell ? "yes" : "no"}`}
+            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile: Portail web · Pack Cellulaire: ${hasCell ? "oui" : "non"}`
+            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile: web Portal · Cellular Pack: ${hasCell ? "yes" : "no"}`}
         </div>
+
+        <section className="portal-inbox" aria-labelledby="portal-inbox-title">
+          <div className="portal-inbox__head">
+            <div>
+              <p className="eyebrow">Master Leads</p>
+              <h2 id="portal-inbox-title">{fr ? "Mes leads livrés" : "My delivered leads"}</h2>
+              <p className="lede">
+                {fr
+                  ? "Pipeline HubSpot lié à votre compte — score Twin Turbo + statut de livraison."
+                  : "HubSpot pipeline linked to your account — Twin Turbo score + delivery status."}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="btn btn--ghost"
+              disabled={leadsBusy || !session.token}
+              onClick={() => void loadLeads(session.token)}
+            >
+              {leadsBusy ? (fr ? "Chargement…" : "Loading…") : fr ? "Actualiser" : "Refresh"}
+            </button>
+          </div>
+          {leadsMeta && !leadsMeta.empty ? (
+            <p className="portal-inbox__meta">
+              {fr ? `${leadsMeta.count} dossier(s)` : `${leadsMeta.count} record(s)`}
+              {leadsMeta.avgScore != null
+                ? fr
+                  ? ` · score moyen ${leadsMeta.avgScore}`
+                  : ` · avg score ${leadsMeta.avgScore}`
+                : ""}
+            </p>
+          ) : null}
+          {leadsMeta?.empty ? (
+            <div className="portal-inbox__empty">
+              <p>
+                {fr
+                  ? "Aucun lead livré pour l’instant. Dès qu’un dossier HubSpot est associé à votre courriel, il apparaît ici."
+                  : "No delivered leads yet. As soon as a HubSpot deal is linked to your email, it appears here."}
+              </p>
+              <Link className="btn btn--primary" to={path("/diagnostic")}>
+                {fr ? "Lancer Twin Turbo" : "Run Twin Turbo"}
+              </Link>
+            </div>
+          ) : (
+            <ul className="portal-inbox__list">
+              {leads.map((lead) => (
+                <li key={lead.id} className="portal-inbox__item">
+                  <div>
+                    <strong>{lead.name || lead.id}</strong>
+                    <p>
+                      {[lead.forfait, lead.source, lead.delivery].filter(Boolean).join(" · ") || "—"}
+                    </p>
+                  </div>
+                  <div className="portal-inbox__score">
+                    {lead.score != null ? (
+                      <>
+                        <span className="eyebrow">Twin</span>
+                        <strong>{lead.score}</strong>
+                      </>
+                    ) : (
+                      <span>—</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
         <div className="portal-plan" style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           <div className="portal-plan__card">
@@ -412,8 +534,8 @@ export function PortalPage() {
             <p className="portal-plan__price">{fr ? "Inclus avec Grow Hub" : "Included with Grow Hub"}</p>
             <p className="lede" style={{ fontSize: "0.95rem" }}>
               {fr
-                ? "Ajoute cette page à l’écran d’accueil — même Portail, partout."
-                : "Add this page to your home screen — same Portal, anywhere."}
+                ? "Même Portail dans le navigateur mobile — ajoutez à l’écran d’accueil. Apps stores : bientôt."
+                : "Same Portal in mobile browser — add to home screen. App stores: coming soon."}
             </p>
             <Link className="btn btn--primary" to={path("/portail")}>
               {fr ? "Ouvrir le dashboard mobile" : "Open mobile dashboard"}

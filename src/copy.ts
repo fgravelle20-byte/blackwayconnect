@@ -147,9 +147,9 @@ export const copy: Record<Lang, Copy> = {
     appEyebrow: "Inclus avec Grow Hub",
     appTitle: "Votre portail client, accessible partout.",
     appBody:
-      "Chaque forfait Grow Hub inclut le Portail Client Master sur web et mobile — mêmes outils, même compte. Le Pack Cellulaire (outils terrain) demeure optionnel.",
+      "Chaque forfait Grow Hub inclut le Portail Client Master (web + mobile navigateur). Apps stores : bientôt. Pack Cellulaire = optionnel.",
     appNote:
-      "Portail inclus → /portail. Pack terrain optionnel → /forfaits-cellulaire.",
+      "Portail inclus → /portail (PWA / écran d’accueil). Pack terrain optionnel → /forfaits-cellulaire.",
     heroEyebrow: "Québec · Mondial",
     heroTitle: "Master Leads. Twin Turbo Full Performance.",
     heroBody:
@@ -177,10 +177,10 @@ export const copy: Record<Lang, Copy> = {
       },
     },
     confidence: [
-      { value: "60 s", label: "Diagnostic Leak Score" },
+      { value: "Twin", label: "Turbo Volume + Qualité" },
+      { value: "60 s", label: "Diagnostic Master Leads" },
       { value: "FR / EN", label: "Parcours bilingues" },
-      { value: "CA + US", label: "Deux marchés" },
-      { value: "1", label: "Provenance revenu" },
+      { value: "Paddle", label: "Checkout sécurisé" },
     ],
     growTitle: "De la première visite au revenu récurrent.",
     growBody:
@@ -428,9 +428,9 @@ export const copy: Record<Lang, Copy> = {
     appEyebrow: "Included with Grow Hub",
     appTitle: "Your client portal, available everywhere.",
     appBody:
-      "Every Grow Hub plan includes the Client Master Portal on web and mobile — same tools, same account. The Cellular Pack (field tools) remains optional.",
+      "Every Grow Hub plan includes the Client Master Portal (web + mobile browser). App stores: coming soon. Cellular Pack optional.",
     appNote:
-      "Portal included → /portail. Optional field pack → /forfaits-cellulaire.",
+      "Portal included → /portail (PWA / home screen). Optional field pack → /forfaits-cellulaire.",
     heroEyebrow: "Québec · Global",
     heroTitle: "Master Leads. Twin Turbo Full Performance.",
     heroBody:
@@ -458,10 +458,10 @@ export const copy: Record<Lang, Copy> = {
       },
     },
     confidence: [
-      { value: "60 s", label: "Leak Score diagnostic" },
+      { value: "Twin", label: "Volume + Quality turbos" },
+      { value: "60 s", label: "Master Leads diagnostic" },
       { value: "FR / EN", label: "Bilingual journeys" },
-      { value: "CA + US", label: "Two markets" },
-      { value: "1", label: "Revenue provenance" },
+      { value: "Paddle", label: "Secure checkout" },
     ],
     growTitle: "From first visit to recurring revenue.",
     growBody:

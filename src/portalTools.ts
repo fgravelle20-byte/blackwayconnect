@@ -62,12 +62,7 @@ export const WEB_PORTAL_TOOLS: PortalTool[] = [
 ];
 
 export const CELL_PORTAL_TOOLS: PortalTool[] = [
-  { id: "cell_capture", path: "/forfaits-cellulaire#outils", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
-  { id: "cell_pipeline", path: "/forfaits-cellulaire#outils", minWebPlan: 0, minCellPlan: 2, line: "cellulaire" },
-  { id: "cell_checkout", path: "/forfaits-cellulaire#outils", minWebPlan: 0, minCellPlan: 2, line: "cellulaire" },
-  { id: "cell_streak", path: "/forfaits-cellulaire#outils", minWebPlan: 0, minCellPlan: 3, line: "cellulaire" },
-  { id: "cell_fleet_ops", path: "/forfaits-cellulaire#outils", minWebPlan: 0, minCellPlan: 3, line: "cellulaire" },
-  { id: "cell_merge", path: "/portail", minWebPlan: 0, minCellPlan: 4, line: "cellulaire" },
+  // Terrain tools stay marketing until real capture/pipeline ships — do not unlock stubs.
   { id: "forfaits_cellulaire", path: "/forfaits-cellulaire", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
   { id: "support", path: "/contact", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
 ];
