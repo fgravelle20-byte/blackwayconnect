@@ -2,7 +2,7 @@
 
 **ASC app :** [6797345749](https://appstoreconnect.apple.com/apps/6797345749/distribution/ios/version/inflight)  
 **Nom :** BlackWayConnect  
-**Compte Apple :** **`f.gravelle20@icloud.com`**
+**Compte Apple :** **`[courriel privé du propriétaire]`**
 
 ### TestFlight — DONE (preuve ASC 2026-08-07)
 
@@ -262,7 +262,7 @@ ASC Apple ID: 6797345749
 
 (IPA déjà livré — pas besoin d’upload ce soir.)
 
-Tu restes owner du login `f.gravelle20@icloud.com`.
+Tu restes owner du login `[courriel privé du propriétaire]`.
 
 ---
 
