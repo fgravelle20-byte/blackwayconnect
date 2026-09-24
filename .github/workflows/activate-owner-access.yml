@@ -26,7 +26,7 @@ jobs:
               body: body ? JSON.stringify(body) : undefined,
             });
             const data = await response.json().catch(() => ({}));
-            if (!response.ok || data.success !== true) throw new Error(`${method} ${path}: HTTP ${response.status}; error codes: ${(data.errors || []).map(e => e.code).join(",")}`);
+            if (!response.ok || data.success !== true) throw new Error(`${method} ${path}: HTTP ${response.status}; error codes: ${(data.errors || []).map(e => e.code).join(",")}; reason: ${(data.errors || []).map(e => String(e.message || "").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[private]")).join("; ").slice(0,200)}`);
             return data.result;
           };
           const members = await request("/members");
@@ -40,6 +40,13 @@ jobs:
           const org = await request("/access/organizations");
           if (!org.auth_domain) throw new Error("Access team domain missing");
           const apps = await request("/access/apps");
+          const verified = await request("/tokens/verify");
+          console.log(`Cloudflare token active: ${verified.status === "active"}`);
+          try {
+            const details = await request(`/tokens/${verified.id}`);
+            console.log(`Access write permission present: ${Boolean(details.policies?.some(p => p.effect === "allow" && p.permission_groups?.some(g => /Access: Apps and Policies (Edit|Write)/.test(g.name || ""))))}`);
+            console.log(`Account token detail available: true`);
+          } catch { console.log("Account token detail unavailable with current credential"); }
           if (apps.some((entry) => entry.name === "BlackWay owner console")) throw new Error("Owner application already exists; inspect before changing it");
           let app;
           try {
