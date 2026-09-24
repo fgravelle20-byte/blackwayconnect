@@ -1,0 +1,89 @@
+name: Activate BlackWay private owner access
+
+on:
+  push:
+    branches: [codex/blackway-owner-console]
+    paths: [.github/workflows/activate-owner-access.yml]
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restrict owner console and install private Worker settings
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'NODE'
+          const account = process.env.CF_ACCOUNT;
+          const token = process.env.CF_TOKEN;
+          if (!account || !token) throw new Error("Cloudflare credentials unavailable");
+          const api = `https://api.cloudflare.com/client/v4/accounts/${account}`;
+          const request = async (path, method = "GET", body) => {
+            const response = await fetch(api + path, {
+              method,
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+              body: body ? JSON.stringify(body) : undefined,
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || data.success !== true) throw new Error(`${method} ${path}: HTTP ${response.status}; error codes: ${(data.errors || []).map(e => e.code).join(",")}; reason: ${(data.errors || []).map(e => String(e.message || "").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[private]")).join("; ").slice(0,200)}`);
+            return data.result;
+          };
+          const members = await request("/members");
+          if (members.length !== 1 || !members[0].email || members[0].status !== "accepted") {
+            throw new Error("Owner identity is ambiguous or not active");
+          }
+          const owner = members[0].email;
+          const providers = await request("/access/identity_providers");
+          const cloudflare = providers.find((entry) => entry.type === "cloudflare");
+          if (!cloudflare) throw new Error("Cloudflare identity provider missing");
+          const org = await request("/access/organizations");
+          if (!org.auth_domain) throw new Error("Access team domain missing");
+          const apps = await request("/access/apps");
+          const verified = await request("/tokens/verify");
+          console.log(`Cloudflare token active: ${verified.status === "active"}`);
+          try {
+            const details = await request(`/tokens/${verified.id}`);
+            console.log(`Access write permission present: ${Boolean(details.policies?.some(p => p.effect === "allow" && p.permission_groups?.some(g => /Access: Apps and Policies (Edit|Write)/.test(g.name || ""))))}`);
+            console.log(`Granted Access groups: ${(details.policies || []).filter(p => p.effect === "allow").flatMap(p => p.permission_groups || []).map(g => g.name || "").filter(n => n.startsWith("Access:")).join(" | ") || "(none)"}`);
+            console.log(`Account token detail available: true`);
+          } catch { console.log("Account token detail unavailable with current credential"); }
+          if (apps.some((entry) => entry.name === "BlackWay owner console")) throw new Error("Owner application already exists; inspect before changing it");
+          let app;
+          try {
+            app = await request("/access/apps", "POST", {
+              name: "BlackWay owner console",
+              type: "self_hosted",
+              domain: "blackwayconnect.com/controle",
+              destinations: [
+                { type: "public", uri: "blackwayconnect.com/controle*" },
+                { type: "public", uri: "blackwayconnect.com/api/owner/*" },
+                { type: "public", uri: "www.blackwayconnect.com/controle*" },
+                { type: "public", uri: "www.blackwayconnect.com/api/owner/*" },
+              ],
+              session_duration: "24h",
+              allowed_idps: [cloudflare.id],
+            });
+            if (!app.id || !app.aud) throw new Error("Access app missing audience");
+            await request(`/access/apps/${app.id}/policies`, "POST", {
+              name: "Only BlackWay account owner",
+              decision: "allow",
+              include: [{ email: { email: owner } }],
+            });
+            for (const [name, value] of [
+              ["CF_ACCESS_TEAM_DOMAIN", org.auth_domain],
+              ["CF_ACCESS_AUD", app.aud],
+              ["BW_OWNER_EMAIL", owner],
+            ]) {
+              await request("/workers/scripts/blackway-site/secrets", "PUT", { name, text: value, type: "secret_text" });
+              console.log(`Installed private Worker setting: ${name}`);
+            }
+            console.log("BlackWay owner Access application and policy configured");
+          } catch (error) {
+            if (app?.id) {
+              try { await request(`/access/apps/${app.id}`, "DELETE"); console.log("Rolled back incomplete Access application"); }
+              catch { console.log("Access application requires manual rollback"); }
+            }
+            throw error;
+          }
+          NODE
