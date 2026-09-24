@@ -18,6 +18,14 @@ for (const check of checks) {
     const ok = response.status === check.expected;
     console.log(`${ok ? "OK" : "ÉCHEC"} ${check.label}: HTTP ${response.status}, attendu ${check.expected}`);
     if (!ok) failures++;
+    if (ok && check.path === "/api/config") {
+      const config = await response.json();
+      const paddle = config.checkout?.processor === "paddle" &&
+        ["grow_hub_launch", "grow_hub_growth", "grow_hub_scale"].every((plan) =>
+          new URL(config.checkout?.[plan]).pathname.endsWith("/payer"));
+      console.log(`${paddle ? "OK" : "ÉCHEC"} Paiement : les trois forfaits actifs utilisent Paddle`);
+      if (!paddle) failures++;
+    }
   } catch (error) {
     console.log(`ÉCHEC ${check.label}: ${error.name || "réseau"}`);
     failures++;
