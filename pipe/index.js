@@ -1021,7 +1021,7 @@ export default {
       const amountCents = Number(transaction?.details?.totals?.total || transaction?.details?.totals?.grand_total || 0);
       const renouvellement = ["subscription_recurring", "subscription_update", "subscription_charge"].includes(transaction.origin);
 
-      ctx.waitUntil((async () => {
+      try {
         const email = await paddleCustomerEmail(env, transaction.customer_id);
         if (!email) throw new Error("paiement Paddle sans courriel");
         await putSessionMap(env, transactionId, { email, forfait });
@@ -1038,7 +1038,11 @@ export default {
           processor: "paddle",
           segment: renouvellement ? "renouvellement paddle" : "paiement paddle",
         });
-      })().catch((e) => console.log("erreur traitement Paddle", e)));
+      } catch (error) {
+        console.error("erreur traitement Paddle", error);
+        // Let Paddle retry if CRM activation failed; do not acknowledge a lost payment event.
+        return json({ erreur: "activation Paddle temporairement indisponible" }, 502);
+      }
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
