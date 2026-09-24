@@ -17,7 +17,7 @@ App native **iOS + Google Play** : shell métier qui charge le **vrai** Portail 
 
 | | |
 |--|--|
-| Apple Developer / App Store Connect | `f.gravelle20@icloud.com` |
+| Apple Developer / App Store Connect | `[courriel privé du propriétaire]` |
 | Login | [App Store Connect](https://appstoreconnect.apple.com) avec **cet** email |
 | ASC Apple ID (app) | **`6797345749`** — listing public URL vide jusqu’à Ready for Sale |
 | Textes / .p8 Base44 | `../base44/APP_STORE_CONNECT_SETUP.md` |
@@ -95,11 +95,11 @@ npm run open:ios
 
 Dans Xcode :
 
-1. Signing & Capabilities → Team = compte **`f.gravelle20@icloud.com`**
+1. Signing & Capabilities → Team = compte **`[courriel privé du propriétaire]`**
 2. Bundle ID = `com.blackwayconnect.app`
 3. Run sur simulateur / iPhone
 4. Product → Archive → Distribute App → App Store Connect
-5. TestFlight : [App Store Connect](https://appstoreconnect.apple.com) → login **`f.gravelle20@icloud.com`**
+5. TestFlight : [App Store Connect](https://appstoreconnect.apple.com) → login **`[courriel privé du propriétaire]`**
 
 CLI :
 
