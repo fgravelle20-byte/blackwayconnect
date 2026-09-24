@@ -32,6 +32,7 @@ import { useLang } from "./i18n";
 import { Seo } from "./Seo";
 import { initTracking, trackPageView } from "./tracking";
 import { AvenirChatbotApp } from "./vorixa-chatbot/AvenirChatbotApp";
+import { OwnerConsolePage } from "./pages/OwnerConsolePage";
 
 function LangSync() {
   const { pathname } = useLocation();
@@ -110,6 +111,7 @@ export default function App() {
       <TrackingBoot />
       <Seo />
       <Routes>
+        <Route path="/controle" element={<OwnerConsolePage />} />
         <Route path="/vorixa/chatbot" element={<AvenirChatbotApp />} />
         <Route path="/vorixa/chatbot/*" element={<AvenirChatbotApp />} />
         <Route path="/maquettes/l-avenir" element={<Navigate to="/vorixa/chatbot/apercu" replace />} />
