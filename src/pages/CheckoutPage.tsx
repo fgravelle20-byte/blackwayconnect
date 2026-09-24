@@ -33,16 +33,29 @@ function loadPaddle(): Promise<void> {
 
 const PIPE_ORIGIN = "https://api.blackwayconnect.com";
 
-/** Build-time Vite secret, else runtime pipe (client tokens are browser-public by design). */
+/**
+ * Paddle client-side tokens are designed to ship in the browser.
+ * Domain allowlist is enforced in the Paddle dashboard (blackwayconnect.com).
+ * Prefer VITE_ / pipe when present; this is the production fallback.
+ */
+const PADDLE_CLIENT_TOKEN_LIVE = "live_a4f8ad8f1c8be908ec3784e8d8b";
+
+/** Build-time Vite secret, else runtime pipe, else public live fallback. */
 async function resolvePaddleClientToken(): Promise<string> {
   const fromBuild = String(import.meta.env.VITE_PADDLE_CLIENT_TOKEN || "").trim();
   if (fromBuild.startsWith("live_")) return fromBuild;
-  const r = await fetch(`${PIPE_ORIGIN}/paddle/client-config`, { credentials: "omit" });
-  if (!r.ok) throw new Error("Paddle client token missing");
-  const data = (await r.json()) as { client_token?: string; clientToken?: string };
-  const token = String(data.client_token || data.clientToken || "").trim();
-  if (!token.startsWith("live_")) throw new Error("Paddle client token missing");
-  return token;
+  try {
+    const r = await fetch(`${PIPE_ORIGIN}/paddle/client-config`, { credentials: "omit" });
+    if (r.ok) {
+      const data = (await r.json()) as { client_token?: string; clientToken?: string };
+      const token = String(data.client_token || data.clientToken || "").trim();
+      if (token.startsWith("live_")) return token;
+    }
+  } catch {
+    /* pipe optional */
+  }
+  if (PADDLE_CLIENT_TOKEN_LIVE.startsWith("live_")) return PADDLE_CLIENT_TOKEN_LIVE;
+  throw new Error("Paddle client token missing");
 }
 
 export function CheckoutPage() {
