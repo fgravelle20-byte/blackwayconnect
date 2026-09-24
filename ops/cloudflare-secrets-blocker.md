@@ -5,15 +5,16 @@
 **Cloudflare Workers Builds** publie `blackway-site`, `blackway-pipe`, `blackway-sentinel`.  
 Les workflows GitHub Actions `Deploy site` / `Deploy pipe` **vérifient** seulement (plus de `wrangler deploy` sur push).
 
-## Secrets requis — blackway-site (Workers Builds + GitHub)
+## Secrets — blackway-site
 
 | Secret / var | Où | Valeur |
 |--------------|-----|--------|
-| `VITE_PADDLE_CLIENT_TOKEN` | Workers Builds **et** GitHub Actions | `live_…` (Paddle client token) |
+| `VITE_PADDLE_CLIENT_TOKEN` | **Workers Builds** (obligatoire) · GitHub (optionnel) | `live_…` |
 | `CLOUDFLARE_API_TOKEN` | optionnel (Dash only) | Zone/Workers si outils manuels |
 | `CLOUDFLARE_ACCOUNT_ID` | `eda7fc96b400297aaa0b185a26ad1846` | |
 
-Sans `VITE_PADDLE_CLIENT_TOKEN` live → `/payer` affiche « paiement indisponible ».
+Sans token dans **Workers Builds** → `/payer` indisponible en prod.  
+Sans secret GitHub → warning CI seulement (CF Builds = source de vérité).
 
 ## Secrets — blackway-pipe (Workers Dash secrets)
 
