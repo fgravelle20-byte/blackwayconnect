@@ -257,6 +257,16 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // Keep the owner page private even when a GitHub merge deploys before Access setup.
+    if (url.pathname === "/controle" || url.pathname.startsWith("/controle/")) {
+      if (request.method !== "GET" || !(await authorizeOwner(request, env))) {
+        return new Response("Accès propriétaire non autorisé", {
+          status: 403,
+          headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
+        });
+      }
+    }
+
     // Buy-intent shortcuts → BlackWay's own pricing page (never vorixa.ca).
     if (
       url.pathname === "/paddle" ||
