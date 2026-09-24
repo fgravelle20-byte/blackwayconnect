@@ -2,6 +2,7 @@ import { CELLULAIRE_PLANS } from "../src/cellulaireConfig";
 import { CHECKOUT_LINKS, PLANS } from "../src/stripeConfig";
 import { handleChat, type ChatLang, type ChatMessage } from "./chat";
 import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
+import { authorizeOwner } from "./ownerAuth";
 
 export interface Env {
   ASSETS: Fetcher;
@@ -17,6 +18,9 @@ export interface Env {
   AI?: Ai;
   /** Optional OpenAI fallback secret */
   OPENAI_API_KEY?: string;
+  CF_ACCESS_TEAM_DOMAIN?: string;
+  CF_ACCESS_AUD?: string;
+  BW_OWNER_EMAIL?: string;
 }
 
 const SITE_ORIGIN = "https://blackwayconnect.com";
@@ -261,6 +265,29 @@ export default {
       url.pathname === "/encaisser"
     ) {
       return Response.redirect(`${SITE_ORIGIN}/forfaits`, 302);
+    }
+
+    if (url.pathname === "/api/owner/overview") {
+      const headers = { "Cache-Control": "no-store", "Content-Type": "application/json" };
+      if (request.method !== "GET") return Response.json({ error: "Method not allowed" }, { status: 405, headers });
+      if (!(await authorizeOwner(request, env))) {
+        return Response.json({ error: "Accès propriétaire non configuré ou refusé" }, { status: 403, headers });
+      }
+      if (!env.PIPE_URL || !env.BW_LEAD_KEY) {
+        return Response.json({ error: "Pipeline de données indisponible" }, { status: 503, headers });
+      }
+      try {
+        const upstream = await fetch(`${env.PIPE_URL}/ops/overview`, {
+          headers: { "X-BW-Key": env.BW_LEAD_KEY },
+          redirect: "error",
+        });
+        return new Response(upstream.body, {
+          status: upstream.status,
+          headers: { ...headers, "X-Content-Type-Options": "nosniff" },
+        });
+      } catch {
+        return Response.json({ error: "Impossible de joindre les données BlackWay" }, { status: 502, headers });
+      }
     }
 
     if (request.method === "OPTIONS" && url.pathname.startsWith("/api/")) {
