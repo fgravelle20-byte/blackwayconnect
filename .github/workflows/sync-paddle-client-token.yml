@@ -58,22 +58,33 @@ jobs:
           echo "- Paddle client token: live_…${token: -4} (len=${#token})" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Put PADDLE_CLIENT_TOKEN on blackway-pipe
-        working-directory: pipe
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PADDLE_CLIENT_TOKEN: ${{ steps.paddle.outputs.token }}
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts
-          printf '%s' "${PADDLE_CLIENT_TOKEN}" | npx wrangler secret put PADDLE_CLIENT_TOKEN --name "${PIPE_WORKER}"
-          echo "- pipe secret PADDLE_CLIENT_TOKEN: OK" >> "$GITHUB_STEP_SUMMARY"
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer ${CF_API_TOKEN}" -H "Content-Type: application/json")
+          body="$(jq -n --arg n "PADDLE_CLIENT_TOKEN" --arg t "${PADDLE_CLIENT_TOKEN}" \
+            '{name:$n, text:$t, type:"secret_text"}')"
+          code="$(curl -sS -o /tmp/cf-secret.json -w '%{http_code}' -X PUT "${auth[@]}" \
+            -d "${body}" \
+            "${api}/accounts/${CF_ACCOUNT_ID}/workers/scripts/${PIPE_WORKER}/secrets")"
+          echo "secret put HTTP ${code}"
+          cat /tmp/cf-secret.json | jq -c '{success, errors}' || cat /tmp/cf-secret.json
+          if [ "${code}" != "200" ] || [ "$(jq -r '.success' /tmp/cf-secret.json)" != "true" ]; then
+            echo "::error::Failed to put PADDLE_CLIENT_TOKEN on ${PIPE_WORKER}"
+            exit 1
+          fi
+          echo "- pipe secret PADDLE_CLIENT_TOKEN: OK (API)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deploy blackway-pipe (endpoint /paddle/client-config)
         working-directory: pipe
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: eda7fc96b400297aaa0b185a26ad1846
         run: |
           set -euo pipefail
+          npm ci --ignore-scripts
           npx wrangler deploy
           echo "- wrangler deploy blackway-pipe: OK" >> "$GITHUB_STEP_SUMMARY"
 
