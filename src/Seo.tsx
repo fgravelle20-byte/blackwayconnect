@@ -156,13 +156,13 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         : "Pick a plan, pay on Paddle, Portal auto-activates (bw_forfait), then you control.",
     },
     diagnostic: {
-      title: fr ? "Revenue Leak Score · 60 secondes" : "Revenue Leak Score · 60 seconds",
+      title: fr ? "Twin Turbo Leak Score · 60 secondes" : "Twin Turbo Leak Score · 60 seconds",
       ogTitle: fr
-        ? "Revenue Leak Score — où fuit votre revenu ?"
-        : "Revenue Leak Score — where is revenue leaking?",
+        ? "Twin Turbo Full Performance — volume + qualité"
+        : "Twin Turbo Full Performance — volume + quality",
       description: fr
-        ? "Diagnostic 60 secondes : six questions, un score de fuite et le forfait Grow Hub recommandé. Partagez-le avec votre équipe."
-        : "60-second diagnostic: six questions, one leak score and the recommended Grow Hub plan. Share it with your team.",
+        ? "Diagnostic 60 s Twin Turbo : six questions, Turbo Volume + Turbo Qualité, moteur Grow Hub recommandé."
+        : "60-second Twin Turbo diagnostic: six questions, Volume + Quality turbos, recommended Grow Hub engine.",
     },
     portail: {
       title: fr ? "Portail Client Master" : "Client Master Portal",
