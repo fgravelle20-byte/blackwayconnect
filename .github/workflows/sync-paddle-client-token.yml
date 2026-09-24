@@ -1,0 +1,186 @@
+name: Sync Paddle client token
+
+# Pulls the live Paddle client-side token (browser-public by design) and injects it into:
+# 1) blackway-pipe secret PADDLE_CLIENT_TOKEN → /paddle/client-config for /payer
+# 2) Workers Builds env VITE_PADDLE_CLIENT_TOKEN for blackway-site (when CF API allows)
+# 3) GitHub Actions secret mirror (best-effort)
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - ".github/workflows/sync-paddle-client-token.yml"
+      - "pipe/index.js"
+      - "src/pages/CheckoutPage.tsx"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sync-paddle-client-token.yml"
+      - "pipe/index.js"
+      - "src/pages/CheckoutPage.tsx"
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID: eda7fc96b400297aaa0b185a26ad1846
+      PIPE_WORKER: blackway-pipe
+      SITE_WORKER: blackway-site
+      SITE_WORKER_ID: f43b04faa08a4826bf0a1d73bbdaa508
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require CLOUDFLARE_API_TOKEN
+        run: |
+          if [ -z "${CF_API_TOKEN}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN missing"
+            exit 1
+          fi
+          echo "- CLOUDFLARE_API_TOKEN: set (len=${#CF_API_TOKEN})" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fetch live Paddle client token
+        id: paddle
+        run: |
+          set -euo pipefail
+          # Same Paddle seller account as Vorixa live catalog (client tokens are account-scoped).
+          raw="$(curl -sS --fail --connect-timeout 20 'https://vorixa.ca/api/functions/paddle-pricing-config')"
+          token="$(echo "${raw}" | jq -r '.clientToken // .client_token // empty')"
+          if [[ ! "${token}" =~ ^live_ ]]; then
+            echo "::error::No live_ clientToken in paddle-pricing-config"
+            exit 1
+          fi
+          echo "::add-mask::${token}"
+          echo "token=${token}" >> "$GITHUB_OUTPUT"
+          echo "- Paddle client token: live_…${token: -4} (len=${#token})" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Put PADDLE_CLIENT_TOKEN on blackway-pipe
+        working-directory: pipe
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PADDLE_CLIENT_TOKEN: ${{ steps.paddle.outputs.token }}
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          printf '%s' "${PADDLE_CLIENT_TOKEN}" | npx wrangler secret put PADDLE_CLIENT_TOKEN --name "${PIPE_WORKER}"
+          echo "- pipe secret PADDLE_CLIENT_TOKEN: OK" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy blackway-pipe (endpoint /paddle/client-config)
+        working-directory: pipe
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          npx wrangler deploy
+          echo "- wrangler deploy blackway-pipe: OK" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set Workers Builds VITE_PADDLE_CLIENT_TOKEN (best-effort)
+        env:
+          PADDLE_CLIENT_TOKEN: ${{ steps.paddle.outputs.token }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer ${CF_API_TOKEN}" -H "Content-Type: application/json")
+          ok=0
+
+          # Probe known Workers Builds / settings endpoints for env vars.
+          # Prefer secret-type when the schema supports it.
+          body_secret="$(jq -n --arg v "${PADDLE_CLIENT_TOKEN}" '{
+            build_command: null,
+            deploy_command: null,
+            env_vars: { VITE_PADDLE_CLIENT_TOKEN: { type: "secret", value: $v } }
+          }')"
+          body_plain="$(jq -n --arg v "${PADDLE_CLIENT_TOKEN}" '{
+            vars: { VITE_PADDLE_CLIENT_TOKEN: $v }
+          }')"
+          body_ci="$(jq -n --arg v "${PADDLE_CLIENT_TOKEN}" '{
+            env_vars: [{ name: "VITE_PADDLE_CLIENT_TOKEN", value: $v, type: "secret" }]
+          }')"
+
+          try_put() {
+            local method="$1" path="$2" body="$3" label="$4"
+            local code
+            code="$(curl -sS -o /tmp/cf-builds-var.json -w '%{http_code}' -X "${method}" "${auth[@]}" \
+              -d "${body}" "${api}${path}" || true)"
+            echo "- ${label}: HTTP ${code}" >> "$GITHUB_STEP_SUMMARY"
+            if [ "${code}" = "200" ] || [ "${code}" = "201" ] || [ "${code}" = "204" ]; then
+              if jq -e '.success != false' /tmp/cf-builds-var.json >/dev/null 2>&1; then
+                ok=1
+                return 0
+              fi
+            fi
+            return 1
+          }
+
+          try_put PUT "/accounts/${CF_ACCOUNT_ID}/workers/scripts/${SITE_WORKER}/settings" "${body_plain}" "scripts/settings vars" || true
+          try_put PATCH "/accounts/${CF_ACCOUNT_ID}/workers/scripts/${SITE_WORKER}/settings" "${body_plain}" "scripts/settings PATCH" || true
+          try_put PUT "/accounts/${CF_ACCOUNT_ID}/workers/scripts/${SITE_WORKER}/ci" "${body_secret}" "scripts/ci env_vars" || true
+          try_put PATCH "/accounts/${CF_ACCOUNT_ID}/workers/scripts/${SITE_WORKER}/ci" "${body_secret}" "scripts/ci PATCH" || true
+          try_put PUT "/accounts/${CF_ACCOUNT_ID}/builds/workers/${SITE_WORKER_ID}" "${body_ci}" "builds/workers UUID" || true
+          try_put PATCH "/accounts/${CF_ACCOUNT_ID}/builds/workers/${SITE_WORKER_ID}/trigger" "${body_ci}" "builds trigger" || true
+
+          # List builds config (diagnostic)
+          curl -sS "${auth[@]}" "${api}/accounts/${CF_ACCOUNT_ID}/workers/scripts/${SITE_WORKER}/settings" \
+            | jq -c '{success, keys:(.result|keys?)}' >> "$GITHUB_STEP_SUMMARY" || true
+
+          if [ "${ok}" = "1" ]; then
+            echo "- Workers Builds VITE_PADDLE_CLIENT_TOKEN: set" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Could not set Workers Builds var via API — deploying site with token baked into build."
+            echo "- Workers Builds VITE_PADDLE_CLIENT_TOKEN: API unavailable (site deploy step bakes token)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Build and deploy blackway-site with live token
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          VITE_PADDLE_CLIENT_TOKEN: ${{ steps.paddle.outputs.token }}
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+          npx wrangler deploy
+          echo "- wrangler deploy blackway-site (VITE live token in bundle): OK" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify pipe client-config
+        run: |
+          set -euo pipefail
+          sleep 2
+          code="$(curl -sS -o /tmp/paddle-cfg.json -w '%{http_code}' \
+            'https://api.blackwayconnect.com/paddle/client-config' || true)"
+          echo "- GET /paddle/client-config: HTTP ${code}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${code}" = "200" ]; then
+            tok="$(jq -r '.client_token // empty' /tmp/paddle-cfg.json)"
+            echo "::add-mask::${tok}"
+            if [[ "${tok}" =~ ^live_ ]]; then
+              echo "- client_token: live_…${tok: -4}" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::error::client-config 200 but token not live_"
+              exit 1
+            fi
+          else
+            echo "::error::client-config HTTP ${code}"
+            cat /tmp/paddle-cfg.json || true
+            exit 1
+          fi
+
+      - name: Verify /payer bundle mentions live_
+        run: |
+          set -euo pipefail
+          html="$(curl -sS --fail 'https://blackwayconnect.com/payer')"
+          # Asset path from SPA shell
+          js="$(echo "${html}" | grep -oE '/assets/index-[A-Za-z0-9_-]+\.js' | head -1)"
+          if [ -z "${js}" ]; then
+            echo "::warning::No hashed JS in /payer HTML (SPA may be worker-injected)"
+            echo "- /payer HTML: fetched" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          bundle="$(curl -sS --fail "https://blackwayconnect.com${js}")"
+          if echo "${bundle}" | grep -q 'live_'; then
+            echo "- Site bundle contains live_ token: OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Bundle missing live_ — runtime /paddle/client-config is the fallback"
+            echo "- Site bundle live_ token: not found (runtime fallback)" >> "$GITHUB_STEP_SUMMARY"
+          fi

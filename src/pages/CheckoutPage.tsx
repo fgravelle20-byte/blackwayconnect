@@ -31,6 +31,20 @@ function loadPaddle(): Promise<void> {
   return paddleScript;
 }
 
+const PIPE_ORIGIN = "https://api.blackwayconnect.com";
+
+/** Build-time Vite secret, else runtime pipe (client tokens are browser-public by design). */
+async function resolvePaddleClientToken(): Promise<string> {
+  const fromBuild = String(import.meta.env.VITE_PADDLE_CLIENT_TOKEN || "").trim();
+  if (fromBuild.startsWith("live_")) return fromBuild;
+  const r = await fetch(`${PIPE_ORIGIN}/paddle/client-config`, { credentials: "omit" });
+  if (!r.ok) throw new Error("Paddle client token missing");
+  const data = (await r.json()) as { client_token?: string; clientToken?: string };
+  const token = String(data.client_token || data.clientToken || "").trim();
+  if (!token.startsWith("live_")) throw new Error("Paddle client token missing");
+  return token;
+}
+
 export function CheckoutPage() {
   const [params] = useSearchParams();
   const { lang, path } = useLang();
@@ -42,10 +56,7 @@ export function CheckoutPage() {
     let cancelled = false;
     const open = async () => {
       try {
-        const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN;
-        if (!token || !token.startsWith("live_")) {
-          throw new Error("Paddle client token missing");
-        }
+        const token = await resolvePaddleClientToken();
         await loadPaddle();
         if (cancelled || !window.Paddle) return;
         if (!initialized) {
@@ -76,8 +87,8 @@ export function CheckoutPage() {
           setError(
             missing
               ? lang === "fr"
-                ? "Paiement indisponible : token Paddle live manquant au build (VITE_PADDLE_CLIENT_TOKEN). Contactez-nous."
-                : "Checkout unavailable: missing live Paddle build token (VITE_PADDLE_CLIENT_TOKEN). Contact us."
+                ? "Paiement indisponible : token Paddle live manquant. Contactez-nous."
+                : "Checkout unavailable: missing live Paddle token. Contact us."
               : lang === "fr"
                 ? "Paiement temporairement indisponible. Contactez-nous."
                 : "Checkout is temporarily unavailable. Contact us.",

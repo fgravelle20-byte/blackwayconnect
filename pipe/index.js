@@ -2,6 +2,7 @@
  * BlackWay Pipe - tuyauterie CRM BlackWayConnect
  * Endpoints:
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
+ *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)
  *   POST /lead              -> formulaire site web  -> Contact + Deal "Nouvelle opportunite"
  *   POST /webhooks/stripe   -> paiement forfait -> active EXACTEMENT ce forfait (HubSpot + portail)
  *   POST /portal/claim      -> session_id (Cache/HubSpot) ou email -> jeton portail
@@ -1011,6 +1012,7 @@ export default {
       const stripeWebhookSecret = !!String(env.STRIPE_WEBHOOK_SECRET || "").trim();
       const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
       const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
+      const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       const portal_claim_ready = hubspot === "connecte" && (stripeWebhookSecret || (paddleApiKey && paddleWebhookSecret));
       return json({
@@ -1032,12 +1034,22 @@ export default {
         stripe_webhook: stripeWebhookSecret,
         paddle_api_key: paddleApiKey,
         paddle_webhook_secret: paddleWebhookSecret,
+        paddle_client_token: paddleClientToken,
         paddle_ready: paddleApiKey && paddleWebhookSecret,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
         portal_claim_needs_stripe_secret: false,
       });
+    }
+
+    // Public client-side token for /payer overlay (designed to be browser-visible).
+    if (url.pathname === "/paddle/client-config" && request.method === "GET") {
+      const token = String(env.PADDLE_CLIENT_TOKEN || "").trim();
+      if (!token.startsWith("live_")) {
+        return json({ ok: false, erreur: "paddle client token absent" }, 503);
+      }
+      return json({ ok: true, environment: "production", client_token: token });
     }
 
     if (url.pathname === "/lead" && request.method === "POST") {
