@@ -4,7 +4,7 @@
 
 | | |
 |--|--|
-| App Store Connect / Developer | **`f.gravelle20@icloud.com`** |
+| App Store Connect / Developer | **`[courriel privé du propriétaire]`** |
 | Support client public | `serviceclient@blackwayconnect.com` |
 
 Ne pas mettre l’email Apple sur le site marketing.
@@ -12,7 +12,7 @@ Ne pas mettre l’email Apple sur le site marketing.
 ## Maintenant — BUILD app stores (Capacitor) + Apple
 
 1. **Build natif repo :** `cd mobile && npm install && npm run sync` → voir `mobile/README.md`  
-2. iOS : Mac + Xcode, signing avec **`f.gravelle20@icloud.com`** → TestFlight (`APPLE_TESTFLIGHT_CHECKLIST.md`)  
+2. iOS : Mac + Xcode, signing avec **`[courriel privé du propriétaire]`** → TestFlight (`APPLE_TESTFLIGHT_CHECKLIST.md`)  
 3. Android : Android Studio → `.aab` → Play Console  
 4. **Parallèle Base44 :** colle **`APP_FULL_PRODUCT_PROMPT.md`** → Publish ; vérifie `https://black-way-link.base44.app/`  
 5. Colle `APPLE_STORE_COMPLIANCE_PROMPT.md` si besoin → Publish  
