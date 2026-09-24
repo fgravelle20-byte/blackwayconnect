@@ -287,8 +287,8 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Forfait Grow Hub → Portail Master inclus partout (mobile = surplus inclus). Pack Cellulaire = outils terrain optionnels (revenu #2)."
-              : "Grow Hub plan → Master Portal included everywhere (mobile = included surplus). Cellular Pack = optional field tools (revenue #2)."}
+              ? "Consultez votre forfait, vos outils et vos demandes depuis votre téléphone ou votre ordinateur."
+              : "View your plan, tools and requests from your phone or computer."}
           </p>
           <form
             className="portal-login__form"
@@ -298,7 +298,7 @@ export function PortalPage() {
             }}
           >
             <label>
-              {fr ? "Courriel du compte payeur" : "Payer account email"}
+              {fr ? "Courriel associé à votre compte" : "Email linked to your account"}
               <input
                 type="email"
                 required

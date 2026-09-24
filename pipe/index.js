@@ -941,6 +941,64 @@ export default {
       } catch (e) { return json({ erreur: String(e) }, 500); }
     }
 
+    if (url.pathname === "/ops/overview") {
+      const privateHeaders = { "Cache-Control": "no-store", "Content-Type": "application/json" };
+      if (request.method !== "GET") return Response.json({ error: "Method not allowed" }, { status: 405, headers: privateHeaders });
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return Response.json({ error: "Unauthorized" }, { status: 401, headers: privateHeaders });
+      }
+      if (!jeton(env)) return Response.json({ error: "HubSpot non configuré" }, { status: 503, headers: privateHeaders });
+
+      const search = (objectType, properties) => hs(env, "POST", `/crm/v3/objects/${objectType}/search`, {
+        limit: 50,
+        sorts: [{ propertyName: "hs_lastmodifieddate", direction: "DESCENDING" }],
+        filterGroups: [{ filters: [{ propertyName: "pipeline", operator: "EQ", value: PIPELINE }] }],
+        properties,
+      });
+      try {
+        const deals = await search("deals", ["dealname", "dealstage", "pipeline", "amount", "bw_source", "bw_forfait", "bw_livraison_statut", "createdate", "hs_lastmodifieddate"]);
+        if (deals.status !== 200) {
+          return Response.json({ error: "Lecture du pipeline BlackWay refusée", status: deals.status }, { status: 502, headers: privateHeaders });
+        }
+        const recentDeals = deals.data.results || [];
+        let contacts = [];
+        let contactsAvailable = true;
+        if (recentDeals.length) {
+          const assoc = await hs(env, "POST", "/crm/v4/associations/deals/contacts/batch/read", {
+            inputs: recentDeals.map((d) => ({ id: d.id })),
+          });
+          if (assoc.status !== 200) {
+            contactsAvailable = false;
+          } else {
+            const ids = [...new Set((assoc.data.results || []).flatMap((row) => (row.to || []).map((link) => String(link.toObjectId))))];
+            if (ids.length) {
+              const batch = await hs(env, "POST", "/crm/v3/objects/contacts/batch/read", {
+                inputs: ids.map((id) => ({ id })),
+                properties: ["firstname", "lastname", "email", "phone", "company", "lifecyclestage", "bw_source", "createdate", "hs_lastmodifieddate"],
+              });
+              if (batch.status === 200) contacts = batch.data.results || [];
+              else contactsAvailable = false;
+            }
+          }
+        }
+        return Response.json({
+          fetchedAt: new Date().toISOString(),
+          limits: { deals: 50, countsArePartial: true, contactsAvailable },
+          contacts: contacts.map((c) => ({ id: c.id, ...c.properties })),
+          deals: recentDeals.map((d) => ({ id: d.id, ...d.properties })),
+          sources: {
+            leads: "HubSpot",
+            payments: "HubSpot deal stages (not a payment processor ledger)",
+            projects: "HubSpot deal delivery status",
+            phone: "not connected to BlackWay pipeline",
+            messages: "not connected to owner overview",
+          },
+        }, { headers: privateHeaders });
+      } catch {
+        return Response.json({ error: "Lecture HubSpot indisponible" }, { status: 502, headers: privateHeaders });
+      }
+    }
+
     if (url.pathname === "/webhooks/paddle" && request.method === "POST") {
       const body = await request.text();
       const ok = await signaturePaddleValide(
