@@ -6,10 +6,10 @@ import { checkoutUrl, PLANS, type PlanKey } from "./stripeConfig";
 import { copy } from "./copy";
 import {
   computeLeakScore,
-  leakBand,
   recommendPlan,
   scoreCopy,
 } from "./scoreCopy";
+import { computeTwinTurbo, twinTurboLeadFields } from "./leadEngines";
 import { ShareBar } from "./ShareBar";
 
 type Phase = "intro" | "quiz" | "result";
@@ -49,7 +49,8 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
   const [pending, setPending] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const animated = useAnimatedScore(score, phase === "result");
-  const band = leakBand(score);
+  const twin = computeTwinTurbo({ leakScore: score, answers });
+  const band = twin.band;
   const planMeta = plans.find((p) => p.key === plan)!;
 
   function selectOption(qid: string, oid: string) {
@@ -79,7 +80,11 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
     // Provenance stays in message; source=campagne keeps CRM valid.
     const summary = [
       "bw_source=revenue_leak_score",
-      `score=${score}/100`,
+      `engine=${twin.mode}`,
+      `twin=${twin.twinScore}`,
+      `volume_turbo=${twin.volumeTurbo}`,
+      `quality_turbo=${twin.qualityTurbo}`,
+      `leak=${score}/100`,
       `band=${band}`,
       `plan=${plan}`,
       ...sc.questions.map((q) => {
@@ -97,10 +102,12 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
       message: summary.slice(0, 2000),
       forfait: plan,
       source: "campagne",
-      urgence: score >= 65 ? "elevee" : "normal",
+      urgence: twin.twinScore >= 65 ? "elevee" : "normal",
       langue: lang,
       bw_ref: "site",
       icp: "oui_pme",
+      ...twinTurboLeadFields(twin, answers),
+      leak_score: score,
     };
 
     try {
@@ -203,6 +210,22 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
           <p className="rls__band">
             {band === "low" ? sc.leakLow : band === "mid" ? sc.leakMid : sc.leakHigh}
           </p>
+          {phase === "result" ? (
+            <div className="rls__twin" aria-label="Twin Turbo">
+              <div className="rls__twin-cell">
+                <span className="eyebrow">{lang === "fr" ? "Turbo Volume" : "Volume Turbo"}</span>
+                <strong>{twin.volumeTurbo}</strong>
+              </div>
+              <div className="rls__twin-cell">
+                <span className="eyebrow">{lang === "fr" ? "Turbo Qualité" : "Quality Turbo"}</span>
+                <strong>{twin.qualityTurbo}</strong>
+              </div>
+              <div className="rls__twin-cell rls__twin-cell--blend">
+                <span className="eyebrow">Twin</span>
+                <strong>{twin.twinScore}</strong>
+              </div>
+            </div>
+          ) : null}
           <ul className="point-list">
             {sc.diagnoses[band].map((line) => (
               <li key={line}>{line}</li>

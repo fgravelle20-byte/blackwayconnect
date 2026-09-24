@@ -1674,6 +1674,43 @@ select {
   max-width: 34rem;
 }
 
+.rls__twin {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+  max-width: 34rem;
+}
+
+.rls__twin-cell {
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.rls__twin-cell .eyebrow {
+  display: block;
+  margin: 0 0 0.35rem;
+}
+
+.rls__twin-cell strong {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--track-display);
+  line-height: 1;
+}
+
+.rls__twin-cell--blend strong {
+  color: var(--brand);
+}
+
+@media (max-width: 560px) {
+  .rls__twin {
+    grid-template-columns: 1fr;
+  }
+}
+
 .rls__rec {
   margin: 1.75rem 0;
   padding: 1.25rem 0;

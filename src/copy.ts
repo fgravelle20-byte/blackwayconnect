@@ -151,9 +151,9 @@ export const copy: Record<Lang, Copy> = {
     appNote:
       "Portail inclus → /portail. Pack terrain optionnel → /forfaits-cellulaire.",
     heroEyebrow: "Québec · Mondial",
-    heroTitle: "Du lead au revenu, sans fuite.",
+    heroTitle: "Master Leads. Twin Turbo Full Performance.",
     heroBody:
-      "Système commercial bilingue FR/EN : scoring, relances, soumissions et paiements. Grow Hub Growth — 349 $/mois, Paddle, annulable. Portail inclus dès le jour 1.",
+      "Deux moteurs — Volume + Qualité — scorés, livrés, prouvés. Grow Hub Growth — 349 $/mois, Paddle, annulable. Portail inclus dès le jour 1.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
@@ -204,7 +204,7 @@ export const copy: Record<Lang, Copy> = {
         key: "grow_hub_growth",
         name: "Growth",
         price: "349 $ / mois",
-        blurb: "Score, relances, soumissions et paiements mesurés — le moteur recommandé.",
+        blurb: "Twin Turbo Full Performance — score, relances, soumissions et paiements mesurés.",
       },
       {
         key: "grow_hub_scale",
@@ -432,9 +432,9 @@ export const copy: Record<Lang, Copy> = {
     appNote:
       "Portal included → /portail. Optional field pack → /forfaits-cellulaire.",
     heroEyebrow: "Québec · Global",
-    heroTitle: "From lead to revenue, without leakage.",
+    heroTitle: "Master Leads. Twin Turbo Full Performance.",
     heroBody:
-      "Bilingual FR/EN commercial system: scoring, follow-ups, quotes and payments. Grow Hub Growth — $349/mo, Paddle, cancel anytime. Portal included on day one.",
+      "Two engines — Volume + Quality — scored, delivered, proven. Grow Hub Growth — $349/mo, Paddle, cancel anytime. Portal included on day one.",
     office: {
       eyebrow: "BlackWayConnect office",
       title: "A day inside the system.",
@@ -485,7 +485,7 @@ export const copy: Record<Lang, Copy> = {
         key: "grow_hub_growth",
         name: "Growth",
         price: "$349 / mo",
-        blurb: "Scoring, follow-ups, quotes and payments measured — the recommended engine.",
+        blurb: "Twin Turbo Full Performance — scoring, follow-ups, quotes and payments measured.",
       },
       {
         key: "grow_hub_scale",

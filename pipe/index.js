@@ -272,6 +272,41 @@ function score(forfait, email, montant, recurrent) {
   return Math.min(s, 100);
 }
 
+/** Twin Turbo Full Performance — blend catalog score (volume) with diagnostic pressure (quality). */
+function twinTurboLeadScore(base, p) {
+  const leakRaw = p.leak_score ?? p.twin_score ?? p.leakScore;
+  const leak = Number(leakRaw);
+  const hasLeak = Number.isFinite(leak);
+  const volume = Number(p.volume_turbo);
+  const quality = Number(p.quality_turbo);
+  let turboA = base;
+  let turboB = 50;
+  if (Number.isFinite(volume)) turboA = Math.max(turboA, Math.min(100, Math.round(volume)));
+  if (Number.isFinite(quality)) turboB = Math.min(100, Math.round(quality));
+  else if (hasLeak) turboB = Math.min(100, Math.round(40 + Math.max(0, Math.min(100, leak)) * 0.55));
+  if (p.band === "high" || p.urgence === "elevee") turboB = Math.min(100, turboB + 5);
+  if (!hasLeak && !Number.isFinite(volume) && !Number.isFinite(quality)) return base;
+  return Math.min(100, Math.round(turboA * 0.45 + turboB * 0.55));
+}
+
+function twinTurboNote(p, sc) {
+  const lines = [
+    "Twin Turbo Full Performance",
+    `engine_mode=${p.engine_mode || "twin_turbo_full_performance"}`,
+    `bw_lead_score=${sc}`,
+    `leak_score=${p.leak_score ?? "n/a"}`,
+    `volume_turbo=${p.volume_turbo ?? "n/a"}`,
+    `quality_turbo=${p.quality_turbo ?? "n/a"}`,
+    `twin_score=${p.twin_score ?? "n/a"}`,
+    `band=${p.band || "n/a"}`,
+  ];
+  if (p.answers && typeof p.answers === "object") {
+    lines.push("answers=" + JSON.stringify(p.answers).slice(0, 800));
+  }
+  if (p.message) lines.push("", "Message:", String(p.message).slice(0, 1500));
+  return lines.join("\n");
+}
+
 const dateISO = (jours) => new Date(Date.now() + jours * 864e5).toISOString().slice(0, 10);
 
 /** Tolere un jeton colle avec des guillemets, des espaces ou le prefixe "Bearer ". */
@@ -321,25 +356,39 @@ async function createDeal(env, name, stage, props, contactId) {
 async function traiterLead(env, p) {
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
-  const sc = score(forfait, p.email, f.prix, f.recurrent);
+  const base = score(forfait, p.email, f.prix, f.recurrent);
+  const sc = twinTurboLeadScore(base, p);
   const contactId = await upsertContact(env, p.email, {
     firstname: p.prenom || "", lastname: p.nom || "", phone: p.telephone || "", company: p.entreprise || "",
     bw_forfait: forfait, bw_source: p.source || "form_web", bw_urgence: p.urgence || "normal",
     bw_lead_score: sc, bw_budget_estime: f.prix, bw_icp: p.icp || "oui_pme", lifecyclestage: "lead",
   });
+  const segmentBits = [
+    p.engine_mode === "twin_turbo_full_performance" ? "Twin Turbo" : null,
+    p.band ? `band=${p.band}` : null,
+    p.message || "lead entrant",
+  ].filter(Boolean);
   const d = await createDeal(env, `${f.label} - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`, ST_NEW, {
     amount: f.prix, bw_forfait: forfait, bw_source: p.source || "form_web", bw_urgence: p.urgence || "normal",
     bw_lead_score: sc, bw_deadline: dateISO(f.delai), bw_livraison_statut: "non_demarre",
     bw_idempotency_key: `lead:${p.email}:${forfait}:${new Date().toISOString().slice(0, 10)}`,
-    bw_segment: (p.message || "lead entrant").slice(0, 200),
+    bw_segment: segmentBits.join(" · ").slice(0, 200),
   }, contactId);
-  if (d.cree && p.message) {
+  if (d.cree && (p.message || p.leak_score != null || p.twin_score != null || p.answers)) {
     await hs(env, "POST", "/crm/v3/objects/notes", {
-      properties: { hs_timestamp: new Date().toISOString(), hs_note_body: `Message du formulaire :\n${p.message}` },
+      properties: { hs_timestamp: new Date().toISOString(), hs_note_body: twinTurboNote(p, sc) },
       associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
     });
   }
-  return { contact: contactId, deal: d.id, score: sc, statut: d.cree ? "cree" : "doublon evite" };
+  return {
+    contact: contactId,
+    deal: d.id,
+    score: sc,
+    engine: p.engine_mode || null,
+    volume_turbo: p.volume_turbo ?? null,
+    quality_turbo: p.quality_turbo ?? null,
+    statut: d.cree ? "cree" : "doublon evite",
+  };
 }
 
 async function traiterPaiement(env, p) {
@@ -956,7 +1005,7 @@ export default {
         properties,
       });
       try {
-        const deals = await search("deals", ["dealname", "dealstage", "pipeline", "amount", "bw_source", "bw_forfait", "bw_livraison_statut", "createdate", "hs_lastmodifieddate"]);
+        const deals = await search("deals", ["dealname", "dealstage", "pipeline", "amount", "bw_source", "bw_forfait", "bw_lead_score", "bw_livraison_statut", "bw_segment", "createdate", "hs_lastmodifieddate"]);
         if (deals.status !== 200) {
           return Response.json({ error: "Lecture du pipeline BlackWay refusée", status: deals.status }, { status: 502, headers: privateHeaders });
         }
@@ -974,15 +1023,26 @@ export default {
             if (ids.length) {
               const batch = await hs(env, "POST", "/crm/v3/objects/contacts/batch/read", {
                 inputs: ids.map((id) => ({ id })),
-                properties: ["firstname", "lastname", "email", "phone", "company", "lifecyclestage", "bw_source", "createdate", "hs_lastmodifieddate"],
+                properties: ["firstname", "lastname", "email", "phone", "company", "lifecyclestage", "bw_source", "bw_lead_score", "bw_forfait", "createdate", "hs_lastmodifieddate"],
               });
               if (batch.status === 200) contacts = batch.data.results || [];
               else contactsAvailable = false;
             }
           }
         }
+        const scored = recentDeals
+          .map((d) => Number(d.properties?.bw_lead_score))
+          .filter((n) => Number.isFinite(n));
         return Response.json({
           fetchedAt: new Date().toISOString(),
+          engines: {
+            mode: "twin_turbo_full_performance",
+            dealsWithScore: scored.length,
+            avgLeadScore: scored.length
+              ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length)
+              : null,
+            maxLeadScore: scored.length ? Math.max(...scored) : null,
+          },
           limits: { deals: 50, countsArePartial: true, contactsAvailable },
           contacts: contacts.map((c) => ({ id: c.id, ...c.properties })),
           deals: recentDeals.map((d) => ({ id: d.id, ...d.properties })),

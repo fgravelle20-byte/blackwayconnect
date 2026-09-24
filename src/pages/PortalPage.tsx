@@ -40,8 +40,8 @@ const TOOL_COPY: Partial<
   Record<PortalToolId, { fr: { title: string; body: string; cta: string }; en: { title: string; body: string; cta: string } }>
 > = {
   diagnostic: {
-    fr: { title: "Revenue Leak Score", body: "Diagnostic 60 s — fuites de revenu et forfait recommandé.", cta: "Lancer" },
-    en: { title: "Revenue Leak Score", body: "60s diagnostic — revenue leaks and recommended plan.", cta: "Run" },
+    fr: { title: "Twin Turbo Leak Score", body: "Diagnostic 60 s — Volume + Qualité → moteur recommandé.", cta: "Lancer" },
+    en: { title: "Twin Turbo Leak Score", body: "60s diagnostic — Volume + Quality → recommended engine.", cta: "Run" },
   },
   outils: {
     fr: { title: "Master Tools", body: "Arsenal : score, relance, soumission, ROI, secrétaire IA.", cta: "Ouvrir" },
