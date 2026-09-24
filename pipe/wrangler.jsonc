@@ -8,6 +8,8 @@
   "routes": [
     { "pattern": "api.blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
   ],
+  // PAYMENT-LOCKED — BW_PADDLE_FULFILL_KEY shared with Vorixa blackwayPaddleWebhook.
+  // Do not remove or rotate without ops/payment-lock unlock procedure.
   // Shared with Vorixa blackwayPaddleWebhook → POST /portal/provision (CF API token cannot write Worker secrets).
   "vars": {
     "BW_PADDLE_FULFILL_KEY": "eed3b27fa66fd71ca7b807d5e80b522de964ec81c05c7f22"

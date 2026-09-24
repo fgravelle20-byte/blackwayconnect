@@ -1,5 +1,6 @@
 /**
  * BlackWay Pipe - tuyauterie CRM BlackWayConnect
+ * PAYMENT-LOCKED — Paddle auto-fulfill chain. See ops/payment-lock/LOCKED.json.
  * Endpoints:
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
  *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)

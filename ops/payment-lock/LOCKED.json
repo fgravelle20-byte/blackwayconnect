@@ -1,0 +1,36 @@
+{
+  "$schema_note": "PAYMENT SYSTEM LOCK — do not edit unless you intentionally unlock the live Paddle chain. CI fails if source drifts from these values.",
+  "locked": true,
+  "lock_version": 1,
+  "locked_at": "2026-09-24",
+  "processor": "paddle",
+  "site_origin": "https://blackwayconnect.com",
+  "pipe_origin": "https://api.blackwayconnect.com",
+  "portal_path": "/portail",
+  "checkout_path": "/payer",
+  "vorixa_webhook_destination": "https://vorixa.ca/api/functions/blackwayPaddleWebhook",
+  "paddle_client_token_live_prefix": "live_a4f8ad8f1c8be908ec3784e8d8b",
+  "bw_paddle_fulfill_key": "eed3b27fa66fd71ca7b807d5e80b522de964ec81c05c7f22",
+  "hubspot_bw_source_for_paddle": "portail",
+  "prices": {
+    "grow_hub_launch": "pri_01kxtn6asavavmqv54407h464b",
+    "grow_hub_growth": "pri_01kxtn6b41wzt07rnzvyte4sn8",
+    "grow_hub_scale": "pri_01kxtn6befjw8m8gz9a5vwf0wf"
+  },
+  "pipe_price_map": {
+    "pri_01kxtn6asavavmqv54407h464b": "grow_hub_launch",
+    "pri_01kxtn6avpw2gpgrmaxax9tmwy": "grow_hub_launch",
+    "pri_01kxtn6b41wzt07rnzvyte4sn8": "grow_hub_growth",
+    "pri_01kxtn6b6ba8szneb21wx51dz6": "grow_hub_growth",
+    "pri_01kxtn6befjw8m8gz9a5vwf0wf": "grow_hub_scale",
+    "pri_01kxtn6bgrd0wwv1sdsqjv5ry2": "grow_hub_scale"
+  },
+  "guarded_files": [
+    "src/paddleCatalog.ts",
+    "src/pages/CheckoutPage.tsx",
+    "src/stripeConfig.ts",
+    "pipe/index.js",
+    "pipe/wrangler.jsonc",
+    "ops/payment-lock/LOCKED.json"
+  ]
+}
