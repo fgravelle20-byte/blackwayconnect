@@ -37,6 +37,7 @@ test("verifies Paddle-Signature against the raw body", async () => {
 
 test("portal provision accepts X-BW-Fulfill-Key when BW_LEAD_KEY differs", async () => {
   const previousFetch = globalThis.fetch;
+  const hubspotBodies = [];
   globalThis.fetch = async (input, init) => {
     const url = String(input);
     if (url.includes("/crm/v3/properties/contacts/bw_last_checkout_session")) {
@@ -46,9 +47,11 @@ test("portal provision accepts X-BW-Fulfill-Key when BW_LEAD_KEY differs", async
       return new Response(JSON.stringify({ results: [{ id: "c1", properties: { email: "pay@example.com", lifecyclestage: "customer", bw_forfait_paye: "grow_hub_growth" } }] }), { status: 200 });
     }
     if (url.includes("/crm/v3/objects/contacts")) {
+      if (init?.body) hubspotBodies.push(JSON.parse(init.body));
       return new Response(JSON.stringify({ id: "c1" }), { status: 200 });
     }
     if (url.includes("/crm/v3/objects/deals")) {
+      if (init?.body) hubspotBodies.push(JSON.parse(init.body));
       return new Response(JSON.stringify({ id: "d1" }), { status: 201 });
     }
     if (url.includes("/crm/v3/objects/notes")) {
@@ -72,6 +75,10 @@ test("portal provision accepts X-BW-Fulfill-Key when BW_LEAD_KEY differs", async
     assert.equal(ok.status, 200);
     const body = await ok.json();
     assert.equal(body.ok, true);
+    // HubSpot enum rejects "paddle" — map to portail while note still says Paddle.
+    const sources = hubspotBodies.map((b) => b?.properties?.bw_source).filter(Boolean);
+    assert.ok(sources.length >= 1);
+    assert.ok(sources.every((s) => s === "portail"));
   } finally {
     globalThis.fetch = previousFetch;
   }

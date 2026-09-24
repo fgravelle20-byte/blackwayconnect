@@ -400,6 +400,9 @@ async function traiterPaiement(env, p) {
   const sc = score(forfait, p.email, p.montant, f.recurrent);
   const cell = isCellulaireForfait(forfait);
   const processor = p.processor === "paddle" ? "paddle" : "stripe";
+  // HubSpot bw_source enum: form_web | portail | stripe | campagne | reference | prospection
+  // Keep "paddle"/"cellulaire" in notes + segment; never send them as bw_source.
+  const hsSource = cell || processor === "paddle" ? "portail" : "stripe";
   const segment = p.segment || (cell ? "cellulaire" : `paiement ${processor}`);
   const dealLabel = p.renouvellement
     ? `${f.label} - RENOUVELLEMENT - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`
@@ -408,7 +411,7 @@ async function traiterPaiement(env, p) {
   const contactProps = {
     firstname: p.prenom || "", lastname: p.nom || "", company: p.entreprise || "",
     bw_forfait_paye: forfait,
-    bw_source: cell ? "cellulaire" : processor,
+    bw_source: hsSource,
     bw_lead_score: sc, lifecyclestage: "customer",
   };
   if (cell) {
@@ -435,7 +438,7 @@ async function traiterPaiement(env, p) {
   }
   const d = await createDeal(env, dealLabel, ST_PAID, {
     amount: p.montant || f.prix, bw_forfait: forfait,
-    bw_source: cell ? "cellulaire" : processor, bw_urgence: "elevee",
+    bw_source: hsSource, bw_urgence: "elevee",
     bw_lead_score: sc, bw_deadline: dateISO(f.delai), bw_livraison_statut: "non_demarre",
     bw_stripe_payment_id: p.payment_id, bw_idempotency_key: `pay:${p.payment_id}`,
     bw_segment: segment,
