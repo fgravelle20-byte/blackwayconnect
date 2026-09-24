@@ -1,12 +1,14 @@
 # BlackWayConnect — revenue plumbing
 
-> **2026-09-19 — Paddle cutover:**  
-> Canonical host = `blackwayconnect.com` (Paddle-approved).  
-> Site checkouts → `https://vorixa.ca/pricing` (Paddle MoR).  
-> Stripe Grow Hub plinks remain in catalog for webhook legacy only.
+> **LOCK 2026-09-24 — Paddle self-serve on blackwayconnect.com**  
+> Canonical host = `https://blackwayconnect.com`  
+> Checkouts = **`/payer?plan=…`** (Paddle overlay) — NOT Stripe Payment Links, NOT `vorixa.ca/pricing`.  
+> Self-serve plans: **Launch 149 / Growth 349 / Automation (Scale) 699** CAD/mois (+ essai 14 j).  
+> Spark / Command / Partner / Entreprise = **contact** (`/contact`).  
+> Production deploy = **Cloudflare Workers Builds** (`blackway-site`, `blackway-pipe`, `blackway-sentinel`).  
+> Twin Turbo engines: `ops/TWIN-TURBO-ENGINES.md` · Funnel ads: `ops/FUNNEL-ADS.md` · Secrets: `ops/cloudflare-secrets-blocker.md`
 
-
-Marketing site (`blackway-site`) ↔ `blackway-pipe` (`api.blackwayconnect.com`) ↔ HubSpot ↔ mobile app (Base44).
+Marketing site (`blackway-site`) ↔ `blackway-pipe` (`api.blackwayconnect.com`) ↔ HubSpot ↔ Portail Client Master.
 
 ## Live endpoints
 
@@ -14,70 +16,46 @@ Marketing site (`blackway-site`) ↔ `blackway-pipe` (`api.blackwayconnect.com`)
 |------|-----|
 | Canonical site | `https://blackwayconnect.com` |
 | www | `https://www.blackwayconnect.com` → **301** apex (`blackway-www`) |
-| Pipe health | `https://api.blackwayconnect.com/health` → `{ ok, hubspot, stripe_secret, lead_key }` (booleans only; no token prefix) |
-| Site health | `GET https://blackwayconnect.com/api/health` → `{ ok, pipe, lead_key, base44_key, ai, mobile }` (booleans only) |
+| Pipe health | `https://api.blackwayconnect.com/health` → includes `paddle_ready` (booleans only) |
+| Site health | `GET https://blackwayconnect.com/api/health` |
 | Lead ingest | `POST https://api.blackwayconnect.com/lead` + header `X-BW-Key` |
-| Site lead proxy | `POST https://blackwayconnect.com/api/lead` (key stays server-side) |
-| Mobile bootstrap | `GET https://blackwayconnect.com/api/mobile/bootstrap` (CORS `*.base44.app`) |
-| Mobile lead | `POST https://blackwayconnect.com/api/mobile/lead` (`X-BW-Key` or `X-BW-Base44-Key`) |
-| AI Secretary chat | `POST https://blackwayconnect.com/api/chat` (Workers AI + FAQ fallback) |
-| Site public config | `GET https://blackwayconnect.com/api/config` |
-| Client Master Portal | `https://blackwayconnect.com/portail` (+ `/portal`, `/en/portail`) — post-Stripe control center |
-| Portal claim | `POST /api/portal/claim` → pipe `/portal/claim` (session_id or email) |
-| Portal me | `GET /api/portal/me` (Bearer token) |
-| Thank-you checklist | `https://blackwayconnect.com/merci` (+ `/thank-you`) — secondary activation steps |
-| Stripe webhook | `POST https://api.blackwayconnect.com/webhooks/stripe` |
-| App preview | `https://black-way-link.base44.app/` |
+| Site lead proxy | `POST https://blackwayconnect.com/api/lead` |
+| Checkout | `https://blackwayconnect.com/payer?plan=grow_hub_growth` (etc.) |
+| Site public config | `GET https://blackwayconnect.com/api/config` → `checkout.processor=paddle` |
+| Client Master Portal | `https://blackwayconnect.com/portail` |
+| Portal claim | `POST /api/portal/claim` (`transaction_id` / `session_id` / email) |
+| Portal me | `GET /api/portal/me` (Bearer) |
+| Portal leads inbox | `GET /api/portal/leads` (Bearer) — HubSpot deals livrés |
+| Paddle webhook | `POST https://api.blackwayconnect.com/webhooks/paddle` |
+| Stripe webhook (legacy) | `POST https://api.blackwayconnect.com/webhooks/stripe` |
 
 Worker `blackwayconnect` is **not** used and must not be modified/deleted.
 
-## Grow Hub Stripe checkout (live)
+## Grow Hub — Paddle self-serve (live)
 
-Payment Links (CAD monthly) on merchant `acct_1TDZjzAG7HUL9Rtr`. Site CTAs open these with UTM + `client_reference_id`.
+| Plan | CAD/mo | Checkout |
+|------|--------|----------|
+| Launch | 149 | `/payer?plan=grow_hub_launch` |
+| Growth ★ | 349 | `/payer?plan=grow_hub_growth` |
+| Automation (Scale) | 699 | `/payer?plan=grow_hub_scale` |
+| Spark / Command / Partner / Entreprise | — | `/contact` |
 
-**Do not use** `plink_1UDT7lAG7HUL9Rtr6j7UWahF` — Stripe returns `resource_missing` on this account (deleted, Test-mode ID, or created on a different/Connect account).
+Catalog: `src/paddleCatalog.ts` + `src/stripeConfig.ts` (checkoutUrl → `/payer`).  
+Build secret: `VITE_PADDLE_CLIENT_TOKEN` (`live_…`) in **Workers Builds** + GitHub secret for verify workflow.
 
-| Plan | CAD/mo | Payment Link |
-|------|--------|--------------|
-| Spark | 99 | https://buy.stripe.com/28EeVc0zz9Rhas604SeIw1U |
-| Launch | 249 | https://buy.stripe.com/3cI3cueqp0gH57McREeIw1X |
-| Growth ★ | 499 | https://buy.stripe.com/aFa5kC6XX8Nd43IdVIeIw1Y |
-| Scale | 749 | https://buy.stripe.com/9B600i1DD8Ndbwa6tgeIw1Z |
-| Command | 1249 | https://buy.stripe.com/14A6oGfut0gHgQubNAeIw1V |
-| Partner | 2499 | https://buy.stripe.com/eVq7sK9658Nd43IeZMeIw1W |
-| Entreprise | — | Consultation `/contact` |
+### After pay → Portail
 
-Catalog in code: `src/stripeConfig.ts`. Public mirror: `GET /api/config` → `checkout` · Mobile: `GET /api/mobile/bootstrap`.
+1. Paddle `checkout.completed` / webhook → pipe stores `txn_…` in KV (**90 jours**) + HubSpot deal `bw_stripe_payment_id` + contact customer.  
+2. `/portail?transaction_id=txn_…` → claim: **KV → contact `bw_last_checkout_session` → deal payment id**.  
+3. Email claim fallback always available.  
+4. Inbox: `GET /api/portal/leads` lists HubSpot deals for the contact.
 
-### Stripe after_completion → Portail (live)
+HubSpot optional prop (durable): create contact property `bw_last_checkout_session` (text) if auto-create returns 403.
 
-All 6 Grow Hub Payment Links redirect after payment to  
-`https://blackwayconnect.com/portail?session_id={CHECKOUT_SESSION_ID}`.
+## Legacy Stripe table
 
-| Plan | Payment Link ID (live, 2026-09-06) |
-|------|-----------------|
-| Spark | `plink_1UCmB6AG7HUL9RtrpvUpROqh` |
-| Launch | `plink_1UCmBxAG7HUL9RtrUdOVuMNm` |
-| Growth | `plink_1UCmBzAG7HUL9RtrG7wA53Aq` |
-| Scale | `plink_1UCmC0AG7HUL9RtrSOaDDzbo` |
-| Command | `plink_1UCmBJAG7HUL9RtrnvIfFOMn` |
-| Partner | `plink_1UCmBKAG7HUL9RtrFzh2ZDB1` |
+Stripe Payment Links below are **legacy webhook resolution only** — do not wire site CTAs to them.
 
-**Portal unlock after pay (no `STRIPE_SECRET_KEY` required):**  
-1. Stripe webhook → pipe stores `cs_…` → email/forfait in Worker Cache (24h) **synchronously**, then HubSpot deal `bw_stripe_payment_id` + contact (async).  
-2. `/portail?session_id=cs_…` → `POST /portal/claim` resolves **Cache → contact `bw_last_checkout_session` → deal payment id → Stripe API only if secret present**.  
-3. UI retries claim a few seconds if webhook/redirect race. Email claim remains fallback (`/merci` CTA).  
-
-Optional (durable contact prop) — **auto-create currently 403** (`hubspot_bw_session_prop: false`, `hubspot_bw_session_prop_create: scope_denied_or_missing`). Portal claim still works via Cache (24h) + deal `bw_stripe_payment_id`.
-
-**HubSpot UI (do this once, ~1 min):**  
-Settings → Data Management → Properties → Contact properties → Create property  
-- Internal name: `bw_last_checkout_session`  
-- Label: `BW Last Checkout Session`  
-- Field type: Single-line text  
-- Group: `blackwayconnect` (or Contact information)  
-
-**Or** Private App scopes (Settings → Integrations → Private Apps → your token): add  
 `crm.schemas.contacts.write` (+ keep existing `crm.objects.contacts.read/write`).  
 Then `GET /health` should show `hubspot_bw_session_prop: true`.
 

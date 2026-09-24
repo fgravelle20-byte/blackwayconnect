@@ -1,47 +1,26 @@
 name: Deploy pipe (blackway-pipe)
 
+# Production deploy path = Cloudflare Workers Builds (blackway-pipe).
+# Optional manual secret sync via workflow_dispatch only.
+
 on:
   workflow_dispatch: {}
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Verify Cloudflare token (account then user)
+      - name: Deploy policy (Workers Builds canonical)
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: eda7fc96b400297aaa0b185a26ad1846
-        run: |
-          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN empty — cannot wrangler deploy"
-            exit 1
-          fi
-          api="https://api.cloudflare.com/client/v4"
-          auth=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json")
-          resp="$(curl -sS "${auth[@]}" "${api}/accounts/${CF_ACCOUNT_ID}/tokens/verify")"
-          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
-            resp="$(curl -sS "${auth[@]}" "${api}/user/tokens/verify")"
-          fi
-          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
-            echo "::error::Cloudflare token rejected — fix CLOUDFLARE_API_TOKEN. Details: $(echo "${resp}" | jq -c '.errors')"
-            exit 1
-          fi
-          echo "- Cloudflare token: OK" >> "$GITHUB_STEP_SUMMARY"
-      - run: npm ci
-      - name: Install Paddle secrets
-        run: |
-          printf '%s' "$PADDLE_API_KEY" | npx wrangler secret put PADDLE_API_KEY -c pipe/wrangler.jsonc
-          printf '%s' "$PADDLE_WEBHOOK_SECRET" | npx wrangler secret put PADDLE_WEBHOOK_SECRET -c pipe/wrangler.jsonc
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           PADDLE_API_KEY: ${{ secrets.PADDLE_API_KEY }}
           PADDLE_WEBHOOK_SECRET: ${{ secrets.PADDLE_WEBHOOK_SECRET }}
-      - run: npx wrangler deploy -c pipe/wrangler.jsonc
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          {
+            echo "## Pipe deploy policy"
+            echo "Production publish = **Cloudflare Workers Builds** → worker \`blackway-pipe\`."
+            echo "Set Worker secrets in Dash (not Actions wrangler): \`PADDLE_API_KEY\`, \`PADDLE_WEBHOOK_SECRET\`, \`HUBSPOT_TOKEN\`, \`BW_LEAD_KEY\`, \`BW_PORTAL_SECRET\`."
+            if [ -n "${PADDLE_API_KEY}" ]; then echo "- GitHub secret PADDLE_API_KEY: present"; else echo "- GitHub secret PADDLE_API_KEY: empty (ok if only on CF)"; fi
+            if [ -n "${PADDLE_WEBHOOK_SECRET}" ]; then echo "- GitHub secret PADDLE_WEBHOOK_SECRET: present"; else echo "- GitHub secret PADDLE_WEBHOOK_SECRET: empty (ok if only on CF)"; fi
+            echo "Health check after deploy: GET https://api.blackwayconnect.com/health → paddle_ready=true"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -43,7 +43,9 @@ export function CheckoutPage() {
     const open = async () => {
       try {
         const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN;
-        if (!token || !token.startsWith("live_")) throw new Error("Paddle client token missing");
+        if (!token || !token.startsWith("live_")) {
+          throw new Error("Paddle client token missing");
+        }
         await loadPaddle();
         if (cancelled || !window.Paddle) return;
         if (!initialized) {
@@ -68,8 +70,19 @@ export function CheckoutPage() {
           customData: { bw_forfait: plan, platform: "blackwayconnect" },
           settings: { displayMode: "overlay", variant: "one-page", successUrl: successUrl.toString() },
         });
-      } catch {
-        if (!cancelled) setError(lang === "fr" ? "Paiement temporairement indisponible. Contactez-nous." : "Checkout is temporarily unavailable. Contact us.");
+      } catch (err) {
+        const missing = String((err as Error)?.message || "").includes("token missing");
+        if (!cancelled) {
+          setError(
+            missing
+              ? lang === "fr"
+                ? "Paiement indisponible : token Paddle live manquant au build (VITE_PADDLE_CLIENT_TOKEN). Contactez-nous."
+                : "Checkout unavailable: missing live Paddle build token (VITE_PADDLE_CLIENT_TOKEN). Contact us."
+              : lang === "fr"
+                ? "Paiement temporairement indisponible. Contactez-nous."
+                : "Checkout is temporarily unavailable. Contact us.",
+          );
+        }
       }
     };
     void open();

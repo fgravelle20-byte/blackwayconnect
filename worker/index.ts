@@ -385,6 +385,7 @@ export default {
         portal: "/portail",
         portalClaim: "/api/portal/claim",
         portalMe: "/api/portal/me",
+        portalLeads: "/api/portal/leads",
         stripeWebhook: `${env.PIPE_URL}/webhooks/stripe`,
         checkout: CHECKOUT,
         tools: "/outils",
@@ -514,6 +515,26 @@ export default {
       try {
         const auth = request.headers.get("Authorization") || "";
         const upstream = await fetch(`${env.PIPE_URL}/portal/me`, {
+          method: "GET",
+          headers: { Authorization: auth },
+        });
+        const text = await upstream.text();
+        return new Response(text, {
+          status: upstream.status,
+          headers: { "Content-Type": "application/json", ...corsHeaders(request) },
+        });
+      } catch (e) {
+        return corsJson(request, { erreur: "portail indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/portal/leads") {
+      if (request.method !== "GET") {
+        return corsJson(request, { erreur: "methode non autorisee" }, 405);
+      }
+      try {
+        const auth = request.headers.get("Authorization") || "";
+        const upstream = await fetch(`${env.PIPE_URL}/portal/leads`, {
           method: "GET",
           headers: { Authorization: auth },
         });

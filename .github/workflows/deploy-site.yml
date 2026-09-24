@@ -1,5 +1,8 @@
 name: Deploy site (blackway-site)
 
+# Production deploy path = Cloudflare Workers Builds (blackway-site).
+# This workflow verifies build + Paddle live token only — no wrangler deploy.
+
 on:
   workflow_dispatch: {}
   push:
@@ -16,50 +19,36 @@ on:
       - ".github/workflows/deploy-site.yml"
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Secret presence (no values)
+      - name: Require Paddle live client token
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VITE_PADDLE_CLIENT_TOKEN: ${{ secrets.VITE_PADDLE_CLIENT_TOKEN }}
         run: |
           {
-            echo "## deploy secret probe"
-            if [ -n "${CLOUDFLARE_API_TOKEN}" ]; then echo "- CLOUDFLARE_API_TOKEN: set (len=${#CLOUDFLARE_API_TOKEN})"; else echo "- CLOUDFLARE_API_TOKEN: EMPTY"; fi
-            if [ -n "${CLOUDFLARE_ACCOUNT_ID}" ]; then echo "- CLOUDFLARE_ACCOUNT_ID: set"; else echo "- CLOUDFLARE_ACCOUNT_ID: EMPTY"; fi
+            echo "## Paddle build secret"
+            if [ -n "${VITE_PADDLE_CLIENT_TOKEN}" ] && [[ "${VITE_PADDLE_CLIENT_TOKEN}" == live_* ]]; then
+              echo "- VITE_PADDLE_CLIENT_TOKEN: live_… OK (len=${#VITE_PADDLE_CLIENT_TOKEN})"
+            else
+              echo "- VITE_PADDLE_CLIENT_TOKEN: MISSING or not live_"
+              echo "::error::Set GitHub secret VITE_PADDLE_CLIENT_TOKEN (live_…) — also inject the same var in Cloudflare Workers Builds for blackway-site."
+              exit 1
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN empty — cannot wrangler deploy"
-            exit 1
-          fi
-      - name: Verify Cloudflare token (account then user)
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: eda7fc96b400297aaa0b185a26ad1846
-        run: |
-          api="https://api.cloudflare.com/client/v4"
-          auth=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json")
-          resp="$(curl -sS "${auth[@]}" "${api}/accounts/${CF_ACCOUNT_ID}/tokens/verify")"
-          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
-            resp="$(curl -sS "${auth[@]}" "${api}/user/tokens/verify")"
-          fi
-          if [ "$(echo "${resp}" | jq -r '.success // false')" != "true" ]; then
-            echo "::error::Cloudflare token rejected — fix CLOUDFLARE_API_TOKEN (scopes: Account.Workers Scripts Edit + Zone.Zone Read on blackwayconnect.com). Details: $(echo "${resp}" | jq -c '.errors')"
-            exit 1
-          fi
-          echo "- Cloudflare token: OK ($(echo "${resp}" | jq -r '.result.status'))" >> "$GITHUB_STEP_SUMMARY"
       - run: npm ci
       - run: npm run build
         env:
           VITE_PADDLE_CLIENT_TOKEN: ${{ secrets.VITE_PADDLE_CLIENT_TOKEN }}
-      - run: npx wrangler deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-# deploy trigger after valid CF account token 2026-09-19T20:37:28Z
+      - name: Deploy policy (Workers Builds canonical)
+        run: |
+          {
+            echo "## Deploy policy"
+            echo "Production publish = **Cloudflare Workers Builds** → worker \`blackway-site\`."
+            echo "This Actions job only verifies \`npm run build\` + Paddle \`live_\` token."
+            echo "Do not rely on \`npx wrangler deploy\` from GitHub Actions."
+          } >> "$GITHUB_STEP_SUMMARY"

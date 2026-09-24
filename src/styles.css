@@ -1674,6 +1674,43 @@ select {
   max-width: 34rem;
 }
 
+.rls__twin {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+  max-width: 34rem;
+}
+
+.rls__twin-cell {
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.rls__twin-cell .eyebrow {
+  display: block;
+  margin: 0 0 0.35rem;
+}
+
+.rls__twin-cell strong {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--track-display);
+  line-height: 1;
+}
+
+.rls__twin-cell--blend strong {
+  color: var(--brand);
+}
+
+@media (max-width: 560px) {
+  .rls__twin {
+    grid-template-columns: 1fr;
+  }
+}
+
 .rls__rec {
   margin: 1.75rem 0;
   padding: 1.25rem 0;
@@ -3087,6 +3124,76 @@ a.bw-agent__chip {
   border-radius: 50%;
   background: #2ecc71;
   box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+}
+
+.portal-inbox {
+  margin: 1.75rem 0 2.25rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.portal-inbox__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.portal-inbox__meta {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin: 0 0 0.85rem;
+}
+
+.portal-inbox__empty {
+  max-width: 36rem;
+}
+
+.portal-inbox__empty .btn {
+  margin-top: 0.85rem;
+}
+
+.portal-inbox__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.portal-inbox__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.portal-inbox__item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.portal-inbox__item p {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+
+.portal-inbox__score {
+  text-align: right;
+  min-width: 3.5rem;
+}
+
+.portal-inbox__score strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  color: var(--brand);
+  line-height: 1;
 }
 
 .portal-plan {

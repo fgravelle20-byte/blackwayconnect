@@ -1,5 +1,6 @@
 import type { Lang } from "./copy";
 import type { PlanKey } from "./stripeConfig";
+import { computeTwinTurbo } from "./leadEngines";
 
 export type ScoreOption = { id: string; label: string; leak: number };
 export type ScoreQuestion = { id: string; prompt: string; options: ScoreOption[] };
@@ -43,33 +44,33 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
   fr: {
     nav: "Diagnostic",
     eyebrow: "Diagnostic 60 secondes",
-    title: "BlackWay Revenue Leak Score",
-    body: "Six questions. Un score. La prochaine action pour arrêter de perdre du revenu entre le lead et le paiement.",
+    title: "BlackWay Twin Turbo — Leak Score",
+    body: "Six questions. Twin Turbo Full Performance : volume + qualité. Une action pour fermer la fuite lead → paiement.",
     start: "Lancer le diagnostic",
     next: "Suivant",
     back: "Retour",
     of: "sur",
-    resultEyebrow: "Votre score de fuite",
-    scoreLabel: "fuite / 100",
-    leakLow: "Fuite contenue — vous pouvez industrialiser sans chaos.",
-    leakMid: "Fuite réelle — des leads meurent entre la demande et la relance.",
-    leakHigh: "Fuite critique — le revenu s’évapore avant d’atteindre le CRM.",
-    why: "Pourquoi ce forfait",
-    saveTitle: "Gardez votre diagnostic",
-    saveBody: "On vous envoie la lecture et la prochaine étape Grow Hub. Aucune carte requise.",
+    resultEyebrow: "Votre score Twin Turbo",
+    scoreLabel: "pression / 100",
+    leakLow: "Pression légère — Twin Turbo Lock : industrialiser sans chaos.",
+    leakMid: "Pression réelle — Turbo Qualité : leads qui meurent entre demande et relance.",
+    leakHigh: "Pression critique — Twin Turbo Full : le revenu s’évapore avant le CRM.",
+    why: "Pourquoi ce moteur",
+    saveTitle: "Gardez votre diagnostic Twin Turbo",
+    saveBody: "On archive volume + qualité dans HubSpot et on vous renvoie la prochaine étape. Aucune carte.",
     first: "Prénom",
     email: "Courriel",
     company: "Entreprise (optionnel)",
     saveCta: "Sauvegarder mon score",
     saving: "Envoi…",
-    saved: "Score reçu. On vous contacte avec le plan d’action.",
+    saved: "Score Twin Turbo reçu. On vous contacte avec le plan d’action.",
     saveError: "Envoi impossible. Réessayez ou écrivez à serviceclient@blackwayconnect.com.",
     subscribe: "S’abonner à ce forfait",
     openApp: "Forfaits cellulaires",
     restart: "Refaire le diagnostic",
     seeGrowHub: "Voir Grow Hub en action",
-    homeTeaser: "En 60 secondes, voyez où votre revenu fuit — avant d’acheter quoi que ce soit.",
-    homeTeaserCta: "Calculer mon Leak Score",
+    homeTeaser: "60 s — Twin Turbo : où volume et qualité fuient, avant d’acheter.",
+    homeTeaserCta: "Calculer mon Twin Turbo",
     questions: [
       {
         id: "volume",
@@ -134,26 +135,26 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     ],
     diagnoses: {
       low: [
-        "Votre base est saine : le risque est de ralentir en grandissant.",
-        "Priorité : standardiser pipeline, score et paiements avant d’ajouter du volume.",
+        "Base saine — Twin Turbo Lock : standardiser avant d’ajouter du volume.",
+        "Priorité : pipeline unique, score CRM et récupération paiements.",
       ],
       mid: [
-        "Des leads chauds refroidissent entre formulaire, boîte courriel et relance manuelle.",
-        "Devis et paiements sans remontée CRM = revenu invisible et non réclamé.",
+        "Turbo Qualité en retrait : leads chauds qui refroidissent entre formulaire et relance.",
+        "Devis / paiements sans remontée HubSpot = revenu invisible.",
       ],
       high: [
-        "Le volume ou la complexité dépasse le système actuel — chaque jour coûte du cash.",
-        "FR/EN, outils éclatés et paiements non suivis multiplient les fuites.",
+        "Twin Turbo Full : volume et close dépassent le stack — chaque jour coûte du cash.",
+        "FR/EN, CRM éclaté et paiements non suivis multiplient les fuites.",
       ],
     },
     planWhy: {
       grow_hub_spark: "Spark pour valider le stack sans surinvestir — pipeline + secrétaire IA.",
       grow_hub_launch:
-        "Launch structure les premières demandes : un pipeline clair, sans surconstruire.",
+        "Launch = Twin Turbo Lock : structure les premières demandes sans surconstruire.",
       grow_hub_growth:
-        "Growth est le moteur recommandé : score, relances, soumissions et paiements vers HubSpot.",
+        "Growth = Twin Turbo Full Performance : score, relances, soumissions, paiements → HubSpot.",
       grow_hub_scale:
-        "Scale pour plusieurs équipes, marchés ou langues — une seule provenance revenu.",
+        "Automation = Twin Turbo Max : multi-équipes / marchés / langues, une provenance revenu.",
       grow_hub_command: "Command quand la fuite exige ops CRM + acquisition gérée.",
       grow_hub_partner: "Partner pour remplacer un mandat agence par plateforme + exécution.",
     },
@@ -161,33 +162,33 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
   en: {
     nav: "Diagnostic",
     eyebrow: "60-second diagnostic",
-    title: "BlackWay Revenue Leak Score",
-    body: "Six questions. One score. The next action to stop losing revenue between lead and payment.",
+    title: "BlackWay Twin Turbo — Leak Score",
+    body: "Six questions. Twin Turbo Full Performance: volume + quality. One action to stop losing revenue between lead and payment.",
     start: "Start diagnostic",
     next: "Next",
     back: "Back",
     of: "of",
-    resultEyebrow: "Your leak score",
-    scoreLabel: "leak / 100",
-    leakLow: "Contained leak — you can industrialize without chaos.",
-    leakMid: "Real leak — leads die between inquiry and follow-up.",
-    leakHigh: "Critical leak — revenue evaporates before it reaches the CRM.",
-    why: "Why this plan",
-    saveTitle: "Save your diagnostic",
-    saveBody: "We’ll send the read-out plus the next Grow Hub step. No card required.",
+    resultEyebrow: "Your Twin Turbo score",
+    scoreLabel: "pressure / 100",
+    leakLow: "Light pressure — Twin Turbo Lock: industrialize without chaos.",
+    leakMid: "Real pressure — Quality Turbo: leads die between inquiry and follow-up.",
+    leakHigh: "Critical pressure — Twin Turbo Full: revenue evaporates before the CRM.",
+    why: "Why this engine",
+    saveTitle: "Save your Twin Turbo diagnostic",
+    saveBody: "We archive volume + quality in HubSpot and send the next Grow Hub step. No card required.",
     first: "First name",
     email: "Email",
     company: "Company (optional)",
     saveCta: "Save my score",
     saving: "Sending…",
-    saved: "Score received. We’ll follow up with the action plan.",
+    saved: "Twin Turbo score received. We’ll follow up with the action plan.",
     saveError: "Could not send. Retry or email serviceclient@blackwayconnect.com.",
     subscribe: "Subscribe to this plan",
     openApp: "Cellular plans",
     restart: "Retake diagnostic",
     seeGrowHub: "See Grow Hub in action",
-    homeTeaser: "In 60 seconds, see where revenue leaks — before you buy anything.",
-    homeTeaserCta: "Calculate my Leak Score",
+    homeTeaser: "60s — Twin Turbo: where volume and quality leak, before you buy.",
+    homeTeaserCta: "Calculate my Twin Turbo",
     questions: [
       {
         id: "volume",
@@ -252,25 +253,25 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     ],
     diagnoses: {
       low: [
-        "Your foundation is sound — the risk is slowing down as you grow.",
-        "Priority: standardize pipeline, scoring and payments before adding volume.",
+        "Sound base — Twin Turbo Lock: standardize before adding volume.",
+        "Priority: one pipeline, CRM score, payment recovery.",
       ],
       mid: [
-        "Warm leads cool between form, inbox and manual follow-up.",
-        "Quotes and payments without CRM feedback = invisible, unclaimed revenue.",
+        "Quality Turbo lagging: warm leads cool between form and follow-up.",
+        "Quotes / payments without HubSpot feedback = invisible revenue.",
       ],
       high: [
-        "Volume or complexity outruns the current system — every day costs cash.",
-        "FR/EN, fragmented tools and untracked payments multiply leaks.",
+        "Twin Turbo Full: volume and close outrun the stack — every day costs cash.",
+        "FR/EN, fragmented CRM and untracked payments multiply leaks.",
       ],
     },
     planWhy: {
       grow_hub_spark: "Spark to prove the stack without over-investing — pipeline + AI secretary.",
-      grow_hub_launch: "Launch structures early demand: a clear pipeline without overbuilding.",
+      grow_hub_launch: "Launch = Twin Turbo Lock: early demand without overbuilding.",
       grow_hub_growth:
-        "Growth is the recommended engine: scoring, follow-ups, quotes and payments into HubSpot.",
+        "Growth = Twin Turbo Full Performance: scoring, follow-ups, quotes, payments → HubSpot.",
       grow_hub_scale:
-        "Scale for multiple teams, markets or languages — one revenue provenance.",
+        "Automation = Twin Turbo Max: multi-team / market / language, one revenue provenance.",
       grow_hub_command: "Command when leakage needs CRM ops + managed acquisition.",
       grow_hub_partner: "Partner to replace an agency retainer with platform + execution.",
     },
@@ -296,13 +297,7 @@ export function recommendPlan(
   score: number,
   answers: Record<string, string>,
 ): PlanKey {
-  const bilingualHeavy = ["b3", "b4"].includes(answers.bilingual || "");
-  const volumeHeavy = ["v3", "v4"].includes(answers.volume || "");
-  if (score >= 85 || (bilingualHeavy && volumeHeavy && score >= 55)) return "grow_hub_command";
-  if (score >= 65 || (bilingualHeavy && volumeHeavy)) return "grow_hub_scale";
-  if (score >= 35) return "grow_hub_growth";
-  if (score >= 15) return "grow_hub_launch";
-  return "grow_hub_spark";
+  return computeTwinTurbo({ leakScore: score, answers }).recommendedPlan;
 }
 
 export function leakBand(score: number): "low" | "mid" | "high" {
