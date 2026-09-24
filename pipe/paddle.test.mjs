@@ -35,6 +35,48 @@ test("verifies Paddle-Signature against the raw body", async () => {
   assert.equal(await signaturePaddleValide(secret, `${body} `, `ts=${ts};h1=${h1}`), false);
 });
 
+test("portal provision accepts X-BW-Fulfill-Key when BW_LEAD_KEY differs", async () => {
+  const previousFetch = globalThis.fetch;
+  globalThis.fetch = async (input, init) => {
+    const url = String(input);
+    if (url.includes("/crm/v3/properties/contacts/bw_last_checkout_session")) {
+      return new Response(JSON.stringify({}), { status: 200 });
+    }
+    if (url.includes("/crm/v3/objects/contacts/search")) {
+      return new Response(JSON.stringify({ results: [{ id: "c1", properties: { email: "pay@example.com", lifecyclestage: "customer", bw_forfait_paye: "grow_hub_growth" } }] }), { status: 200 });
+    }
+    if (url.includes("/crm/v3/objects/contacts")) {
+      return new Response(JSON.stringify({ id: "c1" }), { status: 200 });
+    }
+    if (url.includes("/crm/v3/objects/deals")) {
+      return new Response(JSON.stringify({ id: "d1" }), { status: 201 });
+    }
+    if (url.includes("/crm/v3/objects/notes")) {
+      return new Response(JSON.stringify({ id: "n1" }), { status: 201 });
+    }
+    return new Response("{}", { status: 200 });
+  };
+  try {
+    const denied = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/provision", {
+      method: "POST",
+      headers: { "content-type": "application/json", "X-BW-Fulfill-Key": "wrong" },
+      body: JSON.stringify({ email: "pay@example.com", forfait: "grow_hub_growth", payment_id: "txn_test_fulfill" }),
+    }), { BW_LEAD_KEY: "lead-secret", BW_PADDLE_FULFILL_KEY: "fulfill-secret", BW_PORTAL_SECRET: "portal", HUBSPOT_TOKEN: "pat-test" }, { waitUntil() {} });
+    assert.equal(denied.status, 401);
+
+    const ok = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/provision", {
+      method: "POST",
+      headers: { "content-type": "application/json", "X-BW-Fulfill-Key": "fulfill-secret" },
+      body: JSON.stringify({ email: "pay@example.com", forfait: "grow_hub_growth", payment_id: "txn_test_fulfill", processor: "paddle" }),
+    }), { BW_LEAD_KEY: "lead-secret", BW_PADDLE_FULFILL_KEY: "fulfill-secret", BW_PORTAL_SECRET: "portal", HUBSPOT_TOKEN: "pat-test" }, { waitUntil() {} });
+    assert.equal(ok.status, 200);
+    const body = await ok.json();
+    assert.equal(body.ok, true);
+  } finally {
+    globalThis.fetch = previousFetch;
+  }
+});
+
 test("asks Paddle to retry when customer lookup fails after a valid payment", async () => {
   const secret = "pdl_ntfset_test_secret";
   const body = JSON.stringify({

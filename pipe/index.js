@@ -1013,8 +1013,14 @@ export default {
       const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
       const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
       const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
+      const paddleFulfillRelay = !!String(env.BW_PADDLE_FULFILL_KEY || "").trim();
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
-      const portal_claim_ready = hubspot === "connecte" && (stripeWebhookSecret || (paddleApiKey && paddleWebhookSecret));
+      // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
+      const portal_claim_ready = hubspot === "connecte" && (
+        stripeWebhookSecret ||
+        (paddleApiKey && paddleWebhookSecret) ||
+        paddleFulfillRelay
+      );
       return json({
         service: "blackway-pipe",
         ok: hubspot === "connecte",
@@ -1035,7 +1041,8 @@ export default {
         paddle_api_key: paddleApiKey,
         paddle_webhook_secret: paddleWebhookSecret,
         paddle_client_token: paddleClientToken,
-        paddle_ready: paddleApiKey && paddleWebhookSecret,
+        paddle_fulfill_relay: paddleFulfillRelay,
+        paddle_ready: (paddleApiKey && paddleWebhookSecret) || paddleFulfillRelay,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
@@ -1319,12 +1326,17 @@ export default {
     }
 
     /**
-     * Admin/ops: activate portal access for an email without waiting for Stripe webhook.
-     * Auth: X-BW-Key = BW_LEAD_KEY. Creates/updates HubSpot contact as customer + paid deal.
+     * Admin/ops + Vorixa Paddle relay: activate portal after verified payment.
+     * Auth: X-BW-Key = BW_LEAD_KEY OR X-BW-Fulfill-Key = BW_PADDLE_FULFILL_KEY.
+     * Creates/updates HubSpot contact as customer + paid deal.
      */
     if (url.pathname === "/portal/provision" && request.method === "POST") {
       try {
-        if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        const leadKey = String(env.BW_LEAD_KEY || "").trim();
+        const fulfillKey = String(env.BW_PADDLE_FULFILL_KEY || "").trim();
+        const leadOk = !!leadKey && request.headers.get("X-BW-Key") === leadKey;
+        const fulfillOk = !!fulfillKey && request.headers.get("X-BW-Fulfill-Key") === fulfillKey;
+        if (!leadOk && !fulfillOk) {
           return json({ erreur: "cle invalide" }, 401);
         }
         const p = await request.json();
@@ -1334,6 +1346,9 @@ export default {
         const paymentId =
           String(p.payment_id || "").trim() ||
           `manual:${email}:${forfait}:${new Date().toISOString().slice(0, 10)}`;
+        if (paymentId.startsWith("txn_")) {
+          await putSessionMap(env, paymentId, { email, forfait });
+        }
         const result = await traiterPaiement(env, {
           email,
           forfait,
@@ -1342,8 +1357,10 @@ export default {
           entreprise: p.entreprise || "AlphaVit Lab",
           prenom: p.prenom || "",
           nom: p.nom || "",
-          segment: p.segment || "provision manuelle portail",
-          checkout_session_id: p.session_id || p.checkout_session_id || "",
+          segment: p.segment || (fulfillOk ? "paiement paddle vorixa" : "provision manuelle portail"),
+          checkout_session_id: p.session_id || p.checkout_session_id || paymentId,
+          processor: p.processor || (fulfillOk ? "paddle" : undefined),
+          renouvellement: !!p.renouvellement,
         });
         const session = await claimPortal(env, { email });
         return json({ ok: true, provision: result, portal: session });
