@@ -32,14 +32,14 @@ Guide visuel Base44 : https://submit-your-app.base44.app/
 
 | | |
 |--|--|
-| Apple Developer / App Store Connect | **`f.gravelle20@icloud.com`** |
+| Apple Developer / App Store Connect | **`[courriel privé du propriétaire]`** |
 | Login | https://appstoreconnect.apple.com → **cet email** |
 | Support client (listing / app) | `serviceclient@blackwayconnect.com` (≠ email Apple) |
 
 ## Prérequis (coche avant de générer l’IPA)
 
-- [ ] Compte **Apple Developer Program** actif — login **`f.gravelle20@icloud.com`**
-- [ ] Connexion OK à [App Store Connect](https://appstoreconnect.apple.com/) avec **`f.gravelle20@icloud.com`**
+- [ ] Compte **Apple Developer Program** actif — login **`[courriel privé du propriétaire]`**
+- [ ] Connexion OK à [App Store Connect](https://appstoreconnect.apple.com/) avec **`[courriel privé du propriétaire]`**
 - [ ] **Projet Capacitor store-ready** : `../mobile/` (bundle `com.blackwayconnect.app`) — chemin principal repo
 - [ ] App Base44 **publiée** (chemin parallèle) : https://black-way-link.base44.app/
 - [ ] Plan Base44 **Builder ou +** si tu génères l’IPA via Base44 (sinon Archive Xcode depuis `mobile/ios`)
