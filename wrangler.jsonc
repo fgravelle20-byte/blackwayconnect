@@ -17,7 +17,9 @@
     "APP_WEB_URL": "https://blackwayconnect.com/portail",
     // Empty until Ready for Sale. ASC Apple ID (internal only): 6797345749
     "APP_STORE_URL": "",
-    "PLAY_STORE_URL": ""
+    "PLAY_STORE_URL": "",
+    // Cloudflare AI Gateway id (Dash → AI → AI Gateway). "default" auto-creates if missing.
+    "AI_GATEWAY_ID": "default"
   },
   "workers_dev": true,
   "routes": [

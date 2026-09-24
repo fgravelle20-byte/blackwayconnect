@@ -18,6 +18,8 @@ export interface Env {
   AI?: Ai;
   /** Optional OpenAI fallback secret */
   OPENAI_API_KEY?: string;
+  /** Cloudflare AI Gateway id (Dash → AI → AI Gateway) */
+  AI_GATEWAY_ID?: string;
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
   BW_OWNER_EMAIL?: string;
@@ -439,6 +441,7 @@ export default {
           lang,
           ai: env.AI,
           openaiKey: env.OPENAI_API_KEY,
+          aiGatewayId: env.AI_GATEWAY_ID || "default",
         });
         return corsJson(request, {
           reply: result.reply,

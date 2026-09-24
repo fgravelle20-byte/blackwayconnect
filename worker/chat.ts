@@ -286,16 +286,22 @@ async function runWorkersAi(
   ai: Ai,
   messages: ChatMessage[],
   lang: ChatLang,
+  gatewayId?: string,
 ): Promise<{ text: string | null; error?: string }> {
   try {
-    const result: unknown = await ai.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
-      messages: [{ role: "system", content: systemPrompt(lang) }, ...messages].map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-      max_tokens: 420,
-      temperature: 0.35,
-    });
+    const gateway = gatewayId ? { id: gatewayId } : { id: "default" };
+    const result: unknown = await ai.run(
+      "@cf/meta/llama-3.1-8b-instruct-fp8",
+      {
+        messages: [{ role: "system", content: systemPrompt(lang) }, ...messages].map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+        max_tokens: 420,
+        temperature: 0.35,
+      },
+      { gateway },
+    );
     if (typeof result === "string") {
       const text = result.trim();
       return { text: text || null };
@@ -373,6 +379,7 @@ export async function handleChat(opts: {
   lang: ChatLang;
   ai?: Ai;
   openaiKey?: string;
+  aiGatewayId?: string;
   checkout?: Partial<CheckoutLinks>;
 }): Promise<ChatResult> {
   const lang = opts.lang;
@@ -380,7 +387,7 @@ export async function handleChat(opts: {
   void opts.checkout;
 
   if (opts.ai) {
-    const aiRes = await runWorkersAi(opts.ai, opts.messages.slice(-8), lang);
+    const aiRes = await runWorkersAi(opts.ai, opts.messages.slice(-8), lang, opts.aiGatewayId);
     if (aiRes.text) return finalize(aiRes.text, lang, "workers_ai");
     if (opts.openaiKey) {
       const oai = await runOpenAi(opts.openaiKey, opts.messages.slice(-8), lang);

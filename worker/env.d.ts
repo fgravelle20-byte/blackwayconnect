@@ -11,4 +11,5 @@ export interface Env {
   PLAY_STORE_URL?: string;
   AI?: Ai;
   OPENAI_API_KEY?: string;
+  AI_GATEWAY_ID?: string;
 }
