@@ -1,0 +1,22 @@
+name: Locate Access permission category
+on:
+  push:
+    branches: [codex/blackway-owner-console]
+    paths: [.github/workflows/probe-access-category.yml]
+jobs:
+  locate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print category only
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'NODE'
+          const res = await fetch('https://api.cloudflare.com/client/v4/accounts/' + process.env.CF_ACCOUNT + '/tokens/permission_groups', { headers: { Authorization: 'Bearer ' + process.env.CF_TOKEN } });
+          if (!res.ok) throw new Error('permission group lookup HTTP ' + res.status);
+          const body = await res.json();
+          const groups = Array.isArray(body.result) ? body.result : Object.values(body.result || {}).flat();
+          const matches = groups.filter(x => (x.name || '').includes('Access: Apps and Policies'));
+          for (const x of matches) console.log(JSON.stringify({name:x.name,category:x.category,scopes:x.scopes}));
+          NODE
