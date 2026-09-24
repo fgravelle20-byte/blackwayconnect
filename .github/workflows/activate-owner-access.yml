@@ -45,6 +45,7 @@ jobs:
           try {
             const details = await request(`/tokens/${verified.id}`);
             console.log(`Access write permission present: ${Boolean(details.policies?.some(p => p.effect === "allow" && p.permission_groups?.some(g => /Access: Apps and Policies (Edit|Write)/.test(g.name || ""))))}`);
+            console.log(`Granted Access groups: ${(details.policies || []).filter(p => p.effect === "allow").flatMap(p => p.permission_groups || []).map(g => g.name || "").filter(n => n.startsWith("Access:")).join(" | ") || "(none)"}`);
             console.log(`Account token detail available: true`);
           } catch { console.log("Account token detail unavailable with current credential"); }
           if (apps.some((entry) => entry.name === "BlackWay owner console")) throw new Error("Owner application already exists; inspect before changing it");
