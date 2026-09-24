@@ -27,6 +27,11 @@ jobs:
           if [[ "${status}" == "200" ]]; then
             jq -r '.result[]? | select((.domain // "" | contains("blackwayconnect.com")) or (.name // "" | ascii_downcase | contains("blackway"))) | "BlackWay Access app: " + (.name // "(unnamed)") + " | type: " + (.type // "(unknown)")' access.json
           fi
+          status="$(curl -sS -o org.json -w '%{http_code}' -H "Authorization: Bearer ${CF_TOKEN}" "${api}/access/organizations")"
+          echo "Zero Trust organization HTTP status: ${status}"
+          if [[ "${status}" == "200" ]]; then
+            jq -r '"Access team domain: " + (.result.auth_domain // "(none)")' org.json
+          fi
           for script in blackway-site blackway-pipe; do
             status="$(curl -sS -o "secrets-${script}.json" -w '%{http_code}' -H "Authorization: Bearer ${CF_TOKEN}" "${api}/workers/scripts/${script}/secrets")"
             echo "${script} secret-list HTTP status: ${status}"
