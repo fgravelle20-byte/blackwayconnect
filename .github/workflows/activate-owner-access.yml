@@ -26,7 +26,7 @@ jobs:
               body: body ? JSON.stringify(body) : undefined,
             });
             const data = await response.json().catch(() => ({}));
-            if (!response.ok || data.success !== true) throw new Error(`${method} ${path}: HTTP ${response.status}`);
+            if (!response.ok || data.success !== true) throw new Error(`${method} ${path}: HTTP ${response.status}; error codes: ${(data.errors || []).map(e => e.code).join(",")}`);
             return data.result;
           };
           const members = await request("/members");
