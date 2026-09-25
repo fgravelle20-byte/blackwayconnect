@@ -80,8 +80,8 @@ export function PricingPage() {
             </h1>
             <p className="lede">
               {fr
-                ? "Launch, Growth ou Automation. La plupart des PME partent sur Growth (349 $/mois) — essai 14 jours, Portail + mobile inclus. Paddle. Annulable."
-                : "Launch, Growth, or Automation. Most SMBs start on Growth ($349/mo) — 14-day trial, Portal + mobile included. Paddle. Cancel anytime."}
+                ? "Launch, Growth ou Scale — plus Spark, Command et Partner. La plupart des PME partent sur Growth (349 $/mois) — essai 14 jours, Portail + mobile inclus. Paddle. Annulable."
+                : "Launch, Growth, or Scale — plus Spark, Command, and Partner. Most SMBs start on Growth ($349/mo) — 14-day trial, Portal + mobile included. Paddle. Cancel anytime."}
             </p>
             <div className="cta-row" style={{ marginTop: "1.25rem" }}>
               <a

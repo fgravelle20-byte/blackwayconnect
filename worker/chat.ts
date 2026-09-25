@@ -27,6 +27,7 @@ export type ChatResult = {
 
 type CheckoutLinks = Record<PlanKey, string>;
 
+/** Must match `src/stripeConfig.ts` PLANS.amountCad (live catalog). */
 const PLANS: Record<
   PlanKey,
   { name: string; amountCad: number; blurbFr: string; blurbEn: string }
@@ -39,19 +40,19 @@ const PLANS: Record<
   },
   grow_hub_launch: {
     name: "Launch",
-    amountCad: 249,
+    amountCad: 149,
     blurbFr: "Pipeline structuré + relances pour sortir du chaos boîte courriel.",
     blurbEn: "Structured pipeline + follow-ups to exit inbox chaos.",
   },
   grow_hub_growth: {
     name: "Growth",
-    amountCad: 499,
-    blurbFr: "Moteur recommandé — score, relances, soumissions et paiements mesurés.",
-    blurbEn: "Recommended engine — scoring, follow-ups, quotes and payments measured.",
+    amountCad: 349,
+    blurbFr: "Moteur recommandé — Twin Turbo, score, relances, soumissions et paiements mesurés.",
+    blurbEn: "Recommended engine — Twin Turbo, scoring, follow-ups, quotes and payments measured.",
   },
   grow_hub_scale: {
     name: "Scale",
-    amountCad: 749,
+    amountCad: 699,
     blurbFr: "Multi-équipes et multi-marchés — automatisations avancées.",
     blurbEn: "Multi-team and multi-market — advanced automation.",
   },
@@ -76,21 +77,23 @@ function knowledge(lang: ChatLang): string {
   if (lang === "en") {
     return [
       "BlackWayConnect = bilingual lead-to-revenue platform (Québec / Canada + US).",
-      "Grow Hub monthly plans (Stripe CAD, never invent other prices): " + priceLine,
-      "Enterprise = custom via /contact. Master Tools at /outils (relance panier, soumission Stripe, checklist, ROI, Leak Score, Grow Hub).",
-      "Pages: /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /faq, /contact.",
-      "Site and app inquiries + Stripe events sync into HubSpot. Contact: serviceclient@blackwayconnect.com.",
-      "You are available 24/7. Qualify need, guide to the right page, offer lead capture or Stripe subscribe when ready.",
+      "Grow Hub monthly plans (CAD; Launch/Growth/Scale = Paddle /payer; Spark/Command/Partner = /contact): " +
+        priceLine,
+      "Enterprise = custom via /contact. Master Tools at /outils (relance panier, soumission, checklist, ROI, Leak Score, Grow Hub).",
+      "Pages: /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /payer, /faq, /contact.",
+      "Site and app inquiries + Paddle fulfillment sync into HubSpot. Contact: serviceclient@blackwayconnect.com.",
+      "You are available 24/7. Qualify need, guide to the right page, offer lead capture or Paddle subscribe when ready.",
       "Never invent discounts, testimonials, case studies, or prices outside the catalog above. Tone: confident, concise, revenue-ops — no fluff.",
     ].join("\n");
   }
   return [
     "BlackWayConnect = plateforme lead-to-revenue bilingue (Québec / Canada + É.-U.).",
-    "Forfaits Grow Hub mensuels (Stripe CAD, jamais inventer d'autres prix) : " + priceLine,
-    "Entreprise = sur devis via /contact. Master Tools : /outils (relance panier, soumission Stripe, checklist, ROI, Leak Score, Grow Hub).",
-    "Pages : /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /faq, /contact.",
-    "Demandes site/app + événements Stripe synchronisés vers HubSpot. Contact : serviceclient@blackwayconnect.com.",
-    "Tu es disponible 24h/24. Qualifie le besoin, guide vers la bonne page, propose capture de lead ou abonnement Stripe si prêt.",
+    "Forfaits Grow Hub mensuels (CAD ; Launch/Growth/Scale = Paddle /payer ; Spark/Command/Partner = /contact) : " +
+      priceLine,
+    "Entreprise = sur devis via /contact. Master Tools : /outils (relance panier, soumission, checklist, ROI, Leak Score, Grow Hub).",
+    "Pages : /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /payer, /faq, /contact.",
+    "Demandes site/app + fulfillment Paddle synchronisés vers HubSpot. Contact : serviceclient@blackwayconnect.com.",
+    "Tu es disponible 24h/24. Qualifie le besoin, guide vers la bonne page, propose capture de lead ou abonnement Paddle si prêt.",
     "N'invente jamais de rabais, témoignages, études de cas ou prix hors catalogue. Ton : confiant, concis, ops revenu — zéro remplissage.",
   ].join("\n");
 }
@@ -188,10 +191,10 @@ function detectIntent(text: string): Meta {
   let plan: PlanKey | null = null;
   if (/\b(partner|2499|2\s?499)\b/.test(t)) plan = "grow_hub_partner";
   else if (/\b(command|1249|1\s?249)\b/.test(t)) plan = "grow_hub_command";
-  else if (/\b(scale|749)\b/.test(t)) plan = "grow_hub_scale";
-  else if (/\b(growth|499)\b/.test(t)) plan = "grow_hub_growth";
-  else if (/\b(launch|249)\b/.test(t)) plan = "grow_hub_launch";
-  else if (/\b(spark|99)\b/.test(t)) plan = "grow_hub_spark";
+  else if (/\b(scale|699|automation)\b/.test(t)) plan = "grow_hub_scale";
+  else if (/\b(growth|349)\b/.test(t)) plan = "grow_hub_growth";
+  else if (/\b(launch|149)\b/.test(t)) plan = "grow_hub_launch";
+  else if (/\b(spark)\b/.test(t) || /(?:^|\D)99(?:\D|$)/.test(t)) plan = "grow_hub_spark";
 
   if (/\b(prix|price|pricing|forfait|plan|co[uû]t|cost|abonnement|subscribe|s'?abonn)/.test(t)) {
     return { intent: plan ? "checkout" : "pricing", plan, path: "/forfaits" };
@@ -228,8 +231,8 @@ function fallbackReply(userText: string, lang: ChatLang): ChatResult {
   if (lang === "en") {
     if (intent === "pricing" || intent === "checkout") {
       reply = meta.plan
-        ? `${PLANS[meta.plan].name} is $${PLANS[meta.plan].amountCad} CAD/month via Stripe. ${PLANS[meta.plan].blurbEn} I can open checkout or capture your details.`
-        : `Grow Hub (CAD/mo): Spark $99 · Launch $249 · Growth $499 (recommended) · Scale $749 · Command $1,249 · Partner $2,499. Enterprise = consult. Want a link, Master Tools (/outils), or leave your email?`;
+        ? `${PLANS[meta.plan].name} is $${PLANS[meta.plan].amountCad} CAD/month via Paddle. ${PLANS[meta.plan].blurbEn} I can open checkout or capture your details.`
+        : `Grow Hub (CAD/mo): Spark $99 · Launch $149 · Growth $349 (recommended) · Scale $699 · Command $1,249 · Partner $2,499. Enterprise = consult. Want a link, Master Tools (/outils), or leave your email?`;
     } else if (intent === "navigate" && meta.path === "/outils") {
       reply =
         "Master Tools is the decision kit: Leak Score, Grow Hub preview, ROI calculator, GHL/HubSpot/agency comparer, and AI secretary prompts. Open /outils when ready.";
@@ -252,8 +255,8 @@ function fallbackReply(userText: string, lang: ChatLang): ChatResult {
   } else {
     if (intent === "pricing" || intent === "checkout") {
       reply = meta.plan
-        ? `${PLANS[meta.plan].name} est à ${PLANS[meta.plan].amountCad} $ CAD/mois via Stripe. ${PLANS[meta.plan].blurbFr} Je peux ouvrir le paiement ou noter vos coordonnées.`
-        : `Grow Hub (CAD/mois) : Spark 99 $ · Launch 249 $ · Growth 499 $ (recommandé) · Scale 749 $ · Command 1 249 $ · Partner 2 499 $. Entreprise = consultation. Lien, Master Tools (/outils), ou laisser un courriel ?`;
+        ? `${PLANS[meta.plan].name} est à ${PLANS[meta.plan].amountCad} $ CAD/mois via Paddle. ${PLANS[meta.plan].blurbFr} Je peux ouvrir le paiement ou noter vos coordonnées.`
+        : `Grow Hub (CAD/mois) : Spark 99 $ · Launch 149 $ · Growth 349 $ (recommandé) · Scale 699 $ · Command 1 249 $ · Partner 2 499 $. Entreprise = consultation. Lien, Master Tools (/outils), ou laisser un courriel ?`;
     } else if (intent === "navigate" && meta.path === "/outils") {
       reply =
         "Master Tools, c’est la trousse de décision : Leak Score, Grow Hub, calculateur ROI, comparateur GHL/HubSpot/agence, prompts secrétaire IA. Ouvrez /outils quand vous voulez.";

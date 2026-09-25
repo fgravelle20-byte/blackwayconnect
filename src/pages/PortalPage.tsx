@@ -90,8 +90,8 @@ const TOOL_COPY: Partial<
     en: { title: "AI Secretary 24/7", body: "Floating advisor — qualify and subscribe.", cta: "Open chat" },
   },
   forfaits: {
-    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Launch → Automation.", cta: "Voir forfaits web" },
-    en: { title: "Grow Hub web plans", body: "Revenue #1 — Launch → Automation.", cta: "See web plans" },
+    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Spark → Partner.", cta: "Voir forfaits web" },
+    en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
   },
   support: {
     fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },

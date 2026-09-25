@@ -15,7 +15,7 @@ type Row = { label: string; bwc: string; ghl: string; hub: string; agency: strin
 const COMPARE_FR: Row[] = [
   {
     label: "Prix typique / mois",
-    bwc: "99 $ → 2 349 $ CAD (+ Entreprise)",
+    bwc: "99 $ → 2 499 $ CAD (+ Entreprise)",
     ghl: "~136–697 $ CAD (outil seul)",
     hub: "Marketing Pro ~1 200 $ CAD + sièges",
     agency: "1 500–6 000 $ CAD (mandat)",
@@ -29,7 +29,7 @@ const COMPARE_FR: Row[] = [
   },
   {
     label: "Pipeline → paiement → CRM",
-    bwc: "Natif (Stripe + HubSpot)",
+    bwc: "Natif (Paddle + HubSpot)",
     ghl: "Oui (écosystème GHL)",
     hub: "Oui (sièges / contacts)",
     agency: "Variable / plusieurs outils",
@@ -60,7 +60,7 @@ const COMPARE_FR: Row[] = [
 const COMPARE_EN: Row[] = [
   {
     label: "Typical monthly price",
-    bwc: "$149 → $699 CAD (+ Enterprise)",
+    bwc: "$99 → $2,499 CAD (+ Enterprise)",
     ghl: "~CAD $136–697 (tool only)",
     hub: "Marketing Pro ~CAD $1,200 + seats",
     agency: "CAD $1,500–6,000 (retainer)",
@@ -74,7 +74,7 @@ const COMPARE_EN: Row[] = [
   },
   {
     label: "Pipeline → pay → CRM",
-    bwc: "Native (Stripe + HubSpot)",
+    bwc: "Native (Paddle + HubSpot)",
     ghl: "Yes (GHL ecosystem)",
     hub: "Yes (seats / contacts)",
     agency: "Varies / tool sprawl",
@@ -342,8 +342,8 @@ export function ToolsPage() {
       eyebrow: "09",
       title: fr ? "Packs et forfaits" : "Packs and plans",
       body: fr
-        ? "Launch → Automation + Entreprise. Options site, IA et système revenu."
-        : "Launch → Automation + Enterprise. Site, AI and revenue-system options.",
+        ? "Launch → Scale + Entreprise. Options site, IA et système revenu."
+        : "Launch → Scale + Enterprise. Site, AI and revenue-system options.",
       to: path("/forfaits"),
       cta: fr ? "Voir les forfaits" : "See plans",
       primary: false,

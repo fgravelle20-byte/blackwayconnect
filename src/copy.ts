@@ -192,8 +192,14 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Commencez léger. Montez sans changer de système.",
     plansBody:
-      "Abonnement mensuel en CAD via Paddle avec essai de 14 jours. Portail Client Master + accès mobile inclus. Une seule plateforme, trois offres claires.",
+      "Grille Grow Hub complète (CAD/mois). Launch / Growth / Scale = Paddle (essai 14 jours). Spark / Command / Partner = contact. Portail inclus.",
     plans: [
+      {
+        key: "grow_hub_spark",
+        name: "Spark",
+        price: "99 $ / mois",
+        blurb: "Entrée légère — pipeline + secrétaire IA 24h.",
+      },
       {
         key: "grow_hub_launch",
         name: "Launch",
@@ -208,9 +214,21 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         key: "grow_hub_scale",
-        name: "Automation",
+        name: "Scale",
         price: "699 $ / mois",
         blurb: "Multi-équipes et automatisations avancées — une seule plateforme revenu.",
+      },
+      {
+        key: "grow_hub_command",
+        name: "Command",
+        price: "1 249 $ / mois",
+        blurb: "Ops CRM + acquisition gérée quand la fuite exige de l’exécution.",
+      },
+      {
+        key: "grow_hub_partner",
+        name: "Partner",
+        price: "2 499 $ / mois",
+        blurb: "Plateforme + mandat — puissance agence, discipline SaaS.",
       },
     ],
     servicesTitle: "Une plateforme. Une équipe pour bâtir autour.",
@@ -473,8 +491,14 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Start light. Scale without switching systems.",
     plansBody:
-      "Monthly CAD via Paddle with a 14-day trial. Client Master Portal + mobile access included. One platform, three clear offers.",
+      "Full Grow Hub ladder (CAD/mo). Launch / Growth / Scale = Paddle (14-day trial). Spark / Command / Partner = contact. Portal included.",
     plans: [
+      {
+        key: "grow_hub_spark",
+        name: "Spark",
+        price: "$99 / mo",
+        blurb: "Light entry — pipeline + 24/7 AI secretary.",
+      },
       {
         key: "grow_hub_launch",
         name: "Launch",
@@ -489,9 +513,21 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         key: "grow_hub_scale",
-        name: "Automation",
+        name: "Scale",
         price: "$699 / mo",
         blurb: "Multi-team advanced automation — one revenue platform.",
+      },
+      {
+        key: "grow_hub_command",
+        name: "Command",
+        price: "$1,249 / mo",
+        blurb: "CRM ops + managed acquisition when leakage needs execution.",
+      },
+      {
+        key: "grow_hub_partner",
+        name: "Partner",
+        price: "$2,499 / mo",
+        blurb: "Platform + retainer — agency horsepower, SaaS discipline.",
       },
     ],
     servicesTitle: "One platform. One team to build around it.",

@@ -80,7 +80,7 @@ export function GrowthLandingPage() {
 
           <p className="lede" style={{ marginTop: "2rem" }}>
             <Link to={path("/forfaits")}>
-              {fr ? "Voir tous les paliers Launch → Automation" : "See all tiers Launch → Automation"}
+              {fr ? "Voir tous les paliers Spark → Partner" : "See all tiers Spark → Partner"}
             </Link>
             {" · "}
             <Link to={path("/contact")}>{fr ? "Formulaire contact" : "Contact form"}</Link>
