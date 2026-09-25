@@ -3,8 +3,8 @@ import type { VorixaChatbot, VorixaChatbotSource } from "./types";
 /** Website record already created in Vorixa (Base44). */
 export const WEBSITE_ID = "6a8def2f8d8360a47327387e";
 
-/** Local chatbot id — replaced by Base44's id once the entity is saved there. */
-export const CHATBOT_ID = "68bd7e2f8d8360a47327c1ad";
+/** Live VorixaChatbot id in Base44 (vorixa.ca). */
+export const CHATBOT_ID = "6a8def335122047eb5aba440";
 
 export const WIDGET_SCRIPT_URL = "https://vorixa.base44.app/functions/chatbotWidget";
 

@@ -1,4 +1,4 @@
-import { defaultChatbot, defaultSource } from "./config";
+import { buildEmbedCode, CHATBOT_ID, defaultChatbot, defaultSource, WEBSITE_ID } from "./config";
 import type { StudioState, VorixaChatbot, VorixaConversation, VorixaLead } from "./types";
 
 const KEY = "vorixa-chatbot-avenir-v1";
@@ -26,8 +26,14 @@ export function loadState(): StudioState {
     return {
       ...emptyState(),
       ...parsed,
-      chatbot: { ...defaultChatbot(), ...parsed.chatbot },
-      source: parsed.source || defaultSource(parsed.chatbot.id),
+      chatbot: {
+        ...defaultChatbot(),
+        ...parsed.chatbot,
+        id: CHATBOT_ID,
+        website_id: WEBSITE_ID,
+        embed_code: buildEmbedCode(CHATBOT_ID),
+      },
+      source: parsed.source || defaultSource(CHATBOT_ID),
       conversations: Array.isArray(parsed.conversations) ? parsed.conversations : [],
       leads: Array.isArray(parsed.leads) ? parsed.leads : [],
     };
