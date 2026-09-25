@@ -13,6 +13,12 @@ La plateforme **est live** (smoke public vert, Workers déployés). Les bugs maj
 | `worker/chat.ts` prix Launch 249 / Growth 499 / Scale 749 | Secrétaire IA cite de faux prix | Aligné 149 / 349 / 699 + Paddle |
 | `worker/seoInject.ts` Growth 499 $ + Stripe | Crawlers / partages sociaux faux | Aligné 349 $ + Paddle |
 | `/forfaits` n’affichait que 3 plans (« Automation ») | Grille incomplète vs catalogue Spark→Partner | `copy.ts` grille 6 forfaits, Scale correct |
+| `/merci?src=paddle` ne fire pas `trackPurchase` | Ads pensent que Growth ne convertit pas | `paid = stripe \|\| paddle` + copy Paddle |
+| Contact `?forfait=` ignoré | Spark/Command → HubSpot en Growth | `ContactForm` lit query |
+| Pipe cents 14900/34900/69900 manquants | Invoice Paddle sans price id → pas de portail | Map live + legacy |
+| FAQ « Spark→Partner en Paddle » | Mensonge vs contact-only | FAQ = Launch/Growth/Scale Paddle |
+| Chat CTAs Spark/Command en « checkout » | Boutons contact étiquetés checkout | CTAs Paddle only |
+| README → `vorixa.ca/pricing` | Agents / ops hors marque | `/payer?plan=…` |
 
 ## P1 — corrigé
 

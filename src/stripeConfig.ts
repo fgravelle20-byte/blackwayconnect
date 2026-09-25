@@ -163,6 +163,6 @@ export function checkoutUrl(
   return url.toString();
 }
 
-export function isCheckoutReady(_plan: PlanKey): boolean {
-  return true;
+export function isCheckoutReady(plan: PlanKey): boolean {
+  return isPaddlePlanKey(plan);
 }

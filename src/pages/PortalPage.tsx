@@ -20,6 +20,7 @@ import {
   type PortalToolId,
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
+import { trackPurchase } from "../tracking";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -250,6 +251,14 @@ export function PortalPage() {
               exp: data.exp,
             });
             if (params.get("session_id") || params.get("sessionId") || params.get("transaction_id") || params.get("transactionId")) {
+              const webKey = (data.forfaitWeb || data.forfait || "") as PlanKey;
+              const purchaseValue =
+                data.amountCad ||
+                (webKey in PLANS ? PLANS[webKey].amountCad : undefined);
+              trackPurchase({
+                plan: webKey || undefined,
+                value: purchaseValue,
+              });
               navigate(path("/portail"), { replace: true });
             }
             return;

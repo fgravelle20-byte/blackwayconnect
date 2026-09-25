@@ -148,6 +148,22 @@ function checkoutLabel(plan: PlanKey, lang: ChatLang): string {
     : `S’abonner ${p.name} — ${p.amountCad} $/mois`;
 }
 
+const PADDLE_CHECKOUT_PLANS = new Set<PlanKey>([
+  "grow_hub_launch",
+  "grow_hub_growth",
+  "grow_hub_scale",
+]);
+
+function pushPlanAction(actions: ChatAction[], plan: PlanKey, lang: ChatLang) {
+  if (PADDLE_CHECKOUT_PLANS.has(plan)) {
+    actions.push({ type: "checkout", plan, label: checkoutLabel(plan, lang) });
+    return;
+  }
+  if (!actions.some((a) => a.type === "navigate" && a.path === "/contact")) {
+    actions.push({ type: "navigate", path: "/contact", label: navLabel("/contact", lang) });
+  }
+}
+
 function actionsFromMeta(meta: Meta, lang: ChatLang): ChatAction[] {
   const actions: ChatAction[] = [];
   const intent = meta.intent || "";
@@ -155,11 +171,7 @@ function actionsFromMeta(meta: Meta, lang: ChatLang): ChatAction[] {
     actions.push({ type: "navigate", path: meta.path, label: navLabel(meta.path, lang) });
   }
   if (meta.plan && PLANS[meta.plan]) {
-    actions.push({
-      type: "checkout",
-      plan: meta.plan,
-      label: checkoutLabel(meta.plan, lang),
-    });
+    pushPlanAction(actions, meta.plan, lang);
   }
   if (intent === "capture_lead" || intent === "consult") {
     actions.push({ type: "capture_lead" });
@@ -168,8 +180,8 @@ function actionsFromMeta(meta: Meta, lang: ChatLang): ChatAction[] {
     actions.push({ type: "navigate", path: "/contact", label: navLabel("/contact", lang) });
   }
   if (intent === "pricing" && !meta.plan) {
-    (["grow_hub_spark", "grow_hub_growth", "grow_hub_command"] as PlanKey[]).forEach((plan) => {
-      actions.push({ type: "checkout", plan, label: checkoutLabel(plan, lang) });
+    (["grow_hub_launch", "grow_hub_growth", "grow_hub_scale"] as PlanKey[]).forEach((plan) => {
+      pushPlanAction(actions, plan, lang);
     });
     if (!actions.some((a) => a.type === "navigate" && a.path === "/forfaits")) {
       actions.push({ type: "navigate", path: "/forfaits", label: navLabel("/forfaits", lang) });
@@ -177,11 +189,7 @@ function actionsFromMeta(meta: Meta, lang: ChatLang): ChatAction[] {
     actions.push({ type: "navigate", path: "/outils", label: navLabel("/outils", lang) });
   }
   if (intent === "checkout" && meta.plan && !actions.some((a) => a.type === "checkout")) {
-    actions.push({
-      type: "checkout",
-      plan: meta.plan,
-      label: checkoutLabel(meta.plan, lang),
-    });
+    pushPlanAction(actions, meta.plan, lang);
   }
   return actions.slice(0, 5);
 }

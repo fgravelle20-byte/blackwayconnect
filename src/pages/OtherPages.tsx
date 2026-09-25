@@ -356,7 +356,7 @@ export function MerciPage() {
   const [params] = useSearchParams();
   const fr = lang === "fr";
   const src = (params.get("src") || "").toLowerCase();
-  const paid = src === "stripe";
+  const paid = src === "stripe" || src === "paddle";
   const planKey = resolvePlanKey(params.get("plan"));
   const planMeta = planKey ? PLAN_LABELS[planKey] : null;
   const planCopy = planKey ? t.plans.find((p) => p.key === planKey) : null;
@@ -374,7 +374,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Paiement confirmé",
-            body: "Stripe a encaissé. Vous êtes client actif — pas besoin de renvoyer vos infos.",
+            body: "Paddle a encaissé. Vous êtes client actif — pas besoin de renvoyer vos infos.",
           },
           {
             n: "02",
@@ -396,7 +396,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Payment confirmed",
-            body: "Stripe collected. You’re an active client — no need to resubmit your details.",
+            body: "Paddle collected. You’re an active client — no need to resubmit your details.",
           },
           {
             n: "02",

@@ -378,7 +378,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Puis-je m’abonner sans appel ?",
-        a: "Oui. Les forfaits Spark à Partner s’ouvrent en Paddle Checkout. L’offre Entreprise se discute en consultation. Les Master Tools (/outils) aident à choisir le palier.",
+        a: "Oui. Launch, Growth et Scale s’ouvrent en Paddle Checkout (/payer). Spark, Command et Partner passent par /contact. L’offre Entreprise se discute en consultation. Les Master Tools (/outils) aident à choisir le palier.",
       },
       {
         q: "Avez-vous un service client 24h ?",
@@ -677,7 +677,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Can I subscribe without a call?",
-        a: "Yes. Spark through Partner open in Paddle Checkout. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
+        a: "Yes. Launch, Growth and Scale open in Paddle Checkout (/payer). Spark, Command and Partner go through /contact. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
       },
       {
         q: "Do you offer 24/7 client service?",
