@@ -105,13 +105,15 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         : "Interactive bilingual pipeline: next actions, stages and a path to Grow Hub subscribe.",
     },
     forfaits: {
-      title: fr ? "Forfaits BlackWayConnect · Launch, Growth, Automation" : "BlackWayConnect plans · Launch, Growth, Automation",
+      title: fr
+        ? "Forfaits BlackWayConnect · Spark → Partner"
+        : "BlackWayConnect plans · Spark → Partner",
       ogTitle: fr
-        ? "Forfaits BlackWayConnect — 149 $ à 699 $ CAD/mois"
-        : "BlackWayConnect plans — $149 to $699 CAD/mo",
+        ? "Forfaits BlackWayConnect — 99 $ à 2 499 $ CAD/mois"
+        : "BlackWayConnect plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Launch 149 $, Growth 349 $ ou Automation 699 $ CAD/mois, avec essai 14 jours et paiement Paddle."
-        : "Launch $149, Growth $349, or Automation $699 CAD/mo, with a 14-day trial and Paddle Checkout.",
+        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Paddle pour Launch/Growth/Scale."
+        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle for Launch/Growth/Scale.",
     },
     "forfaits-growth": {
       title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
@@ -143,8 +145,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment ça marche — paie, le forfait s’active"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis Launch, Growth ou Automation, paie avec Paddle, puis le Portail s’active automatiquement."
-        : "Pick Launch, Growth, or Automation, pay with Paddle, and the Portal activates automatically.",
+        ? "Choisis Launch, Growth ou Scale, paie avec Paddle, puis le Portail s’active automatiquement."
+        : "Pick Launch, Growth, or Scale, pay with Paddle, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",

@@ -1,0 +1,64 @@
+name: Payment lock
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  assert-payment-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Assert live Paddle payment lock
+        run: node scripts/assert-payment-lock.mjs
+
+      - name: Block guarded payment file edits without unlock
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          LOCK=ops/payment-lock/LOCKED.json
+          # First install of the lock (file absent on base) is allowed.
+          if ! git cat-file -e "${{ github.event.pull_request.base.sha }}:$LOCK" 2>/dev/null; then
+            echo "Payment lock newly introduced — guarded-file gate skips once."
+            exit 0
+          fi
+          locked=$(node -e "const l=require('./$LOCK'); process.stdout.write(String(l.locked===true))")
+          unlock=$(node -e "const l=require('./$LOCK'); process.stdout.write(l.unlock_ack==='I_UNDERSTAND_UNLOCKING_LIVE_PAYMENTS'?'1':'0')")
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          changed=$(git diff --name-only "$base"..."$head" || true)
+          echo "Changed files:"
+          echo "$changed"
+          guarded=$(node -e "JSON.parse(require('fs').readFileSync('ops/payment-lock/LOCKED.json','utf8')).guarded_files.forEach(f=>console.log(f))")
+          hit=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            if echo "$changed" | grep -qx "$f"; then
+              hit="$hit$f"$'\n'
+            fi
+          done <<< "$guarded"
+          for extra in scripts/assert-payment-lock.mjs .github/workflows/payment-lock.yml .github/CODEOWNERS ops/payment-lock/README.md; do
+            if echo "$changed" | grep -qx "$extra"; then
+              hit="$hit$extra"$'\n'
+            fi
+          done
+          if [ -n "$hit" ]; then
+            echo "::warning::Guarded payment files changed:"
+            echo "$hit"
+            if [ "$locked" = "true" ] && [ "$unlock" != "1" ]; then
+              echo "::error::PAYMENT LOCK: guarded files changed while locked=true without unlock_ack. See ops/payment-lock/README.md"
+              exit 1
+            fi
+            if [ "$unlock" = "1" ]; then
+              echo "Unlock acknowledged — owner review required (CODEOWNERS)."
+            fi
+          else
+            echo "No guarded payment files changed."
+          fi
+
+      - name: Unit tests (Paddle / provision)
+        run: node --test pipe/paddle.test.mjs

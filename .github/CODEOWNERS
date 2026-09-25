@@ -1,0 +1,11 @@
+# Live payment chain — require owner review before changing.
+/ops/payment-lock/ @fgravelle20-byte
+/scripts/assert-payment-lock.mjs @fgravelle20-byte
+/src/paddleCatalog.ts @fgravelle20-byte
+/src/pages/CheckoutPage.tsx @fgravelle20-byte
+/src/stripeConfig.ts @fgravelle20-byte
+/pipe/index.js @fgravelle20-byte
+/pipe/wrangler.jsonc @fgravelle20-byte
+/pipe/paddle.test.mjs @fgravelle20-byte
+/.github/workflows/payment-lock.yml @fgravelle20-byte
+/.github/workflows/sync-paddle-client-token.yml @fgravelle20-byte

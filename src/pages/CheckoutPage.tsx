@@ -37,6 +37,9 @@ const PIPE_ORIGIN = "https://api.blackwayconnect.com";
  * Paddle client-side tokens are designed to ship in the browser.
  * Domain allowlist is enforced in the Paddle dashboard (blackwayconnect.com).
  * Prefer VITE_ / pipe when present; this is the production fallback.
+ *
+ * PAYMENT-LOCKED — do not edit token / checkout flow without unlock.
+ * See ops/payment-lock/LOCKED.json + README.md.
  */
 const PADDLE_CLIENT_TOKEN_LIVE = "live_a4f8ad8f1c8be908ec3784e8d8b";
 

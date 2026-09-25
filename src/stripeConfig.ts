@@ -3,6 +3,9 @@ import { isPaddlePlanKey, paddlePlanUrl } from "./paddleCatalog";
 /**
  * Stripe Grow Hub catalog — live lien de paiements on merchant acct_1TDZjzAG7HUL9Rtr.
  *
+ * PAYMENT-LOCKED for Paddle Launch/Growth/Scale — see ops/payment-lock/.
+ * processor must remain "paddle"; paid plans must use paddlePlanUrl → /payer.
+ *
  * Public URLs here are the single source of truth for site CTAs, `/api/config`,
  * and mobile bootstrap. Do not hardcode a parallel buy.stripe.com list in the worker.
  *
@@ -160,6 +163,6 @@ export function checkoutUrl(
   return url.toString();
 }
 
-export function isCheckoutReady(_plan: PlanKey): boolean {
-  return true;
+export function isCheckoutReady(plan: PlanKey): boolean {
+  return isPaddlePlanKey(plan);
 }

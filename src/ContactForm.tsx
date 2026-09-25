@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLang } from "./i18n";
 import { trackLead } from "./tracking";
 
@@ -20,6 +20,8 @@ const PLANS = [
   { value: "ai_scale", label: "Application mobile & IA" },
 ];
 
+const PLAN_VALUES = new Set(PLANS.map((p) => p.value));
+
 type ContactFormProps = {
   source?: string;
 };
@@ -27,8 +29,16 @@ type ContactFormProps = {
 export function ContactForm({ source = "form_web" }: ContactFormProps) {
   const { t, lang, path } = useLang();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
+
+  const forfaitFromQuery = (() => {
+    const raw = String(params.get("forfait") || "").trim();
+    return PLAN_VALUES.has(raw) ? raw : "grow_hub_growth";
+  })();
+  const channel =
+    String(params.get("bw_source") || params.get("utm_source") || "").trim() || source;
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,12 +52,12 @@ export function ContactForm({ source = "form_web" }: ContactFormProps) {
       entreprise: String(fd.get("entreprise") || ""),
       telephone: String(fd.get("telephone") || ""),
       message: String(fd.get("message") || ""),
-      forfait: String(fd.get("forfait") || "grow_hub_growth"),
-      source,
+      forfait: String(fd.get("forfait") || forfaitFromQuery),
+      source: channel,
       urgence: "normal",
       langue: lang,
       bw_ref: "site",
-      bw_channel: source,
+      bw_channel: channel,
     };
     try {
       const res = await fetch("/api/lead", {
@@ -97,7 +107,7 @@ export function ContactForm({ source = "form_web" }: ContactFormProps) {
       </div>
       <div className="field">
         <label htmlFor="forfait">{t.form.plan}</label>
-        <select id="forfait" name="forfait" defaultValue="grow_hub_growth">
+        <select id="forfait" name="forfait" key={forfaitFromQuery} defaultValue={forfaitFromQuery}>
           {PLANS.map((p) => (
             <option key={p.value} value={p.value}>
               {p.label}

@@ -67,8 +67,8 @@ function shareCopy(variant: ShareVariant, lang: "fr" | "en"): ShareCopy {
     forfaits: {
       title: fr ? "Forfaits Grow Hub — BlackWayConnect" : "Grow Hub plans — BlackWayConnect",
       text: fr
-        ? "Forfaits Grow Hub Launch → Automation (CAD). Plateforme + exécution bilingue :"
-        : "Grow Hub plans Launch → Automation (CAD). Platform + bilingual execution:",
+        ? "Forfaits Grow Hub Spark → Partner (CAD). Plateforme + exécution bilingue :"
+        : "Grow Hub plans Spark → Partner (CAD). Platform + bilingual execution:",
       proofTitle: fr ? "Partagez les forfaits" : "Share the plans",
       proofBody: fr
         ? "Transférez la grille tarifaire. Décision claire pour CA/US — sans inflation sociale."

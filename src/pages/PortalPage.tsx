@@ -20,6 +20,7 @@ import {
   type PortalToolId,
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
+import { trackPurchase } from "../tracking";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -90,8 +91,8 @@ const TOOL_COPY: Partial<
     en: { title: "AI Secretary 24/7", body: "Floating advisor — qualify and subscribe.", cta: "Open chat" },
   },
   forfaits: {
-    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Launch → Automation.", cta: "Voir forfaits web" },
-    en: { title: "Grow Hub web plans", body: "Revenue #1 — Launch → Automation.", cta: "See web plans" },
+    fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Spark → Partner.", cta: "Voir forfaits web" },
+    en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
   },
   support: {
     fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
@@ -250,6 +251,14 @@ export function PortalPage() {
               exp: data.exp,
             });
             if (params.get("session_id") || params.get("sessionId") || params.get("transaction_id") || params.get("transactionId")) {
+              const webKey = (data.forfaitWeb || data.forfait || "") as PlanKey;
+              const purchaseValue =
+                data.amountCad ||
+                (webKey in PLANS ? PLANS[webKey].amountCad : undefined);
+              trackPurchase({
+                plan: webKey || undefined,
+                value: purchaseValue,
+              });
               navigate(path("/portail"), { replace: true });
             }
             return;

@@ -154,7 +154,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       grow_hub_growth:
         "Growth = Twin Turbo Full Performance : score, relances, soumissions, paiements → HubSpot.",
       grow_hub_scale:
-        "Automation = Twin Turbo Max : multi-équipes / marchés / langues, une provenance revenu.",
+        "Scale = Twin Turbo Max : multi-équipes / marchés / langues, une provenance revenu.",
       grow_hub_command: "Command quand la fuite exige ops CRM + acquisition gérée.",
       grow_hub_partner: "Partner pour remplacer un mandat agence par plateforme + exécution.",
     },
@@ -271,7 +271,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       grow_hub_growth:
         "Growth = Twin Turbo Full Performance: scoring, follow-ups, quotes, payments → HubSpot.",
       grow_hub_scale:
-        "Automation = Twin Turbo Max: multi-team / market / language, one revenue provenance.",
+        "Scale = Twin Turbo Max: multi-team / market / language, one revenue provenance.",
       grow_hub_command: "Command when leakage needs CRM ops + managed acquisition.",
       grow_hub_partner: "Partner to replace an agency retainer with platform + execution.",
     },

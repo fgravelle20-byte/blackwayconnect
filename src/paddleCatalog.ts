@@ -1,6 +1,9 @@
 /** Existing Paddle Live prices for BlackWayConnect.
  * Prices are in CAD per month, with a 14-day trial. Never treat a client-side success
  * redirect as proof of payment; fulfillment must come from a verified webhook.
+ *
+ * PAYMENT-LOCKED — do not edit. See ops/payment-lock/LOCKED.json + README.md.
+ * CI fails PRs that change this file while locked=true without unlock_ack.
  */
 export const PADDLE_PRICES = {
   grow_hub_launch: "pri_01kxtn6asavavmqv54407h464b",

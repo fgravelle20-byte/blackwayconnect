@@ -1,5 +1,6 @@
 /**
  * BlackWay Pipe - tuyauterie CRM BlackWayConnect
+ * PAYMENT-LOCKED — Paddle auto-fulfill chain. See ops/payment-lock/LOCKED.json.
  * Endpoints:
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
  *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)
@@ -83,16 +84,23 @@ const PLINK_TO_FORFAIT = {
 };
 
 // Montants CAD (cents) — dernier filet invoices / sessions sans price id.
+// Live Grow Hub: 149 / 349 / 699. Legacy Stripe 249 / 499 / 749 still mapped.
 // 99900 ($999) is NOT a Grow Hub price — do not map it (unmapped invoice / other product).
-// 49900 is Grow Hub Growth AND Vorixa Départ géré — Vorixa objects are excluded
+// 49900 may also be Vorixa Départ géré — Vorixa objects are excluded
 // before this fallback (isVorixaManagedStripeObject).
 const AMOUNT_CENTS_TO_FORFAIT = {
+  // Live Grow Hub CAD (Paddle / current catalog)
   9900: "grow_hub_spark",
+  14900: "grow_hub_launch",
+  34900: "grow_hub_growth",
+  69900: "grow_hub_scale",
+  124900: "grow_hub_command",
+  249900: "grow_hub_partner",
+  // Legacy Stripe ladder (still resolve old invoices)
   24900: "grow_hub_launch",
   49900: "grow_hub_growth",
   74900: "grow_hub_scale",
-  124900: "grow_hub_command",
-  249900: "grow_hub_partner",
+  // Pack Cellulaire
   7900: "cell_signal",
   19900: "cell_route",
   39900: "cell_fleet",

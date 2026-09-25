@@ -31,8 +31,8 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, relance panier, générateur de soumission Stripe, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
-        : "Leak Score, cart recovery, Stripe quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
+        ? "Leak Score, relance panier, générateur de soumission, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
+        : "Leak Score, cart recovery, quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
     },
     "outils/relance-panier": {
       title: fr
@@ -40,17 +40,17 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         : "BlackWayConnect | Abandoned cart / quote recovery",
       ogTitle: fr ? "Relance panier — combien dorment ?" : "Cart recovery — how much sits idle?",
       description: fr
-        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 499 $."
-        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $499 lift.",
+        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 349 $."
+        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $349 lift.",
     },
     "outils/soumission": {
       title: fr
-        ? "BlackWayConnect | Générateur de soumission → Stripe"
-        : "BlackWayConnect | Quote generator → Stripe",
-      ogTitle: fr ? "Soumission → lien Stripe Growth" : "Quote → Stripe Growth link",
+        ? "BlackWayConnect | Générateur de soumission → Paddle"
+        : "BlackWayConnect | Quote generator → Paddle",
+      ogTitle: fr ? "Soumission → paiement Growth" : "Quote → Growth payment",
       description: fr
-        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Stripe Growth. Capture CRM incluse."
-        : "Draft a quote, copy the text and open Stripe Growth payment. CRM capture included.",
+        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Growth (Paddle). Capture CRM incluse."
+        : "Draft a quote, copy the text and open Growth payment (Paddle). CRM capture included.",
     },
     "outils/checklist": {
       title: fr
@@ -80,17 +80,17 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         ? "Forfaits Grow Hub — 99 $ à 2 499 $ CAD/mois"
         : "Grow Hub plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Choisissez le palier qui ferme vos fuites — Stripe Checkout, sans changer de système."
-        : "Spark $99 to Partner $2,499 CAD/mo. Pick the tier that closes your leaks — Stripe Checkout, same system as you grow.",
+        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Launch/Growth/Scale en Paddle ; Spark/Command/Partner via /contact."
+        : "Spark $99 to Partner $2,499 CAD/mo. Launch/Growth/Scale on Paddle; Spark/Command/Partner via /contact.",
     },
     "forfaits-growth": {
       title: fr
-        ? "BlackWayConnect | Grow Hub Growth · 499 $/mois"
-        : "BlackWayConnect | Grow Hub Growth · $499/mo",
-      ogTitle: fr ? "Growth 499 $ — ferme plus de leads" : "Growth $499 — close more leads",
+        ? "BlackWayConnect | Grow Hub Growth · 349 $/mois"
+        : "BlackWayConnect | Grow Hub Growth · $349/mo",
+      ogTitle: fr ? "Growth 349 $ — ferme plus de leads" : "Growth $349 — close more leads",
       description: fr
-        ? "Landing pub : Grow Hub Growth 499 $ CAD/mois. Portail + dashboard mobile inclus."
-        : "Ad landing: Grow Hub Growth $499 CAD/mo. Portal + mobile dashboard included.",
+        ? "Landing pub : Grow Hub Growth 349 $ CAD/mois. Portail + dashboard mobile inclus. Paddle."
+        : "Ad landing: Grow Hub Growth $349 CAD/mo. Portal + mobile dashboard included. Paddle.",
     },
     diagnostic: {
       title: fr
