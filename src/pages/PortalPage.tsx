@@ -94,6 +94,10 @@ const TOOL_COPY: Partial<
     fr: { title: "Forfaits web Grow Hub", body: "Revenu #1 — Spark → Partner.", cta: "Voir forfaits web" },
     en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
   },
+  lead_capture: {
+    fr: { title: "Capture lead CRM", body: "Fiche rapide → contact + deal HubSpot (réel).", cta: "Capturer" },
+    en: { title: "CRM lead capture", body: "Quick card → HubSpot contact + deal (live).", cta: "Capture" },
+  },
   support: {
     fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
     en: { title: "Client support", body: "serviceclient@ · accounting@ for billing.", cta: "Contact" },

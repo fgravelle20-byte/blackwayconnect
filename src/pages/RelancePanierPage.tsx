@@ -4,17 +4,9 @@ import { useLang } from "../i18n";
 import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
 import { useEffect } from "react";
+import { postLead } from "../lib/postLead";
 
-async function postLead(payload: Record<string, unknown>) {
-  const res = await fetch("/api/lead", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.ok;
-}
-
-/** Abandoned quote / cart recovery checker → Growth checkout. */
+/** Abandoned quote / cart recovery checker → Growth checkout + HubSpot. */
 export function RelancePanierPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -24,6 +16,7 @@ export function RelancePanierPage() {
   const [recoverNow, setRecoverNow] = useState(8);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
+  const [leadScore, setLeadScore] = useState<number | null>(null);
 
   useEffect(() => {
     trackViewContent({ name: "Relance panier", id: "tool_relance_panier", value: PLANS[FEATURED_PLAN].amountCad });
@@ -34,7 +27,10 @@ export function RelancePanierPage() {
     const recoveredNow = exposed * (Math.min(100, Math.max(0, recoverNow)) / 100);
     const withSystem = exposed * 0.42;
     const lift = Math.max(0, withSystem - recoveredNow);
-    return { exposed, recoveredNow, withSystem, lift };
+    const volumeTurbo = Math.min(100, Math.round(20 + Math.min(abandoned, 80)));
+    const qualityTurbo = Math.min(100, Math.round(35 + Math.min(100, recoverNow) * 0.4 + (lift > 5000 ? 15 : 0)));
+    const twinScore = Math.round(volumeTurbo * 0.42 + qualityTurbo * 0.58);
+    return { exposed, recoveredNow, withSystem, lift, volumeTurbo, qualityTurbo, twinScore };
   }, [abandoned, ticket, recoverNow]);
 
   const growthHref = checkoutUrl(FEATURED_PLAN, {
@@ -47,6 +43,7 @@ export function RelancePanierPage() {
     e.preventDefault();
     setPending(true);
     setStatus("idle");
+    setLeadScore(null);
     const fd = new FormData(e.currentTarget);
     const summary = [
       "bw_source=tool_relance_panier",
@@ -55,24 +52,42 @@ export function RelancePanierPage() {
       `recover_now=${recoverNow}%`,
       `exposed=${Math.round(result.exposed)}`,
       `lift=${Math.round(result.lift)}`,
+      `twin=${result.twinScore}`,
     ].join(" | ");
-    const ok = await postLead({
+    const out = await postLead({
       prenom: String(fd.get("prenom") || ""),
       nom: "",
       email: String(fd.get("email") || ""),
       entreprise: String(fd.get("entreprise") || ""),
-      telephone: "",
+      telephone: String(fd.get("telephone") || ""),
       message: summary.slice(0, 2000),
       forfait: FEATURED_PLAN,
       source: "campagne",
       urgence: result.lift >= 5000 ? "elevee" : "normal",
       langue: lang,
       bw_ref: "tool_relance_panier",
+      engine_mode: "twin_turbo_full_performance",
+      volume_turbo: result.volumeTurbo,
+      quality_turbo: result.qualityTurbo,
+      twin_score: result.twinScore,
+      band: result.lift >= 5000 ? "high" : result.lift >= 1500 ? "mid" : "low",
+      answers: {
+        tool: "relance_panier",
+        abandoned,
+        ticket,
+        recover_now: recoverNow,
+        lift: Math.round(result.lift),
+      },
     });
-    if (ok) trackLead();
-    setStatus(ok ? "ok" : "err");
+    if (out.ok) {
+      trackLead();
+      setLeadScore(out.score ?? result.twinScore);
+      setStatus("ok");
+      e.currentTarget.reset();
+    } else {
+      setStatus("err");
+    }
     setPending(false);
-    if (ok) e.currentTarget.reset();
   }
 
   return (
@@ -85,8 +100,8 @@ export function RelancePanierPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Estimateur libre-service : paniers / devis non payés → dollars exposés → gain Growth (relances + Stripe)."
-              : "Self-serve checker: unpaid carts / quotes → dollars exposed → Growth lift (follow-ups + Stripe)."}
+              ? "Estimateur libre-service : paniers / devis non payés → dollars exposés → gain Growth (relances + Paddle)."
+              : "Self-serve checker: unpaid carts / quotes → dollars exposed → Growth lift (follow-ups + Paddle)."}
           </p>
         </div>
 
@@ -122,6 +137,11 @@ export function RelancePanierPage() {
                 onChange={(e) => setRecoverNow(Number(e.target.value) || 0)}
               />
             </label>
+            <p className="roi-result__note">
+              {fr
+                ? `Twin Turbo estimé · volume ${result.volumeTurbo} · qualité ${result.qualityTurbo} · twin ${result.twinScore}`
+                : `Twin Turbo est. · volume ${result.volumeTurbo} · quality ${result.qualityTurbo} · twin ${result.twinScore}`}
+            </p>
           </form>
 
           <aside className="roi-result">
@@ -169,8 +189,8 @@ export function RelancePanierPage() {
         <form className="tools-capture" onSubmit={onSave}>
           <p className="tools-capture__title">
             {fr
-              ? "Recevoir un plan de relance 7 jours — l’équipe vous rejoint"
-              : "Get a 7-day recovery plan — the team will follow up"}
+              ? "Envoyer l’estimé → HubSpot (contact + deal scoré)"
+              : "Send estimate → HubSpot (scored contact + deal)"}
           </p>
           <div className="form-grid">
             <div className="field">
@@ -182,21 +202,30 @@ export function RelancePanierPage() {
               <input id="rp-email" name="email" type="email" required autoComplete="email" />
             </div>
           </div>
-          <div className="field">
-            <label htmlFor="rp-ent">{fr ? "Entreprise" : "Company"}</label>
-            <input id="rp-ent" name="entreprise" autoComplete="organization" />
+          <div className="form-grid">
+            <div className="field">
+              <label htmlFor="rp-ent">{fr ? "Entreprise" : "Company"}</label>
+              <input id="rp-ent" name="entreprise" autoComplete="organization" />
+            </div>
+            <div className="field">
+              <label htmlFor="rp-tel">{fr ? "Téléphone" : "Phone"}</label>
+              <input id="rp-tel" name="telephone" autoComplete="tel" inputMode="tel" />
+            </div>
           </div>
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Envoyer mon estimé" : "Send my estimate"}
+            {pending ? "…" : fr ? "Créer dans HubSpot" : "Create in HubSpot"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
-              {fr ? "Reçu. On vous contacte sous peu." : "Received. We’ll reach out shortly."}
+              {fr
+                ? `Reçu dans HubSpot${leadScore != null ? ` · score ${leadScore}` : ""}.`
+                : `Saved to HubSpot${leadScore != null ? ` · score ${leadScore}` : ""}.`}{" "}
+              <a href={growthHref}>{fr ? "Passer à Growth →" : "Go to Growth →"}</a>
             </p>
           )}
           {status === "err" && (
             <p className="form-status form-status--err">
-              {fr ? "Envoi impossible. Réessayez." : "Could not send. Retry."}
+              {fr ? "Envoi HubSpot impossible. Réessayez." : "HubSpot send failed. Retry."}
             </p>
           )}
         </form>

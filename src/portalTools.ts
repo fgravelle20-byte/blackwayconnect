@@ -11,6 +11,7 @@ import {
 export type WebToolId =
   | "diagnostic"
   | "outils"
+  | "lead_capture"
   | "relance_panier"
   | "soumission"
   | "checklist"
@@ -50,6 +51,7 @@ export const PORTAL_TOOLS: PortalTool[] = [];
 export const WEB_PORTAL_TOOLS: PortalTool[] = [
   { id: "diagnostic", path: "/diagnostic", minWebPlan: 1, minCellPlan: 0, line: "web" },
   { id: "outils", path: "/outils", minWebPlan: 1, minCellPlan: 0, line: "web" },
+  { id: "lead_capture", path: "/portail/capture", minWebPlan: 1, minCellPlan: 0, line: "web" },
   { id: "relance_panier", path: "/outils/relance-panier", minWebPlan: 2, minCellPlan: 0, line: "web" },
   { id: "soumission", path: "/outils/soumission", minWebPlan: 2, minCellPlan: 0, line: "web" },
   { id: "checklist", path: "/outils/checklist", minWebPlan: 1, minCellPlan: 0, line: "web" },
@@ -62,7 +64,7 @@ export const WEB_PORTAL_TOOLS: PortalTool[] = [
 ];
 
 export const CELL_PORTAL_TOOLS: PortalTool[] = [
-  // Terrain tools stay marketing until real capture/pipeline ships — do not unlock stubs.
+  { id: "cell_capture", path: "/portail/capture", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
   { id: "forfaits_cellulaire", path: "/forfaits-cellulaire", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
   { id: "support", path: "/contact", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
 ];

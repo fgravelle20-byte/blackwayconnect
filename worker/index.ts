@@ -318,6 +318,11 @@ export default {
         chat: true,
         leadProxy: true,
         mobile: true,
+        owner_access:
+          !!String(env.CF_ACCESS_TEAM_DOMAIN || "").trim() &&
+          !!String(env.CF_ACCESS_AUD || "").trim() &&
+          !!String(env.BW_OWNER_EMAIL || "").trim(),
+        portal_capture: true,
       });
     }
 
