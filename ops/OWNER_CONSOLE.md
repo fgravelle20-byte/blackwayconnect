@@ -22,4 +22,10 @@ La vérification Access valide signature RS256, émetteur, audience et courriel 
 - Paiements : rapprocher directement les événements Paddle avec les dossiers HubSpot avant d'afficher des montants encaissés.
 - Automatisations : journaliser déclenchement, réussite et échec dans un événement propriétaire unique.
 
+## Live après master tools update (2026-09-25)
+
+- `/api/health` → `owner_access: true` seulement si les 3 secrets Access sont posés.
+- `/controle` affiche Twin Turbo (score moyen / max) + checklist Access si 403.
+- Capture CRM réelle : `/portail/capture` (outil Portail) + Tools relance/soumission → `POST /api/lead`.
+
 Ne pas fermer les branches historiques ni rebrancher le domaine sur une autre app avant d'avoir comparé les versions avec `main` et l'état déployé sur Cloudflare.

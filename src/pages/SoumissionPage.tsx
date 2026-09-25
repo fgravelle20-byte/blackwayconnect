@@ -3,17 +3,9 @@ import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
+import { postLead } from "../lib/postLead";
 
-async function postLead(payload: Record<string, unknown>) {
-  const res = await fetch("/api/lead", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.ok;
-}
-
-/** Quote / proposal generator → copy text + Stripe Growth link. */
+/** Quote / proposal generator → copy text + Paddle Growth + HubSpot. */
 export function SoumissionPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -26,6 +18,7 @@ export function SoumissionPage() {
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
+  const [leadScore, setLeadScore] = useState<number | null>(null);
 
   useEffect(() => {
     trackViewContent({ name: "Générateur soumission", id: "tool_soumission", value: PLANS[FEATURED_PLAN].amountCad });
@@ -92,6 +85,7 @@ export function SoumissionPage() {
     e.preventDefault();
     setPending(true);
     setStatus("idle");
+    setLeadScore(null);
     const fd = new FormData(e.currentTarget);
     const summary = [
       "bw_source=tool_soumission",
@@ -100,23 +94,37 @@ export function SoumissionPage() {
       `amount=${amount}`,
       `delay=${delay}`,
     ].join(" | ");
-    const ok = await postLead({
+    const volumeTurbo = Math.min(100, Math.round(40 + Math.min(amount, 20000) / 400));
+    const qualityTurbo = Math.min(100, amount >= 5000 ? 78 : amount >= 2000 ? 62 : 48);
+    const twinScore = Math.round(volumeTurbo * 0.42 + qualityTurbo * 0.58);
+    const out = await postLead({
       prenom: String(fd.get("prenom") || ""),
       nom: "",
       email: String(fd.get("email") || ""),
       entreprise: String(fd.get("entreprise") || client || ""),
-      telephone: "",
+      telephone: String(fd.get("telephone") || ""),
       message: `${summary}\n\n${proposal}`.slice(0, 2000),
       forfait: FEATURED_PLAN,
       source: "campagne",
       urgence: amount >= 5000 ? "elevee" : "normal",
       langue: lang,
       bw_ref: "tool_soumission",
+      engine_mode: "twin_turbo_full_performance",
+      volume_turbo: volumeTurbo,
+      quality_turbo: qualityTurbo,
+      twin_score: twinScore,
+      band: amount >= 5000 ? "high" : amount >= 2000 ? "mid" : "low",
+      answers: { tool: "soumission", client, service, amount, delay },
     });
-    if (ok) trackLead();
-    setStatus(ok ? "ok" : "err");
+    if (out.ok) {
+      trackLead();
+      setLeadScore(out.score ?? twinScore);
+      setStatus("ok");
+      e.currentTarget.reset();
+    } else {
+      setStatus("err");
+    }
     setPending(false);
-    if (ok) e.currentTarget.reset();
   }
 
   return (
@@ -178,13 +186,13 @@ export function SoumissionPage() {
                 target="_blank"
                 onClick={() => trackInitiateCheckout({ plan: FEATURED_PLAN, value: PLANS[FEATURED_PLAN].amountCad })}
               >
-                {fr ? "Ouvrir lien Paddle Growth" : "Open Stripe Growth link"}
+                {fr ? "Ouvrir lien Paddle Growth" : "Open Paddle Growth link"}
               </a>
             </div>
             <p className="roi-result__note">
               {fr
-                ? "Démo : le lien active Grow Hub Growth. En production, vos clients paient depuis le Portail / lien de paiements."
-                : "Demo: link activates Grow Hub Growth. In production, clients pay from Portal / lien de paiements."}
+                ? "Le lien ouvre Grow Hub Growth (Paddle). Capture CRM ci-dessous pour créer le deal HubSpot."
+                : "Link opens Grow Hub Growth (Paddle). Capture CRM below to create the HubSpot deal."}
             </p>
           </aside>
         </div>
@@ -192,8 +200,8 @@ export function SoumissionPage() {
         <form className="tools-capture" onSubmit={onSave}>
           <p className="tools-capture__title">
             {fr
-              ? "Envoyer cette soumission à l’équipe (suivi CRM)"
-              : "Send this quote to the team (CRM follow-up)"}
+              ? "Capturer cette soumission → HubSpot (contact + deal)"
+              : "Capture this quote → HubSpot (contact + deal)"}
           </p>
           <div className="form-grid">
             <div className="field">
@@ -205,21 +213,30 @@ export function SoumissionPage() {
               <input id="sq-email" name="email" type="email" required autoComplete="email" />
             </div>
           </div>
-          <div className="field">
-            <label htmlFor="sq-ent">{fr ? "Votre entreprise" : "Your company"}</label>
-            <input id="sq-ent" name="entreprise" autoComplete="organization" />
+          <div className="form-grid">
+            <div className="field">
+              <label htmlFor="sq-ent">{fr ? "Votre entreprise" : "Your company"}</label>
+              <input id="sq-ent" name="entreprise" autoComplete="organization" />
+            </div>
+            <div className="field">
+              <label htmlFor="sq-tel">{fr ? "Téléphone" : "Phone"}</label>
+              <input id="sq-tel" name="telephone" autoComplete="tel" inputMode="tel" />
+            </div>
           </div>
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Capturer + suivre" : "Capture + follow up"}
+            {pending ? "…" : fr ? "Créer dans HubSpot" : "Create in HubSpot"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
-              {fr ? "Reçu. Opportunité créée." : "Received. Opportunity created."}
+              {fr
+                ? `Opportunité créée${leadScore != null ? ` · score ${leadScore}` : ""}.`
+                : `Opportunity created${leadScore != null ? ` · score ${leadScore}` : ""}.`}{" "}
+              <a href={payLink}>{fr ? "Payer Growth →" : "Pay Growth →"}</a>
             </p>
           )}
           {status === "err" && (
             <p className="form-status form-status--err">
-              {fr ? "Envoi impossible. Réessayez." : "Could not send. Retry."}
+              {fr ? "Envoi HubSpot impossible. Réessayez." : "HubSpot send failed. Retry."}
             </p>
           )}
         </form>

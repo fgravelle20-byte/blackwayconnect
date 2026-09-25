@@ -24,4 +24,7 @@
 .owner-console__connections h3{font-size:1rem;margin:0}
 .owner-console__connections span{font-size:.75rem;color:#ffb861}
 .owner-console__connections p{color:#aaaab1;font-size:.9rem;margin-bottom:0}
+.owner-console__setup{margin:12px 0 0;padding-left:1.2rem;color:#f7d4d4;font-size:.92rem;line-height:1.45}
+.owner-console__setup code{font-size:.85em;background:#2a1517;padding:1px 6px;border-radius:4px}
+.owner-console__time code{color:#f87171}
 @media(max-width:760px){.owner-console__head{align-items:start;flex-direction:column}.owner-console__stats{grid-template-columns:repeat(2,1fr)}.owner-console__connections{grid-template-columns:1fr}}

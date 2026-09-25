@@ -3,15 +3,7 @@ import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
-
-async function postLead(payload: Record<string, unknown>) {
-  const res = await fetch("/api/lead", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.ok;
-}
+import { postLead } from "../lib/postLead";
 
 const CHECKLIST_FR = [
   "Formulaire site → HubSpot en moins de 60 s",
@@ -67,7 +59,7 @@ export function ChecklistPage() {
       "magnet=checklist_fermeture_7j",
       `items=${items.length}`,
     ].join(" | ");
-    const ok = await postLead({
+    const out = await postLead({
       prenom,
       nom: "",
       email,
@@ -79,8 +71,10 @@ export function ChecklistPage() {
       urgence: "normal",
       langue: lang,
       bw_ref: "tool_checklist",
+      engine_mode: "twin_turbo_full_performance",
+      answers: { tool: "checklist", items: items.length },
     });
-    if (ok) {
+    if (out.ok) {
       trackLead();
       setUnlocked(true);
       setStatus("ok");
