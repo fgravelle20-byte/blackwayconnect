@@ -1,0 +1,11 @@
+{
+  "name": "BlackWayConnect",
+  "install": "npm ci && cp -n .dev.vars.example .dev.vars || true",
+  "terminals": [
+    {
+      "name": "vite-dev",
+      "command": "npm run dev -- --host 0.0.0.0 --port 5173"
+    }
+  ],
+  "ports": [5173]
+}
