@@ -52,8 +52,8 @@ export function CellulairePlansPage() {
         {!anyLive ? (
           <p className="form-status" role="status">
             {fr
-              ? "Checkout Stripe Pack Cellulaire en préparation — demandez Cell Fleet ci-dessous. Les lien de paiements seront branchés dès création."
-              : "Cellular Pack Stripe checkout pending — request Cell Fleet below. lien de paiements wire in when created."}
+              ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Paddle sera proposé avec l’offre finale."
+              : "Cellular Pack is quote-based — contact BlackWay below. Paddle payment will be included with the final offer."}
           </p>
         ) : null}
 
@@ -120,7 +120,7 @@ export function CellulairePlansPage() {
 
         <div className="app-plans-lead">
           <h2 className="display">
-            {fr ? "Pas prêt ? Lead pack → HubSpot." : "Not ready? Pack lead → HubSpot."}
+            {fr ? "Pas prêt ? Envoyez la demande au CRM BlackWay." : "Not ready? Send the request to BlackWay CRM."}
           </h2>
           <ContactForm source="app_mobile" />
         </div>
@@ -128,8 +128,8 @@ export function CellulairePlansPage() {
         <details style={{ marginTop: "2rem" }}>
           <summary className="lede">
             {fr
-              ? "Stripe à créer (lien de paiements Pack Cellulaire)"
-              : "Stripe to create (Cellular Pack lien de paiements)"}
+              ? "Offres Cellulaire disponibles sur demande"
+              : "Cellular offers available on request"}
           </summary>
           <ul className="lede">
             {STRIPE_CELLULAIRE_TODO.map((row) => (
@@ -162,3 +162,4 @@ function toolLabel(id: string, fr: boolean): string {
 export function featuredCellulaireKey(): CellulairePlanKey {
   return FEATURED_CELLULAIRE;
 }
+

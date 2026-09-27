@@ -4,6 +4,7 @@ import { ContactForm } from "../ContactForm";
 import { AppCta } from "../AppCta";
 import { useLang } from "../i18n";
 import { checkoutUrl } from "../stripeConfig";
+import { isPaddlePlanKey } from "../paddleCatalog";
 
 export function HomePage() {
   const { t, path, lang } = useLang();
@@ -61,7 +62,11 @@ export function HomePage() {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  {t.ctaBuy}
+                  {isPaddlePlanKey(plan.key)
+                    ? t.ctaBuy
+                    : lang === "fr"
+                      ? "Demander une offre"
+                      : "Request an offer"}
                 </a>
               </article>
             ))}
@@ -163,7 +168,13 @@ export function HomePage() {
                 >
                   <span>{plan.name}</span>
                   <strong>{plan.price}</strong>
-                  <span className="contact-aside__cta">{t.ctaBuy}</span>
+                  <span className="contact-aside__cta">
+                    {isPaddlePlanKey(plan.key)
+                      ? t.ctaBuy
+                      : lang === "fr"
+                        ? "Demander une offre"
+                        : "Request an offer"}
+                  </span>
                 </a>
               ))}
             </div>
@@ -173,3 +184,4 @@ export function HomePage() {
     </>
   );
 }
+

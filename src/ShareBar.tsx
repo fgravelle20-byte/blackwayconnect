@@ -58,7 +58,7 @@ function shareCopy(variant: ShareVariant, lang: "fr" | "en"): ShareCopy {
       title: fr ? "Master Tools — BlackWayConnect" : "Master Tools — BlackWayConnect",
       text: fr
         ? "Master Tools : Leak Score, relance panier, soumission Paddle, checklist, Grow Hub, ROI. Arsenal lead-to-revenue :"
-        : "Master Tools: Leak Score, cart recovery, Stripe quotes, checklist, Grow Hub, ROI. Lead-to-revenue arsenal:",
+        : "Master Tools: Leak Score, cart recovery, Paddle quotes, checklist, Grow Hub, ROI. Lead-to-revenue arsenal:",
       proofTitle: fr ? "Partagez ces outils" : "Share these tools",
       proofBody: fr
         ? "Envoyez Master Tools à un associé. Viralité honnête : un kit utile, pas des likes fictifs."
@@ -175,3 +175,4 @@ export function ShareBar({ variant, url, className = "", compact = false }: Prop
     </aside>
   );
 }
+

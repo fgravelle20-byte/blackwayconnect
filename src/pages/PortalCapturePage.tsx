@@ -39,7 +39,7 @@ const FORFAIT_OPTIONS: { value: PlanKey | "enterprise"; labelFr: string; labelEn
   { value: "enterprise", labelFr: "Entreprise", labelEn: "Enterprise" },
 ];
 
-/** Real Portail tool — capture a lead into HubSpot (not a stub). */
+/** Real Portail tool — capture a lead into the BlackWay CRM. */
 export function PortalCapturePage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -125,7 +125,7 @@ export function PortalCapturePage() {
         <div className="page-hero">
           <p className="eyebrow">{fr ? "Portail · Capture lead" : "Portal · Lead capture"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Capturer un lead → HubSpot" : "Capture a lead → HubSpot"}
+            {fr ? "Capturer un lead → CRM BlackWay" : "Capture a lead → BlackWay CRM"}
           </h1>
           <p className="lede">
             {fr
@@ -184,7 +184,7 @@ export function PortalCapturePage() {
             <textarea id="pc-msg" name="message" rows={3} />
           </div>
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Créer dans HubSpot" : "Create in HubSpot"}
+            {pending ? "…" : fr ? "Créer dans le CRM" : "Create in CRM"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
@@ -212,3 +212,4 @@ export function PortalCapturePage() {
     </section>
   );
 }
+

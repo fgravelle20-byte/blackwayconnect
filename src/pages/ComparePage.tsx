@@ -21,7 +21,7 @@ const ROWS_FR: Row[] = [
   },
   {
     label: "Pipeline → paiement → CRM",
-    bwc: "Native (Paddle + HubSpot)",
+    bwc: "Natif (Paddle + CRM BlackWay)",
     ghl: "Oui (stack GHL)",
     hub: "Oui (sièges / contacts)",
     agency: "Variable / outils multiples",
@@ -66,7 +66,7 @@ const ROWS_EN: Row[] = [
   },
   {
     label: "Pipeline → pay → CRM",
-    bwc: "Native (Paddle + HubSpot)",
+    bwc: "Native (Paddle + BlackWay CRM)",
     ghl: "Yes (GHL stack)",
     hub: "Yes (seats / contacts)",
     agency: "Varies / tool sprawl",
@@ -157,3 +157,4 @@ export function ComparePage() {
     </section>
   );
 }
+

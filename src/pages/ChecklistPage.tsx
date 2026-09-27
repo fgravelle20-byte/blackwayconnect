@@ -6,7 +6,7 @@ import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking"
 import { postLead } from "../lib/postLead";
 
 const CHECKLIST_FR = [
-  "Formulaire site → HubSpot en moins de 60 s",
+  "Formulaire site → CRM BlackWay en moins de 60 s",
   "Première relance planifiée (SMS ou courriel) sous 15 min",
   "Score lead (chaud / tiède / froid) visible dans le pipeline",
   "Soumission avec lien de paiement Paddle — pas de PDF mort",
@@ -17,10 +17,10 @@ const CHECKLIST_FR = [
 ];
 
 const CHECKLIST_EN = [
-  "Site form → HubSpot in under 60s",
+  "Site form → BlackWay CRM in under 60s",
   "First follow-up scheduled (SMS or email) within 15 min",
   "Lead score (hot / warm / cold) visible in the pipeline",
-  "Quote with Stripe payment link — no dead PDFs",
+  "Quote with Paddle checkout — no dead PDFs",
   "Abandoned quote = 3-touch / 7-day recovery sequence",
   "Payment confirmed → Won stage + activation task",
   "Client Master Portal opened for the client (session)",
@@ -181,3 +181,4 @@ export function ChecklistPage() {
     </section>
   );
 }
+

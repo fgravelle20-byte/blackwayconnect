@@ -56,8 +56,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "BlackWayConnect — Master Leads Twin Turbo"
         : "BlackWayConnect — Master Leads Twin Turbo",
       description: fr
-        ? "Master Leads Platform : Twin Turbo Volume + Qualité, scoring HubSpot, checkout Paddle, Portail Client. Née au Québec — vendue mondialement."
-        : "Master Leads Platform: Twin Turbo Volume + Quality, HubSpot scoring, Paddle checkout, Client Portal. Born in Québec — sold worldwide.",
+        ? "Master Leads Platform : Twin Turbo Volume + Qualité, scoring CRM BlackWay, checkout Paddle, Portail Client. Née au Québec — vendue mondialement."
+        : "Master Leads Platform: Twin Turbo Volume + Quality, BlackWay CRM scoring, Paddle checkout, Client Portal. Born in Québec — sold worldwide.",
     },
     outils: {
       title: fr ? "Master Tools — arsenal lead-to-revenue" : "Master Tools — lead-to-revenue toolkit",
@@ -459,3 +459,4 @@ export function Seo() {
 
   return null;
 }
+

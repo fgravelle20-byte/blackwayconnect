@@ -85,6 +85,35 @@ select {
   border-bottom: 1px solid var(--line);
 }
 
+.contact-bar {
+  border-bottom: 1px solid var(--line);
+  background: #111214;
+}
+
+.contact-bar__inner {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.contact-bar__inner span {
+  color: var(--muted);
+}
+
+.contact-bar__inner a {
+  color: var(--ink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.contact-bar__inner a:hover {
+  color: var(--brand);
+}
+
 .site-header__inner {
   display: flex;
   align-items: center;
@@ -264,6 +293,38 @@ select {
   margin-top: 1.25rem;
 }
 
+.mobile-nav__contact {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.mobile-nav__contact a {
+  padding: 0;
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .contact-bar__inner {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .contact-bar__inner span {
+    display: none;
+  }
+
+  .contact-bar__inner a {
+    font-size: 0.68rem;
+  }
+}
+
 @media (min-width: 1180px) {
   .menu-toggle,
   .mobile-nav {
@@ -415,7 +476,7 @@ select {
 
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: calc(100svh - 6rem);
   display: grid;
   align-items: center;
   overflow: hidden;
@@ -426,7 +487,9 @@ select {
   position: relative;
   z-index: 1;
   padding: clamp(5.5rem, 12vh, 7.5rem) 0 clamp(3rem, 8vh, 5rem);
-  max-width: 40rem;
+  width: 100%;
+  max-width: min(40rem, 100%);
+  min-width: 0;
   animation: rise 950ms var(--ease-out) both;
 }
 
@@ -452,6 +515,30 @@ select {
   text-wrap: balance;
 }
 
+.hero .display {
+  font-size: min(clamp(3rem, 8.2vw, 5.5rem), 10.5vw);
+}
+
+@media (max-width: 560px) {
+  .hero__content {
+    padding: 3rem 0 2.25rem;
+  }
+
+  .hero .display {
+    font-size: clamp(1.9rem, 8vw, 2.25rem);
+    line-height: 1.04;
+  }
+
+  .hero-line {
+    font-size: 1.1rem;
+  }
+
+  .hero .lede {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
 .hero-line {
   font-family: var(--font-body);
   font-size: clamp(1.2rem, 2.1vw, 1.5rem);
@@ -474,6 +561,12 @@ select {
   font-weight: var(--weight-body);
   letter-spacing: 0.01em;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 560px) {
+  .hero-line {
+    font-size: 1.1rem;
+  }
 }
 
 .cta-row {
@@ -2878,6 +2971,7 @@ a.bw-agent__chip {
 
 @media print {
   .site-header,
+  .contact-bar,
   .site-footer,
   .bw-agent,
   .cta-row,
@@ -3634,3 +3728,4 @@ a.bw-agent__chip {
 body:has(.growth-ads-bar) .bw-agent {
   bottom: max(6.5rem, calc(env(safe-area-inset-bottom) + 6rem));
 }
+
