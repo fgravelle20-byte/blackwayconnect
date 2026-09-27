@@ -47,8 +47,8 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     priceId: "",
     productId: "",
     tools: ["cell_capture", "forfaits_cellulaire", "support"],
-    blurbFr: "Capture lead terrain — fiche rapide, sync HubSpot.",
-    blurbEn: "Field lead capture — quick card, HubSpot sync.",
+    blurbFr: "Capture lead terrain — fiche rapide, sync CRM BlackWay.",
+    blurbEn: "Field lead capture — quick card, BlackWay CRM sync.",
   },
   cell_route: {
     key: "cell_route",
@@ -158,3 +158,4 @@ export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
   void plan;
   return false;
 }
+

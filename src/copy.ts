@@ -192,7 +192,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Commencez léger. Montez sans changer de système.",
     plansBody:
-      "Grille Grow Hub complète (CAD/mois). Launch / Growth / Scale = Paddle (essai 14 jours). Spark / Command / Partner = contact. Portail inclus.",
+      "Grille Grow Hub complète (CAD/mois, taxes en sus). Launch / Growth / Scale = Paddle (essai 14 jours). Spark / Command / Partner = contact. Portail inclus.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -367,7 +367,7 @@ export const copy: Record<Lang, Copy> = {
     proofBody: "Paiements, CRM et portail client — un fil continu du premier clic à l’encaissement.",
     proofItems: [
       "Paddle : abonnements et paiements en CAD, annulables, sans friction.",
-      "HubSpot : pipeline et opportunités synchronisés avec le dossier prospect.",
+      "CRM BlackWay : pipeline et occasions synchronisés avec le dossier prospect.",
       "Portail Client Master : dashboard web et mobile inclus avec Grow Hub.",
       "Parcours bilingue FR/EN — une source de vérité, partout dans le monde.",
     ],
@@ -390,7 +390,7 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Où vont mes leads et paiements ?",
-        a: "Le site et l’app envoient les demandes vers HubSpot via notre couche d’intégration. Les webhooks Paddle alimentent le même CRM — paiements et abandons visibles rapidement.",
+        a: "Le site et l’app envoient les demandes vers le CRM BlackWay. Les webhooks Paddle alimentent le même dossier — paiements et abandons visibles rapidement.",
       },
       {
         q: "Le français et l’anglais sont-ils supportés ?",
@@ -491,7 +491,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Start light. Scale without switching systems.",
     plansBody:
-      "Full Grow Hub ladder (CAD/mo). Launch / Growth / Scale = Paddle (14-day trial). Spark / Command / Partner = contact. Portal included.",
+      "Full Grow Hub ladder (CAD/mo, plus applicable taxes). Launch / Growth / Scale = Paddle (14-day trial). Spark / Command / Partner = contact. Portal included.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -666,7 +666,7 @@ export const copy: Record<Lang, Copy> = {
     proofBody: "Payments, CRM and client portal — one continuous thread from first click to cash.",
     proofItems: [
       "Paddle: CAD subscriptions and payments, cancel anytime, no friction.",
-      "HubSpot: pipeline and opportunities synced to the prospect record.",
+      "BlackWay CRM: pipeline and opportunities synced to the prospect record.",
       "Client Master Portal: web and mobile dashboard included with Grow Hub.",
       "Bilingual FR/EN journeys — one source of truth, worldwide.",
     ],
@@ -689,7 +689,7 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Where do leads and payments go?",
-        a: "The site and app send inquiries into HubSpot through our integration layer. Paddle webhooks feed the same CRM — payments and abandonments visible quickly.",
+        a: "The site and app send inquiries into BlackWay CRM. Paddle webhooks feed the same record — payments and abandonments visible quickly.",
       },
       {
         q: "Are French and English supported?",
@@ -720,3 +720,4 @@ export const copy: Record<Lang, Copy> = {
       "Refund Policy — You may cancel a subscription per the offer terms; access usually continues through the paid period. Fees already charged are not automatically refundable; each request is reviewed under applicable law (including Québec/Canada consumer protection) and services delivered. Request: serviceclient@blackwayconnect.com (ideally within 14 days) with date, amount and transaction reference.",
   },
 };
+

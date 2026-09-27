@@ -95,16 +95,16 @@ const TOOL_COPY: Partial<
     en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
   },
   lead_capture: {
-    fr: { title: "Capture lead CRM", body: "Fiche rapide → contact + deal HubSpot (réel).", cta: "Capturer" },
-    en: { title: "CRM lead capture", body: "Quick card → HubSpot contact + deal (live).", cta: "Capture" },
+    fr: { title: "Capture lead CRM", body: "Fiche rapide → contact + occasion dans le CRM BlackWay.", cta: "Capturer" },
+    en: { title: "CRM lead capture", body: "Quick card → contact + opportunity in BlackWay CRM.", cta: "Capture" },
   },
   support: {
     fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
     en: { title: "Client support", body: "serviceclient@ · accounting@ for billing.", cta: "Contact" },
   },
   cell_capture: {
-    fr: { title: "Capture lead terrain", body: "Fiche rapide sur le terrain → HubSpot.", cta: "Ouvrir" },
-    en: { title: "Field lead capture", body: "Quick field card → HubSpot.", cta: "Open" },
+    fr: { title: "Capture lead terrain", body: "Fiche rapide sur le terrain → CRM BlackWay.", cta: "Ouvrir" },
+    en: { title: "Field lead capture", body: "Quick field card → BlackWay CRM.", cta: "Open" },
   },
   cell_pipeline: {
     fr: { title: "Pipeline mobile", body: "Avancer les deals en déplacement.", cta: "Ouvrir" },
@@ -351,12 +351,12 @@ export function PortalPage() {
         <div className="shell portal-login">
           <p className="eyebrow">{fr ? "Portail Client Master" : "Client Master Portal"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Contrôle ton dashboard — web et mobile." : "Control your dashboard — web and mobile."}
+            {fr ? "Connexion sans mot de passe." : "Passwordless sign-in."}
           </h1>
           <p className="lede">
             {fr
-              ? "Consultez votre forfait, vos outils et vos demandes depuis votre téléphone ou votre ordinateur."
-              : "View your plan, tools and requests from your phone or computer."}
+              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Paddle. Aucun mot de passe n’est requis."
+              : "On iPhone or desktop, enter the exact email used with Paddle. No password is required."}
           </p>
           <form
             className="portal-login__form"
@@ -380,6 +380,11 @@ export function PortalPage() {
             </button>
           </form>
           {error ? <p className="form-status form-status--err">{error}</p> : null}
+          <p className="portal-login__hint">
+            {fr
+              ? "Accès refusé? Vérifiez le courriel du reçu Paddle ou contactez serviceclient@blackwayconnect.com."
+              : "Access denied? Check the email on your Paddle receipt or contact serviceclient@blackwayconnect.com."}
+          </p>
           <p className="portal-login__hint">
             {fr ? (
               <>
@@ -453,8 +458,8 @@ export function PortalPage() {
               <h2 id="portal-inbox-title">{fr ? "Mes leads livrés" : "My delivered leads"}</h2>
               <p className="lede">
                 {fr
-                  ? "Pipeline HubSpot lié à votre compte — score Twin Turbo + statut de livraison."
-                  : "HubSpot pipeline linked to your account — Twin Turbo score + delivery status."}
+                  ? "Pipeline BlackWay lié à votre compte — score Twin Turbo + statut de livraison."
+                  : "BlackWay pipeline linked to your account — Twin Turbo score + delivery status."}
               </p>
             </div>
             <button
@@ -480,8 +485,8 @@ export function PortalPage() {
             <div className="portal-inbox__empty">
               <p>
                 {fr
-                  ? "Aucun lead livré pour l’instant. Dès qu’un dossier HubSpot est associé à votre courriel, il apparaît ici."
-                  : "No delivered leads yet. As soon as a HubSpot deal is linked to your email, it appears here."}
+                  ? "Aucun lead livré pour l’instant. Dès qu’un dossier BlackWay est associé à votre courriel, il apparaît ici."
+                  : "No delivered leads yet. As soon as a BlackWay record is linked to your email, it appears here."}
               </p>
               <Link className="btn btn--primary" to={path("/diagnostic")}>
                 {fr ? "Lancer Twin Turbo" : "Run Twin Turbo"}
@@ -758,3 +763,4 @@ function ToolGrid(props: {
     </>
   );
 }
+

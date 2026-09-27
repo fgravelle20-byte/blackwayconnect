@@ -5,7 +5,7 @@ import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
 import { postLead } from "../lib/postLead";
 
-/** Quote / proposal generator → copy text + Paddle Growth + HubSpot. */
+/** Quote / proposal generator → copy text + Paddle Growth + BlackWay CRM. */
 export function SoumissionPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -191,8 +191,8 @@ export function SoumissionPage() {
             </div>
             <p className="roi-result__note">
               {fr
-                ? "Le lien ouvre Grow Hub Growth (Paddle). Capture CRM ci-dessous pour créer le deal HubSpot."
-                : "Link opens Grow Hub Growth (Paddle). Capture CRM below to create the HubSpot deal."}
+                ? "Le lien ouvre Grow Hub Growth (Paddle). Capture CRM ci-dessous pour créer l’occasion BlackWay."
+                : "Link opens Grow Hub Growth (Paddle). Capture CRM below to create the BlackWay opportunity."}
             </p>
           </aside>
         </div>
@@ -200,8 +200,8 @@ export function SoumissionPage() {
         <form className="tools-capture" onSubmit={onSave}>
           <p className="tools-capture__title">
             {fr
-              ? "Capturer cette soumission → HubSpot (contact + deal)"
-              : "Capture this quote → HubSpot (contact + deal)"}
+              ? "Capturer cette soumission → CRM BlackWay"
+              : "Capture this quote → BlackWay CRM"}
           </p>
           <div className="form-grid">
             <div className="field">
@@ -224,7 +224,7 @@ export function SoumissionPage() {
             </div>
           </div>
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Créer dans HubSpot" : "Create in HubSpot"}
+            {pending ? "…" : fr ? "Créer dans le CRM" : "Create in CRM"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
@@ -236,7 +236,7 @@ export function SoumissionPage() {
           )}
           {status === "err" && (
             <p className="form-status form-status--err">
-              {fr ? "Envoi HubSpot impossible. Réessayez." : "HubSpot send failed. Retry."}
+              {fr ? "Envoi CRM impossible. Réessayez." : "CRM send failed. Retry."}
             </p>
           )}
         </form>
@@ -250,3 +250,4 @@ export function SoumissionPage() {
     </section>
   );
 }
+

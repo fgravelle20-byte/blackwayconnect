@@ -6,6 +6,7 @@ import { ContactDetails } from "../ContactDetails";
 import { ConvertStickyBar } from "../ConvertStickyBar";
 import { APP_QR_PATH } from "../appConfig";
 import { checkoutUrl, PLANS, type PlanKey } from "../stripeConfig";
+import { isPaddlePlanKey } from "../paddleCatalog";
 import { GrowHubPreview } from "../GrowHubPreview";
 import { PhotoFigure } from "../PhotoFigure";
 import { ShareBar } from "../ShareBar";
@@ -139,7 +140,11 @@ export function PricingPage() {
                     })
                   }
                 >
-                  {t.ctaBuy}
+                  {isPaddlePlanKey(plan.key)
+                    ? t.ctaBuy
+                    : lang === "fr"
+                      ? "Demander une offre"
+                      : "Request an offer"}
                 </a>
               </article>
             ))}
@@ -338,7 +343,13 @@ export function ContactPage() {
               >
                 <span>{plan.name}</span>
                 <strong>{plan.price}</strong>
-                <span className="contact-aside__cta">{t.ctaBuy}</span>
+                <span className="contact-aside__cta">
+                  {isPaddlePlanKey(plan.key)
+                    ? t.ctaBuy
+                    : lang === "fr"
+                      ? "Demander une offre"
+                      : "Request an offer"}
+                </span>
               </a>
             ))}
           </div>
@@ -356,7 +367,7 @@ export function MerciPage() {
   const [params] = useSearchParams();
   const fr = lang === "fr";
   const src = (params.get("src") || "").toLowerCase();
-  const paid = src === "stripe" || src === "paddle";
+  const paid = src === "paddle";
   const planKey = resolvePlanKey(params.get("plan"));
   const planMeta = planKey ? PLAN_LABELS[planKey] : null;
   const planCopy = planKey ? t.plans.find((p) => p.key === planKey) : null;
@@ -379,7 +390,7 @@ export function MerciPage() {
           {
             n: "02",
             title: "CRM mis à jour",
-            body: "Contact HubSpot en customer + deal « Paiement reçu ». Onboarding déjà dans le pipeline.",
+            body: "Compte client et occasion créés dans le CRM BlackWay. Onboarding déjà dans le pipeline.",
           },
           {
             n: "03",
@@ -401,7 +412,7 @@ export function MerciPage() {
           {
             n: "02",
             title: "CRM updated",
-            body: "HubSpot contact set to customer + deal at “Payment received”. Onboarding is already in the pipeline.",
+            body: "Client account and opportunity created in BlackWay CRM. Onboarding is already in the pipeline.",
           },
           {
             n: "03",
@@ -419,7 +430,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Demande reçue",
-            body: "Votre message est dans HubSpot (nouvelle opportunité). Aucune relance manuelle de votre côté.",
+            body: "Votre message est dans le CRM BlackWay (nouvelle occasion). Aucune relance manuelle de votre côté.",
           },
           {
             n: "02",
@@ -436,7 +447,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Request received",
-            body: "Your message is in HubSpot (new opportunity). Nothing for you to chase manually.",
+            body: "Your message is in BlackWay CRM (new opportunity). Nothing for you to chase manually.",
           },
           {
             n: "02",
@@ -475,11 +486,11 @@ export function MerciPage() {
           <p className="lede">
             {paid
               ? fr
-                ? `Paiement Stripe confirmé${planName ? ` — ${planName}` : ""}${amount != null ? ` (${amount} $ CAD / mois)` : ""}. Deal HubSpot créé automatiquement. Voici vos prochaines étapes — rien à gérer manuellement de votre côté.`
-                : `Stripe payment confirmed${planName ? ` — ${planName}` : ""}${amount != null ? ` ($${amount} CAD / month)` : ""}. HubSpot deal created automatically. Here’s what happens next — nothing for you to chase.`
+                ? `Paiement Paddle confirmé${planName ? ` — ${planName}` : ""}${amount != null ? ` (${amount} $ / mois)` : ""}. Votre compte CRM BlackWay est créé automatiquement. Voici vos prochaines étapes — rien à gérer manuellement de votre côté.`
+                : `Paddle payment confirmed${planName ? ` — ${planName}` : ""}${amount != null ? ` ($${amount} / month)` : ""}. Your BlackWay CRM account is created automatically. Here’s what happens next — nothing for you to chase.`
               : fr
-                ? "Votre demande est dans le pipeline HubSpot. On vous contacte sous peu — ou choisissez un forfait pour activer tout de suite."
-                : "Your request is in the HubSpot pipeline. We’ll reach out shortly — or pick a plan to activate now."}
+                ? "Votre demande est dans le pipeline BlackWay. On vous contacte sous peu — ou choisissez un forfait pour activer tout de suite."
+                : "Your request is in the BlackWay pipeline. We’ll reach out shortly — or pick a plan to activate now."}
           </p>
           {paid && planCopy ? <p className="merci-plan-blurb">{planCopy.blurb}</p> : null}
         </div>
@@ -609,3 +620,4 @@ export function RefundPage() {
     </div>
   );
 }
+

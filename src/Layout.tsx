@@ -5,6 +5,7 @@ import { APP_QR_PATH, footerAppQrUrl } from "./appConfig";
 import { scoreCopy } from "./scoreCopy";
 import { AiSecretary } from "./AiSecretary";
 import { ContactDetails } from "./ContactDetails";
+import { EMAILS, PHONES } from "./siteContact";
 
 export function Layout() {
   const { t, lang, path } = useLang();
@@ -85,6 +86,15 @@ export function Layout() {
   return (
     <>
       <header className="site-header">
+        <div className="contact-bar">
+          <div className="shell contact-bar__inner">
+            <span>{lang === "fr" ? "Parler a BlackWay" : "Talk to BlackWay"}</span>
+            <a href={PHONES.tollFree.href} aria-label={`${lang === "fr" ? "Appeler" : "Call"} ${PHONES.tollFree.display}`}>
+              {PHONES.tollFree.display}
+            </a>
+            <a href={`mailto:${EMAILS.service}`}>{EMAILS.service}</a>
+          </div>
+        </div>
         <div className="shell site-header__inner">
           <Link to={path("/")} className="brand" aria-label={`${t.brand} home`}>
             <img
@@ -135,6 +145,10 @@ export function Layout() {
             <Link className="btn btn--ghost" to={path("/contact")}>
               {t.ctaConsult}
             </Link>
+          </div>
+          <div className="mobile-nav__contact">
+            <a href={PHONES.tollFree.href}>{PHONES.tollFree.display}</a>
+            <a href={`mailto:${EMAILS.service}`}>{EMAILS.service}</a>
           </div>
         </div>
       </header>
@@ -208,3 +222,4 @@ export function Layout() {
     </>
   );
 }
+

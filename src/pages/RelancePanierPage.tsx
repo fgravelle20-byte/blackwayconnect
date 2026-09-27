@@ -6,7 +6,7 @@ import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking"
 import { useEffect } from "react";
 import { postLead } from "../lib/postLead";
 
-/** Abandoned quote / cart recovery checker → Growth checkout + HubSpot. */
+/** Abandoned quote / cart recovery checker → Growth checkout + BlackWay CRM. */
 export function RelancePanierPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -189,8 +189,8 @@ export function RelancePanierPage() {
         <form className="tools-capture" onSubmit={onSave}>
           <p className="tools-capture__title">
             {fr
-              ? "Envoyer l’estimé → HubSpot (contact + deal scoré)"
-              : "Send estimate → HubSpot (scored contact + deal)"}
+              ? "Envoyer l’estimé → CRM BlackWay (occasion scorée)"
+              : "Send estimate → BlackWay CRM (scored opportunity)"}
           </p>
           <div className="form-grid">
             <div className="field">
@@ -213,19 +213,19 @@ export function RelancePanierPage() {
             </div>
           </div>
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Créer dans HubSpot" : "Create in HubSpot"}
+            {pending ? "…" : fr ? "Créer dans le CRM" : "Create in CRM"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
               {fr
-                ? `Reçu dans HubSpot${leadScore != null ? ` · score ${leadScore}` : ""}.`
-                : `Saved to HubSpot${leadScore != null ? ` · score ${leadScore}` : ""}.`}{" "}
+                ? `Reçu dans le CRM BlackWay${leadScore != null ? ` · score ${leadScore}` : ""}.`
+                : `Saved to BlackWay CRM${leadScore != null ? ` · score ${leadScore}` : ""}.`}{" "}
               <a href={growthHref}>{fr ? "Passer à Growth →" : "Go to Growth →"}</a>
             </p>
           )}
           {status === "err" && (
             <p className="form-status form-status--err">
-              {fr ? "Envoi HubSpot impossible. Réessayez." : "HubSpot send failed. Retry."}
+              {fr ? "Envoi CRM impossible. Réessayez." : "CRM send failed. Retry."}
             </p>
           )}
         </form>
@@ -241,3 +241,4 @@ export function RelancePanierPage() {
     </section>
   );
 }
+

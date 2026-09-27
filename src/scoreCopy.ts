@@ -57,7 +57,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     leakHigh: "Pression critique — Twin Turbo Full : le revenu s’évapore avant le CRM.",
     why: "Pourquoi ce moteur",
     saveTitle: "Gardez votre diagnostic Twin Turbo",
-    saveBody: "On archive volume + qualité dans HubSpot et on vous renvoie la prochaine étape. Aucune carte.",
+    saveBody: "On archive volume + qualité dans le CRM BlackWay et on vous renvoie la prochaine étape. Aucune carte.",
     first: "Prénom",
     email: "Courriel",
     company: "Entreprise (optionnel)",
@@ -140,7 +140,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       ],
       mid: [
         "Turbo Qualité en retrait : leads chauds qui refroidissent entre formulaire et relance.",
-        "Devis / paiements sans remontée HubSpot = revenu invisible.",
+        "Devis / paiements sans remontée CRM = revenu invisible.",
       ],
       high: [
         "Twin Turbo Full : volume et close dépassent le stack — chaque jour coûte du cash.",
@@ -152,7 +152,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       grow_hub_launch:
         "Launch = Twin Turbo Lock : structure les premières demandes sans surconstruire.",
       grow_hub_growth:
-        "Growth = Twin Turbo Full Performance : score, relances, soumissions, paiements → HubSpot.",
+        "Growth = Twin Turbo Full Performance : score, relances, soumissions, paiements → CRM BlackWay.",
       grow_hub_scale:
         "Scale = Twin Turbo Max : multi-équipes / marchés / langues, une provenance revenu.",
       grow_hub_command: "Command quand la fuite exige ops CRM + acquisition gérée.",
@@ -175,7 +175,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     leakHigh: "Critical pressure — Twin Turbo Full: revenue evaporates before the CRM.",
     why: "Why this engine",
     saveTitle: "Save your Twin Turbo diagnostic",
-    saveBody: "We archive volume + quality in HubSpot and send the next Grow Hub step. No card required.",
+    saveBody: "We archive volume + quality in BlackWay CRM and send the next Grow Hub step. No card required.",
     first: "First name",
     email: "Email",
     company: "Company (optional)",
@@ -258,7 +258,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       ],
       mid: [
         "Quality Turbo lagging: warm leads cool between form and follow-up.",
-        "Quotes / payments without HubSpot feedback = invisible revenue.",
+        "Quotes / payments without CRM feedback = invisible revenue.",
       ],
       high: [
         "Twin Turbo Full: volume and close outrun the stack — every day costs cash.",
@@ -269,7 +269,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
       grow_hub_spark: "Spark to prove the stack without over-investing — pipeline + AI secretary.",
       grow_hub_launch: "Launch = Twin Turbo Lock: early demand without overbuilding.",
       grow_hub_growth:
-        "Growth = Twin Turbo Full Performance: scoring, follow-ups, quotes, payments → HubSpot.",
+        "Growth = Twin Turbo Full Performance: scoring, follow-ups, quotes, payments → BlackWay CRM.",
       grow_hub_scale:
         "Scale = Twin Turbo Max: multi-team / market / language, one revenue provenance.",
       grow_hub_command: "Command when leakage needs CRM ops + managed acquisition.",
@@ -305,3 +305,4 @@ export function leakBand(score: number): "low" | "mid" | "high" {
   if (score >= 35) return "mid";
   return "low";
 }
+

@@ -72,7 +72,7 @@ export function GrowthLandingPage() {
           </div>
 
           <ul className="lede" style={{ maxWidth: "36rem", marginTop: "2rem", paddingLeft: "1.2rem" }}>
-            <li>{fr ? "Pipeline + CRM HubSpot branché — l’action est forcée" : "Pipeline + HubSpot wired — action is forced"}</li>
+            <li>{fr ? "Pipeline + CRM BlackWay branché — prochaine action claire" : "Pipeline + BlackWay CRM — clear next action"}</li>
             <li>{fr ? "Portail Master + accès mobile le jour 1" : "Master Portal + mobile access on day one"}</li>
             <li>{fr ? "Secrétaire IA 24h sur le site" : "AI Secretary 24/7 on the site"}</li>
             <li>{fr ? "Paddle. Annulable. Upsell Cellulaire optionnel." : "Paddle. Cancel anytime. Optional Cellular upsell."}</li>
@@ -97,3 +97,4 @@ export function GrowthLandingPage() {
     </>
   );
 }
+

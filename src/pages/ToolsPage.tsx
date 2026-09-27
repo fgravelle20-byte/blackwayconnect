@@ -29,7 +29,7 @@ const COMPARE_FR: Row[] = [
   },
   {
     label: "Pipeline → paiement → CRM",
-    bwc: "Natif (Paddle + HubSpot)",
+    bwc: "Natif (Paddle + CRM BlackWay)",
     ghl: "Oui (écosystème GHL)",
     hub: "Oui (sièges / contacts)",
     agency: "Variable / plusieurs outils",
@@ -74,7 +74,7 @@ const COMPARE_EN: Row[] = [
   },
   {
     label: "Pipeline → pay → CRM",
-    bwc: "Native (Paddle + HubSpot)",
+    bwc: "Native (Paddle + BlackWay CRM)",
     ghl: "Yes (GHL ecosystem)",
     hub: "Yes (seats / contacts)",
     agency: "Varies / tool sprawl",
@@ -252,8 +252,8 @@ export function ToolsPage() {
       eyebrow: "02",
       title: fr ? "Aperçu Grow Hub" : "Grow Hub Preview",
       body: fr
-        ? "Pipeline interactif : étapes, prochaines actions, chemin vers l’abonnement Stripe."
-        : "Interactive pipeline: stages, next actions, path to Stripe subscribe.",
+        ? "Pipeline interactif : étapes, prochaines actions, chemin vers l’abonnement Paddle."
+        : "Interactive pipeline: stages, next actions, path to Paddle subscribe.",
       to: path("/grow-hub"),
       cta: fr ? "Ouvrir Grow Hub" : "Open Grow Hub",
       primary: true,
@@ -277,7 +277,7 @@ export function ToolsPage() {
       title: fr ? "Générateur de soumission → Paddle" : "Quote generator → Paddle",
       body: fr
         ? "Rédigez, copiez, ouvrez le lien Paddle Growth. Suivi CRM inclus."
-        : "Draft, copy, open the Stripe Growth link. CRM follow-up included.",
+        : "Draft, copy, open the Paddle Growth checkout. CRM follow-up included.",
       to: path("/outils/soumission"),
       cta: fr ? "Créer une soumission" : "Create a quote",
       primary: true,
@@ -361,7 +361,7 @@ export function ToolsPage() {
           <p className="lede">
             {fr
               ? "Neuf outils lead-to-revenue — diagnostic, pipeline, relance panier, soumission Paddle, checklist, ROI, comparateur, secrétaire IA, forfaits. Chaque parcours mène à Growth, Portail ou Pack Cellulaire."
-              : "Nine lead-to-revenue tools — diagnostic, pipeline, cart recovery, Stripe quote, checklist, ROI, comparer, AI secretary, plans. Every path leads to Growth, Portal or Cellular Pack."}
+              : "Nine lead-to-revenue tools — diagnostic, pipeline, cart recovery, Paddle quote, checklist, ROI, comparer, AI secretary, plans. Every path leads to Growth, Portal or Cellular Pack."}
           </p>
         </div>
 
@@ -718,3 +718,4 @@ export function ToolsPage() {
     </section>
   );
 }
+

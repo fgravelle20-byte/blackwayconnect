@@ -32,11 +32,11 @@ const STEPS = [
     img: "/how-it-works/step-3-unlock.svg",
     fr: {
       title: "Ça se déclenche tout seul",
-      body: "Webhook Paddle → HubSpot + Portail. Le forfait payé s’active automatiquement.",
+      body: "Webhook Paddle → CRM BlackWay + Portail. Le forfait payé s’active automatiquement.",
     },
     en: {
       title: "It unlocks automatically",
-      body: "Paddle webhook → HubSpot + Portal. The paid plan (bw_forfait) activates itself. No manual handoff.",
+      body: "Paddle webhook → BlackWay CRM + Portal. The paid plan activates automatically. No manual handoff.",
     },
   },
   {
@@ -122,3 +122,4 @@ export function HowItWorksPage() {
     </section>
   );
 }
+
