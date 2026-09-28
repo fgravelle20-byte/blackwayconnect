@@ -1,0 +1,4 @@
+Contact: mailto:serviceclient@blackwayconnect.com
+Expires: 2027-09-28T00:00:00Z
+Preferred-Languages: fr, en
+Canonical: https://blackwayconnect.com/.well-known/security.txt
