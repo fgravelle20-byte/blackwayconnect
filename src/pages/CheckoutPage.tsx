@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLang } from "../i18n";
 import { isPaddlePlanKey, PADDLE_PRICES } from "../paddleCatalog";
+import { initializePaddleOnce, loadPaddleScript, resolvePaddleClientToken } from "../paddleLoader";
 
 type PaddleClient = {
   Initialize(options: {
     token: string;
     eventCallback?: (event: { name?: string; data?: { transaction_id?: string } }) => void;
   }): void;
+  Update(options: { eventCallback: (event: { name?: string; data?: { transaction_id?: string } }) => void }): void;
   Checkout: { open(options: {
     items: { priceId: string; quantity: number }[];
     customData: Record<string, string>;
@@ -15,23 +17,6 @@ type PaddleClient = {
   }): void };
 };
 declare global { interface Window { Paddle?: PaddleClient } }
-let initialized = false;
-let paddleScript: Promise<void> | undefined;
-
-function loadPaddle(): Promise<void> {
-  if (window.Paddle) return Promise.resolve();
-  if (!paddleScript) paddleScript = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Paddle unavailable"));
-    document.head.appendChild(script);
-  });
-  return paddleScript;
-}
-
-const PIPE_ORIGIN = "https://api.blackwayconnect.com";
 
 /**
  * Paddle client-side tokens are designed to ship in the browser.
@@ -44,23 +29,6 @@ const PIPE_ORIGIN = "https://api.blackwayconnect.com";
 const PADDLE_CLIENT_TOKEN_LIVE = "live_a4f8ad8f1c8be908ec3784e8d8b";
 
 /** Build-time Vite secret, else runtime pipe, else public live fallback. */
-async function resolvePaddleClientToken(): Promise<string> {
-  const fromBuild = String(import.meta.env.VITE_PADDLE_CLIENT_TOKEN || "").trim();
-  if (fromBuild.startsWith("live_")) return fromBuild;
-  try {
-    const r = await fetch(`${PIPE_ORIGIN}/paddle/client-config`, { credentials: "omit" });
-    if (r.ok) {
-      const data = (await r.json()) as { client_token?: string; clientToken?: string };
-      const token = String(data.client_token || data.clientToken || "").trim();
-      if (token.startsWith("live_")) return token;
-    }
-  } catch {
-    /* pipe optional */
-  }
-  if (PADDLE_CLIENT_TOKEN_LIVE.startsWith("live_")) return PADDLE_CLIENT_TOKEN_LIVE;
-  throw new Error("Paddle client token missing");
-}
-
 export function CheckoutPage() {
   const [params] = useSearchParams();
   const { lang, path } = useLang();
@@ -72,23 +40,17 @@ export function CheckoutPage() {
     let cancelled = false;
     const open = async () => {
       try {
-        const token = await resolvePaddleClientToken();
-        await loadPaddle();
+        const token = await resolvePaddleClientToken(PADDLE_CLIENT_TOKEN_LIVE);
+        await loadPaddleScript();
         if (cancelled || !window.Paddle) return;
-        if (!initialized) {
-          window.Paddle.Initialize({
-            token,
-            eventCallback: (event) => {
+        initializePaddleOnce(token, (event) => {
               if (event.name !== "checkout.completed") return;
               const transactionId = String(event.data?.transaction_id || "");
               if (!transactionId.startsWith("txn_")) return;
               const portal = new URL(path("/portail"), window.location.origin);
               portal.searchParams.set("transaction_id", transactionId);
               window.location.assign(portal.toString());
-            },
-          });
-          initialized = true;
-        }
+        });
         const successUrl = new URL(path("/merci"), window.location.origin);
         successUrl.searchParams.set("src", "paddle");
         successUrl.searchParams.set("plan", plan);
