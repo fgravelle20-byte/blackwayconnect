@@ -3,7 +3,7 @@ import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
   FEATURED_CELLULAIRE,
-  STRIPE_CELLULAIRE_TODO,
+  PADDLE_CELLULAIRE_TODO,
   cellulaireCheckoutUrl,
   isCellulaireCheckoutReady,
   type CellulairePlanKey,
@@ -132,7 +132,7 @@ export function CellulairePlansPage() {
               : "Cellular offers available on request"}
           </summary>
           <ul className="lede">
-            {STRIPE_CELLULAIRE_TODO.map((row) => (
+            {PADDLE_CELLULAIRE_TODO.map((row) => (
               <li key={row.key}>
                 <code>{row.key}</code> — {row.name} — {row.amountCad} CAD/mo — metadata{" "}
                 <code>{row.metadata}</code> — success{" "}
