@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { initializePaddleOnce, loadPaddleScript, resolvePaddleClientToken } from "../paddleLoader";
+import { initializePublicHomePaddle } from "../paddleLoader";
 import { Hero } from "../Hero";
 import { ContactForm } from "../ContactForm";
 import { AppCta } from "../AppCta";
@@ -14,15 +14,9 @@ export function HomePage() {
   useEffect(() => {
     // Retain checks the public home page, independently of the payment route.
     // The client-side token is browser-public; never put an API key here.
-    void (async () => {
-      try {
-        const token = await resolvePaddleClientToken();
-        await loadPaddleScript();
-        initializePaddleOnce(token);
-      } catch (error) {
-        console.warn("Paddle.js unavailable on home page", error);
-      }
-    })();
+    void initializePublicHomePaddle().catch((error) => {
+      console.warn("Paddle.js unavailable on home page", error);
+    });
   }, []);
 
   return (
