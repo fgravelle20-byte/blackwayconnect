@@ -21,6 +21,20 @@
     // Cloudflare AI Gateway id (Dash → AI → AI Gateway). "default" auto-creates if missing.
     "AI_GATEWAY_ID": "default"
   },
+  // Worker Previews do not inherit production vars or bindings.
+  // Keep preview traffic away from the production pipe and portal.
+  "previews": {
+    "vars": {
+      "PIPE_URL": "https://example.invalid",
+      "APP_WEB_URL": "https://example.invalid/portail",
+      "APP_STORE_URL": "",
+      "PLAY_STORE_URL": "",
+      "AI_GATEWAY_ID": "default"
+    },
+    "ai": {
+      "binding": "AI"
+    }
+  },
   "workers_dev": true,
   "routes": [
     { "pattern": "blackwayconnect.com", "custom_domain": true },
