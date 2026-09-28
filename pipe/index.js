@@ -5,11 +5,11 @@
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
  *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)
  *   POST /lead              -> formulaire site web  -> Contact + Deal "Nouvelle opportunite"
- *   POST /webhooks/stripe   -> paiement forfait -> active EXACTEMENT ce forfait (HubSpot + portail)
+ *   POST /webhooks/paddle   -> paiement Paddle verifie -> active le forfait (HubSpot + portail)
  *   POST /portal/claim      -> session_id (Cache/HubSpot) ou email -> jeton portail
  *   GET  /portal/me         -> refresh session portail
  * Portail HubSpot 343472254 - pipeline BlackWay - Revenue (2117849055)
- * Claim apres paiement: PAS besoin de STRIPE_SECRET_KEY (webhook payload + Cache + HubSpot).
+ * Claim apres paiement: Paddle webhook + Cache + HubSpot; aucune cle Stripe requise.
  *
  * Activation auto (signature verifiee): checkout.session.completed | async_payment_succeeded
  * | invoice.paid | invoice.payment_succeeded → bw_forfait + bw_forfait_paye = forfait paye
@@ -731,19 +731,6 @@ async function claimFromDealSession(env, sessionId) {
   return { email, forfait };
 }
 
-async function fetchStripeCheckoutSession(env, sessionId) {
-  const key = String(env.STRIPE_SECRET_KEY || "").trim();
-  if (!key) return null;
-  const r = await fetch(
-    `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=line_items.data.price`,
-    { headers: { Authorization: `Bearer ${key}` } },
-  );
-  if (!r.ok) {
-    throw new Error("session Stripe introuvable (" + r.status + ")");
-  }
-  return r.json();
-}
-
 function forfaitFromPaddleTransaction(transaction) {
   const fromCustom = resoudreForfait(
     transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait,
@@ -868,23 +855,6 @@ async function claimPortal(env, p) {
       }
     }
 
-    if (!email && sessionId.startsWith("cs_")) {
-      let stripeSession = null;
-      try {
-        stripeSession = await fetchStripeCheckoutSession(env, sessionId);
-      } catch (e) {
-        if (String(env.STRIPE_SECRET_KEY || "").trim()) throw e;
-        stripeSession = null;
-      }
-      if (stripeSession) {
-        email = String(emailFromStripeObject(stripeSession) || "").trim().toLowerCase();
-        forfait =
-          forfaitFromStripeObject(stripeSession) ||
-          resoudreForfait(p.plan) ||
-          null;
-        if (!email) throw new Error("paiement sans courriel sur la session Stripe");
-      }
-    }
 
     if (!email) {
       throw new Error(
@@ -1019,8 +989,6 @@ export default {
           hubspot_bw_session_prop = await ensureBwLastCheckoutSessionProp(env);
         }
       }
-      const stripeSecretKey = !!String(env.STRIPE_SECRET_KEY || "").trim();
-      const stripeWebhookSecret = !!String(env.STRIPE_WEBHOOK_SECRET || "").trim();
       const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
       const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
       const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
@@ -1028,7 +996,6 @@ export default {
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
       const portal_claim_ready = hubspot === "connecte" && (
-        stripeWebhookSecret ||
         (paddleApiKey && paddleWebhookSecret) ||
         paddleFulfillRelay
       );
@@ -1043,12 +1010,6 @@ export default {
         session_cache: true,
         session_kv: !!env.BW_SESSIONS,
         portal_claim_ready,
-        // Explicit names (preferred)
-        stripe_secret_key: stripeSecretKey,
-        stripe_webhook_secret: stripeWebhookSecret,
-        // Compat aliases — stripe_secret = API key (not webhook)
-        stripe_secret: stripeSecretKey,
-        stripe_webhook: stripeWebhookSecret,
         paddle_api_key: paddleApiKey,
         paddle_webhook_secret: paddleWebhookSecret,
         paddle_client_token: paddleClientToken,
@@ -1195,116 +1156,7 @@ export default {
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
-    if (url.pathname === "/webhooks/stripe" && request.method === "POST") {
-      const body = await request.text();
-      const ok = await signatureValide(env.STRIPE_WEBHOOK_SECRET, body, request.headers.get("stripe-signature"));
-      if (!ok) return json({ erreur: "signature invalide" }, 400);
-      let evt; try { evt = JSON.parse(body); } catch { return json({ erreur: "json invalide" }, 400); }
-      const PAIEMENTS = [
-        "checkout.session.completed",
-        "checkout.session.async_payment_succeeded",
-        "invoice.paid",
-        "invoice.payment_succeeded",
-      ];
-      const ABANDONS = ["checkout.session.expired", "checkout.session.async_payment_failed"];
-
-      if (ABANDONS.includes(evt.type)) {
-        const s = evt.data.object;
-        const cd = s.customer_details || {};
-        const courriel = emailFromStripeObject(s);
-        if (!courriel) return json({ ignore: "abandon sans courriel" });
-        const nom = (cd.name || "").trim().split(" ");
-        const forfait = forfaitFromStripeObject(s) || "grow_hub_growth";
-        const f = FORFAITS[forfait];
-        const abandonKey = s.id || evt.id;
-        ctx.waitUntil((async () => {
-          const contactId = await upsertContact(env, courriel, {
-            firstname: nom[0] || "", lastname: nom.slice(1).join(" ") || "",
-            bw_forfait: forfait, bw_source: "stripe", bw_urgence: "elevee",
-            bw_lead_score: Math.min((f.score || 70) + 10, 100), lifecyclestage: "opportunity",
-          });
-          const d = await createDeal(env, `PANIER ABANDONNE - ${f.label} - ${cd.name || courriel}`, ST_NEW, {
-            amount: (s.amount_total ?? 0) / 100 || f.prix, bw_forfait: forfait, bw_source: "stripe",
-            bw_urgence: "elevee", bw_lead_score: Math.min((f.score || 70) + 10, 100),
-            bw_deadline: dateISO(2), bw_livraison_statut: "non_demarre",
-            bw_idempotency_key: `abandon:${abandonKey}`, bw_segment: "panier abandonne",
-          }, contactId);
-          if (d.cree) {
-            await hs(env, "POST", "/crm/v3/objects/notes", {
-              properties: { hs_timestamp: new Date().toISOString(),
-                hs_note_body: `Paiement commence puis abandonne (${evt.type}).\nForfait vise : ${f.label}.\nRelancer dans les 24 h : c'est le lead le plus chaud du pipeline.` },
-              associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
-            });
-          }
-        })().catch((e) => console.log("erreur abandon", e)));
-        return json({ recu: true, traitement: "panier abandonne" });
-      }
-
-      if (!PAIEMENTS.includes(evt.type)) return json({ ignore: evt.type });
-      const s = evt.data.object;
-
-      // 1er paiement abo : checkout.session.completed + invoice.* (subscription_create)
-      // → ignorer la facture initiale pour eviter 2 deals HubSpot.
-      if (evt.type === "invoice.paid" || evt.type === "invoice.payment_succeeded") {
-        const reason = s.billing_reason || "";
-        if (reason === "subscription_create") {
-          return json({ ignore: "subscription_create — deal via checkout.session" });
-        }
-      }
-
-      // Paiement async (ACSS etc.) : session completed peut arriver unpaid.
-      if (evt.type === "checkout.session.completed" && s.payment_status === "unpaid") {
-        return json({ ignore: "awaiting async payment" });
-      }
-
-      const cd = s.customer_details || {};
-      const nom = (cd.name || s.customer_name || "").trim().split(" ");
-      // Forfait EXACT paye (price id / metadata / client_reference_id) — pas un statut unique.
-      const forfait = resoudreForfait(forfaitFromStripeObject(s) || "");
-      if (!forfait) {
-        // e.g. invoice PaymentIntent $999 (99900¢) — not in Grow Hub catalog.
-        // Vorixa service géré ($499/$999/$1500/$3000) is handled by Vorixa, not this portail.
-        // Never invent grow_hub_growth; that would unlock the wrong portal tier.
-        return json({
-          recu: true,
-          ignore: isVorixaManagedStripeObject(s)
-            ? "vorixa_service_gere"
-            : "paiement sans forfait resolu",
-          type: evt.type,
-          payment_id: s.id || evt.id,
-          amount_cents: s.amount_total ?? s.amount_paid ?? s.total ?? s.amount_due ?? s.amount ?? null,
-        });
-      }
-      const isInvoice = evt.type === "invoice.paid" || evt.type === "invoice.payment_succeeded";
-      const isRenewal = isInvoice && (s.billing_reason === "subscription_cycle" || s.billing_reason === "subscription_update");
-      // Cle stable (session / invoice), pas l'event id — rejeux Stripe = zero doublon.
-      const paymentKey = s.id || evt.id;
-      const email = emailFromStripeObject(s);
-      if (!email) return json({ ignore: "paiement sans courriel" });
-
-      const checkoutSessionId = String(s.id || "").startsWith("cs_")
-        ? s.id
-        : String(s.checkout_session || "");
-      const forfaitForCache = forfait;
-      // Sync before HubSpot waitUntil — claim by session_id must work without Stripe API.
-      await putSessionMap(env, checkoutSessionId, { email, forfait: forfaitForCache });
-
-      ctx.waitUntil(ensureBwLastCheckoutSessionProp(env).catch(() => false));
-      ctx.waitUntil(traiterPaiement(env, {
-        email,
-        prenom: nom[0] || "", nom: nom.slice(1).join(" ") || "Client",
-        entreprise: s.metadata?.entreprise || "",
-        forfait,
-        payment_id: paymentKey,
-        checkout_session_id: checkoutSessionId,
-        montant: (s.amount_total ?? s.amount_paid ?? s.total ?? s.amount ?? 0) / 100,
-        renouvellement: isRenewal,
-        segment: isRenewal ? "renouvellement stripe" : "paiement stripe",
-      }).catch((e) => console.log("erreur traitement", e)));
-      return json({ recu: true, type: evt.type, payment_id: paymentKey });
-    }
-
-    // --- Portail Client Master ---
+    // Stripe webhook retired: all new payments are Paddle-only.\n
     if (url.pathname === "/portal/claim" && request.method === "POST") {
       try {
         const p = await request.json();
