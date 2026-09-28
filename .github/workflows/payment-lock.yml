@@ -26,6 +26,7 @@ jobs:
             echo "Payment lock newly introduced — guarded-file gate skips once."
             exit 0
           fi
+          locked=$(node -e "const l=require('./$LOCK'); process.stdout.write(String(l.locked===true))")
           unlock=$(node -e "const l=require('./$LOCK'); process.stdout.write(l.unlock_ack==='I_UNDERSTAND_UNLOCKING_LIVE_PAYMENTS'?'1':'0')")
           base="${{ github.event.pull_request.base.sha }}"
           head="${{ github.event.pull_request.head.sha }}"
@@ -48,12 +49,25 @@ jobs:
           if [ -n "$hit" ]; then
             echo "::warning::Guarded payment files changed:"
             echo "$hit"
-            # Require explicit acknowledgement for any payment-file change.
-            if [ "$unlock" != "1" ]; then
+            # Allow only the final lock restoration:
+            # - LOCKED.json is the only guarded file changed
+            # - the resulting file is locked
+            # - unlock_ack has been removed
+            relock_only=false
+            if [ "$(printf '%s' "$hit" | sed '/^$/d' | wc -l)" -eq 1 ] \
+              && [ "$(printf '%s' "$hit" | sed '/^$/d')" = "$LOCK" ] \
+              && [ "$locked" = "true" ] \
+              && [ "$unlock" != "1" ]; then
+              relock_only=true
+            fi
+            if [ "$relock_only" = true ]; then
+              echo "Final payment lock restoration detected."
+            elif [ "$unlock" != "1" ]; then
               echo "::error::Payment changes require unlock_ack. See ops/payment-lock/README.md"
               exit 1
+            else
+              echo "Unlock acknowledged — owner CODEOWNERS review required."
             fi
-            echo "Unlock acknowledged — owner CODEOWNERS review required."
           else
             echo "No guarded payment files changed."
           fi
