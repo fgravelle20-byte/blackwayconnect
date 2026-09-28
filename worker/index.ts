@@ -227,7 +227,6 @@ function mobileBootstrap(env: Env) {
       bw_source: "mobile_dashboard",
       checkoutSource: "cellulaire",
       webCheckoutSource: "site_web",
-      stripeWebhook: `${env.PIPE_URL}/webhooks/stripe`,
     },
     qr: {
       app: `${SITE_ORIGIN}/qr-app.svg`,
@@ -393,7 +392,6 @@ export default {
         portalClaim: "/api/portal/claim",
         portalMe: "/api/portal/me",
         portalLeads: "/api/portal/leads",
-        stripeWebhook: `${env.PIPE_URL}/webhooks/stripe`,
         checkout: CHECKOUT,
         tools: "/outils",
         agent: {
