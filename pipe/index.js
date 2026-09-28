@@ -652,7 +652,10 @@ async function hsBwContactGroupName(env) {
   }
 }
 
-/** Create HubSpot contact property bw_last_checkout_session if missing. */
+/** Check whether the optional HubSpot contact property exists.
+ * Read-only by design: health/payment processing must never attempt schema writes.
+ * This avoids 403 errors when the HubSpot token lacks crm.schemas.contacts.write.
+ */
 async function ensureBwLastCheckoutSessionProp(env) {
   if (_bwSessionPropReady) return true;
   const t = jeton(env);
@@ -661,43 +664,10 @@ async function ensureBwLastCheckoutSessionProp(env) {
     const get = await fetch(HS + "/crm/v3/properties/contacts/bw_last_checkout_session", {
       headers: { Authorization: `Bearer ${t}` },
     });
-    if (get.status === 200) {
-      _bwSessionPropReady = true;
-      return true;
-    }
-    const groupName = await hsBwContactGroupName(env);
-    const groups = [...new Set([groupName, "contactinformation"].filter(Boolean))];
-    for (const g of groups) {
-      const create = await fetch(HS + "/crm/v3/properties/contacts", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${t}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "bw_last_checkout_session",
-          label: "BW Last Checkout Session",
-          type: "string",
-          fieldType: "text",
-          groupName: g,
-          description: "Last Stripe cs_… or Paddle txn_… for Client Master Portal claim",
-        }),
-      });
-      if (create.status === 200 || create.status === 201) {
-        _bwSessionPropReady = true;
-        return true;
-      }
-      const txt = await create.text();
-      // Already exists (race / prior create under another code path)
-      if (create.status === 409 || /already exists|PROPERTY_ALREADY_EXISTS/i.test(txt)) {
-        break;
-      }
-      console.log("bw_last_checkout_session create", create.status, txt.slice(0, 240), "group", g);
-    }
-    const again = await fetch(HS + "/crm/v3/properties/contacts/bw_last_checkout_session", {
-      headers: { Authorization: `Bearer ${t}` },
-    });
-    _bwSessionPropReady = again.status === 200;
+    _bwSessionPropReady = get.status === 200;
     return _bwSessionPropReady;
   } catch (e) {
-    console.log("ensureBwLastCheckoutSessionProp", e);
+    console.log("checkBwLastCheckoutSessionProp", e);
     return false;
   }
 }
@@ -985,7 +955,7 @@ export default {
         const r = await fetch(HS + "/crm/v3/objects/contacts?limit=1", { headers: { Authorization: `Bearer ${t}` } });
         hubspot = r.status === 200 ? "connecte" : `refuse (${r.status})`;
         if (hubspot === "connecte") {
-          // Auto-create property on health so deploy/smoke proves portal claim path.
+          // Read-only check; no schema write is attempted from /health.
           hubspot_bw_session_prop = await ensureBwLastCheckoutSessionProp(env);
         }
       }
@@ -1004,8 +974,8 @@ export default {
         ok: hubspot === "connecte",
         hubspot: hubspot === "connecte",
         hubspot_bw_session_prop,
-        // false = token missing crm.schemas.contacts.write (create 403). Optional; claim uses cache+deal.
-        hubspot_bw_session_prop_create: hubspot_bw_session_prop ? "ok" : "scope_denied_or_missing",
+        // Optional property; absence does not block Paddle claim because cache+deal fallback remains.
+        hubspot_bw_session_prop_status: hubspot_bw_session_prop ? "present" : "optional_missing",
         // Cache API always available on Workers; KV optional (BW_SESSIONS binding).
         session_cache: true,
         session_kv: !!env.BW_SESSIONS,
