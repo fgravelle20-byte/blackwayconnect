@@ -1,4 +1,4 @@
-/** Paddle.js is shared by the public home page (Retain) and checkout route. */
+/** Initialize Retain on the public homepage, using the existing checkout account. */
 let scriptPromise: Promise<void> | undefined;
 let initialized = false;
 
@@ -19,17 +19,7 @@ export function loadPaddleScript(): Promise<void> {
   return scriptPromise;
 }
 
-export function initializePaddleOnce(token: string, eventCallback?: (event: { name?: string; data?: { transaction_id?: string } }) => void): void {
-  if (!window.Paddle) throw new Error("Paddle unavailable");
-  if (!initialized) {
-    window.Paddle.Initialize({ token, ...(eventCallback ? { eventCallback } : {}) });
-    initialized = true;
-  } else if (eventCallback) {
-    window.Paddle.Update({ eventCallback });
-  }
-}
-
-export async function resolvePaddleClientToken(fallback = "live_a4f8ad8f1c8be908ec3784e8d8b"): Promise<string> {
+async function resolvePaddleClientToken(): Promise<string> {
   const fromBuild = String(import.meta.env.VITE_PADDLE_CLIENT_TOKEN || "").trim();
   if (fromBuild.startsWith("live_")) return fromBuild;
   try {
@@ -40,5 +30,24 @@ export async function resolvePaddleClientToken(fallback = "live_a4f8ad8f1c8be908
       if (token.startsWith("live_")) return token;
     }
   } catch { /* use the existing public checkout fallback */ }
-  return fallback;
+  // This browser-public token is already used by the production /payer page.
+  return "live_a4f8ad8f1c8be908ec3784e8d8b";
+}
+
+export async function initializePublicHomePaddle(): Promise<void> {
+  // Checkout may have initialized Paddle already during same-tab navigation.
+  if (window.Paddle || initialized) return;
+  const token = await resolvePaddleClientToken();
+  if (window.Paddle || initialized) return;
+  await loadPaddleScript();
+  if (!initialized) {
+    const paddle = getPaddle();
+    if (!paddle) throw new Error("Paddle unavailable");
+    paddle.Initialize({ token });
+    initialized = true;
+  }
+}
+
+function getPaddle(): Window["Paddle"] {
+  return window.Paddle;
 }
