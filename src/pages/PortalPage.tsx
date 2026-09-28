@@ -173,6 +173,7 @@ export function PortalPage() {
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [linkSent, setLinkSent] = useState(false);
   const [booting, setBooting] = useState(true);
   const [leads, setLeads] = useState<PortalLead[]>([]);
   const [leadsMeta, setLeadsMeta] = useState<{ empty: boolean; avgScore: number | null; count: number } | null>(null);
@@ -238,7 +239,7 @@ export function PortalPage() {
     async (body: Record<string, string>) => {
       setBusy(true);
       setError(null);
-      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 5 : 1;
+      const attempts = 1;
       let lastErr = fr ? "Accès refusé" : "Access denied";
       try {
         for (let i = 0; i < attempts; i++) {
@@ -298,22 +299,36 @@ export function PortalPage() {
     [fr, navigate, path, persist, params],
   );
 
+  const requestLoginLink = useCallback(async () => {
+    setBusy(true);
+    setError(null);
+    setLinkSent(false);
+    try {
+      const res = await fetch("/api/portal/login-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = (await res.json()) as { erreur?: string };
+      if (!res.ok) throw new Error(data.erreur || "Lien indisponible");
+      setLinkSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Lien indisponible");
+    } finally {
+      setBusy(false);
+    }
+  }, [email]);
+
   useEffect(() => {
     const stored = readStored();
-    const sessionId = params.get("session_id") || params.get("sessionId");
-    const transactionId = params.get("transaction_id") || params.get("transactionId");
-    const plan = params.get("plan") || "";
+    const loginToken = new URLSearchParams(window.location.hash.slice(1)).get("portal_login");
     const emailParam = (params.get("email") || "").trim();
     if (emailParam && emailParam.includes("@")) {
       setEmail(emailParam);
     }
-    if (transactionId) {
-      void claim({ transaction_id: transactionId, plan });
-      setBooting(false);
-      return;
-    }
-    if (sessionId) {
-      void claim({ session_id: sessionId, plan });
+    if (loginToken) {
+      window.history.replaceState(window.history.state, "", window.location.pathname);
+      void claim({ login_token: loginToken });
       setBooting(false);
       return;
     }
@@ -330,10 +345,6 @@ export function PortalPage() {
         .catch(() => undefined);
       setBooting(false);
       return;
-    }
-    // Deep link from Base44 / mobile: /portail?email=… → claim auto
-    if (emailParam && emailParam.includes("@") && params.get("claim") !== "0") {
-      void claim({ email: emailParam });
     }
     setBooting(false);
   }, [params, claim, persist]);
@@ -372,14 +383,14 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Paddle. Aucun mot de passe n’est requis."
-              : "On iPhone or desktop, enter the exact email used with Paddle. No password is required."}
+              ? "Entrez le courriel utilisé avec Paddle. Nous vous enverrons un lien de connexion valable 10 minutes."
+              : "Enter the email used with Paddle. We'll send a sign-in link valid for 10 minutes."}
           </p>
           <form
             className="portal-login__form"
             onSubmit={(e) => {
               e.preventDefault();
-              void claim({ email: email.trim() });
+              void requestLoginLink();
             }}
           >
             <label>
@@ -393,9 +404,10 @@ export function PortalPage() {
               />
             </label>
             <button type="submit" className="btn btn--primary" disabled={busy}>
-              {fr ? "Ouvrir mon dashboard" : "Open my dashboard"}
+              {fr ? "Recevoir mon lien" : "Send my sign-in link"}
             </button>
           </form>
+          {linkSent ? <p className="form-status">{fr ? "Si ce compte est actif, un lien vient d’être envoyé." : "If this account is active, a link has been sent."}</p> : null}
           {error ? <p className="form-status form-status--err">{error}</p> : null}
           <p className="portal-login__hint">
             {fr
