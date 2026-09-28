@@ -25,8 +25,6 @@ export const APP_WEB_URL = MOBILE_DASHBOARD_URL;
 export const APP_STORE_URL = "";
 export const PLAY_STORE_URL = "";
 
-export const STRIPE_WEBHOOK_URL = "https://api.blackwayconnect.com/webhooks/stripe";
-
 export const APP_QR_PATH = "/qr-app.svg";
 export const SITE_QR_PATH = "/qr-site.svg";
 export const OUTILS_QR_PATH = "/qr-outils.svg";
