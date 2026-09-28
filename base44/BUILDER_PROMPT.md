@@ -23,7 +23,7 @@ Cette app existe pour **générer du revenu additionnel** pour BlackWayConnect :
 2. Function `submit-lead` (secret `BW_LEAD_KEY`) → `POST https://api.blackwayconnect.com/lead` + header `X-BW-Key`  
    Payload forcé : `source=app_mobile`, `bw_source=mobile_app`
 3. Optionnel : function `mobile-bootstrap` qui proxy le bootstrap
-4. Webhook Stripe (si Checkout maison) : `https://api.blackwayconnect.com/webhooks/stripe`
+4. Paiements : Paddle uniquement. Ne pas ajouter de webhook ou Checkout Stripe.
 
 ## Secrets (Dashboard → Secrets)
 - `BW_LEAD_KEY` = (utilisateur colle la même valeur Cloudflare `blackway-site` / `blackway-pipe`)
