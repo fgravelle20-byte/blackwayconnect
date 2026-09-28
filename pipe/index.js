@@ -725,6 +725,23 @@ async function paddleCustomerEmail(env, customerId) {
   return String(body?.data?.email || "").trim().toLowerCase();
 }
 
+/** Resolve the logged-in portal customer's Paddle ID server-side for Retain. */
+async function paddleCustomerIdForEmail(env, email) {
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key || !email) return null;
+  const url = new URL("https://api.paddle.com/customers");
+  url.searchParams.set("email", email);
+  const response = await fetch(url, { headers: { Authorization: `Bearer ${key}` } });
+  if (!response.ok) return null;
+  const body = await response.json();
+  const customer = (body.data || []).find((item) =>
+    String(item.email || "").toLowerCase() === email.toLowerCase() &&
+    /^ctm_[a-z0-9]{26}$/.test(String(item.id || "")) &&
+    item.status === "active",
+  );
+  return customer?.id || null;
+}
+
 /** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
 async function listPortalLeads(env, token) {
   const session = await verifyPortalToken(env, token);
@@ -898,7 +915,10 @@ async function portalMe(env, token) {
   }
   if (!FORFAITS[forfait]) forfait = tokenForfait || "grow_hub_growth";
   const minted = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  const session = portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  // A valid portal token is required above; never resolve a customer from a URL email.
+  session.paddleCustomerId = await paddleCustomerIdForEmail(env, email);
+  return session;
 }
 
 /** Verification de signature Stripe (HMAC SHA-256, tolerance 5 min) */

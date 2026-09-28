@@ -36,16 +36,42 @@ async function resolvePaddleClientToken(): Promise<string> {
 
 export async function initializePublicHomePaddle(): Promise<void> {
   // Checkout may have initialized Paddle already during same-tab navigation.
-  if (window.Paddle || initialized) return;
+  if (initialized || isPaddleInitialized()) return;
   const token = await resolvePaddleClientToken();
-  if (window.Paddle || initialized) return;
   await loadPaddleScript();
-  if (!initialized) {
+  if (!isPaddleInitialized()) {
     const paddle = getPaddle();
     if (!paddle) throw new Error("Paddle unavailable");
     paddle.Initialize({ token });
+  }
+  initialized = true;
+}
+
+type RetainPaddle = Omit<NonNullable<Window["Paddle"]>, "Initialize"> & {
+  Initialized?: boolean;
+  Initialize(options: { token: string; pwCustomer?: { id: string } }): void;
+  Update(options: { pwCustomer: { id: string } | Record<string, never> }): void;
+};
+
+function isPaddleInitialized(): boolean {
+  return !!(window.Paddle as RetainPaddle | undefined)?.Initialized;
+}
+
+export async function setPortalRetainCustomer(customerId: string): Promise<void> {
+  if (!/^ctm_[a-z0-9]{26}$/.test(customerId)) return;
+  await loadPaddleScript();
+  const paddle = window.Paddle as RetainPaddle | undefined;
+  if (!paddle) throw new Error("Paddle unavailable");
+  if (paddle.Initialized || initialized) paddle.Update({ pwCustomer: { id: customerId } });
+  else {
+    paddle.Initialize({ token: await resolvePaddleClientToken(), pwCustomer: { id: customerId } });
     initialized = true;
   }
+}
+
+export function clearPortalRetainCustomer(): void {
+  const paddle = window.Paddle as RetainPaddle | undefined;
+  if (paddle?.Initialized || (paddle && initialized)) paddle.Update({ pwCustomer: {} });
 }
 
 function getPaddle(): Window["Paddle"] {

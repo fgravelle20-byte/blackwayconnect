@@ -21,6 +21,7 @@ import {
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
 import { trackPurchase } from "../tracking";
+import { clearPortalRetainCustomer, setPortalRetainCustomer } from "../paddleLoader";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -218,6 +219,21 @@ export function PortalPage() {
     if (session?.token) void loadLeads(session.token);
   }, [session?.token, loadLeads]);
 
+  useEffect(() => {
+    if (!session?.token) return;
+    let cancelled = false;
+    void fetch("/api/portal/me", {
+      headers: { Authorization: `Bearer ${session.token}` },
+      cache: "no-store",
+    })
+      .then(async (response) => response.ok ? response.json() as Promise<{ paddleCustomerId?: string | null }> : null)
+      .then((data) => {
+        if (!cancelled && data?.paddleCustomerId) return setPortalRetainCustomer(data.paddleCustomerId);
+      })
+      .catch((error) => console.warn("Paddle Retain unavailable in portal", error));
+    return () => { cancelled = true; };
+  }, [session?.token]);
+
   const claim = useCallback(
     async (body: Record<string, string>) => {
       setBusy(true);
@@ -323,6 +339,7 @@ export function PortalPage() {
   }, [params, claim, persist]);
 
   function logout() {
+    clearPortalRetainCustomer();
     localStorage.removeItem(STORAGE_KEY);
     setSession(null);
     setLeads([]);
@@ -763,4 +780,3 @@ function ToolGrid(props: {
     </>
   );
 }
-

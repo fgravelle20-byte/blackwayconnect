@@ -110,3 +110,41 @@ test("asks Paddle to retry when customer lookup fails after a valid payment", as
     globalThis.fetch = previousFetch;
   }
 });
+
+test("portal/me exposes only the authenticated customer's Paddle ID", async () => {
+  const previousFetch = globalThis.fetch;
+  const paddleId = "ctm_01grnn4zta5a1mf02jjze7y2ys";
+  let queriedEmail = "";
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.includes("/crm/v3/objects/contacts/search")) {
+      return Response.json({ results: [{ properties: { email: "pay@example.com", bw_forfait_paye: "grow_hub_growth" } }] });
+    }
+    if (url.startsWith("https://api.paddle.com/customers?")) {
+      queriedEmail = new URL(url).searchParams.get("email");
+      return Response.json({ data: [
+        { id: "ctm_01grnn4zta5a1mf02jjze7y2yt", email: "other@example.com", status: "active" },
+        { id: paddleId, email: "pay@example.com", status: "active" },
+      ] });
+    }
+    return Response.json({});
+  };
+  const env = { BW_PORTAL_SECRET: "portal-test", HUBSPOT_TOKEN: "pat-test", PADDLE_API_KEY: "pdl-test" };
+  try {
+    const claim = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/claim", {
+      method: "POST", body: JSON.stringify({ email: "pay@example.com" }),
+    }), env, { waitUntil() {} });
+    assert.equal(claim.status, 200);
+    const { token } = await claim.json();
+    const me = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    }), env, { waitUntil() {} });
+    assert.equal(me.status, 200);
+    assert.equal((await me.json()).paddleCustomerId, paddleId);
+    assert.equal(queriedEmail, "pay@example.com");
+    const anonymous = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/me"), env, { waitUntil() {} });
+    assert.equal(anonymous.status, 401);
+  } finally {
+    globalThis.fetch = previousFetch;
+  }
+});
