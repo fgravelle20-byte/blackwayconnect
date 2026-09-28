@@ -1,7 +1,7 @@
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
  * Distinct from Grow Hub web (Type A). Same Portail / HubSpot can hold both.
- * Stripe lien de paiements: empty until created in Dashboard — see STRIPE_CELLULAIRE_TODO.
+ * Paddle checkout: quote-based for now. Stripe checkout is retired.
  */
 
 export type CellulairePlanKey =
@@ -26,7 +26,7 @@ export type CellulairePlan = {
   nameFr: string;
   nameEn: string;
   amountCad: number;
-  /** Empty until Stripe lien de paiement created — checkout falls back to contact. */
+  /** Quote-based until dedicated Paddle prices are approved; checkout falls back to contact. */
   paymentLink: string;
   priceId: string;
   productId: string;
@@ -125,8 +125,8 @@ export const CELLULAIRE_RANK: Record<string, number> = {
   cell_command: 4,
 };
 
-/** Stripe Dashboard — create these lien de paiements (CAD monthly), success → /portail?session_id={CHECKOUT_SESSION_ID} */
-export const STRIPE_CELLULAIRE_TODO = [
+/** Paddle migration backlog for dedicated Cellulaire prices. Keep quote-based until approved live Paddle price IDs exist. */
+export const PADDLE_CELLULAIRE_TODO = [
   { key: "cell_signal", name: "Cell Signal", amountCad: 79, metadata: "bw_forfait=cell_signal" },
   { key: "cell_route", name: "Cell Route", amountCad: 199, metadata: "bw_forfait=cell_route" },
   { key: "cell_fleet", name: "Cell Fleet", amountCad: 399, metadata: "bw_forfait=cell_fleet" },
