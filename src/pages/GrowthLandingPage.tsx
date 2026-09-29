@@ -35,13 +35,13 @@ export function GrowthLandingPage() {
             </p>
             <h1 className="display page-hero__title">
               {fr
-                ? "Les leads entrent. Toi, tu encaisses. 349 $/mois."
-                : "Leads come in. You get paid. $349/mo."}
+                ? "Les demandes entrent. Le paiement suit. 349 $ par mois."
+                : "Requests come in. Payment follows. $349 a month."}
             </h1>
             <p className="lede">
               {fr
-                ? "Un clic Paddle : score, relances, soumissions, paiements — Portail Client Master + mobile inclus. Annulable. Pas une pile d’outils : un système qui ferme."
-                : "One Paddle click: scoring, follow-ups, quotes, payments — Client Master Portal + mobile included. Cancel anytime. Not a tool pile — a system that closes."}
+                ? "Score, relances, soumissions et portail sont inclus. Essai de 14 jours, annulable."
+                : "Scoring, follow-ups, quotes and the portal are included. 14-day trial, cancel anytime."}
             </p>
             <div className="cta-row" style={{ marginTop: "1.5rem" }}>
               <a

@@ -99,9 +99,9 @@ export function Layout() {
           <Link to={path("/")} className="brand" aria-label={`${t.brand} home`}>
             <img
               className="brand__logo"
-              src="/logo.png"
-              width={160}
-              height={40}
+              src="/logo.svg"
+              width={280}
+              height={48}
               alt={t.brand}
               decoding="async"
             />

@@ -356,12 +356,12 @@ export function ToolsPage() {
         <div className="page-hero tools-hero">
           <p className="eyebrow">{fr ? "Master Tools" : "Master Tools"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Les outils pour décider et encaisser." : "The tools to decide and cash in."}
+            {fr ? "Les outils pour décider quoi faire ensuite." : "The tools to decide the next step."}
           </h1>
           <p className="lede">
             {fr
-              ? "Neuf outils lead-to-revenue — diagnostic, pipeline, relance panier, soumission Paddle, checklist, ROI, comparateur, secrétaire IA, forfaits. Chaque parcours mène à Growth, Portail ou Pack Cellulaire."
-              : "Nine lead-to-revenue tools — diagnostic, pipeline, cart recovery, Paddle quote, checklist, ROI, comparer, AI secretary, plans. Every path leads to Growth, Portal or Cellular Pack."}
+              ? "Diagnostic, relance, soumission, checklist et comparaison. Chaque outil mène à un forfait ou au portail."
+              : "Diagnostic, follow-up, quote, checklist and comparison. Each tool leads to a plan or the portal."}
           </p>
         </div>
 

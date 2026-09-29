@@ -3,7 +3,7 @@
   --bg-elev: #121218;
   --ink: #faf8f4;
   --text: #faf8f4;
-  --muted: #e8e2d6;
+  --muted: #f0ebe3;
   --line: rgba(247, 244, 239, 0.22);
   --brand: #e10600;
   --brand-deep: #b00500;
@@ -16,10 +16,10 @@
   --track-display: -0.015em;
   --track-eyebrow: 0.12em;
   --weight-display: 700;
-  --weight-body: 500;
+  --weight-body: 400;
   --space: clamp(1.15rem, 2.6vw, 1.85rem);
   --max: 1120px;
-  --radius: 0.35rem;
+  --radius: 0.6rem;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   color-scheme: dark;
 }
@@ -32,6 +32,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -48,9 +49,9 @@ body {
   font-size: 1.0625rem;
   font-weight: var(--weight-body);
   font-optical-sizing: auto;
-  text-rendering: geometricPrecision;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -134,9 +135,9 @@ select {
 
 .brand__logo {
   display: block;
-  height: 2.35rem;
+  height: 2.15rem;
   width: auto;
-  max-width: 9.5rem;
+  max-width: 15rem;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -183,11 +184,11 @@ select {
 
 /* Universal header link scale — every item identical */
 .nav a {
-  color: #eee9df;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  color: #f7f4ef;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
   position: relative;
   white-space: nowrap;
   flex-shrink: 0;
@@ -342,19 +343,18 @@ select {
 }
 
 .btn {
-  border: 1px solid rgba(247, 244, 239, 0.28);
+  border: 1px solid rgba(247, 244, 239, 0.22);
   background: transparent;
   color: #fff;
   border-radius: var(--radius);
-  padding: 0.72rem 1.3rem;
+  padding: 0.55rem 0.95rem;
   cursor: pointer;
-  font-weight: 700;
-  letter-spacing: 0.045em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  line-height: 1.2;
-  transition: transform 180ms var(--ease-out), background 180ms ease, border-color 180ms ease,
-    box-shadow 180ms ease;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.94rem;
+  line-height: 1.25;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 /* Lang = same optical size as nav links, not a fat pill */
@@ -380,17 +380,26 @@ select {
 }
 
 .btn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(247, 244, 239, 0.48);
+  border-color: rgba(247, 244, 239, 0.5);
+}
+
+.btn:focus-visible,
+.ops-strip a:focus-visible,
+.ops-strip button:focus-visible,
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
 .btn--primary {
   background: var(--brand);
   border-color: var(--brand);
   color: #fff;
-  font-weight: 700;
-  box-shadow: 0 10px 28px rgba(225, 6, 0, 0.34);
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  box-shadow: none;
+  letter-spacing: 0;
 }
 
 .btn--primary:hover {
@@ -486,11 +495,43 @@ select {
 .hero__content {
   position: relative;
   z-index: 1;
-  padding: clamp(5.5rem, 12vh, 7.5rem) 0 clamp(3rem, 8vh, 5rem);
+  padding: clamp(5.5rem, 12vh, 7.5rem) 1.25rem clamp(3rem, 8vh, 5rem) 1.35rem;
   width: 100%;
   max-width: min(40rem, 100%);
   min-width: 0;
+  border-left: 3px solid var(--brand);
+  background: linear-gradient(90deg, rgba(7, 7, 8, 0.82) 0%, rgba(7, 7, 8, 0.46) 82%, transparent 100%);
   animation: rise 950ms var(--ease-out) both;
+}
+
+.ops-strip {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #0c0c0f;
+}
+
+.ops-strip__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  padding: 0.85rem 0;
+}
+
+.ops-strip a,
+.ops-strip button {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 0.2rem 0;
+}
+
+.ops-strip a:hover,
+.ops-strip button:hover {
+  color: #fff;
 }
 
 .eyebrow {
@@ -505,18 +546,19 @@ select {
 
 .display {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 8.2vw, 5.5rem);
+  font-size: clamp(2.15rem, 5vw, 3.35rem);
   font-weight: var(--weight-display);
   line-height: var(--lh-display);
   letter-spacing: var(--track-display);
   margin: 0 0 1.1rem;
   color: #fff;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
+  text-shadow: none;
   text-wrap: balance;
 }
 
 .hero .display {
-  font-size: min(clamp(3rem, 8.2vw, 5.5rem), 10.5vw);
+  font-size: clamp(2.15rem, 5.2vw, 3.5rem);
+  max-width: 16ch;
 }
 
 @media (max-width: 560px) {
@@ -548,7 +590,7 @@ select {
   margin: 0 0 0.95rem;
   max-width: 34rem;
   color: #fff;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+  text-shadow: none;
 }
 
 .lede {
@@ -559,8 +601,8 @@ select {
   max-width: 34rem;
   line-height: var(--lh-lede);
   font-weight: var(--weight-body);
-  letter-spacing: 0.01em;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+  letter-spacing: 0;
+  text-shadow: none;
 }
 
 @media (max-width: 560px) {
@@ -660,7 +702,7 @@ select {
 
 .section h2 {
   font-family: var(--font-display);
-  font-size: clamp(2.15rem, 4.8vw, 3.25rem);
+  font-size: clamp(1.7rem, 3.4vw, 2.35rem);
   font-weight: var(--weight-display);
   line-height: 1.1;
   margin: 0 0 0.9rem;
@@ -764,9 +806,10 @@ select {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 1rem 1rem;
-  border: 1px solid var(--line);
-  background: rgba(18, 18, 24, 0.55);
+  padding: 1.15rem 1.2rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .plan-item h2,
@@ -781,11 +824,11 @@ select {
 }
 
 .plan-item .price {
-  color: var(--brand);
-  font-weight: 700;
-  font-size: 1rem;
-  margin: 0 0 0.4rem;
-  letter-spacing: 0.01em;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.98rem;
+  margin: 0 0 0.45rem;
+  letter-spacing: 0;
 }
 
 .plan-item__blurb {
@@ -793,9 +836,9 @@ select {
   font-family: var(--font-body);
   line-height: 1.5;
   font-size: 0.98rem;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  color: #f7f4ef;
+  letter-spacing: 0;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
@@ -804,27 +847,47 @@ select {
 }
 
 .plan-item--featured {
-  border-color: rgba(225, 6, 0, 0.65);
-  background: linear-gradient(165deg, rgba(225, 6, 0, 0.2), rgba(0, 0, 0, 0.12) 70%);
-  box-shadow: inset 0 0 0 1px rgba(225, 6, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.plan-item .btn--primary {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: #fff;
+  padding: 0.35rem 0;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.plan-item--featured .price {
+  color: var(--brand);
+}
+
+.plan-item--featured .btn--primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  text-decoration: none;
+  padding: 0.48rem 0.85rem;
 }
 
 .plan-item__badge {
   display: inline-block;
   color: var(--brand);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 0.35rem;
 }
 
 .plan-item__cta {
-  margin-top: 0.75rem;
+  margin-top: 0.9rem;
   display: inline-flex;
   align-self: flex-start;
-  padding: 0.62rem 0.95rem;
-  font-size: 0.76rem;
+  font-size: 0.95rem;
 }
 
 .proof-quotes {
@@ -1877,11 +1940,19 @@ select {
   }
 }
 
+@media (max-width: 640px) {
+  .plan-rail {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (min-width: 860px) {
   .form-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
 
+@media (min-width: 1100px) {
   .plan-rail {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.85rem;
@@ -3718,7 +3789,8 @@ a.bw-agent__chip {
   flex: 1 1 10rem;
   justify-content: center;
   text-align: center;
-  min-height: 2.75rem;
+  min-height: 2.35rem;
+  box-shadow: none;
 }
 
 .growth-ads-bar__buy {

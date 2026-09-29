@@ -49,18 +49,14 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
   const fr = lang === "fr";
   const map: Record<string, PageSeo> = {
     home: {
-      title: fr
-        ? "Master Leads · Twin Turbo Full Performance"
-        : "Master Leads · Twin Turbo Full Performance",
-      ogTitle: fr
-        ? "BlackWayConnect — Master Leads Twin Turbo"
-        : "BlackWayConnect — Master Leads Twin Turbo",
+      title: fr ? "Du premier lead au paiement" : "From the first lead to payment",
+      ogTitle: fr ? "BlackWayConnect — du lead au paiement" : "BlackWayConnect — from lead to payment",
       description: fr
-        ? "Master Leads Platform : Twin Turbo Volume + Qualité, scoring CRM BlackWay, checkout Paddle, Portail Client. Née au Québec — vendue mondialement."
-        : "Master Leads Platform: Twin Turbo Volume + Quality, BlackWay CRM scoring, Paddle checkout, Client Portal. Born in Québec — sold worldwide.",
+        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, essai de 14 jours."
+        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars, 14-day trial.",
     },
     outils: {
-      title: fr ? "Master Tools — arsenal lead-to-revenue" : "Master Tools — lead-to-revenue toolkit",
+      title: fr ? "Outils pour la prochaine action" : "Tools for the next step",
       ogTitle: fr
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",

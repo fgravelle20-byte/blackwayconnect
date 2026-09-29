@@ -12,9 +12,20 @@ type Props = {
   className?: string;
 };
 
+function deferUntilIdle(work: () => void): () => void {
+  const id = window.requestIdleCallback(work, { timeout: 2000 });
+  return () => window.cancelIdleCallback(id);
+}
+
+function skipHeavyVideo(): boolean {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  return !!conn?.saveData;
+}
+
 async function probeMp4(url: string): Promise<boolean> {
   try {
-    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+    const res = await fetch(url, { method: "HEAD" });
     if (!res.ok) return false;
     const type = (res.headers.get("content-type") || "").toLowerCase();
     // SPA fallback must never count as video (HTML 200 for missing .mp4).
@@ -42,30 +53,43 @@ export function CinematicMedia({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activeSrc, setActiveSrc] = useState<string | null>(null);
   const [hasVideo, setHasVideo] = useState(false);
+  const [showStills, setShowStills] = useState(false);
   const [activeStill, setActiveStill] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      const primary = await probeMp4(videoSrc);
-      if (cancelled) return;
-      if (primary) {
-        setActiveSrc(videoSrc);
-        return;
-      }
-      if (fallbackVideoSrc) {
-        const fallback = await probeMp4(fallbackVideoSrc);
-        if (cancelled) return;
-        if (fallback) {
-          setActiveSrc(fallbackVideoSrc);
-          return;
-        }
-      }
+    if (skipHeavyVideo()) {
       setActiveSrc(null);
       setHasVideo(false);
-    })();
+      setShowStills(false);
+      return;
+    }
+    const cancelIdle = deferUntilIdle(() => {
+      void (async () => {
+        const primary = await probeMp4(videoSrc);
+        if (cancelled) return;
+        if (primary) {
+          setShowStills(false);
+          setActiveSrc(videoSrc);
+          return;
+        }
+        if (fallbackVideoSrc) {
+          const fallback = await probeMp4(fallbackVideoSrc);
+          if (cancelled) return;
+          if (fallback) {
+            setShowStills(false);
+            setActiveSrc(fallbackVideoSrc);
+            return;
+          }
+        }
+        setActiveSrc(null);
+        setHasVideo(false);
+        setShowStills(true);
+      })();
+    });
     return () => {
       cancelled = true;
+      cancelIdle();
     };
   }, [videoSrc, fallbackVideoSrc]);
 
@@ -111,7 +135,7 @@ export function CinematicMedia({
   return (
     <div className={`cinema ${className}`} aria-hidden="true">
       <div className="cinema__poster" style={{ backgroundImage: `url("${poster}")` }} />
-      {!hasVideo ? (
+      {showStills && !hasVideo ? (
         <div className="cinema__strip">
           {stills.map((src, i) => (
             <img
@@ -133,7 +157,7 @@ export function CinematicMedia({
           playsInline
           autoPlay
           loop
-          preload="auto"
+          preload="metadata"
           poster={poster}
           width={1920}
           height={1080}

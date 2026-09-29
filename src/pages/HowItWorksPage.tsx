@@ -7,12 +7,12 @@ const STEPS = [
     n: "01",
     img: "/how-it-works/step-1-plans.svg",
     fr: {
-      title: "Choisis ton moteur",
-      body: "Launch, Growth ou Scale — Twin Turbo Full Performance. Un seul système commercial, essai 14 jours.",
+      title: "Choisissez le forfait",
+      body: "Launch, Growth ou Scale. Le même système, avec un essai de 14 jours.",
     },
     en: {
-      title: "Pick your engine",
-      body: "Launch, Growth, or Scale — Twin Turbo Full Performance. One commercial system, 14-day trial.",
+      title: "Choose the plan",
+      body: "Launch, Growth or Scale. The same system, with a 14-day trial.",
     },
   },
   {

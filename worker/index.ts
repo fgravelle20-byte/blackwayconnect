@@ -572,6 +572,15 @@ export default {
         headers,
       });
     }
+    if (assetRes.ok && url.pathname.startsWith("/assets/")) {
+      const headers = new Headers(assetRes.headers);
+      headers.set("cache-control", "public, max-age=31536000, immutable");
+      return new Response(assetRes.body, {
+        status: assetRes.status,
+        statusText: assetRes.statusText,
+        headers,
+      });
+    }
     return assetRes;
   },
 };

@@ -1,39 +1,40 @@
+import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import { Layout } from "./Layout";
 import { HomePage } from "./pages/HomePage";
-import {
-  ContactPage,
-  FaqPage,
-  GrowHubPage,
-  MerciPage,
-  MissionPage,
-  PricingPage,
-  PrivacyPage,
-  ServicesPage,
-  TeamPage,
-  TermsPage,
-  RefundPage,
-} from "./pages/OtherPages";
-import { DiagnosticPage } from "./pages/DiagnosticPage";
-import { ToolsPage } from "./pages/ToolsPage";
-import { PortalPage } from "./pages/PortalPage";
-import { PortalCapturePage } from "./pages/PortalCapturePage";
-import { CheckoutPage } from "./pages/CheckoutPage";
-import { AppPlansPage } from "./pages/AppPlansPage";
-import { CellulairePlansPage } from "./pages/CellulairePlansPage";
-import { GrowthLandingPage } from "./pages/GrowthLandingPage";
-import { HowItWorksPage } from "./pages/HowItWorksPage";
-import { RelancePanierPage } from "./pages/RelancePanierPage";
-import { SoumissionPage } from "./pages/SoumissionPage";
-import { ChecklistPage } from "./pages/ChecklistPage";
-import { MaquettesIndexPage, UpcomingMaquette } from "./maquettes/MaquettesIndexPage";
-import { GMartelApp } from "./maquettes/g-martel/GMartelApp";
 import { useLang } from "./i18n";
 import { Seo } from "./Seo";
 import { initTracking, trackPageView } from "./tracking";
-import { AvenirChatbotApp } from "./vorixa-chatbot/AvenirChatbotApp";
-import { OwnerConsolePage } from "./pages/OwnerConsolePage";
+
+const loadOther = () => import("./pages/OtherPages");
+const ContactPage = lazy(() => loadOther().then((m) => ({ default: m.ContactPage })));
+const FaqPage = lazy(() => loadOther().then((m) => ({ default: m.FaqPage })));
+const GrowHubPage = lazy(() => loadOther().then((m) => ({ default: m.GrowHubPage })));
+const MerciPage = lazy(() => loadOther().then((m) => ({ default: m.MerciPage })));
+const MissionPage = lazy(() => loadOther().then((m) => ({ default: m.MissionPage })));
+const PricingPage = lazy(() => loadOther().then((m) => ({ default: m.PricingPage })));
+const PrivacyPage = lazy(() => loadOther().then((m) => ({ default: m.PrivacyPage })));
+const ServicesPage = lazy(() => loadOther().then((m) => ({ default: m.ServicesPage })));
+const TeamPage = lazy(() => loadOther().then((m) => ({ default: m.TeamPage })));
+const TermsPage = lazy(() => loadOther().then((m) => ({ default: m.TermsPage })));
+const RefundPage = lazy(() => loadOther().then((m) => ({ default: m.RefundPage })));
+const DiagnosticPage = lazy(() => import("./pages/DiagnosticPage").then((m) => ({ default: m.DiagnosticPage })));
+const ToolsPage = lazy(() => import("./pages/ToolsPage").then((m) => ({ default: m.ToolsPage })));
+const PortalPage = lazy(() => import("./pages/PortalPage").then((m) => ({ default: m.PortalPage })));
+const PortalCapturePage = lazy(() => import("./pages/PortalCapturePage").then((m) => ({ default: m.PortalCapturePage })));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage").then((m) => ({ default: m.CheckoutPage })));
+const AppPlansPage = lazy(() => import("./pages/AppPlansPage").then((m) => ({ default: m.AppPlansPage })));
+const CellulairePlansPage = lazy(() => import("./pages/CellulairePlansPage").then((m) => ({ default: m.CellulairePlansPage })));
+const GrowthLandingPage = lazy(() => import("./pages/GrowthLandingPage").then((m) => ({ default: m.GrowthLandingPage })));
+const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage").then((m) => ({ default: m.HowItWorksPage })));
+const RelancePanierPage = lazy(() => import("./pages/RelancePanierPage").then((m) => ({ default: m.RelancePanierPage })));
+const SoumissionPage = lazy(() => import("./pages/SoumissionPage").then((m) => ({ default: m.SoumissionPage })));
+const ChecklistPage = lazy(() => import("./pages/ChecklistPage").then((m) => ({ default: m.ChecklistPage })));
+const MaquettesIndexPage = lazy(() => import("./maquettes/MaquettesIndexPage").then((m) => ({ default: m.MaquettesIndexPage })));
+const UpcomingMaquette = lazy(() => import("./maquettes/MaquettesIndexPage").then((m) => ({ default: m.UpcomingMaquette })));
+const GMartelApp = lazy(() => import("./maquettes/g-martel/GMartelApp").then((m) => ({ default: m.GMartelApp })));
+const AvenirChatbotApp = lazy(() => import("./vorixa-chatbot/AvenirChatbotApp").then((m) => ({ default: m.AvenirChatbotApp })));
+const OwnerConsolePage = lazy(() => import("./pages/OwnerConsolePage").then((m) => ({ default: m.OwnerConsolePage })));
 
 function LangSync() {
   const { pathname } = useLocation();
@@ -113,6 +114,7 @@ export default function App() {
       <LangSync />
       <TrackingBoot />
       <Seo />
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/controle" element={<OwnerConsolePage />} />
         <Route path="/vorixa/chatbot" element={<AvenirChatbotApp />} />
@@ -129,6 +131,7 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </>
   );
 }
