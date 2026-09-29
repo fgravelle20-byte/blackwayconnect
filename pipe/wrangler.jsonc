@@ -18,6 +18,10 @@
     { "binding": "BW_SESSIONS", "id": "a3fb004e752a449798390b1df8850e76" },
     { "binding": "BW_WORKSPACES", "id": "4988ffc2782e4a4ea0654a632defa1ea" }
   ],
+  // Master King System — customers, payments and leads (source of truth; HubSpot = optional mirror).
+  "d1_databases": [
+    { "binding": "BW_DB", "database_name": "bw-master", "database_id": "fce2e82f-ad00-4187-a456-b445c4657038", "migrations_dir": "migrations" }
+  ],
   "send_email": [
     { "name": "EMAIL" }
   ],

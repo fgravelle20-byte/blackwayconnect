@@ -24,6 +24,9 @@
 import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
 import { scoreKingLead } from "./kingLeads.js";
 import { upsertMasterLead, listMasterLeads, patchMasterLead, runAutonomyTick, engineStatus } from "./masterCrm.js";
+import {
+  hasMasterDb, recordPayment, getCustomer, getPayment, customerIsActive, importCustomer, listCustomers, getMeta, setMeta,
+} from "./customers.js";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -376,12 +379,32 @@ async function recordMasterLead(env, p) {
   }
 }
 
+/** HubSpot is an optional mirror: writes only when HUBSPOT_SYNC=on (or when no Master DB is bound). */
+function hubspotSync(env) {
+  if (!jeton(env)) return false;
+  if (!hasMasterDb(env)) return true;
+  return String(env.HUBSPOT_SYNC || "off").trim().toLowerCase() === "on";
+}
+
 async function traiterLead(env, p) {
   const master = await recordMasterLead(env, p);
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
   const base = score(forfait, p.email, f.prix, f.recurrent);
   const sc = twinTurboLeadScore(base, p);
+  // Master CRM is the brain; HubSpot only as mirror, or last resort if the Master write failed.
+  if (master && !hubspotSync(env)) {
+    return {
+      contact: master.id,
+      deal: null,
+      score: master.score,
+      grade: master.grade,
+      statut: "master_crm",
+      master_crm: master.id,
+      brain: "blackway_master_crm",
+    };
+  }
+  if (!master && !jeton(env)) throw new Error("lead non enregistre (Master CRM indisponible)");
   try {
   const contactId = await upsertContact(env, p.email, {
     firstname: p.prenom || "", lastname: p.nom || "", phone: p.telephone || "", company: p.entreprise || "",
@@ -430,12 +453,57 @@ async function traiterLead(env, p) {
   }
 }
 
+/**
+ * Verified payment → Master DB (customer + payment, idempotent on payment_id) → Master CRM "won".
+ * HubSpot deal only when mirroring is on. A Master DB failure throws so the sender retries.
+ */
 async function traiterPaiement(env, p) {
   if (!p.email) throw new Error("paiement sans courriel");
   if (!p.payment_id) throw new Error("paiement sans id stable");
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
   const sc = score(forfait, p.email, p.montant, f.recurrent);
+  const masterDb = hasMasterDb(env);
+  let created = null;
+  if (masterDb) {
+    const r = await recordPayment(env, { ...p, forfait, montant: p.montant || f.prix });
+    created = r.created;
+  }
+  if (created !== false) {
+    await recordMasterLead(env, {
+      email: p.email,
+      prenom: p.prenom,
+      nom: p.nom,
+      entreprise: p.entreprise,
+      forfait,
+      source: "portail",
+      stage: "won",
+      message: `Paiement ${p.processor === "paddle" ? "Paddle" : "Stripe"} ${p.payment_id} ${p.montant || f.prix} CAD${p.renouvellement ? " (renouvellement)" : ""}`,
+    });
+  }
+  let mirror = null;
+  if (hubspotSync(env)) {
+    try {
+      mirror = await mirrorPaiementHubspot(env, p, forfait, sc);
+    } catch (e) {
+      if (!masterDb) throw e;
+      console.log("hubspot mirror paiement", p.payment_id, e);
+    }
+  }
+  const dejaTraite = masterDb ? created === false : mirror?.cree === false;
+  return {
+    contact: mirror?.contact || null,
+    deal: mirror?.deal || null,
+    score: sc,
+    forfait,
+    master_db: masterDb,
+    hubspot_mirror: !!mirror,
+    statut: dejaTraite ? "deja traite - aucun doublon" : "cree",
+  };
+}
+
+async function mirrorPaiementHubspot(env, p, forfait, sc) {
+  const f = FORFAITS[forfait];
   const cell = isCellulaireForfait(forfait);
   const processor = p.processor === "paddle" ? "paddle" : "stripe";
   // HubSpot bw_source enum: form_web | portail | stripe | campagne | reference | prospection
@@ -482,23 +550,7 @@ async function traiterPaiement(env, p) {
     bw_stripe_payment_id: p.payment_id, bw_idempotency_key: `pay:${p.payment_id}`,
     bw_segment: segment,
   }, contactId);
-  if (!d.cree) {
-    try {
-      await recordMasterLead(env, {
-        email: p.email,
-        prenom: p.prenom,
-        nom: p.nom,
-        entreprise: p.entreprise,
-        forfait,
-        source: "portail",
-        stage: "won",
-        message: `Paddle ${p.payment_id}`,
-      });
-    } catch (e) {
-      console.log("master crm pay upsert", e);
-    }
-    return { deal: d.id, statut: "deja traite - aucun doublon" };
-  }
+  if (!d.cree) return { contact: contactId, deal: d.id, cree: false };
   await hs(env, "POST", "/crm/v3/objects/notes", {
     properties: {
       hs_timestamp: new Date().toISOString(),
@@ -506,21 +558,7 @@ async function traiterPaiement(env, p) {
     },
     associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
   });
-  try {
-    await recordMasterLead(env, {
-      email: p.email,
-      prenom: p.prenom,
-      nom: p.nom,
-      entreprise: p.entreprise,
-      forfait,
-      source: "portail",
-      stage: "won",
-      message: `Paddle ${p.payment_id} ${p.montant || ""} CAD`,
-    });
-  } catch (e) {
-    console.log("master crm pay upsert", e);
-  }
-  return { contact: contactId, deal: d.id, score: sc, statut: "cree" };
+  return { contact: contactId, deal: d.id, cree: true };
 }
 
 function portalSecret(env) {
@@ -841,10 +879,141 @@ async function activateFromPaddleTransaction(env, transactionId) {
   return { email, forfait };
 }
 
+/** Owner console overview from the Master DB (same shape as the legacy HubSpot overview). */
+async function masterOverview(env) {
+  const [{ customers, payments }, board] = await Promise.all([listCustomers(env, 50), listMasterLeads(env)]);
+  const leads = (board.leads || []).slice(0, 50);
+  const paidDeals = payments.map((pay) => {
+    const f = FORFAITS[pay.forfait] || FORFAITS.grow_hub_growth;
+    return {
+      id: pay.payment_id,
+      dealname: `${f.label} - ${pay.renewal ? "RENOUVELLEMENT" : "PAYE"} - ${pay.email}`,
+      dealstage: ST_PAID,
+      pipeline: PIPELINE,
+      amount: pay.amount_cad != null ? String(pay.amount_cad) : String(f.prix),
+      bw_source: "portail",
+      bw_forfait: pay.forfait,
+      bw_lead_score: null,
+      bw_livraison_statut: "non_demarre",
+      bw_segment: pay.segment || `paiement ${pay.processor || ""}`.trim(),
+      createdate: pay.created_at,
+      hs_lastmodifieddate: pay.created_at,
+    };
+  });
+  const leadDeals = leads
+    .filter((l) => l.stage !== "won" && l.stage !== "archive")
+    .map((l) => ({
+      id: l.id,
+      dealname: `${l.grade || "LEAD"} · ${l.entreprise || [l.prenom, l.nom].join(" ").trim() || l.email}`,
+      dealstage: ST_NEW,
+      pipeline: PIPELINE,
+      amount: null,
+      bw_source: l.source || "form_web",
+      bw_forfait: resoudreForfait(l.intent) || null,
+      bw_lead_score: l.score != null ? String(l.score) : null,
+      bw_livraison_statut: null,
+      bw_segment: `stage=${l.stage}${l.marketLabel ? ` · ${l.marketLabel}` : ""}`,
+      createdate: l.created_at,
+      hs_lastmodifieddate: l.updated_at,
+    }));
+  const deals = [...paidDeals, ...leadDeals]
+    .sort((a, b) => String(b.hs_lastmodifieddate || "").localeCompare(String(a.hs_lastmodifieddate || "")))
+    .slice(0, 50);
+  const contacts = [
+    ...customers.map((c) => ({
+      id: `cust:${c.email}`,
+      firstname: c.prenom, lastname: c.nom, email: c.email, phone: "", company: c.entreprise,
+      lifecyclestage: c.status === "active" ? "customer" : c.status,
+      bw_source: c.source, bw_lead_score: null, bw_forfait: c.forfait || c.forfait_cellulaire,
+      createdate: c.created_at, hs_lastmodifieddate: c.updated_at,
+    })),
+    ...leads
+      .filter((l) => !customers.some((c) => c.email === l.email))
+      .map((l) => ({
+        id: l.id,
+        firstname: l.prenom, lastname: l.nom, email: l.email, phone: l.telephone, company: l.entreprise,
+        lifecyclestage: "lead", bw_source: l.source, bw_lead_score: l.score != null ? String(l.score) : null,
+        bw_forfait: resoudreForfait(l.intent) || null, createdate: l.created_at, hs_lastmodifieddate: l.updated_at,
+      })),
+  ].slice(0, 50);
+  const scored = leadDeals.map((d) => Number(d.bw_lead_score)).filter((n) => Number.isFinite(n));
+  return {
+    fetchedAt: new Date().toISOString(),
+    engines: {
+      mode: "twin_turbo_full_performance",
+      dealsWithScore: scored.length,
+      avgLeadScore: scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : null,
+      maxLeadScore: scored.length ? Math.max(...scored) : null,
+    },
+    limits: { deals: 50, countsArePartial: true, contactsAvailable: true },
+    contacts,
+    deals,
+    sources: {
+      leads: "BlackWay Master CRM (D1)",
+      payments: "BlackWay Master DB — paiements Paddle vérifiés",
+      projects: "Master DB (livraison à démarrer)",
+      phone: "not connected to BlackWay pipeline",
+      messages: "not connected to owner overview",
+    },
+  };
+}
+
+/** One-time copy of HubSpot customers into the Master DB (runs from cron until done). */
+async function importHubspotCustomersOnce(env) {
+  if (!hasMasterDb(env) || !jeton(env)) return { skipped: true };
+  if (await getMeta(env, "hubspot_customers_imported")) return { skipped: true, done: true };
+  let after;
+  let seen = 0;
+  let imported = 0;
+  for (let page = 0; page < 50; page++) {
+    const r = await hs(env, "POST", "/crm/v3/objects/contacts/search", {
+      filterGroups: [
+        { filters: [{ propertyName: "lifecyclestage", operator: "EQ", value: "customer" }] },
+        { filters: [{ propertyName: "bw_forfait_paye", operator: "HAS_PROPERTY" }] },
+      ],
+      properties: [...HS_PORTAL_PROPS, "company", "createdate"],
+      limit: 100,
+      ...(after ? { after } : {}),
+    });
+    if (r.status !== 200) throw new Error(`import hubspot ${r.status}`);
+    for (const c of r.data?.results || []) {
+      const props = c.properties || {};
+      const email = String(props.email || "").trim().toLowerCase();
+      if (!email.includes("@")) continue;
+      seen += 1;
+      const paid = resoudreForfait(props.bw_forfait_paye);
+      const web = resoudreForfait(props.bw_forfait);
+      let forfait = web && !isCellulaireForfait(web) ? web : null;
+      let forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
+      if (paid && !isCellulaireForfait(paid)) forfait = paid;
+      if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
+      if (!forfait && !forfaitCellulaire) forfait = "grow_hub_growth";
+      const ok = await importCustomer(env, {
+        email, prenom: props.firstname, nom: props.lastname, entreprise: props.company,
+        forfait, forfait_cellulaire: forfaitCellulaire, source: "import_hubspot",
+        created_at: props.createdate || undefined,
+      });
+      if (ok) imported += 1;
+    }
+    after = r.data?.paging?.next?.after;
+    if (!after) break;
+  }
+  await setMeta(env, "hubspot_customers_imported", `${new Date().toISOString()} seen=${seen} imported=${imported}`);
+  return { ok: true, seen, imported };
+}
+
 /** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
 async function listPortalLeads(env, token) {
   const session = await verifyPortalToken(env, token);
-  const contact = await searchHsContact(env, "email", session.email);
+  if (!jeton(env)) {
+    return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
+  }
+  let contact = null;
+  try {
+    contact = await searchHsContact(env, "email", session.email);
+  } catch (e) {
+    console.log("portal leads hubspot", e);
+  }
   if (!contact?.id) {
     return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
   }
@@ -897,17 +1066,74 @@ async function listPortalLeads(env, token) {
   };
 }
 
+/** Legacy HubSpot customer lookup — read-only fallback for customers not yet in the Master DB. */
+async function legacyHubspotCustomer(env, email) {
+  if (!jeton(env)) return null;
+  try {
+    const contact = await searchHsContact(env, "email", email);
+    if (!contact) return null;
+    const props = contact.properties || {};
+    if (!contactHasCustomerAccess(props)) return { contact, active: false };
+    const paid = resoudreForfait(props.bw_forfait_paye);
+    const web = resoudreForfait(props.bw_forfait);
+    let forfait = web && !isCellulaireForfait(web) ? web : null;
+    let forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
+    if (paid && !isCellulaireForfait(paid)) forfait = paid;
+    if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
+    if (!forfait && !forfaitCellulaire) forfait = "grow_hub_growth";
+    // Copy into the Master DB so the next claim no longer needs HubSpot.
+    try {
+      await importCustomer(env, {
+        email, prenom: props.firstname, nom: props.lastname,
+        forfait, forfait_cellulaire: forfaitCellulaire, source: "import_hubspot",
+      });
+    } catch (e) {
+      console.log("import hubspot customer", e);
+    }
+    return { contact, active: true, forfait, forfaitCellulaire };
+  } catch (e) {
+    console.log("legacy hubspot customer", e);
+    return null;
+  }
+}
+
+/** Current plans for an email: Master DB first, legacy HubSpot fallback, then the hint. */
+async function resolveAccess(env, email, hint) {
+  let forfait = null;
+  let forfaitCellulaire = null;
+  let customer = null;
+  try {
+    customer = await getCustomer(env, email);
+  } catch (e) {
+    console.log("master customer lookup", e);
+  }
+  if (customer) {
+    forfait = resoudreForfait(customer.forfait);
+    forfaitCellulaire = resoudreForfait(customer.forfait_cellulaire);
+  } else {
+    const legacy = await legacyHubspotCustomer(env, email);
+    if (legacy?.active) {
+      forfait = legacy.forfait;
+      forfaitCellulaire = legacy.forfaitCellulaire;
+    }
+  }
+  if (!forfait && hint && !isCellulaireForfait(hint)) forfait = hint;
+  if (!forfaitCellulaire && hint && isCellulaireForfait(hint)) forfaitCellulaire = hint;
+  if (!forfait) forfait = forfaitCellulaire || "grow_hub_growth";
+  if (!FORFAITS[forfait]) forfait = "grow_hub_growth";
+  return { forfait, forfaitCellulaire };
+}
+
 /**
  * Claim portal access.
- * session_id path: Cache/KV → HubSpot bw_last_checkout_session → deal payment id → Stripe API (only if STRIPE_SECRET_KEY).
- * No Stripe secret required after webhook has stored the mapping.
+ * Payment reference path: KV/Cache → Master DB payment → legacy HubSpot → Paddle API verification.
+ * Email path: Master DB customer → legacy HubSpot customer (copied into the Master DB on first hit).
  */
 async function claimPortal(env, p) {
   const sessionId = String(p.transaction_id || p.transactionId || p.session_id || p.sessionId || "").trim();
   const emailIn = String(p.email || "").trim().toLowerCase();
   let email = "";
   let forfait = null;
-  let contact = null;
 
   if (sessionId) {
     if (!isPaymentReference(sessionId)) throw new Error("reference paiement invalide");
@@ -919,17 +1145,33 @@ async function claimPortal(env, p) {
     }
 
     if (!email) {
-      await ensureBwLastCheckoutSessionProp(env);
-      contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
-      if (contact) {
-        const props = contact.properties || {};
-        email = String(props.email || "").trim().toLowerCase();
-        forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
+      try {
+        const pay = await getPayment(env, sessionId);
+        if (pay?.email) {
+          email = pay.email;
+          forfait = resoudreForfait(pay.forfait);
+        }
+      } catch (e) {
+        console.log("master payment lookup", e);
       }
     }
 
-    // Deal payment id = cs_… or txn_… (durable HubSpot path — survives Cache TTL).
-    if (!email) {
+    if (!email && jeton(env)) {
+      try {
+        await ensureBwLastCheckoutSessionProp(env);
+        const contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
+        if (contact) {
+          const props = contact.properties || {};
+          email = String(props.email || "").trim().toLowerCase();
+          forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
+        }
+      } catch (e) {
+        console.log("legacy hubspot session lookup", e);
+      }
+    }
+
+    // Deal payment id = cs_… or txn_… (legacy HubSpot path — survives Cache TTL).
+    if (!email && jeton(env)) {
       try {
         const fromDeal = await claimFromDealSession(env, sessionId);
         if (fromDeal?.email) {
@@ -960,72 +1202,40 @@ async function claimPortal(env, p) {
     }
   } else if (emailIn) {
     if (!emailIn.includes("@")) throw new Error("courriel invalide");
-    contact = await searchHsContact(env, "email", emailIn);
-    // Soft fallback: HubSpot sometimes stores mixed-case emails; retry original casing.
-    if (!contact && p.email && String(p.email).trim() !== emailIn) {
-      contact = await searchHsContact(env, "email", String(p.email).trim());
+    let customer = null;
+    try {
+      customer = await getCustomer(env, emailIn);
+    } catch (e) {
+      console.log("master customer lookup", e);
     }
-    if (!contact) {
-      throw new Error(
-        "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Paddle.",
-      );
-    }
-    const props = contact.properties || {};
-    if (!contactHasCustomerAccess(props)) {
-      throw new Error(
-        "Compte trouvé mais pas encore client actif — paiement Paddle requis (ou activation ops).",
-      );
+    if (!customerIsActive(customer)) {
+      const legacy = await legacyHubspotCustomer(env, emailIn);
+      if (!legacy) {
+        throw new Error(
+          "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Paddle.",
+        );
+      }
+      if (!legacy.active) {
+        throw new Error(
+          "Compte trouvé mais pas encore client actif — paiement Paddle requis (ou activation ops).",
+        );
+      }
     }
     email = emailIn;
-    forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
   } else {
     throw new Error("session_id ou email requis");
   }
 
-  forfait = forfait || resoudreForfait(p.plan) || "grow_hub_growth";
-  if (!FORFAITS[forfait]) forfait = "grow_hub_growth";
-  if (!email) throw new Error("courriel requis pour le portail");
-
-  let forfaitCellulaire = null;
-  try {
-    if (!contact) contact = await searchHsContact(env, "email", email);
-    const props = contact?.properties || {};
-    forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
-    const webFromHs = resoudreForfait(props.bw_forfait);
-    if (webFromHs && !isCellulaireForfait(webFromHs)) forfait = webFromHs;
-    else if (isCellulaireForfait(forfait) && !forfaitCellulaire) forfaitCellulaire = forfait;
-    const paid = resoudreForfait(props.bw_forfait_paye);
-    if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
-    if (paid && !isCellulaireForfait(paid)) forfait = paid;
-  } catch {
-    /* optional */
-  }
-
-  const { token, exp } = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, token, exp, forfaitCellulaire);
+  const access = await resolveAccess(env, email, forfait || resoudreForfait(p.plan));
+  const { token, exp } = await mintPortalToken(env, email, access.forfait);
+  return portalSessionShape(email, access.forfait, token, exp, access.forfaitCellulaire);
 }
 
 async function portalMe(env, token) {
-  const { email, forfait: tokenForfait, exp } = await verifyPortalToken(env, token);
-  let forfait = tokenForfait;
-  let forfaitCellulaire = null;
-  try {
-    const contact = await searchHsContact(env, "email", email);
-    const props = contact?.properties || {};
-    const refreshed = resoudreForfait(props.bw_forfait_paye || props.bw_forfait);
-    if (refreshed && !isCellulaireForfait(refreshed)) forfait = refreshed;
-    forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
-    if (!forfaitCellulaire && refreshed && isCellulaireForfait(refreshed)) {
-      forfaitCellulaire = refreshed;
-    }
-    const webOnly = resoudreForfait(props.bw_forfait);
-    if (webOnly && !isCellulaireForfait(webOnly)) forfait = webOnly;
-  } catch {
-    /* keep token forfait */
-  }
-  if (!FORFAITS[forfait]) forfait = tokenForfait || "grow_hub_growth";
-  const minted = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  const { email, forfait: tokenForfait } = await verifyPortalToken(env, token);
+  const access = await resolveAccess(env, email, tokenForfait);
+  const minted = await mintPortalToken(env, email, access.forfait);
+  return portalSessionShape(email, access.forfait, minted.token, minted.exp, access.forfaitCellulaire);
 }
 
 /** Verification de signature Stripe (HMAC SHA-256, tolerance 5 min) */
@@ -1071,7 +1281,11 @@ export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTrans
 
 export default {
   async scheduled(_event, env, ctx) {
-    ctx.waitUntil(runAutonomyTick(env));
+    ctx.waitUntil(
+      importHubspotCustomersOnce(env)
+        .catch((e) => console.log("import hubspot customers", e))
+        .then(() => runAutonomyTick(env)),
+    );
   },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -1095,13 +1309,26 @@ export default {
       const paddleFulfillRelay = !!String(env.BW_PADDLE_FULFILL_KEY || "").trim();
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
-      const portal_claim_ready = hubspot === "connecte" && (
+      let masterDb = false;
+      if (hasMasterDb(env)) {
+        try {
+          await env.BW_DB.prepare("SELECT 1 FROM customers LIMIT 1").first();
+          masterDb = true;
+        } catch (e) {
+          console.log("health master db", e);
+        }
+      }
+      const portal_claim_ready = (masterDb || hubspot === "connecte") && (
         (paddleApiKey && paddleWebhookSecret) ||
+        paddleApiKey ||
         paddleFulfillRelay
       );
       return json({
         service: "blackway-pipe",
-        ok: hubspot === "connecte",
+        ok: masterDb || hubspot === "connecte",
+        master_db: masterDb,
+        brain: masterDb ? "blackway_master_king" : "hubspot",
+        hubspot_sync: hubspotSync(env),
         hubspot: hubspot === "connecte",
         hubspot_bw_session_prop,
         // Optional property; absence does not block Paddle claim because cache+deal fallback remains.
@@ -1147,6 +1374,14 @@ export default {
       if (request.method !== "GET") return Response.json({ error: "Method not allowed" }, { status: 405, headers: privateHeaders });
       if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
         return Response.json({ error: "Unauthorized" }, { status: 401, headers: privateHeaders });
+      }
+      if (hasMasterDb(env)) {
+        try {
+          return Response.json(await masterOverview(env), { headers: privateHeaders });
+        } catch (e) {
+          console.log("master overview", e);
+          if (!jeton(env)) return Response.json({ error: "Master DB indisponible" }, { status: 502, headers: privateHeaders });
+        }
       }
       if (!jeton(env)) return Response.json({ error: "HubSpot non configuré" }, { status: 503, headers: privateHeaders });
 
@@ -1270,6 +1505,24 @@ export default {
         return json({ erreur: "cle invalide" }, 401);
       }
       return json(await engineStatus(env));
+    }
+
+    if (url.pathname === "/crm/customers" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      return json({ ok: true, storage: hasMasterDb(env) ? "d1" : "absent", ...(await listCustomers(env)) });
+    }
+
+    if (url.pathname === "/ops/customers/import-hubspot" && request.method === "POST") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      try {
+        return json(await importHubspotCustomersOnce(env));
+      } catch (e) {
+        return json({ erreur: String(e.message || e) }, 502);
+      }
     }
 
     if (url.pathname === "/crm/leads" && request.method === "GET") {
