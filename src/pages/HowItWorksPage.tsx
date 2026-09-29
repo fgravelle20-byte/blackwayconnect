@@ -8,11 +8,11 @@ const STEPS = [
     img: "/how-it-works/step-1-plans.svg",
     fr: {
       title: "Choisissez le forfait",
-      body: "Launch, Growth ou Scale. Le même système, avec un essai de 14 jours.",
+      body: "De Spark à Partner. Le même système, avec un essai de 14 jours.",
     },
     en: {
       title: "Choose the plan",
-      body: "Launch, Growth or Scale. The same system, with a 14-day trial.",
+      body: "From Spark to Partner. The same system, with a 14-day trial.",
     },
   },
   {

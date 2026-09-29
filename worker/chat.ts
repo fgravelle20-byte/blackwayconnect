@@ -77,10 +77,11 @@ function knowledge(lang: ChatLang): string {
   if (lang === "en") {
     return [
       "BlackWayConnect = bilingual lead-to-revenue platform (Québec / Canada + US).",
-      "Grow Hub monthly plans (CAD; Launch/Growth/Scale = Paddle /payer; Spark/Command/Partner = /contact): " +
-        priceLine,
+      "Grow Hub monthly plans (CAD; all on Paddle /payer, 14-day trial): " + priceLine,
+      "Cellular Pack (CAD/mo, Paddle, 14-day trial): Cell Signal $79 · Cell Route $199 · Cell Fleet $399 · Cell Command $799 — /forfaits-cellulaire.",
+      "AI modules (CAD/mo, Paddle, no trial): AI Chatbot $99 (1) · $249 (5) · $399 (unlimited); AI Voice reception $149 Basic · $299 Advanced · $499 Premium — /modules-ia.",
       "Enterprise = custom via /contact. Master Tools at /outils (relance panier, soumission, checklist, ROI, Leak Score, Grow Hub).",
-      "Pages: /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /payer, /faq, /contact.",
+      "Pages: /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /forfaits-cellulaire, /modules-ia, /payer, /faq, /contact.",
       "Site and app inquiries + Paddle fulfillment sync into HubSpot. Contact: serviceclient@blackwayconnect.com.",
       "You are available 24/7. Qualify need, guide to the right page, offer lead capture or Paddle subscribe when ready.",
       "Never invent discounts, testimonials, case studies, or prices outside the catalog above. Tone: confident, concise, revenue-ops — no fluff.",
@@ -88,10 +89,11 @@ function knowledge(lang: ChatLang): string {
   }
   return [
     "BlackWayConnect = plateforme lead-to-revenue bilingue (Québec / Canada + É.-U.).",
-    "Forfaits Grow Hub mensuels (CAD ; Launch/Growth/Scale = Paddle /payer ; Spark/Command/Partner = /contact) : " +
-      priceLine,
+    "Forfaits Grow Hub mensuels (CAD ; tous sur Paddle /payer, essai 14 jours) : " + priceLine,
+    "Pack Cellulaire (CAD/mois, Paddle, essai 14 jours) : Cell Signal 79 $ · Cell Route 199 $ · Cell Fleet 399 $ · Cell Command 799 $ — /forfaits-cellulaire.",
+    "Modules IA (CAD/mois, Paddle, sans essai) : Chatbot IA 99 $ (1) · 249 $ (5) · 399 $ (illimité) ; Accueil vocal IA 149 $ Basic · 299 $ Avancé · 499 $ Premium — /modules-ia.",
     "Entreprise = sur devis via /contact. Master Tools : /outils (relance panier, soumission, checklist, ROI, Leak Score, Grow Hub).",
-    "Pages : /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /payer, /faq, /contact.",
+    "Pages : /outils, /outils/relance-panier, /outils/soumission, /outils/checklist, /grow-hub, /diagnostic, /forfaits, /forfaits-growth, /forfaits-cellulaire, /modules-ia, /payer, /faq, /contact.",
     "Demandes site/app + fulfillment Paddle synchronisés vers HubSpot. Contact : serviceclient@blackwayconnect.com.",
     "Tu es disponible 24h/24. Qualifie le besoin, guide vers la bonne page, propose capture de lead ou abonnement Paddle si prêt.",
     "N'invente jamais de rabais, témoignages, études de cas ou prix hors catalogue. Ton : confiant, concis, ops revenu — zéro remplissage.",

@@ -10,6 +10,7 @@ export type Copy = {
     pricing: string;
     how: string;
     cellulaire: string;
+    modulesIa: string;
     mission: string;
     team: string;
     contact: string;
@@ -131,6 +132,7 @@ export const copy: Record<Lang, Copy> = {
       pricing: "Forfaits",
       how: "Comment ça marche",
       cellulaire: "Pack Cellulaire",
+      modulesIa: "Chatbot + Accueil vocal IA",
       mission: "Mission",
       team: "Équipe",
       contact: "Contact",
@@ -192,7 +194,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Choisissez le palier. Le système reste le même.",
     plansBody:
-      "Prix en dollars canadiens, taxes en sus. Launch, Growth et Scale se paient en ligne. Spark, Command et Partner passent par une demande.",
+      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne (Paddle), avec un essai de 14 jours.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -378,7 +380,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Puis-je m’abonner sans appel ?",
-        a: "Oui. Launch, Growth et Scale se paient en ligne. Spark, Command et Partner passent par le formulaire. L’offre Entreprise se discute d’abord.",
+        a: "Oui. Tous les forfaits Grow Hub, le Pack Cellulaire et les modules IA (chatbot, accueil vocal) se paient en ligne. L’offre Entreprise se discute d’abord.",
       },
       {
         q: "Avez-vous un service client 24h ?",
@@ -406,7 +408,7 @@ export const copy: Record<Lang, Copy> = {
       },
     ],
     contactAside: "Ou commencez par un forfait.",
-    contactFast: "Launch, Growth et Scale se paient en ligne. Les autres forfaits passent par le formulaire.",
+    contactFast: "Tous les forfaits se paient en ligne. Le formulaire sert aux questions et à l’offre Entreprise.",
     footer: "Du lead au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
@@ -430,6 +432,7 @@ export const copy: Record<Lang, Copy> = {
       pricing: "Plans",
       how: "How it works",
       cellulaire: "Cellular Pack",
+      modulesIa: "AI Chatbot + Voice reception",
       mission: "Mission",
       team: "Team",
       contact: "Contact",
@@ -490,7 +493,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Pick the level. Keep the same system.",
     plansBody:
-      "Prices in Canadian dollars, before tax. Launch, Growth and Scale are paid online. Spark, Command and Partner start with a request.",
+      "Prices in Canadian dollars, before tax. Every plan is paid online (Paddle), with a 14-day trial.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -675,7 +678,7 @@ export const copy: Record<Lang, Copy> = {
     faq: [
       {
         q: "Can I subscribe without a call?",
-        a: "Yes. Launch, Growth and Scale are paid online. Spark, Command and Partner start with the form. Enterprise is discussed first.",
+        a: "Yes. Every Grow Hub plan, the Cellular Pack and the AI modules (chatbot, voice reception) are paid online. Enterprise is discussed first.",
       },
       {
         q: "Do you offer 24/7 client service?",
@@ -703,7 +706,7 @@ export const copy: Record<Lang, Copy> = {
       },
     ],
     contactAside: "Or start with a plan.",
-    contactFast: "Launch, Growth and Scale are paid online. The other plans start with the form.",
+    contactFast: "Every plan is paid online. The form is for questions and Enterprise offers.",
     footer: "From lead to revenue. One connected growth system.",
     footerQrTitle: "Client portal",
     footerQrHint: "Scan to open the Client Master Portal — included with your plan.",

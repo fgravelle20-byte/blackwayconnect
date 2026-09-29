@@ -48,13 +48,15 @@ export function CellulairePlansPage() {
           </div>
         </div>
 
-        {!anyLive ? (
-          <p className="form-status" role="status">
-            {fr
+        <p className="form-status" role="status">
+          {anyLive
+            ? fr
+              ? "Essai gratuit 14 jours, paiement sécurisé Paddle. Le pack s’active dans ton Portail dès l’abonnement."
+              : "14-day free trial, secure Paddle payment. The pack unlocks in your Portal as soon as you subscribe."
+            : fr
               ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Paddle sera proposé avec l’offre finale."
               : "Cellular Pack is quote-based — contact BlackWay below. Paddle payment will be included with the final offer."}
-          </p>
-        ) : null}
+        </p>
 
         <div className="plan-rail">
           {CELLULAIRE_ORDER.map((key) => {

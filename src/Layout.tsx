@@ -78,6 +78,7 @@ export function Layout() {
       <NavLink to={path("/services")}>{t.nav.services}</NavLink>
       <NavLink to={path("/grow-hub")}>{t.nav.grow}</NavLink>
       <NavLink to={path("/forfaits-cellulaire")}>{t.nav.cellulaire}</NavLink>
+      <NavLink to={path("/modules-ia")}>{t.nav.modulesIa}</NavLink>
       <NavLink to={path("/qui-sommes-nous")}>{t.nav.mission}</NavLink>
       <NavLink to={path("/faq")}>{t.nav.faq}</NavLink>
     </>
@@ -190,6 +191,8 @@ export function Layout() {
               <Link to={path("/portail")}>{t.nav.portal}</Link>
               <Link to={path("/outils")}>{t.nav.tools}</Link>
               <Link to={path("/grow-hub")}>{t.nav.grow}</Link>
+              <Link to={path("/forfaits-cellulaire")}>{t.nav.cellulaire}</Link>
+              <Link to={path("/modules-ia")}>{t.nav.modulesIa}</Link>
             </nav>
           </div>
 

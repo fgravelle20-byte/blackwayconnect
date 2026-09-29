@@ -20,6 +20,41 @@ test("maps the three existing Paddle BlackWay prices", () => {
   );
 });
 
+test("the paid price wins over browser-controlled custom_data", () => {
+  assert.equal(
+    forfaitFromPaddleTransaction({
+      custom_data: { bw_forfait: "grow_hub_partner" },
+      items: [{ price: { id: "pri_01m3nt7s39b94k4p7a13m3sya2" } }],
+    }),
+    "cell_signal",
+  );
+  assert.equal(
+    forfaitFromPaddleTransaction({ custom_data: { bw_forfait: "grow_hub_partner" }, items: [{ price: { id: "pri_vorixa" } }] }),
+    null,
+  );
+});
+
+test("maps every new Paddle price to its forfait", () => {
+  const expected = {
+    pri_01m3nt7rm1cc19134bb3e86fpb: "grow_hub_spark",
+    pri_01m3nt7rs3vajzyv8k8r57qswc: "grow_hub_command",
+    pri_01m3nt7rxx08w09zef4xf2rage: "grow_hub_partner",
+    pri_01m3nt7s39b94k4p7a13m3sya2: "cell_signal",
+    pri_01m3nt7s88bxrx8k6jph2gmtt2: "cell_route",
+    pri_01m3nt7sd8mkr915y6vtgs6m3p: "cell_fleet",
+    pri_01m3nt7sj4wndn0qkd9d855zpr: "cell_command",
+    pri_01m3nt7sqgkcqb2payzrn0f8cf: "ia_chatbot_1",
+    pri_01m3nt7ss5526fp4j6q98zdqc0: "ia_chatbot_5",
+    pri_01m3nt7stvq4ff1942nybarhxn: "ia_chatbot_illimite",
+    pri_01m3nt7szxc265whjs40e2y5pd: "ia_vocal_basic",
+    pri_01m3nt7t1k43gy04eyf71amkd5: "ia_vocal_avance",
+    pri_01m3nt7t39xq8pbggfeh6ejax4: "ia_vocal_premium",
+  };
+  for (const [id, forfait] of Object.entries(expected)) {
+    assert.equal(forfaitFromPaddleTransaction({ items: [{ price: { id } }] }), forfait, id);
+  }
+});
+
 test("rejects non-BlackWay Paddle prices", () => {
   assert.equal(
     forfaitFromPaddleTransaction({ items: [{ price: { id: "pri_vorixa" } }] }),

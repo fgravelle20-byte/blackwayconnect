@@ -108,8 +108,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Forfaits BlackWayConnect — 99 $ à 2 499 $ CAD/mois"
         : "BlackWayConnect plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Paddle pour Launch/Growth/Scale."
-        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle for Launch/Growth/Scale.",
+        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Abonnement Paddle, essai 14 jours."
+        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle subscription, 14-day trial.",
     },
     "forfaits-growth": {
       title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
@@ -129,6 +129,15 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Revenu #2 optionnel : outils terrain. Dashboard mobile = Portail inclus avec Grow Hub. Les deux se combinent dans le Portail Client Master."
         : "Optional revenue #2: field tools. Mobile dashboard = Portal included with Grow Hub. Both merge in Client Master Portal.",
     },
+    "modules-ia": {
+      title: fr ? "Modules IA · Chatbot + Accueil vocal" : "AI modules · Chatbot + Voice reception",
+      ogTitle: fr
+        ? "Chatbot IA dès 99 $ · Accueil vocal IA dès 149 $ CAD/mois"
+        : "AI Chatbot from $99 · AI Voice reception from $149 CAD/mo",
+      description: fr
+        ? "Chatbot IA pour ton site et accueil vocal IA pour ta ligne téléphonique. Abonnement mensuel Paddle, activé dans ton Portail Client Master."
+        : "AI chatbot for your website and AI voice reception for your phone line. Monthly Paddle subscription, activated in your Client Master Portal.",
+    },
     "app-forfaits": {
       title: fr ? "Pack Cellulaire" : "Cellular Pack",
       description: fr
@@ -141,8 +150,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment ça marche — paie, le forfait s’active"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis Launch, Growth ou Scale, paie avec Paddle, puis le Portail s’active automatiquement."
-        : "Pick Launch, Growth, or Scale, pay with Paddle, and the Portal activates automatically.",
+        ? "Choisis ton forfait (Spark à Partner), paie avec Paddle, puis le Portail s’active automatiquement."
+        : "Pick your plan (Spark to Partner), pay with Paddle, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
