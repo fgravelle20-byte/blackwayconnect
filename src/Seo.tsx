@@ -262,7 +262,7 @@ function buildJsonLd(lang: "fr" | "en", canonical: string, pageKey: string) {
     "@id": orgId,
     name: "BlackWayConnect",
     url: SITE,
-    logo: OG_IMAGE,
+    logo: `${SITE}/brand/bwc-logo.png`,
     email: EMAILS.service,
     telephone: [PHONES.local.display, PHONES.tollFree.display],
     address: {

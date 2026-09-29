@@ -374,6 +374,16 @@ export function PortalPage() {
     return (
       <section className="section section--page section--portal">
         <div className="shell portal-login">
+          <img
+            className="portal-login__logo"
+            src="/brand/bwc-logo-480.png"
+            srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+            sizes="220px"
+            width={480}
+            height={215}
+            alt="BlackWayConnect"
+            decoding="async"
+          />
           <p className="eyebrow">{fr ? "Portail Client Master" : "Client Master Portal"}</p>
           <h1 className="display page-hero__title">
             {fr ? "Connexion sans mot de passe." : "Passwordless sign-in."}
