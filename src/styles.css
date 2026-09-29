@@ -1269,7 +1269,7 @@ select {
 
 .site-footer {
   border-top: 1px solid var(--line);
-  padding: clamp(2.75rem, 6vh, 4rem) 0 1.5rem;
+  padding: clamp(2.75rem, 6vh, 4rem) 0 max(1.5rem, calc(5.25rem + env(safe-area-inset-bottom)));
   color: var(--muted);
   background: #050505;
 }
@@ -3184,6 +3184,20 @@ a.bw-agent__chip {
   margin-top: 1.25rem;
   color: var(--muted);
   font-size: 0.9rem;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+body.is-embed {
+  background: #0a0a0a;
+}
+
+body.is-embed main {
+  min-height: 100svh;
+}
+
+body.is-embed .section--portal {
+  min-height: 100svh;
 }
 
 .portal-head {

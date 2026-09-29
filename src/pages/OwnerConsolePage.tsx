@@ -73,7 +73,7 @@ const sections = [
     title: "Paiements",
     state: "Paddle",
     detail:
-      "Caisse réelle = Paddle (Launch / Growth / Scale) sur /payer. RevenueCat New Customers = ouvertures d’app, pas des payeurs. 0 $ MRR dans RevenueCat est normal : pas d’IAP. HubSpot Associations / rendez-vous ≠ argent reçu.",
+      "Caisse réelle : Paddle (Launch, Growth, Scale). RevenueCat = ouvertures d'app, pas des payeurs. HubSpot rendez-vous ≠ argent reçu.",
   },
   {
     title: "Automatisations",
@@ -140,8 +140,7 @@ export function OwnerConsolePage() {
             <h1>Tout ce qui entre. Tout ce qui avance.</h1>
             <p>Cockpit leads / deals / scores — pipeline BlackWay HubSpot en direct.</p>
             <p className="owner-console__cash">
-              L’argent BlackWay est Paddle (dashboard Paddle + étape CRM « Paiement reçu »). RevenueCat
-              sur l’app blackway-connect compte des ouvertures d’app, pas des abonnements Grow Hub.
+              L'argent BlackWay est Paddle. RevenueCat compte des ouvertures d'app, pas des abonnements.
             </p>
           </div>
           <button onClick={() => setRefresh((value) => value + 1)} disabled={loading}>

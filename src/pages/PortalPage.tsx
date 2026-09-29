@@ -355,8 +355,8 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Sur iPhone ou ordinateur, entrez le courriel exact du reçu Paddle. Ouvrir l’app n’est pas un paiement — le forfait s’active après /payer."
-              : "On iPhone or desktop, enter the exact email on the Paddle receipt. Opening the app is not a payment — the plan activates after /payer."}
+              ? "Entrez le courriel exact du reçu Paddle. Ouvrir l'application n'active pas un forfait."
+              : "Enter the exact email on the Paddle receipt. Opening the app does not activate a plan."}
           </p>
           <form
             className="portal-login__form"
@@ -381,26 +381,19 @@ export function PortalPage() {
           </form>
           {error ? <p className="form-status form-status--err">{error}</p> : null}
           <p className="portal-login__hint">
-            {fr
-              ? "Accès refusé? Vérifiez le courriel du reçu Paddle ou contactez serviceclient@blackwayconnect.com."
-              : "Access denied? Check the email on your Paddle receipt or contact serviceclient@blackwayconnect.com."}
-          </p>
-          <p className="portal-login__hint">
             {fr ? (
               <>
-                Pas encore client ? Paiement Paddle (Safari) → <Link to={path("/forfaits")}>Grow Hub</Link>
+                Pas encore client ?{" "}
+                <Link to={path("/forfaits")}>Voir les forfaits Grow Hub</Link>
                 {" · "}
-                <Link to={path("/payer")}>/payer</Link>
-                {" · "}
-                <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire (optionnel)</Link>
+                <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire</Link>
               </>
             ) : (
               <>
-                Not a client yet? Paddle payment (Safari) → <Link to={path("/forfaits")}>Grow Hub</Link>
+                Not a client yet?{" "}
+                <Link to={path("/forfaits")}>See Grow Hub plans</Link>
                 {" · "}
-                <Link to={path("/payer")}>/payer</Link>
-                {" · "}
-                <Link to={path("/forfaits-cellulaire")}>Cellular Pack (optional)</Link>
+                <Link to={path("/forfaits-cellulaire")}>Cellular Pack</Link>
               </>
             )}
           </p>

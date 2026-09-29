@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLang } from "./i18n";
 import { APP_QR_PATH, footerAppQrUrl } from "./appConfig";
 import { scoreCopy } from "./scoreCopy";
@@ -7,16 +7,32 @@ import { AiSecretary } from "./AiSecretary";
 import { ContactDetails } from "./ContactDetails";
 import { EMAILS, PHONES } from "./siteContact";
 
+function isAppEmbed(search: string): boolean {
+  const query = new URLSearchParams(search);
+  if (query.get("embed") === "1") return true;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
+
 export function Layout() {
   const { t, lang, path } = useLang();
   const sc = scoreCopy[lang];
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const embed = useMemo(() => isAppEmbed(location.search), [location.search]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  useEffect(() => {
+    document.body.classList.toggle("is-embed", embed);
+    return () => document.body.classList.remove("is-embed");
+  }, [embed]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -85,10 +101,11 @@ export function Layout() {
 
   return (
     <>
+      {embed ? null : (
       <header className="site-header">
         <div className="contact-bar">
           <div className="shell contact-bar__inner">
-            <span>{lang === "fr" ? "Parler a BlackWay" : "Talk to BlackWay"}</span>
+            <span>{lang === "fr" ? "Parler à BlackWay" : "Talk to BlackWay"}</span>
             <a href={PHONES.tollFree.href} aria-label={`${lang === "fr" ? "Appeler" : "Call"} ${PHONES.tollFree.display}`}>
               {PHONES.tollFree.display}
             </a>
@@ -152,9 +169,11 @@ export function Layout() {
           </div>
         </div>
       </header>
+      )}
       <main>
         <Outlet />
       </main>
+      {embed ? null : (
       <footer className="site-footer">
         <div className="shell site-footer__grid">
           <div className="site-footer__brand">
@@ -218,7 +237,8 @@ export function Layout() {
           <p>{lang === "fr" ? "Né au Québec. Conçu pour le monde." : "Born in Québec. Built for the world."}</p>
         </div>
       </footer>
-      <AiSecretary />
+      )}
+      {embed ? null : <AiSecretary />}
     </>
   );
 }
