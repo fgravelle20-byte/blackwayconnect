@@ -10,6 +10,15 @@
   "vars": {
     "TARGETS": "https://blackwayconnect.com,https://api.blackwayconnect.com"
   },
+  "previews": {
+    "vars": {
+      "TARGETS": "",
+      "SITE_HEALTH": "https://example.invalid",
+      "PIPE_HEALTH": "https://example.invalid",
+      "LEAD_PROBE": "https://example.invalid",
+      "CONFIG_PROBE": "https://example.invalid"
+    }
+  },
   "observability": {
     "enabled": true
   }

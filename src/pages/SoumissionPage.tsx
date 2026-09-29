@@ -4,40 +4,80 @@ import { useLang } from "../i18n";
 import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
 import { postLead } from "../lib/postLead";
+import { copyText } from "../lib/clientMailHtml";
+import { QUOTE_KEY, readPortalSession } from "../lib/portalSession";
 
-/** Quote / proposal generator → copy text + Paddle Growth + BlackWay CRM. */
+type QuoteState = {
+  vendorCompany: string;
+  vendorPhone: string;
+  vendorEmail: string;
+  client: string;
+  service: string;
+  amount: number;
+  delay: string;
+  notes: string;
+  payUrl: string;
+};
+
+/** Devis au nom du client BlackWay — pas le checkout Growth dans le corps. */
 export function SoumissionPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
+  const session = typeof window !== "undefined" ? readPortalSession() : null;
 
+  const [vendorCompany, setVendorCompany] = useState("");
+  const [vendorPhone, setVendorPhone] = useState("");
+  const [vendorEmail, setVendorEmail] = useState(session?.email || "");
   const [client, setClient] = useState("");
   const [service, setService] = useState(fr ? "Installation / mandat" : "Install / retainer");
   const [amount, setAmount] = useState(4500);
   const [delay, setDelay] = useState(fr ? "14 jours" : "14 days");
   const [notes, setNotes] = useState("");
+  const [payUrl, setPayUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [crm, setCrm] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
-  const [leadScore, setLeadScore] = useState<number | null>(null);
 
   useEffect(() => {
     trackViewContent({ name: "Générateur soumission", id: "tool_soumission", value: PLANS[FEATURED_PLAN].amountCad });
+    try {
+      const raw = localStorage.getItem(QUOTE_KEY);
+      if (!raw) return;
+      const q = JSON.parse(raw) as QuoteState;
+      if (q.vendorCompany) setVendorCompany(q.vendorCompany);
+      if (q.vendorPhone) setVendorPhone(q.vendorPhone);
+      if (q.vendorEmail) setVendorEmail(q.vendorEmail);
+      if (q.client) setClient(q.client);
+      if (q.service) setService(q.service);
+      if (q.amount) setAmount(q.amount);
+      if (q.delay) setDelay(q.delay);
+      if (q.notes) setNotes(q.notes);
+      if (q.payUrl) setPayUrl(q.payUrl);
+    } catch {
+      /* ignore */
+    }
   }, []);
 
-  const payLink = checkoutUrl(FEATURED_PLAN, {
+  const growthHref = checkoutUrl(FEATURED_PLAN, {
     lang,
     source: "tool_soumission",
-    content: "quote_demo_pay",
+    content: "quote_footer",
   });
 
+  const payIsBlackWay = /blackwayconnect\.com|\/payer\b/i.test(payUrl);
+
   const proposal = useMemo(() => {
+    const shop = vendorCompany.trim() || (fr ? "[Ton entreprise]" : "[Your company]");
     const who = client.trim() || (fr ? "[Client]" : "[Client]");
     const svc = service.trim() || (fr ? "[Service]" : "[Service]");
     const amt = amount.toLocaleString(fr ? "fr-CA" : "en-CA");
     const extra = notes.trim();
+    const pay = payUrl.trim();
+    const sign = [vendorEmail.trim(), vendorPhone.trim()].filter(Boolean).join(" · ");
     if (fr) {
       return [
-        `SOUMISSION — BlackWayConnect`,
+        `SOUMISSION — ${shop}`,
         ``,
         `À l’attention de : ${who}`,
         `Objet : ${svc}`,
@@ -45,16 +85,15 @@ export function SoumissionPage() {
         `Validité : ${delay}`,
         extra ? `Notes : ${extra}` : null,
         ``,
-        `Prochaine étape : confirmer et payer via le lien sécurisé ci-dessous.`,
-        `Paiement / activation Grow Hub : ${payLink}`,
+        pay ? `Paiement : ${pay}` : `Paiement : (ajoute ton lien Interac / facture / Paddle)`,
         ``,
-        `— Équipe BlackWayConnect · serviceclient@blackwayconnect.com`,
+        sign ? `— ${shop} · ${sign}` : `— ${shop}`,
       ]
-        .filter(Boolean)
+        .filter((x) => x !== null)
         .join("\n");
     }
     return [
-      `PROPOSAL — BlackWayConnect`,
+      `PROPOSAL — ${shop}`,
       ``,
       `Attention: ${who}`,
       `Scope: ${svc}`,
@@ -62,65 +101,75 @@ export function SoumissionPage() {
       `Valid: ${delay}`,
       extra ? `Notes: ${extra}` : null,
       ``,
-      `Next step: confirm and pay via the secure link below.`,
-      `Payment / Grow Hub activation: ${payLink}`,
+      pay ? `Payment: ${pay}` : `Payment: (add your e-transfer / invoice / Paddle link)`,
       ``,
-      `— BlackWayConnect team · serviceclient@blackwayconnect.com`,
+      sign ? `— ${shop} · ${sign}` : `— ${shop}`,
     ]
-      .filter(Boolean)
+      .filter((x) => x !== null)
       .join("\n");
-  }, [client, service, amount, delay, notes, fr, payLink]);
+  }, [vendorCompany, vendorEmail, vendorPhone, client, service, amount, delay, notes, payUrl, fr]);
+
+  function persist() {
+    const q: QuoteState = {
+      vendorCompany,
+      vendorPhone,
+      vendorEmail,
+      client,
+      service,
+      amount,
+      delay,
+      notes,
+      payUrl,
+    };
+    try {
+      localStorage.setItem(QUOTE_KEY, JSON.stringify(q));
+    } catch {
+      /* ignore */
+    }
+  }
 
   async function copyProposal() {
-    try {
-      await navigator.clipboard.writeText(proposal);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
+    persist();
+    const ok = await copyText(proposal);
+    setCopied(ok);
+    if (ok) window.setTimeout(() => setCopied(false), 2000);
   }
 
   async function onSave(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    persist();
+    if (!crm) {
+      setStatus("ok");
+      return;
+    }
     setPending(true);
     setStatus("idle");
-    setLeadScore(null);
     const fd = new FormData(e.currentTarget);
     const summary = [
       "bw_source=tool_soumission",
+      `vendor=${vendorCompany || "-"}`,
       `client=${client || "-"}`,
       `service=${service}`,
       `amount=${amount}`,
       `delay=${delay}`,
     ].join(" | ");
-    const volumeTurbo = Math.min(100, Math.round(40 + Math.min(amount, 20000) / 400));
-    const qualityTurbo = Math.min(100, amount >= 5000 ? 78 : amount >= 2000 ? 62 : 48);
-    const twinScore = Math.round(volumeTurbo * 0.42 + qualityTurbo * 0.58);
     const out = await postLead({
       prenom: String(fd.get("prenom") || ""),
       nom: "",
-      email: String(fd.get("email") || ""),
-      entreprise: String(fd.get("entreprise") || client || ""),
-      telephone: String(fd.get("telephone") || ""),
+      email: String(fd.get("email") || vendorEmail || ""),
+      entreprise: vendorCompany || String(fd.get("entreprise") || ""),
+      telephone: vendorPhone || String(fd.get("telephone") || ""),
       message: `${summary}\n\n${proposal}`.slice(0, 2000),
       forfait: FEATURED_PLAN,
       source: "campagne",
       urgence: amount >= 5000 ? "elevee" : "normal",
       langue: lang,
       bw_ref: "tool_soumission",
-      engine_mode: "twin_turbo_full_performance",
-      volume_turbo: volumeTurbo,
-      quality_turbo: qualityTurbo,
-      twin_score: twinScore,
-      band: amount >= 5000 ? "high" : amount >= 2000 ? "mid" : "low",
       answers: { tool: "soumission", client, service, amount, delay },
     });
     if (out.ok) {
       trackLead();
-      setLeadScore(out.score ?? twinScore);
       setStatus("ok");
-      e.currentTarget.reset();
     } else {
       setStatus("err");
     }
@@ -130,22 +179,34 @@ export function SoumissionPage() {
   return (
     <section className="section section--page section--tools">
       <div className="shell">
-        <div className="page-hero">
+        <div className="page-hero no-print">
           <p className="eyebrow">{fr ? "Master Tools · Soumission" : "Master Tools · Quote"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Générateur de soumission → lien Paddle" : "Quote generator → Paddle link"}
+            {fr ? "Devis à TON nom — imprimable en 2 minutes." : "Quote in YOUR name — printable in 2 minutes."}
           </h1>
           <p className="lede">
             {fr
-              ? "Rédigez une soumission propre, copiez-la, et poussez le paiement vers Growth (349 $/mois) — même fil que le Portail."
-              : "Draft a clean quote, copy it, and push payment toward Growth ($349/mo) — same thread as the Portal."}
+              ? "Le lien de paiement est le tien. BlackWay n’est pas le vendeur sur ce papier."
+              : "The payment link is yours. BlackWay is not the vendor on this paper."}
           </p>
         </div>
 
         <div className="roi-grid">
-          <form className="roi-form" onSubmit={(e) => e.preventDefault()}>
+          <form className="roi-form no-print" onSubmit={(e) => e.preventDefault()}>
             <label>
-              {fr ? "Nom du client" : "Client name"}
+              {fr ? "Ton entreprise" : "Your company"}
+              <input value={vendorCompany} onChange={(e) => setVendorCompany(e.target.value)} />
+            </label>
+            <label>
+              {fr ? "Ton courriel" : "Your email"}
+              <input value={vendorEmail} onChange={(e) => setVendorEmail(e.target.value)} />
+            </label>
+            <label>
+              {fr ? "Ton téléphone" : "Your phone"}
+              <input value={vendorPhone} onChange={(e) => setVendorPhone(e.target.value)} />
+            </label>
+            <label>
+              {fr ? "Nom du client (leur client)" : "Client name (their customer)"}
               <input value={client} onChange={(e) => setClient(e.target.value)} placeholder={fr ? "Entreprise ABC" : "ABC Co."} />
             </label>
             <label>
@@ -154,100 +215,113 @@ export function SoumissionPage() {
             </label>
             <label>
               {fr ? "Montant (CAD)" : "Amount (CAD)"}
-              <input
-                type="number"
-                min={50}
-                max={500000}
-                value={amount}
-                onChange={(e) => setAmount(Number(e.target.value) || 0)}
-              />
+              <input type="number" min={50} value={amount} onChange={(e) => setAmount(Number(e.target.value) || 0)} />
             </label>
             <label>
               {fr ? "Validité" : "Validity"}
               <input value={delay} onChange={(e) => setDelay(e.target.value)} />
             </label>
             <label>
-              {fr ? "Notes (optionnel)" : "Notes (optional)"}
+              {fr ? "Notes" : "Notes"}
               <input value={notes} onChange={(e) => setNotes(e.target.value)} />
             </label>
+            <label>
+              {fr ? "Ton lien de paiement" : "Your payment link"}
+              <input
+                value={payUrl}
+                onChange={(e) => setPayUrl(e.target.value)}
+                placeholder={fr ? "https://… (pas blackwayconnect.com/payer)" : "https://… (not blackwayconnect.com/payer)"}
+              />
+            </label>
+            {payIsBlackWay ? (
+              <p className="form-status form-status--err">
+                {fr
+                  ? "Ce lien est le checkout BlackWay. Ton client doit payer TON lien (Interac, facture, ton Paddle/Stripe)."
+                  : "That's the BlackWay checkout. Your customer must pay YOUR link (e-transfer, invoice, your Paddle/Stripe)."}
+              </p>
+            ) : null}
           </form>
 
-          <aside className="roi-result">
-            <p className="roi-result__label">{fr ? "Aperçu soumission" : "Quote preview"}</p>
+          <aside className="roi-result quote-print-root">
+            <p className="roi-result__label no-print">{fr ? "Aperçu soumission" : "Quote preview"}</p>
             <pre className="quote-preview">{proposal}</pre>
-            <div className="cta-row" style={{ marginTop: "1.1rem" }}>
+            <div className="cta-row no-print" style={{ marginTop: "1.1rem" }}>
               <button type="button" className="btn btn--ghost" onClick={copyProposal}>
                 {copied ? (fr ? "Copié" : "Copied") : fr ? "Copier le texte" : "Copy text"}
               </button>
-              <a
+              <button
+                type="button"
                 className="btn btn--primary"
-                href={payLink}
-                rel="noopener noreferrer"
-                target="_blank"
-                onClick={() => trackInitiateCheckout({ plan: FEATURED_PLAN, value: PLANS[FEATURED_PLAN].amountCad })}
+                onClick={() => {
+                  persist();
+                  window.print();
+                }}
               >
-                {fr ? "Ouvrir lien Paddle Growth" : "Open Paddle Growth link"}
-              </a>
+                {fr ? "Imprimer / PDF" : "Print / PDF"}
+              </button>
             </div>
-            <p className="roi-result__note">
-              {fr
-                ? "Le lien ouvre Grow Hub Growth (Paddle). Capture CRM ci-dessous pour créer l’occasion BlackWay."
-                : "Link opens Grow Hub Growth (Paddle). Capture CRM below to create the BlackWay opportunity."}
-            </p>
           </aside>
         </div>
 
-        <form className="tools-capture" onSubmit={onSave}>
-          <p className="tools-capture__title">
-            {fr
-              ? "Capturer cette soumission → CRM BlackWay"
-              : "Capture this quote → BlackWay CRM"}
-          </p>
-          <div className="form-grid">
-            <div className="field">
-              <label htmlFor="sq-prenom">{fr ? "Prénom" : "First name"}</label>
-              <input id="sq-prenom" name="prenom" required autoComplete="given-name" />
+        <form className="tools-capture no-print" onSubmit={onSave}>
+          <label className="field" style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+            <input type="checkbox" checked={crm} onChange={(e) => setCrm(e.target.checked)} />
+            <span>{fr ? "Garder une copie dans Master CRM (optionnel)" : "Keep a copy in Master CRM (optional)"}</span>
+          </label>
+          {crm ? (
+            <div className="form-grid">
+              <div className="field">
+                <label htmlFor="sq-prenom">{fr ? "Prénom" : "First name"}</label>
+                <input id="sq-prenom" name="prenom" required autoComplete="given-name" />
+              </div>
+              <div className="field">
+                <label htmlFor="sq-email">{fr ? "Courriel CRM" : "CRM email"}</label>
+                <input id="sq-email" name="email" type="email" required autoComplete="email" defaultValue={vendorEmail} />
+              </div>
             </div>
-            <div className="field">
-              <label htmlFor="sq-email">{fr ? "Courriel" : "Email"}</label>
-              <input id="sq-email" name="email" type="email" required autoComplete="email" />
-            </div>
-          </div>
-          <div className="form-grid">
-            <div className="field">
-              <label htmlFor="sq-ent">{fr ? "Votre entreprise" : "Your company"}</label>
-              <input id="sq-ent" name="entreprise" autoComplete="organization" />
-            </div>
-            <div className="field">
-              <label htmlFor="sq-tel">{fr ? "Téléphone" : "Phone"}</label>
-              <input id="sq-tel" name="telephone" autoComplete="tel" inputMode="tel" />
-            </div>
-          </div>
+          ) : null}
           <button className="btn btn--primary" type="submit" disabled={pending}>
-            {pending ? "…" : fr ? "Créer dans le CRM" : "Create in CRM"}
+            {pending
+              ? "…"
+              : crm
+                ? fr
+                  ? "Enregistrer + copie Master CRM"
+                  : "Save + Master CRM copy"
+                : fr
+                  ? "Enregistrer sur cet appareil"
+                  : "Save on this device"}
           </button>
           {status === "ok" && (
             <p className="form-status form-status--ok">
-              {fr
-                ? `Opportunité créée${leadScore != null ? ` · score ${leadScore}` : ""}.`
-                : `Opportunity created${leadScore != null ? ` · score ${leadScore}` : ""}.`}{" "}
-              <a href={payLink}>{fr ? "Payer Growth →" : "Pay Growth →"}</a>
+              {crm
+                ? fr
+                  ? "Soumission enregistrée ici + copie dans Master CRM."
+                  : "Quote saved here + copy in Master CRM."
+                : fr
+                  ? "Soumission enregistrée sur cet appareil."
+                  : "Quote saved on this device."}
             </p>
           )}
           {status === "err" && (
-            <p className="form-status form-status--err">
-              {fr ? "Envoi CRM impossible. Réessayez." : "CRM send failed. Retry."}
-            </p>
+            <p className="form-status form-status--err">{fr ? "Envoi CRM impossible." : "CRM send failed."}</p>
           )}
         </form>
 
-        <p className="lede" style={{ marginTop: "2rem" }}>
-          <Link to={path("/outils")}>{fr ? "← Master Tools" : "← Master Tools"}</Link>
-          {" · "}
-          <Link to={path("/portail")}>{fr ? "Portail Master" : "Master Portal"}</Link>
-        </p>
+        <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
+          <a
+            className="btn btn--ghost"
+            href={growthHref}
+            rel="noopener noreferrer"
+            target="_blank"
+            onClick={() => trackInitiateCheckout({ plan: FEATURED_PLAN, value: PLANS[FEATURED_PLAN].amountCad })}
+          >
+            {fr ? "BlackWay Growth (toi, pas ton client)" : "BlackWay Growth (you, not your customer)"}
+          </a>
+          <Link className="btn btn--ghost" to={path("/outils")}>
+            {fr ? "← Master Tools" : "← Master Tools"}
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
-

@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import test from "node:test";
 
-import pipe, { forfaitFromPaddleTransaction, signaturePaddleValide } from "./index.js";
+import pipe, { forfaitFromPaddleTransaction, forfaitFromProvisionPayload, signaturePaddleValide } from "./index.js";
+import { decide, payerUrl } from "./engine.js";
 
 test("maps the three existing Paddle BlackWay prices", () => {
   assert.equal(
@@ -19,11 +20,59 @@ test("maps the three existing Paddle BlackWay prices", () => {
   );
 });
 
+test("the paid price wins over browser-controlled custom_data", () => {
+  assert.equal(
+    forfaitFromPaddleTransaction({
+      custom_data: { bw_forfait: "grow_hub_partner" },
+      items: [{ price: { id: "pri_01m3nt7s39b94k4p7a13m3sya2" } }],
+    }),
+    "cell_signal",
+  );
+  assert.equal(
+    forfaitFromPaddleTransaction({ custom_data: { bw_forfait: "grow_hub_partner" }, items: [{ price: { id: "pri_vorixa" } }] }),
+    null,
+  );
+});
+
+test("maps every new Paddle price to its forfait", () => {
+  const expected = {
+    pri_01m3nt7rm1cc19134bb3e86fpb: "grow_hub_spark",
+    pri_01m3nt7rs3vajzyv8k8r57qswc: "grow_hub_command",
+    pri_01m3nt7rxx08w09zef4xf2rage: "grow_hub_partner",
+    pri_01m3nt7s39b94k4p7a13m3sya2: "cell_signal",
+    pri_01m3nt7s88bxrx8k6jph2gmtt2: "cell_route",
+    pri_01m3nt7sd8mkr915y6vtgs6m3p: "cell_fleet",
+    pri_01m3nt7sj4wndn0qkd9d855zpr: "cell_command",
+    pri_01m3nt7sqgkcqb2payzrn0f8cf: "ia_chatbot_1",
+    pri_01m3nt7ss5526fp4j6q98zdqc0: "ia_chatbot_5",
+    pri_01m3nt7stvq4ff1942nybarhxn: "ia_chatbot_illimite",
+    pri_01m3nt7szxc265whjs40e2y5pd: "ia_vocal_basic",
+    pri_01m3nt7t1k43gy04eyf71amkd5: "ia_vocal_avance",
+    pri_01m3nt7t39xq8pbggfeh6ejax4: "ia_vocal_premium",
+  };
+  for (const [id, forfait] of Object.entries(expected)) {
+    assert.equal(forfaitFromPaddleTransaction({ items: [{ price: { id } }] }), forfait, id);
+  }
+});
+
 test("rejects non-BlackWay Paddle prices", () => {
   assert.equal(
     forfaitFromPaddleTransaction({ items: [{ price: { id: "pri_vorixa" } }] }),
     null,
   );
+});
+
+test("provision relay payload resolves the paid forfait, never a silent default", () => {
+  assert.equal(forfaitFromProvisionPayload({ forfait: "grow_hub_scale" }), "grow_hub_scale");
+  assert.equal(forfaitFromProvisionPayload({ plan: "launch" }), "grow_hub_launch");
+  assert.equal(forfaitFromProvisionPayload({ price_id: "pri_01kxtn6befjw8m8gz9a5vwf0wf" }), "grow_hub_scale");
+  assert.equal(forfaitFromProvisionPayload({ custom_data: { bw_forfait: "grow_hub_launch" } }), "grow_hub_launch");
+  assert.equal(
+    forfaitFromProvisionPayload({ data: { items: [{ price: { id: "pri_01kxtn6asavavmqv54407h464b" } }] } }),
+    "grow_hub_launch",
+  );
+  assert.equal(forfaitFromProvisionPayload({ items: [{ price_id: "pri_01kxtn6b41wzt07rnzvyte4sn8" }] }), "grow_hub_growth");
+  assert.equal(forfaitFromProvisionPayload({ email: "a@b.c" }), null);
 });
 
 test("verifies Paddle-Signature against the raw body", async () => {
@@ -109,6 +158,54 @@ test("asks Paddle to retry when customer lookup fails after a valid payment", as
   } finally {
     globalThis.fetch = previousFetch;
   }
+});
+
+test("engine SLA breach moves inbox to leak with payer URL", () => {
+  const now = Date.parse("2026-09-29T12:00:00Z");
+  const out = decide(
+    {
+      stage: "inbox",
+      source: "king_leads_page",
+      created_at: "2026-09-29T09:00:00Z",
+      sla_due: "2026-09-29T10:00:00Z",
+      updated_at: "2026-09-29T09:00:00Z",
+      intent: "grow_hub_growth",
+      grade: "KING",
+      score: 90,
+      slaMinutes: 30,
+      email: "ops@acme.ca",
+      entreprise: "Acme",
+      langue: "fr",
+    },
+    now,
+  );
+  assert.equal(out?.stage, "leak");
+  assert.equal(out?.machine.next_action, "relance_sla");
+  assert.equal(out?.machine.checkout, payerUrl("grow_hub_growth"));
+  assert.match(out?.machine.script.html || "", /e10600/);
+  assert.match(out?.machine.script.html || "", /Ouvrir le paiement Paddle/);
+});
+
+test("engine ignores HubSpot-era dumps and old form_web", () => {
+  const now = Date.parse("2026-09-29T12:00:00Z");
+  assert.equal(
+    decide(
+      {
+        stage: "inbox",
+        source: "form_web",
+        created_at: "2026-08-01T00:00:00Z",
+        sla_due: "2026-08-01T00:20:00Z",
+        updated_at: "2026-08-01T00:00:00Z",
+      },
+      now,
+    ),
+    null,
+  );
+  assert.equal(decide({ stage: "inbox", source: "prospection", sla_due: "2000-01-01T00:00:00Z" }, now), null);
+});
+
+test("engine ignores won leads", () => {
+  assert.equal(decide({ stage: "won", sla_due: "2000-01-01T00:00:00Z" }, Date.now()), null);
 });
 
 function mockHsContact(properties) {

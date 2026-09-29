@@ -31,35 +31,35 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, relance panier, générateur de soumission, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
-        : "Leak Score, cart recovery, quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
+        ? "Leak Score, courriel de relance, soumission à ton nom, checklist, ROI — 2 minutes, tu sors avec un fichier ou un mail."
+        : "Leak Score, follow-up email, quote in your name, checklist, ROI — 2 minutes, you leave with a file or an email.",
     },
     "outils/relance-panier": {
       title: fr
-        ? "BlackWayConnect | Relance panier / devis abandonnés"
-        : "BlackWayConnect | Abandoned cart / quote recovery",
-      ogTitle: fr ? "Relance panier — combien dorment ?" : "Cart recovery — how much sits idle?",
+        ? "BlackWayConnect | Courriel de relance panier / devis"
+        : "BlackWayConnect | Cart / quote follow-up email",
+      ogTitle: fr ? "Relance prête à coller — ton nom, ton lien" : "Follow-up ready to paste — your name, your link",
       description: fr
-        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 349 $."
-        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $349 lift.",
+        ? "Génère le courriel de relance HTML ou texte pour tes paniers abandonnés, à ton nom avec ton lien de paiement. Copie, colle dans Gmail."
+        : "Generate the HTML or text follow-up for abandoned carts, in your name with your payment link. Copy, paste into Gmail.",
     },
     "outils/soumission": {
       title: fr
-        ? "BlackWayConnect | Générateur de soumission → Paddle"
-        : "BlackWayConnect | Quote generator → Paddle",
-      ogTitle: fr ? "Soumission → paiement Growth" : "Quote → Growth payment",
+        ? "BlackWayConnect | Soumission à ton nom — imprimable"
+        : "BlackWayConnect | Quote in your name — printable",
+      ogTitle: fr ? "Soumission à ton nom en 2 minutes" : "Quote in your name in 2 minutes",
       description: fr
-        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Growth (Paddle). Capture CRM incluse."
-        : "Draft a quote, copy the text and open Growth payment (Paddle). CRM capture included.",
+        ? "Devis à ta raison sociale avec ton lien de paiement. Copie, imprime en PDF, garde une copie locale."
+        : "Quote under your business name with your payment link. Copy, print to PDF, keep a local copy.",
     },
     "outils/checklist": {
       title: fr
         ? "BlackWayConnect | Checklist fermeture 7 jours"
         : "BlackWayConnect | 7-day close checklist",
-      ogTitle: fr ? "Checklist lead magnet — gratuit" : "Checklist lead magnet — free",
+      ogTitle: fr ? "Checklist fermeture 7 jours — sans courriel" : "7-day close checklist — no email needed",
       description: fr
-        ? "Huit actions pour fermer sans fuite. Courriel → checklist PDF. CTA Growth + Portail."
-        : "Eight actions to close without leakage. Email → PDF checklist. Growth + Portal CTAs.",
+        ? "Cases à cocher sauvegardées, liste de fermeture éditable, impression PDF. Aucun courriel requis."
+        : "Saved checkboxes, editable close list, print to PDF. No email required.",
     },
     "grow-hub": {
       title: fr
@@ -80,8 +80,8 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         ? "Forfaits Grow Hub — 99 $ à 2 499 $ CAD/mois"
         : "Grow Hub plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Launch/Growth/Scale en Paddle ; Spark/Command/Partner via /contact."
-        : "Spark $99 to Partner $2,499 CAD/mo. Launch/Growth/Scale on Paddle; Spark/Command/Partner via /contact.",
+        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Abonnement Paddle, essai 14 jours."
+        : "Spark $99 to Partner $2,499 CAD/mo. Paddle subscription, 14-day trial.",
     },
     "forfaits-growth": {
       title: fr

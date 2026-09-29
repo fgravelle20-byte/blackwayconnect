@@ -20,9 +20,8 @@ export function Hero() {
       />
       <div className="shell hero__content">
         <h1 id="hero-brand" className="display">
-          {t.brand}
+          {t.heroTitle}
         </h1>
-        <p className="hero-line">{t.heroTitle}</p>
         <p className="lede">{t.heroBody}</p>
         <div className="cta-row">
           <Link className="btn btn--primary" to={path("/forfaits-growth")}>

@@ -1,8 +1,9 @@
-import { CELLULAIRE_PLANS } from "../src/cellulaireConfig";
+import { CELLULAIRE_PLANS, cellulaireCheckoutUrl } from "../src/cellulaireConfig";
 import { CHECKOUT_LINKS, PLANS } from "../src/stripeConfig";
 import { handleChat, type ChatLang, type ChatMessage } from "./chat";
 import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
 import { authorizeOwner } from "./ownerAuth";
+import { crmAuthorized, crmCookieHeader, crmLoginOk, getEngine, listCrm, patchCrm, recordSiteLead, tickCrm } from "./crm";
 
 export interface Env {
   ASSETS: Fetcher;
@@ -30,15 +31,15 @@ const SITE_ORIGIN = "https://blackwayconnect.com";
 const DEFAULT_APP = "https://blackwayconnect.com/portail";
 const BASE44_PREVIEW = "https://black-way-link.base44.app/";
 
-/** Live Payment Links — imported from `src/stripeConfig.ts` (do not fork URLs here). */
+/** Live checkout — Paddle /payer or /contact. Do not fork buy.stripe.com URLs here. */
 const CHECKOUT = CHECKOUT_LINKS;
 
-/** Type B — cellulaire (Payment Links empty until Stripe created). */
+/** Type B — cellulaire quote via /contact until dedicated Paddle prices exist. */
 const CELLULAIRE_CHECKOUT: Record<string, string> = {
-  cell_signal: CELLULAIRE_PLANS.cell_signal.paymentLink,
-  cell_route: CELLULAIRE_PLANS.cell_route.paymentLink,
-  cell_fleet: CELLULAIRE_PLANS.cell_fleet.paymentLink,
-  cell_command: CELLULAIRE_PLANS.cell_command.paymentLink,
+  cell_signal: cellulaireCheckoutUrl("cell_signal"),
+  cell_route: cellulaireCheckoutUrl("cell_route"),
+  cell_fleet: cellulaireCheckoutUrl("cell_fleet"),
+  cell_command: cellulaireCheckoutUrl("cell_command"),
 };
 
 function isAllowedOrigin(origin: string | null): boolean {
@@ -57,7 +58,7 @@ function corsHeaders(request: Request, extraAllowHeaders = ""): Record<string, s
   const allowOrigin = isAllowedOrigin(origin) ? (origin as string) : SITE_ORIGIN;
   const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
     "Access-Control-Allow-Headers": `Content-Type, X-BW-Key, X-BW-Base44-Key, Authorization${extraAllowHeaders}`,
     Vary: "Origin",
   };
@@ -180,6 +181,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Signal",
         amountCad: CELLULAIRE_PLANS.cell_signal.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_signal || null,
+        checkoutReady: false,
         line: "cellulaire",
         tools: ["cell_capture"],
       },
@@ -188,6 +190,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Route",
         amountCad: CELLULAIRE_PLANS.cell_route.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_route || null,
+        checkoutReady: false,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout"],
       },
@@ -196,6 +199,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Fleet",
         amountCad: CELLULAIRE_PLANS.cell_fleet.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_fleet || null,
+        checkoutReady: false,
         featured: true,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout", "cell_streak", "cell_fleet_ops"],
@@ -205,6 +209,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Command",
         amountCad: CELLULAIRE_PLANS.cell_command.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_command || null,
+        checkoutReady: false,
         line: "cellulaire",
         tools: [
           "cell_capture",
@@ -227,7 +232,6 @@ function mobileBootstrap(env: Env) {
       bw_source: "mobile_dashboard",
       checkoutSource: "cellulaire",
       webCheckoutSource: "site_web",
-      stripeWebhook: `${env.PIPE_URL}/webhooks/stripe`,
     },
     qr: {
       app: `${SITE_ORIGIN}/qr-app.svg`,
@@ -274,7 +278,9 @@ export default {
       url.pathname === "/paddle" ||
       url.pathname === "/acheter" ||
       url.pathname === "/checkout" ||
-      url.pathname === "/encaisser"
+      url.pathname === "/encaisser" ||
+      url.pathname === "/stripe" ||
+      url.pathname === "/paiement-stripe"
     ) {
       return Response.redirect(`${SITE_ORIGIN}/forfaits`, 302);
     }
@@ -393,7 +399,10 @@ export default {
         portalClaim: "/api/portal/claim",
         portalMe: "/api/portal/me",
         portalLeads: "/api/portal/leads",
-        stripeWebhook: `${env.PIPE_URL}/webhooks/stripe`,
+        crm: "/crm",
+        leads: "/leads",
+        cellulaire: "/forfaits-cellulaire",
+        growHub: "/grow-hub",
         checkout: CHECKOUT,
         tools: "/outils",
         agent: {
@@ -483,12 +492,133 @@ export default {
           body: JSON.stringify(body),
         });
         const text = await upstream.text();
+        const master = await recordSiteLead(env, body);
+        if (!upstream.ok && master) {
+          return corsJson(request, {
+            contact: master.id,
+            score: master.score,
+            statut: "master_crm",
+            brain: "blackway_master_crm",
+          });
+        }
         return new Response(text, {
           status: upstream.status,
           headers: { "Content-Type": "application/json", ...corsHeaders(request) },
         });
       } catch (e) {
         return corsJson(request, { erreur: "proxy indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/ops" && request.method === "GET") {
+      try {
+        const [siteHealth, pipeHealth] = await Promise.all([
+          Promise.resolve({
+            ok: true,
+            lead_key: !!env.BW_LEAD_KEY,
+            ai: !!env.AI,
+            chat: true,
+          }),
+          fetch(`${env.PIPE_URL}/health`)
+            .then((r) => r.json() as Promise<Record<string, unknown>>)
+            .catch(() => ({ ok: false })),
+        ]);
+        const pipe = pipeHealth as Record<string, unknown>;
+        return corsJson(request, {
+          ok: true,
+          generatedAt: new Date().toISOString(),
+          site: siteHealth,
+          pipe: {
+            ok: pipe.ok === true || pipe.paddle_ready === true,
+            hubspot: pipe.hubspot === true,
+            master_crm: true,
+            lead_key: pipe.lead_key === true,
+            portal_claim_ready: pipe.portal_claim_ready !== false,
+            paddle_ready: pipe.paddle_ready === true,
+          },
+          checkout: CHECKOUT,
+          app: {
+            portal: "/portail",
+            crm: "/crm",
+            preview: BASE44_PREVIEW,
+            status: "published",
+          },
+        });
+      } catch (e) {
+        return corsJson(request, { ok: false, erreur: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/login") {
+      if (request.method !== "POST") {
+        return corsJson(request, { erreur: "methode non autorisee" }, 405);
+      }
+      try {
+        const raw = (await request.json().catch(() => null)) as { email?: string; password?: string } | null;
+        const email = String(raw?.email || "");
+        const password = String(raw?.password || "");
+        if (!(await crmLoginOk(request, env, email, password))) {
+          return corsJson(request, { ok: false, erreur: "courriel ou mot de passe invalide" }, 401);
+        }
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Set-Cookie": crmCookieHeader(),
+            ...corsHeaders(request),
+          },
+        });
+      } catch (e) {
+        return corsJson(request, { erreur: "login indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/leads" && request.method === "GET") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        const data = await listCrm(env, url.searchParams.toString());
+        return corsJson(request, data);
+      } catch (e) {
+        return corsJson(request, { erreur: "crm indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    const crmLeadPatch = url.pathname.match(/^\/api\/crm\/leads\/([^/]+)$/);
+    if (crmLeadPatch && request.method === "PATCH") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        const raw = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+        const data = await patchCrm(env, decodeURIComponent(crmLeadPatch[1]), raw || {});
+        if (!data) return corsJson(request, { erreur: "lead introuvable" }, 404);
+        return corsJson(request, { ok: true, lead: data });
+      } catch (e) {
+        return corsJson(request, { erreur: "crm indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/engine" && request.method === "GET") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        return corsJson(request, await getEngine(env));
+      } catch (e) {
+        return corsJson(request, { erreur: "engine indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/engine" && request.method === "POST") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        return corsJson(request, await tickCrm(env));
+      } catch (e) {
+        return corsJson(request, { erreur: "engine indisponible", detail: String(e) }, 502);
       }
     }
 
@@ -569,6 +699,15 @@ export default {
       headers.delete("content-length");
       headers.set("cache-control", "public, max-age=0, must-revalidate");
       return new Response(injected, {
+        status: assetRes.status,
+        statusText: assetRes.statusText,
+        headers,
+      });
+    }
+    if (assetRes.ok && url.pathname.startsWith("/assets/")) {
+      const headers = new Headers(assetRes.headers);
+      headers.set("cache-control", "public, max-age=31536000, immutable");
+      return new Response(assetRes.body, {
         status: assetRes.status,
         statusText: assetRes.statusText,
         headers,

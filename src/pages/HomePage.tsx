@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useEffect, type ReactNode } from "react";
+import { initializePublicHomePaddle } from "../paddleLoader";
 import { Hero } from "../Hero";
 import { ContactForm } from "../ContactForm";
 import { AppCta } from "../AppCta";
@@ -6,12 +8,73 @@ import { useLang } from "../i18n";
 import { checkoutUrl } from "../stripeConfig";
 import { isPaddlePlanKey } from "../paddleCatalog";
 
+function sameSitePath(href: string): string | null {
+  try {
+    const url = new URL(href, "https://blackwayconnect.com");
+    if (url.origin !== "https://blackwayconnect.com") return null;
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+function PlanLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: ReactNode;
+}) {
+  const local = sameSitePath(href);
+  if (local) {
+    return (
+      <Link className={className} to={local}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a className={className} href={href} rel="noopener noreferrer" target="_blank">
+      {children}
+    </a>
+  );
+}
+
 export function HomePage() {
   const { t, path, lang } = useLang();
+
+  useEffect(() => {
+    // Retain still runs on the public home page, after the first paint.
+    // The client-side token is browser-public; never put an API key here.
+    const start = () => {
+      void initializePublicHomePaddle().catch((error) => {
+        console.warn("Paddle.js unavailable on home page", error);
+      });
+    };
+    const id = window.requestIdleCallback(start, { timeout: 4000 });
+    return () => window.cancelIdleCallback(id);
+  }, []);
 
   return (
     <>
       <Hero />
+
+      <section className="ops-strip" aria-label={lang === "fr" ? "Systèmes en ligne" : "Live systems"}>
+        <div className="shell ops-strip__row">
+          <Link to={path("/diagnostic")}>{lang === "fr" ? "Score de fuites" : "Leak score"}</Link>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("bw-open-secretary"))}
+          >
+            {lang === "fr" ? "Secrétaire IA" : "AI secretary"}
+          </button>
+          <Link to={path("/outils")}>{lang === "fr" ? "Outils" : "Tools"}</Link>
+          <Link to={path("/forfaits")}>{lang === "fr" ? "Paiement" : "Checkout"}</Link>
+          <Link to={path("/portail")}>{lang === "fr" ? "Portail" : "Portal"}</Link>
+        </div>
+      </section>
 
       <section className="section" id="grow">
         <div className="shell">
@@ -24,17 +87,6 @@ export function HomePage() {
               <li key={p}>{p}</li>
             ))}
           </ul>
-          <div className="cta-row" style={{ marginTop: "1.75rem" }}>
-            <Link className="btn btn--primary" to={path("/forfaits-growth")}>
-              {lang === "fr" ? "Commencer avec Growth — 349 $/mois" : "Start with Growth — $349/mo"}
-            </Link>
-            <Link className="btn btn--ghost" to={path("/forfaits")}>
-              {t.ctaPricing}
-            </Link>
-            <Link className="btn btn--ghost" to={path("/grow-hub")}>
-              {t.ctaGrow}
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -56,18 +108,16 @@ export function HomePage() {
                 <h3>{plan.name}</h3>
                 <p className="price">{plan.price}</p>
                 <p className="plan-item__blurb">{plan.blurb}</p>
-                <a
+                <PlanLink
                   className="btn btn--primary plan-item__cta"
                   href={checkoutUrl(plan.key, { lang, source: "site_web", content: "home_plans" })}
-                  rel="noopener noreferrer"
-                  target="_blank"
                 >
                   {isPaddlePlanKey(plan.key)
                     ? t.ctaBuy
                     : lang === "fr"
                       ? "Demander une offre"
                       : "Request an offer"}
-                </a>
+                </PlanLink>
               </article>
             ))}
           </div>
@@ -159,12 +209,10 @@ export function HomePage() {
             <p>{t.contactFast}</p>
             <div className="contact-aside__plans">
               {t.plans.map((plan) => (
-                <a
+                <PlanLink
                   key={plan.key}
                   className="contact-aside__plan"
                   href={checkoutUrl(plan.key, { lang, source: "site_web", content: "home_contact_aside" })}
-                  rel="noopener noreferrer"
-                  target="_blank"
                 >
                   <span>{plan.name}</span>
                   <strong>{plan.price}</strong>
@@ -175,7 +223,7 @@ export function HomePage() {
                         ? "Demander une offre"
                         : "Request an offer"}
                   </span>
-                </a>
+                </PlanLink>
               ))}
             </div>
           </aside>
@@ -184,4 +232,3 @@ export function HomePage() {
     </>
   );
 }
-

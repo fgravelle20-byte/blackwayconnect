@@ -103,12 +103,15 @@ function textBlob(s) {
   return parts.filter(Boolean).join(" ");
 }
 
-/** Live checkout URL, tagged with the Stripe customer id when provided. */
+/** New Vorixa payments are Paddle-only.
+ * Historical Stripe identifiers above remain only for reconciliation of legacy events.
+ * New checkout traffic is handed to Vorixa's Paddle-backed pricing surface.
+ */
 export function vorixaGereCheckoutUrl(planKey, customerId) {
-  const plan = VORIXA_GERE_PLANS[planKey];
-  if (!plan?.paymentLink) return "";
-  const url = new URL(plan.paymentLink);
+  const url = new URL("https://vorixa.ca/pricing");
+  if (planKey) url.searchParams.set("plan", String(planKey));
   if (customerId) url.searchParams.set("client_reference_id", String(customerId));
+  url.searchParams.set("provider", "paddle");
   return url.toString();
 }
 

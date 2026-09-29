@@ -9,7 +9,6 @@ const config: CapacitorConfig = {
     allowNavigation: [
       "blackwayconnect.com",
       "*.blackwayconnect.com",
-      "buy.stripe.com",
     ],
   },
   plugins: {

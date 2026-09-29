@@ -3,11 +3,11 @@ import { useSearchParams } from "react-router-dom";
 import { useLang } from "../i18n";
 import { isPaddlePlanKey, PADDLE_PRICES } from "../paddleCatalog";
 
+type PaddleEventCallback = (event: { name?: string; data?: { transaction_id?: string } }) => void;
 type PaddleClient = {
-  Initialize(options: {
-    token: string;
-    eventCallback?: (event: { name?: string; data?: { transaction_id?: string } }) => void;
-  }): void;
+  Initialized?: boolean;
+  Initialize(options: { token: string; eventCallback?: PaddleEventCallback }): void;
+  Update?(options: { eventCallback?: PaddleEventCallback }): void;
   Checkout: { open(options: {
     items: { priceId: string; quantity: number }[];
     customData: Record<string, string>;
@@ -75,20 +75,21 @@ export function CheckoutPage() {
         const token = await resolvePaddleClientToken();
         await loadPaddle();
         if (cancelled || !window.Paddle) return;
-        if (!initialized) {
-          window.Paddle.Initialize({
-            token,
-            eventCallback: (event) => {
-              if (event.name !== "checkout.completed") return;
-              const transactionId = String(event.data?.transaction_id || "");
-              if (!transactionId.startsWith("txn_")) return;
-              const portal = new URL(path("/portail"), window.location.origin);
-              portal.searchParams.set("transaction_id", transactionId);
-              window.location.assign(portal.toString());
-            },
-          });
-          initialized = true;
+        const eventCallback: PaddleEventCallback = (event) => {
+          if (event.name !== "checkout.completed") return;
+          const transactionId = String(event.data?.transaction_id || "");
+          if (!transactionId.startsWith("txn_")) return;
+          const portal = new URL(path("/portail"), window.location.origin);
+          portal.searchParams.set("transaction_id", transactionId);
+          window.location.assign(portal.toString());
+        };
+        // Homepage may have initialized Paddle without a callback (same-tab SPA navigation).
+        if (window.Paddle.Initialized || initialized) {
+          window.Paddle.Update?.({ eventCallback });
+        } else {
+          window.Paddle.Initialize({ token, eventCallback });
         }
+        initialized = true;
         const successUrl = new URL(path("/merci"), window.location.origin);
         successUrl.searchParams.set("src", "paddle");
         successUrl.searchParams.set("plan", plan);

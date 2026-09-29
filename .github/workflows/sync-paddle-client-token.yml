@@ -6,11 +6,6 @@ name: Sync Paddle client token
 
 on:
   workflow_dispatch: {}
-  pull_request:
-    paths:
-      - ".github/workflows/sync-paddle-client-token.yml"
-      - "pipe/index.js"
-      - "src/pages/CheckoutPage.tsx"
   push:
     branches: [main]
     paths:

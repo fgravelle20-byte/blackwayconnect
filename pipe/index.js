@@ -4,12 +4,14 @@
  * Endpoints:
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
  *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)
- *   POST /lead              -> formulaire site web  -> Contact + Deal "Nouvelle opportunite"
- *   POST /webhooks/stripe   -> paiement forfait -> active EXACTEMENT ce forfait (HubSpot + portail)
- *   POST /portal/claim      -> session_id (Cache/HubSpot) ou email -> jeton portail
+ *   POST /lead              -> formulaire site web  -> Master CRM (+ HubSpot optionnel)
+ *   POST /webhooks/paddle   -> paiement Paddle verifie -> active le forfait (portail + CRM)
+ *   POST /portal/claim      -> session_id (Cache) ou email -> jeton portail
  *   GET  /portal/me         -> refresh session portail
- * Portail HubSpot 343472254 - pipeline BlackWay - Revenue (2117849055)
- * Claim apres paiement: PAS besoin de STRIPE_SECRET_KEY (webhook payload + Cache + HubSpot).
+ *   GET  /crm/leads         -> Master CRM board (X-BW-Key)
+ *   POST /ops/engine/tick   -> SLA/relance machine (cron 15 min + X-BW-Key)
+ * Portail — pipeline BlackWay. HubSpot is optional sync, not the product brain.
+ * Claim apres paiement: Paddle webhook + Cache; aucune cle Stripe requise.
  *
  * Activation auto (signature verifiee): checkout.session.completed | async_payment_succeeded
  * | invoice.paid | invoice.payment_succeeded → bw_forfait + bw_forfait_paye = forfait paye
@@ -20,6 +22,15 @@
  */
 
 import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
+import { scoreKingLead } from "./kingLeads.js";
+import { upsertMasterLead, listMasterLeads, patchMasterLead, runAutonomyTick, engineStatus } from "./masterCrm.js";
+import {
+  hasMasterDb, recordPayment, getCustomer, getPayment, customerIsActive, customerIsBlocked, applySubscriptionStatus,
+  importCustomer, listCustomers, getMeta, setMeta,
+} from "./customers.js";
+
+const ABONNEMENT_INACTIF =
+  "Abonnement inactif (annulé ou en pause) — réactive ton forfait sur blackwayconnect.com/forfaits.";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -41,6 +52,12 @@ const FORFAITS = {
   cell_route:          { label: "Cell Route",                prix: 199,  delai: 7,  recurrent: true,  score: 68, line: "cellulaire" },
   cell_fleet:          { label: "Cell Fleet",                prix: 399,  delai: 7,  recurrent: true,  score: 82, line: "cellulaire" },
   cell_command:        { label: "Cell Command",              prix: 799,  delai: 7,  recurrent: true,  score: 90, line: "cellulaire" },
+  ia_chatbot_1:        { label: "Chatbot IA — 1 chatbot",    prix: 99,   delai: 7,  recurrent: true,  score: 60, line: "chatbot" },
+  ia_chatbot_5:        { label: "Chatbot IA — 5 chatbots",   prix: 249,  delai: 7,  recurrent: true,  score: 70, line: "chatbot" },
+  ia_chatbot_illimite: { label: "Chatbot IA — Illimité",     prix: 399,  delai: 7,  recurrent: true,  score: 80, line: "chatbot" },
+  ia_vocal_basic:      { label: "Accueil vocal IA — Basic",  prix: 149,  delai: 7,  recurrent: true,  score: 65, line: "vocal" },
+  ia_vocal_avance:     { label: "Accueil vocal IA — Avancé", prix: 299,  delai: 7,  recurrent: true,  score: 75, line: "vocal" },
+  ia_vocal_premium:    { label: "Accueil vocal IA — Premium",prix: 499,  delai: 7,  recurrent: true,  score: 85, line: "vocal" },
   enterprise:          { label: "Entreprise (sur devis)",    prix: 4999, delai: 14, recurrent: true,  score: 99, line: "web" },
 };
 
@@ -62,6 +79,20 @@ const PADDLE_PRICE_TO_FORFAIT = {
   pri_01kxtn6b6ba8szneb21wx51dz6: "grow_hub_growth",
   pri_01kxtn6befjw8m8gz9a5vwf0wf: "grow_hub_scale",
   pri_01kxtn6bgrd0wwv1sdsqjv5ry2: "grow_hub_scale",
+  // 2026-09-29 — remaining Grow Hub tiers, Pack Cellulaire, modules IA (monthly).
+  pri_01m3nt7rm1cc19134bb3e86fpb: "grow_hub_spark",
+  pri_01m3nt7rs3vajzyv8k8r57qswc: "grow_hub_command",
+  pri_01m3nt7rxx08w09zef4xf2rage: "grow_hub_partner",
+  pri_01m3nt7s39b94k4p7a13m3sya2: "cell_signal",
+  pri_01m3nt7s88bxrx8k6jph2gmtt2: "cell_route",
+  pri_01m3nt7sd8mkr915y6vtgs6m3p: "cell_fleet",
+  pri_01m3nt7sj4wndn0qkd9d855zpr: "cell_command",
+  pri_01m3nt7sqgkcqb2payzrn0f8cf: "ia_chatbot_1",
+  pri_01m3nt7ss5526fp4j6q98zdqc0: "ia_chatbot_5",
+  pri_01m3nt7stvq4ff1942nybarhxn: "ia_chatbot_illimite",
+  pri_01m3nt7szxc265whjs40e2y5pd: "ia_vocal_basic",
+  pri_01m3nt7t1k43gy04eyf71amkd5: "ia_vocal_avance",
+  pri_01m3nt7t39xq8pbggfeh6ejax4: "ia_vocal_premium",
 };
 
 // Payment Link IDs → forfait. Live ids from src/stripeConfig.ts PLUS the 2026-09-06
@@ -148,6 +179,10 @@ const ALIAS = {
   "fleet": "cell_fleet",
   "cell command": "cell_command",
   "cell_command": "cell_command",
+  "chatbot": "ia_chatbot_1",
+  "chatbot ia": "ia_chatbot_1",
+  "accueil vocal": "ia_vocal_basic",
+  "accueil vocal ia": "ia_vocal_basic",
   "enterprise": "enterprise",
   "entreprise": "enterprise",
 };
@@ -156,11 +191,16 @@ function isCellulaireForfait(key) {
   return String(key || "").startsWith("cell_");
 }
 
+/** Product line of a forfait: web (Grow Hub) | cellulaire | chatbot | vocal. */
+function forfaitLine(key) {
+  return FORFAITS[key]?.line || (isCellulaireForfait(key) ? "cellulaire" : "web");
+}
+
 const FREE_MAIL = ["gmail.com","hotmail.com","hotmail.ca","outlook.com","yahoo.com","yahoo.ca","icloud.com","live.ca","videotron.ca","sympatico.ca"];
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, GET, PATCH, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, X-BW-Key, Authorization",
 };
 
@@ -362,11 +402,43 @@ async function createDeal(env, name, stage, props, contactId) {
   throw new Error("deal KO " + msg.slice(0, 300));
 }
 
+async function recordMasterLead(env, p) {
+  try {
+    const king = scoreKingLead(p);
+    return await upsertMasterLead(env, p, king);
+  } catch (e) {
+    console.log("master crm upsert", e);
+    return null;
+  }
+}
+
+/** HubSpot is an optional mirror: writes only when HUBSPOT_SYNC=on (or when no Master DB is bound). */
+function hubspotSync(env) {
+  if (!jeton(env)) return false;
+  if (!hasMasterDb(env)) return true;
+  return String(env.HUBSPOT_SYNC || "off").trim().toLowerCase() === "on";
+}
+
 async function traiterLead(env, p) {
+  const master = await recordMasterLead(env, p);
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
   const base = score(forfait, p.email, f.prix, f.recurrent);
   const sc = twinTurboLeadScore(base, p);
+  // Master CRM is the brain; HubSpot only as mirror, or last resort if the Master write failed.
+  if (master && !hubspotSync(env)) {
+    return {
+      contact: master.id,
+      deal: null,
+      score: master.score,
+      grade: master.grade,
+      statut: "master_crm",
+      master_crm: master.id,
+      brain: "blackway_master_crm",
+    };
+  }
+  if (!master && !jeton(env)) throw new Error("lead non enregistre (Master CRM indisponible)");
+  try {
   const contactId = await upsertContact(env, p.email, {
     firstname: p.prenom || "", lastname: p.nom || "", phone: p.telephone || "", company: p.entreprise || "",
     bw_forfait: forfait, bw_source: p.source || "form_web", bw_urgence: p.urgence || "normal",
@@ -397,24 +469,84 @@ async function traiterLead(env, p) {
     volume_turbo: p.volume_turbo ?? null,
     quality_turbo: p.quality_turbo ?? null,
     statut: d.cree ? "cree" : "doublon evite",
+    master_crm: master?.id || null,
+    brain: "blackway_master_crm",
   };
+  } catch (e) {
+    if (master) {
+      return {
+        contact: master.id,
+        deal: null,
+        score: master.score,
+        statut: "master_crm",
+        brain: "blackway_master_crm",
+      };
+    }
+    throw e;
+  }
 }
 
+/**
+ * Verified payment → Master DB (customer + payment, idempotent on payment_id) → Master CRM "won".
+ * HubSpot deal only when mirroring is on. A Master DB failure throws so the sender retries.
+ */
 async function traiterPaiement(env, p) {
   if (!p.email) throw new Error("paiement sans courriel");
   if (!p.payment_id) throw new Error("paiement sans id stable");
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
   const sc = score(forfait, p.email, p.montant, f.recurrent);
+  const masterDb = hasMasterDb(env);
+  let created = null;
+  if (masterDb) {
+    const r = await recordPayment(env, { ...p, forfait, montant: p.montant || f.prix });
+    created = r.created;
+  }
+  if (created !== false) {
+    await recordMasterLead(env, {
+      email: p.email,
+      prenom: p.prenom,
+      nom: p.nom,
+      entreprise: p.entreprise,
+      forfait,
+      source: "portail",
+      stage: "won",
+      message: `Paiement ${p.processor === "paddle" ? "Paddle" : "Stripe"} ${p.payment_id} ${p.montant || f.prix} CAD${p.renouvellement ? " (renouvellement)" : ""}`,
+    });
+  }
+  let mirror = null;
+  if (hubspotSync(env)) {
+    try {
+      mirror = await mirrorPaiementHubspot(env, p, forfait, sc);
+    } catch (e) {
+      if (!masterDb) throw e;
+      console.log("hubspot mirror paiement", p.payment_id, e);
+    }
+  }
+  const dejaTraite = masterDb ? created === false : mirror?.cree === false;
+  return {
+    contact: mirror?.contact || null,
+    deal: mirror?.deal || null,
+    score: sc,
+    forfait,
+    master_db: masterDb,
+    hubspot_mirror: !!mirror,
+    statut: dejaTraite ? "deja traite - aucun doublon" : "cree",
+  };
+}
+
+async function mirrorPaiementHubspot(env, p, forfait, sc) {
+  const f = FORFAITS[forfait];
   const cell = isCellulaireForfait(forfait);
   const processor = p.processor === "paddle" ? "paddle" : "stripe";
   // HubSpot bw_source enum: form_web | portail | stripe | campagne | reference | prospection
   // Keep "paddle"/"cellulaire" in notes + segment; never send them as bw_source.
   const hsSource = cell || processor === "paddle" ? "portail" : "stripe";
   const segment = p.segment || (cell ? "cellulaire" : `paiement ${processor}`);
+  const who = p.entreprise || [p.prenom, p.nom].join(" ").trim() || p.email;
   const dealLabel = p.renouvellement
-    ? `${f.label} - RENOUVELLEMENT - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`
-    : `${f.label} - PAYE - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`;
+    ? `${f.label} - RENOUVELLEMENT - ${who}`
+    : `${f.label} - PAYE - ${who}`;
   const sessionPropOk = await ensureBwLastCheckoutSessionProp(env);
   const contactProps = {
     firstname: p.prenom || "", lastname: p.nom || "", company: p.entreprise || "",
@@ -451,7 +583,7 @@ async function traiterPaiement(env, p) {
     bw_stripe_payment_id: p.payment_id, bw_idempotency_key: `pay:${p.payment_id}`,
     bw_segment: segment,
   }, contactId);
-  if (!d.cree) return { deal: d.id, statut: "deja traite - aucun doublon" };
+  if (!d.cree) return { contact: contactId, deal: d.id, cree: false };
   await hs(env, "POST", "/crm/v3/objects/notes", {
     properties: {
       hs_timestamp: new Date().toISOString(),
@@ -459,7 +591,7 @@ async function traiterPaiement(env, p) {
     },
     associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
   });
-  return { contact: contactId, deal: d.id, score: sc, statut: "cree" };
+  return { contact: contactId, deal: d.id, cree: true };
 }
 
 function portalSecret(env) {
@@ -524,26 +656,27 @@ async function verifyPortalToken(env, token) {
   return { email, forfait, exp };
 }
 
-function portalSessionShape(email, forfait, token, exp, forfaitCellulaire) {
-  const cellKey = isCellulaireForfait(forfaitCellulaire)
-    ? forfaitCellulaire
-    : isCellulaireForfait(forfait)
-      ? forfait
-      : null;
-  const webKey = !isCellulaireForfait(forfait) && forfait ? forfait : null;
-  const primary = webKey || cellKey || forfait || "grow_hub_growth";
+function portalSessionShape(email, access, token, exp) {
+  const webKey = access.forfait && forfaitLine(access.forfait) === "web" ? access.forfait : null;
+  const cellKey = access.forfaitCellulaire || null;
+  const chatbotKey = access.forfaitChatbot || null;
+  const vocalKey = access.forfaitVocal || null;
+  const primary = access.forfait || "grow_hub_growth";
   const f = FORFAITS[primary] || FORFAITS.grow_hub_growth;
-  const fc = cellKey ? FORFAITS[cellKey] : null;
+  const line = (key) => (key ? { key, label: FORFAITS[key]?.label || key, amountCad: FORFAITS[key]?.prix || null } : null);
   return {
     token,
     email,
     forfait: primary,
     forfaitWeb: webKey,
     forfaitCellulaire: cellKey,
-    label: webKey ? (FORFAITS[webKey]?.label || f.label) : f.label,
-    labelCellulaire: fc ? fc.label : null,
-    amountCad: webKey ? (FORFAITS[webKey]?.prix || f.prix) : f.prix,
-    amountCadCellulaire: fc ? fc.prix : null,
+    forfaitChatbot: chatbotKey,
+    forfaitVocal: vocalKey,
+    label: f.label,
+    labelCellulaire: cellKey ? FORFAITS[cellKey]?.label || null : null,
+    amountCad: f.prix,
+    amountCadCellulaire: cellKey ? FORFAITS[cellKey]?.prix || null : null,
+    modules: [line(chatbotKey), line(vocalKey)].filter(Boolean),
     exp,
   };
 }
@@ -653,7 +786,10 @@ async function hsBwContactGroupName(env) {
   }
 }
 
-/** Create HubSpot contact property bw_last_checkout_session if missing. */
+/** Check whether the optional HubSpot contact property exists.
+ * Read-only by design: health/payment processing must never attempt schema writes.
+ * This avoids 403 errors when the HubSpot token lacks crm.schemas.contacts.write.
+ */
 async function ensureBwLastCheckoutSessionProp(env) {
   if (_bwSessionPropReady) return true;
   const t = jeton(env);
@@ -662,43 +798,10 @@ async function ensureBwLastCheckoutSessionProp(env) {
     const get = await fetch(HS + "/crm/v3/properties/contacts/bw_last_checkout_session", {
       headers: { Authorization: `Bearer ${t}` },
     });
-    if (get.status === 200) {
-      _bwSessionPropReady = true;
-      return true;
-    }
-    const groupName = await hsBwContactGroupName(env);
-    const groups = [...new Set([groupName, "contactinformation"].filter(Boolean))];
-    for (const g of groups) {
-      const create = await fetch(HS + "/crm/v3/properties/contacts", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${t}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "bw_last_checkout_session",
-          label: "BW Last Checkout Session",
-          type: "string",
-          fieldType: "text",
-          groupName: g,
-          description: "Last Stripe cs_… or Paddle txn_… for Client Master Portal claim",
-        }),
-      });
-      if (create.status === 200 || create.status === 201) {
-        _bwSessionPropReady = true;
-        return true;
-      }
-      const txt = await create.text();
-      // Already exists (race / prior create under another code path)
-      if (create.status === 409 || /already exists|PROPERTY_ALREADY_EXISTS/i.test(txt)) {
-        break;
-      }
-      console.log("bw_last_checkout_session create", create.status, txt.slice(0, 240), "group", g);
-    }
-    const again = await fetch(HS + "/crm/v3/properties/contacts/bw_last_checkout_session", {
-      headers: { Authorization: `Bearer ${t}` },
-    });
-    _bwSessionPropReady = again.status === 200;
+    _bwSessionPropReady = get.status === 200;
     return _bwSessionPropReady;
   } catch (e) {
-    console.log("ensureBwLastCheckoutSessionProp", e);
+    console.log("checkBwLastCheckoutSessionProp", e);
     return false;
   }
 }
@@ -732,29 +835,32 @@ async function claimFromDealSession(env, sessionId) {
   return { email, forfait };
 }
 
-async function fetchStripeCheckoutSession(env, sessionId) {
-  const key = String(env.STRIPE_SECRET_KEY || "").trim();
-  if (!key) return null;
-  const r = await fetch(
-    `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=line_items.data.price`,
-    { headers: { Authorization: `Bearer ${key}` } },
-  );
-  if (!r.ok) {
-    throw new Error("session Stripe introuvable (" + r.status + ")");
-  }
-  return r.json();
-}
-
 function forfaitFromPaddleTransaction(transaction) {
-  const fromCustom = resoudreForfait(
-    transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait,
-  );
-  if (fromCustom) return fromCustom;
+  // The paid price decides the forfait: custom_data is set by the browser and can be tampered with.
   const items = transaction?.items || transaction?.details?.line_items || [];
   for (const item of items) {
     const priceId = item?.price?.id || item?.price_id;
     if (priceId && PADDLE_PRICE_TO_FORFAIT[priceId]) return PADDLE_PRICE_TO_FORFAIT[priceId];
   }
+  if (items.length) return null;
+  return resoudreForfait(transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait);
+}
+
+/** Relay payload → forfait. Accepts plan keys, Paddle price ids, custom_data or a raw transaction. */
+function forfaitFromProvisionPayload(p) {
+  const direct = resoudreForfait(
+    p?.forfait || p?.plan || p?.bw_forfait
+      || p?.custom_data?.bw_forfait || p?.customData?.bw_forfait,
+  );
+  if (direct) return direct;
+  const priceId = String(p?.price_id || p?.priceId || "").trim();
+  if (priceId && PADDLE_PRICE_TO_FORFAIT[priceId]) return PADDLE_PRICE_TO_FORFAIT[priceId];
+  const txn = p?.transaction || p?.data;
+  if (txn && typeof txn === "object") {
+    const fromTxn = forfaitFromPaddleTransaction(txn);
+    if (fromTxn) return fromTxn;
+  }
+  if (Array.isArray(p?.items)) return forfaitFromPaddleTransaction({ items: p.items });
   return null;
 }
 
@@ -769,10 +875,179 @@ async function paddleCustomerEmail(env, customerId) {
   return String(body?.data?.email || "").trim().toLowerCase();
 }
 
+/** Pull path: verify txn_ with the Paddle API and activate, independent of webhook/relay delivery. */
+async function activateFromPaddleTransaction(env, transactionId) {
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key || !String(transactionId).startsWith("txn_")) return null;
+  const r = await fetch(
+    `https://api.paddle.com/transactions/${encodeURIComponent(transactionId)}?include=customer`,
+    { headers: { Authorization: `Bearer ${key}`, Accept: "application/json" } },
+  );
+  if (!r.ok) return null;
+  const txn = (await r.json())?.data || {};
+  if (!["completed", "paid"].includes(String(txn.status || ""))) return null;
+  const forfait = forfaitFromPaddleTransaction(txn);
+  if (!forfait) return null;
+  const email = String(txn.customer?.email || "").trim().toLowerCase()
+    || await paddleCustomerEmail(env, txn.customer_id);
+  if (!email) return null;
+  await putSessionMap(env, transactionId, { email, forfait });
+  const cents = Number(txn?.details?.totals?.total || txn?.details?.totals?.grand_total || 0);
+  try {
+    await traiterPaiement(env, {
+      email,
+      prenom: "",
+      nom: "",
+      entreprise: txn.custom_data?.entreprise || "",
+      forfait,
+      payment_id: transactionId,
+      checkout_session_id: transactionId,
+      montant: cents > 0 ? cents / 100 : FORFAITS[forfait].prix,
+      processor: "paddle",
+      segment: "paiement paddle (verification portail)",
+    });
+  } catch (e) {
+    console.error("activation paddle au claim", transactionId, e);
+  }
+  return { email, forfait };
+}
+
+/** Owner console overview from the Master DB (same shape as the legacy HubSpot overview). */
+async function masterOverview(env) {
+  const [{ customers, payments }, board] = await Promise.all([listCustomers(env, 50), listMasterLeads(env)]);
+  const leads = (board.leads || []).slice(0, 50);
+  const paidDeals = payments.map((pay) => {
+    const f = FORFAITS[pay.forfait] || FORFAITS.grow_hub_growth;
+    return {
+      id: pay.payment_id,
+      dealname: `${f.label} - ${pay.renewal ? "RENOUVELLEMENT" : "PAYE"} - ${pay.email}`,
+      dealstage: ST_PAID,
+      pipeline: PIPELINE,
+      amount: pay.amount_cad != null ? String(pay.amount_cad) : String(f.prix),
+      bw_source: "portail",
+      bw_forfait: pay.forfait,
+      bw_lead_score: null,
+      bw_livraison_statut: "non_demarre",
+      bw_segment: pay.segment || `paiement ${pay.processor || ""}`.trim(),
+      createdate: pay.created_at,
+      hs_lastmodifieddate: pay.created_at,
+    };
+  });
+  const leadDeals = leads
+    .filter((l) => l.stage !== "won" && l.stage !== "archive")
+    .map((l) => ({
+      id: l.id,
+      dealname: `${l.grade || "LEAD"} · ${l.entreprise || [l.prenom, l.nom].join(" ").trim() || l.email}`,
+      dealstage: ST_NEW,
+      pipeline: PIPELINE,
+      amount: null,
+      bw_source: l.source || "form_web",
+      bw_forfait: resoudreForfait(l.intent) || null,
+      bw_lead_score: l.score != null ? String(l.score) : null,
+      bw_livraison_statut: null,
+      bw_segment: `stage=${l.stage}${l.marketLabel ? ` · ${l.marketLabel}` : ""}`,
+      createdate: l.created_at,
+      hs_lastmodifieddate: l.updated_at,
+    }));
+  const deals = [...paidDeals, ...leadDeals]
+    .sort((a, b) => String(b.hs_lastmodifieddate || "").localeCompare(String(a.hs_lastmodifieddate || "")))
+    .slice(0, 50);
+  const contacts = [
+    ...customers.map((c) => ({
+      id: `cust:${c.email}`,
+      firstname: c.prenom, lastname: c.nom, email: c.email, phone: "", company: c.entreprise,
+      lifecyclestage: c.status === "active" ? "customer" : c.status,
+      bw_source: c.source, bw_lead_score: null,
+      bw_forfait: c.forfait || c.forfait_cellulaire || c.forfait_chatbot || c.forfait_vocal,
+      createdate: c.created_at, hs_lastmodifieddate: c.updated_at,
+    })),
+    ...leads
+      .filter((l) => !customers.some((c) => c.email === l.email))
+      .map((l) => ({
+        id: l.id,
+        firstname: l.prenom, lastname: l.nom, email: l.email, phone: l.telephone, company: l.entreprise,
+        lifecyclestage: "lead", bw_source: l.source, bw_lead_score: l.score != null ? String(l.score) : null,
+        bw_forfait: resoudreForfait(l.intent) || null, createdate: l.created_at, hs_lastmodifieddate: l.updated_at,
+      })),
+  ].slice(0, 50);
+  const scored = leadDeals.map((d) => Number(d.bw_lead_score)).filter((n) => Number.isFinite(n));
+  return {
+    fetchedAt: new Date().toISOString(),
+    engines: {
+      mode: "twin_turbo_full_performance",
+      dealsWithScore: scored.length,
+      avgLeadScore: scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : null,
+      maxLeadScore: scored.length ? Math.max(...scored) : null,
+    },
+    limits: { deals: 50, countsArePartial: true, contactsAvailable: true },
+    contacts,
+    deals,
+    sources: {
+      leads: "BlackWay Master CRM (D1)",
+      payments: "BlackWay Master DB — paiements Paddle vérifiés",
+      projects: "Master DB (livraison à démarrer)",
+      phone: "not connected to BlackWay pipeline",
+      messages: "not connected to owner overview",
+    },
+  };
+}
+
+/** One-time copy of HubSpot customers into the Master DB (runs from cron until done). */
+async function importHubspotCustomersOnce(env) {
+  if (!hasMasterDb(env) || !jeton(env)) return { skipped: true };
+  if (await getMeta(env, "hubspot_customers_imported")) return { skipped: true, done: true };
+  let after;
+  let seen = 0;
+  let imported = 0;
+  for (let page = 0; page < 50; page++) {
+    const r = await hs(env, "POST", "/crm/v3/objects/contacts/search", {
+      filterGroups: [
+        { filters: [{ propertyName: "lifecyclestage", operator: "EQ", value: "customer" }] },
+        { filters: [{ propertyName: "bw_forfait_paye", operator: "HAS_PROPERTY" }] },
+      ],
+      properties: [...HS_PORTAL_PROPS, "company", "createdate"],
+      limit: 100,
+      ...(after ? { after } : {}),
+    });
+    if (r.status !== 200) throw new Error(`import hubspot ${r.status}`);
+    for (const c of r.data?.results || []) {
+      const props = c.properties || {};
+      const email = String(props.email || "").trim().toLowerCase();
+      if (!email.includes("@")) continue;
+      seen += 1;
+      const paid = resoudreForfait(props.bw_forfait_paye);
+      const web = resoudreForfait(props.bw_forfait);
+      let forfait = web && !isCellulaireForfait(web) ? web : null;
+      let forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
+      if (paid && !isCellulaireForfait(paid)) forfait = paid;
+      if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
+      if (!forfait && !forfaitCellulaire) forfait = "grow_hub_growth";
+      const ok = await importCustomer(env, {
+        email, prenom: props.firstname, nom: props.lastname, entreprise: props.company,
+        forfait, forfait_cellulaire: forfaitCellulaire, source: "import_hubspot",
+        created_at: props.createdate || undefined,
+      });
+      if (ok) imported += 1;
+    }
+    after = r.data?.paging?.next?.after;
+    if (!after) break;
+  }
+  await setMeta(env, "hubspot_customers_imported", `${new Date().toISOString()} seen=${seen} imported=${imported}`);
+  return { ok: true, seen, imported };
+}
+
 /** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
 async function listPortalLeads(env, token) {
   const session = await verifyPortalToken(env, token);
-  const contact = await searchHsContact(env, "email", session.email);
+  if (!jeton(env)) {
+    return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
+  }
+  let contact = null;
+  try {
+    contact = await searchHsContact(env, "email", session.email);
+  } catch (e) {
+    console.log("portal leads hubspot", e);
+  }
   if (!contact?.id) {
     return { email: session.email, leads: [], empty: true, engine: "twin_turbo_full_performance" };
   }
@@ -825,17 +1100,82 @@ async function listPortalLeads(env, token) {
   };
 }
 
+/** Legacy HubSpot customer lookup — read-only fallback for customers not yet in the Master DB. */
+async function legacyHubspotCustomer(env, email) {
+  if (!jeton(env)) return null;
+  try {
+    const contact = await searchHsContact(env, "email", email);
+    if (!contact) return null;
+    const props = contact.properties || {};
+    if (!contactHasCustomerAccess(props)) return { contact, active: false };
+    const paid = resoudreForfait(props.bw_forfait_paye);
+    const web = resoudreForfait(props.bw_forfait);
+    let forfait = web && !isCellulaireForfait(web) ? web : null;
+    let forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
+    if (paid && !isCellulaireForfait(paid)) forfait = paid;
+    if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
+    if (!forfait && !forfaitCellulaire) forfait = "grow_hub_growth";
+    // Copy into the Master DB so the next claim no longer needs HubSpot.
+    try {
+      await importCustomer(env, {
+        email, prenom: props.firstname, nom: props.lastname,
+        forfait, forfait_cellulaire: forfaitCellulaire, source: "import_hubspot",
+      });
+    } catch (e) {
+      console.log("import hubspot customer", e);
+    }
+    return { contact, active: true, forfait, forfaitCellulaire };
+  } catch (e) {
+    console.log("legacy hubspot customer", e);
+    return null;
+  }
+}
+
+/** Current plans for an email: Master DB first, legacy HubSpot fallback, then the hint. */
+async function resolveAccess(env, email, hint) {
+  const slots = { web: null, cellulaire: null, chatbot: null, vocal: null };
+  let customer = null;
+  try {
+    customer = await getCustomer(env, email);
+  } catch (e) {
+    console.log("master customer lookup", e);
+  }
+  if (customer) {
+    if (customerIsBlocked(customer)) throw new Error(ABONNEMENT_INACTIF);
+    slots.web = resoudreForfait(customer.forfait);
+    slots.cellulaire = resoudreForfait(customer.forfait_cellulaire);
+    slots.chatbot = resoudreForfait(customer.forfait_chatbot);
+    slots.vocal = resoudreForfait(customer.forfait_vocal);
+  } else {
+    const legacy = await legacyHubspotCustomer(env, email);
+    if (legacy?.active) {
+      slots.web = legacy.forfait;
+      slots.cellulaire = legacy.forfaitCellulaire;
+    }
+  }
+  // The Master DB is authoritative; a hint only fills in for customers not yet recorded there.
+  const hintKey = customer ? null : resoudreForfait(hint);
+  if (hintKey && !slots[forfaitLine(hintKey)]) slots[forfaitLine(hintKey)] = hintKey;
+  let forfait = slots.web || slots.cellulaire || slots.chatbot || slots.vocal || "grow_hub_growth";
+  if (!FORFAITS[forfait]) forfait = "grow_hub_growth";
+  return {
+    forfait,
+    forfaitCellulaire: slots.cellulaire,
+    forfaitChatbot: slots.chatbot,
+    forfaitVocal: slots.vocal,
+  };
+}
+
 /**
  * Claim portal access.
- * session_id path: Cache/KV → HubSpot bw_last_checkout_session → deal payment id → Stripe API (only if STRIPE_SECRET_KEY).
- * No Stripe secret required after webhook has stored the mapping.
+ * Payment reference path: KV/Cache → Master DB payment → legacy HubSpot → Paddle API verification.
+ * Email path: Master DB customer → legacy HubSpot customer (copied into the Master DB on first hit).
  */
 async function claimPortal(env, p) {
   const sessionId = String(p.transaction_id || p.transactionId || p.session_id || p.sessionId || "").trim();
   const emailIn = String(p.email || "").trim().toLowerCase();
   let email = "";
   let forfait = null;
-  let contact = null;
 
   if (sessionId) {
     if (!isPaymentReference(sessionId)) throw new Error("reference paiement invalide");
@@ -847,17 +1187,46 @@ async function claimPortal(env, p) {
     }
 
     if (!email) {
-      await ensureBwLastCheckoutSessionProp(env);
-      contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
-      if (contact) {
-        const props = contact.properties || {};
-        email = String(props.email || "").trim().toLowerCase();
-        forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
+      try {
+        const pay = await getPayment(env, sessionId);
+        if (pay?.email) {
+          email = pay.email;
+          forfait = resoudreForfait(pay.forfait);
+        }
+      } catch (e) {
+        console.log("master payment lookup", e);
       }
     }
 
-    // Deal payment id = cs_… or txn_… (durable HubSpot path — survives Cache TTL).
-    if (!email) {
+    // Paddle is the payment ledger: verify txn_ there before any legacy HubSpot lookup.
+    if (!email && sessionId.startsWith("txn_")) {
+      try {
+        const fromPaddle = await activateFromPaddleTransaction(env, sessionId);
+        if (fromPaddle?.email) {
+          email = fromPaddle.email;
+          forfait = fromPaddle.forfait;
+        }
+      } catch (e) {
+        console.log("activateFromPaddleTransaction", e);
+      }
+    }
+
+    if (!email && jeton(env)) {
+      try {
+        await ensureBwLastCheckoutSessionProp(env);
+        const contact = await searchHsContact(env, "bw_last_checkout_session", sessionId);
+        if (contact) {
+          const props = contact.properties || {};
+          email = String(props.email || "").trim().toLowerCase();
+          forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
+        }
+      } catch (e) {
+        console.log("legacy hubspot session lookup", e);
+      }
+    }
+
+    // Deal payment id = cs_… or txn_… (legacy HubSpot path — survives Cache TTL).
+    if (!email && jeton(env)) {
       try {
         const fromDeal = await claimFromDealSession(env, sessionId);
         if (fromDeal?.email) {
@@ -869,24 +1238,6 @@ async function claimPortal(env, p) {
       }
     }
 
-    if (!email && sessionId.startsWith("cs_")) {
-      let stripeSession = null;
-      try {
-        stripeSession = await fetchStripeCheckoutSession(env, sessionId);
-      } catch (e) {
-        if (String(env.STRIPE_SECRET_KEY || "").trim()) throw e;
-        stripeSession = null;
-      }
-      if (stripeSession) {
-        email = String(emailFromStripeObject(stripeSession) || "").trim().toLowerCase();
-        forfait =
-          forfaitFromStripeObject(stripeSession) ||
-          resoudreForfait(p.plan) ||
-          null;
-        if (!email) throw new Error("paiement sans courriel sur la session Stripe");
-      }
-    }
-
     if (!email) {
       throw new Error(
         "Paiement introuvable. Attendez quelques secondes apres le paiement, ou utilisez le courriel du compte payeur.",
@@ -894,72 +1245,41 @@ async function claimPortal(env, p) {
     }
   } else if (emailIn) {
     if (!emailIn.includes("@")) throw new Error("courriel invalide");
-    contact = await searchHsContact(env, "email", emailIn);
-    // Soft fallback: HubSpot sometimes stores mixed-case emails; retry original casing.
-    if (!contact && p.email && String(p.email).trim() !== emailIn) {
-      contact = await searchHsContact(env, "email", String(p.email).trim());
+    let customer = null;
+    try {
+      customer = await getCustomer(env, emailIn);
+    } catch (e) {
+      console.log("master customer lookup", e);
     }
-    if (!contact) {
-      throw new Error(
-        "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Paddle.",
-      );
-    }
-    const props = contact.properties || {};
-    if (!contactHasCustomerAccess(props)) {
-      throw new Error(
-        "Compte trouvé mais pas encore client actif — paiement Paddle requis (ou activation ops).",
-      );
+    if (customer && customerIsBlocked(customer)) throw new Error(ABONNEMENT_INACTIF);
+    if (!customerIsActive(customer)) {
+      const legacy = await legacyHubspotCustomer(env, emailIn);
+      if (!legacy) {
+        throw new Error(
+          "Aucun compte client pour ce courriel — utilise le courriel exact du paiement Paddle.",
+        );
+      }
+      if (!legacy.active) {
+        throw new Error(
+          "Compte trouvé mais pas encore client actif — paiement Paddle requis (ou activation ops).",
+        );
+      }
     }
     email = emailIn;
-    forfait = resoudreForfait(props.bw_forfait_paye || props.bw_forfait || p.plan);
   } else {
     throw new Error("session_id ou email requis");
   }
 
-  forfait = forfait || resoudreForfait(p.plan) || "grow_hub_growth";
-  if (!FORFAITS[forfait]) forfait = "grow_hub_growth";
-  if (!email) throw new Error("courriel requis pour le portail");
-
-  let forfaitCellulaire = null;
-  try {
-    if (!contact) contact = await searchHsContact(env, "email", email);
-    const props = contact?.properties || {};
-    forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
-    const webFromHs = resoudreForfait(props.bw_forfait);
-    if (webFromHs && !isCellulaireForfait(webFromHs)) forfait = webFromHs;
-    else if (isCellulaireForfait(forfait) && !forfaitCellulaire) forfaitCellulaire = forfait;
-    const paid = resoudreForfait(props.bw_forfait_paye);
-    if (paid && isCellulaireForfait(paid) && !forfaitCellulaire) forfaitCellulaire = paid;
-    if (paid && !isCellulaireForfait(paid)) forfait = paid;
-  } catch {
-    /* optional */
-  }
-
-  const { token, exp } = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, token, exp, forfaitCellulaire);
+  const access = await resolveAccess(env, email, forfait);
+  const { token, exp } = await mintPortalToken(env, email, access.forfait);
+  return portalSessionShape(email, access, token, exp);
 }
 
 async function portalMe(env, token) {
-  const { email, forfait: tokenForfait, exp } = await verifyPortalToken(env, token);
-  let forfait = tokenForfait;
-  let forfaitCellulaire = null;
-  try {
-    const contact = await searchHsContact(env, "email", email);
-    const props = contact?.properties || {};
-    const refreshed = resoudreForfait(props.bw_forfait_paye || props.bw_forfait);
-    if (refreshed && !isCellulaireForfait(refreshed)) forfait = refreshed;
-    forfaitCellulaire = resoudreForfait(props.bw_forfait_cellulaire);
-    if (!forfaitCellulaire && refreshed && isCellulaireForfait(refreshed)) {
-      forfaitCellulaire = refreshed;
-    }
-    const webOnly = resoudreForfait(props.bw_forfait);
-    if (webOnly && !isCellulaireForfait(webOnly)) forfait = webOnly;
-  } catch {
-    /* keep token forfait */
-  }
-  if (!FORFAITS[forfait]) forfait = tokenForfait || "grow_hub_growth";
-  const minted = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  const { email, forfait: tokenForfait } = await verifyPortalToken(env, token);
+  const access = await resolveAccess(env, email, tokenForfait);
+  const minted = await mintPortalToken(env, email, access.forfait);
+  return portalSessionShape(email, access, minted.token, minted.exp);
 }
 
 /** Verification de signature Stripe (HMAC SHA-256, tolerance 5 min) */
@@ -1001,9 +1321,16 @@ async function signaturePaddleValide(secret, payload, header) {
   return mismatch === 0;
 }
 
-export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, signaturePaddleValide, isVorixaManagedStripeObject };
+export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, forfaitFromProvisionPayload, signaturePaddleValide, isVorixaManagedStripeObject };
 
 export default {
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(
+      importHubspotCustomersOnce(env)
+        .catch((e) => console.log("import hubspot customers", e))
+        .then(() => runAutonomyTick(env)),
+    );
+  },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -1016,40 +1343,44 @@ export default {
         const r = await fetch(HS + "/crm/v3/objects/contacts?limit=1", { headers: { Authorization: `Bearer ${t}` } });
         hubspot = r.status === 200 ? "connecte" : `refuse (${r.status})`;
         if (hubspot === "connecte") {
-          // Auto-create property on health so deploy/smoke proves portal claim path.
+          // Read-only check; no schema write is attempted from /health.
           hubspot_bw_session_prop = await ensureBwLastCheckoutSessionProp(env);
         }
       }
-      const stripeSecretKey = !!String(env.STRIPE_SECRET_KEY || "").trim();
-      const stripeWebhookSecret = !!String(env.STRIPE_WEBHOOK_SECRET || "").trim();
       const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
       const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
       const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
       const paddleFulfillRelay = !!String(env.BW_PADDLE_FULFILL_KEY || "").trim();
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
-      const portal_claim_ready = hubspot === "connecte" && (
-        stripeWebhookSecret ||
+      let masterDb = false;
+      if (hasMasterDb(env)) {
+        try {
+          await env.BW_DB.prepare("SELECT 1 FROM customers LIMIT 1").first();
+          masterDb = true;
+        } catch (e) {
+          console.log("health master db", e);
+        }
+      }
+      const portal_claim_ready = (masterDb || hubspot === "connecte") && (
         (paddleApiKey && paddleWebhookSecret) ||
+        paddleApiKey ||
         paddleFulfillRelay
       );
       return json({
         service: "blackway-pipe",
-        ok: hubspot === "connecte",
+        ok: masterDb || hubspot === "connecte",
+        master_db: masterDb,
+        brain: masterDb ? "blackway_master_king" : "hubspot",
+        hubspot_sync: hubspotSync(env),
         hubspot: hubspot === "connecte",
         hubspot_bw_session_prop,
-        // false = token missing crm.schemas.contacts.write (create 403). Optional; claim uses cache+deal.
-        hubspot_bw_session_prop_create: hubspot_bw_session_prop ? "ok" : "scope_denied_or_missing",
+        // Optional property; absence does not block Paddle claim because cache+deal fallback remains.
+        hubspot_bw_session_prop_status: hubspot_bw_session_prop ? "present" : "optional_missing",
         // Cache API always available on Workers; KV optional (BW_SESSIONS binding).
         session_cache: true,
         session_kv: !!env.BW_SESSIONS,
         portal_claim_ready,
-        // Explicit names (preferred)
-        stripe_secret_key: stripeSecretKey,
-        stripe_webhook_secret: stripeWebhookSecret,
-        // Compat aliases — stripe_secret = API key (not webhook)
-        stripe_secret: stripeSecretKey,
-        stripe_webhook: stripeWebhookSecret,
         paddle_api_key: paddleApiKey,
         paddle_webhook_secret: paddleWebhookSecret,
         paddle_client_token: paddleClientToken,
@@ -1059,6 +1390,8 @@ export default {
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
         portal_claim_needs_stripe_secret: false,
+        engine: true,
+        engine_email: !!env.EMAIL,
       });
     }
 
@@ -1085,6 +1418,14 @@ export default {
       if (request.method !== "GET") return Response.json({ error: "Method not allowed" }, { status: 405, headers: privateHeaders });
       if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
         return Response.json({ error: "Unauthorized" }, { status: 401, headers: privateHeaders });
+      }
+      if (hasMasterDb(env)) {
+        try {
+          return Response.json(await masterOverview(env), { headers: privateHeaders });
+        } catch (e) {
+          console.log("master overview", e);
+          if (!jeton(env)) return Response.json({ error: "Master DB indisponible" }, { status: 502, headers: privateHeaders });
+        }
       }
       if (!jeton(env)) return Response.json({ error: "HubSpot non configuré" }, { status: 503, headers: privateHeaders });
 
@@ -1159,6 +1500,30 @@ export default {
       if (!ok) return json({ erreur: "signature Paddle invalide" }, 400);
       let evt;
       try { evt = JSON.parse(body); } catch { return json({ erreur: "json invalide" }, 400); }
+
+      const SUB_STATUS = {
+        "subscription.activated": "active",
+        "subscription.resumed": "active",
+        "subscription.past_due": "past_due",
+        "subscription.paused": "paused",
+        "subscription.canceled": "canceled",
+      };
+      if (SUB_STATUS[evt.event_type]) {
+        const sub = evt.data || {};
+        const forfait = forfaitFromPaddleTransaction(sub);
+        if (!forfait) return json({ recu: true, ignore: "abonnement Paddle non BlackWay", subscription_id: sub.id || null });
+        if (!hasMasterDb(env)) return json({ recu: true, ignore: "master db absente" });
+        try {
+          const email = await paddleCustomerEmail(env, sub.customer_id);
+          if (!email) throw new Error("abonnement Paddle sans courriel");
+          const customer = await applySubscriptionStatus(env, email, forfait, SUB_STATUS[evt.event_type]);
+          return json({ recu: true, type: evt.event_type, subscription_id: sub.id || null, statut: customer?.status || null });
+        } catch (error) {
+          console.error("erreur abonnement Paddle", evt.event_type, error);
+          return json({ erreur: "mise a jour abonnement temporairement indisponible" }, 502);
+        }
+      }
+
       if (evt.event_type !== "transaction.completed") return json({ ignore: evt.event_type });
 
       const transaction = evt.data || {};
@@ -1196,116 +1561,58 @@ export default {
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
-    if (url.pathname === "/webhooks/stripe" && request.method === "POST") {
-      const body = await request.text();
-      const ok = await signatureValide(env.STRIPE_WEBHOOK_SECRET, body, request.headers.get("stripe-signature"));
-      if (!ok) return json({ erreur: "signature invalide" }, 400);
-      let evt; try { evt = JSON.parse(body); } catch { return json({ erreur: "json invalide" }, 400); }
-      const PAIEMENTS = [
-        "checkout.session.completed",
-        "checkout.session.async_payment_succeeded",
-        "invoice.paid",
-        "invoice.payment_succeeded",
-      ];
-      const ABANDONS = ["checkout.session.expired", "checkout.session.async_payment_failed"];
-
-      if (ABANDONS.includes(evt.type)) {
-        const s = evt.data.object;
-        const cd = s.customer_details || {};
-        const courriel = emailFromStripeObject(s);
-        if (!courriel) return json({ ignore: "abandon sans courriel" });
-        const nom = (cd.name || "").trim().split(" ");
-        const forfait = forfaitFromStripeObject(s) || "grow_hub_growth";
-        const f = FORFAITS[forfait];
-        const abandonKey = s.id || evt.id;
-        ctx.waitUntil((async () => {
-          const contactId = await upsertContact(env, courriel, {
-            firstname: nom[0] || "", lastname: nom.slice(1).join(" ") || "",
-            bw_forfait: forfait, bw_source: "stripe", bw_urgence: "elevee",
-            bw_lead_score: Math.min((f.score || 70) + 10, 100), lifecyclestage: "opportunity",
-          });
-          const d = await createDeal(env, `PANIER ABANDONNE - ${f.label} - ${cd.name || courriel}`, ST_NEW, {
-            amount: (s.amount_total ?? 0) / 100 || f.prix, bw_forfait: forfait, bw_source: "stripe",
-            bw_urgence: "elevee", bw_lead_score: Math.min((f.score || 70) + 10, 100),
-            bw_deadline: dateISO(2), bw_livraison_statut: "non_demarre",
-            bw_idempotency_key: `abandon:${abandonKey}`, bw_segment: "panier abandonne",
-          }, contactId);
-          if (d.cree) {
-            await hs(env, "POST", "/crm/v3/objects/notes", {
-              properties: { hs_timestamp: new Date().toISOString(),
-                hs_note_body: `Paiement commence puis abandonne (${evt.type}).\nForfait vise : ${f.label}.\nRelancer dans les 24 h : c'est le lead le plus chaud du pipeline.` },
-              associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
-            });
-          }
-        })().catch((e) => console.log("erreur abandon", e)));
-        return json({ recu: true, traitement: "panier abandonne" });
+    if (url.pathname === "/ops/engine/tick" && request.method === "POST") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
       }
-
-      if (!PAIEMENTS.includes(evt.type)) return json({ ignore: evt.type });
-      const s = evt.data.object;
-
-      // 1er paiement abo : checkout.session.completed + invoice.* (subscription_create)
-      // → ignorer la facture initiale pour eviter 2 deals HubSpot.
-      if (evt.type === "invoice.paid" || evt.type === "invoice.payment_succeeded") {
-        const reason = s.billing_reason || "";
-        if (reason === "subscription_create") {
-          return json({ ignore: "subscription_create — deal via checkout.session" });
-        }
-      }
-
-      // Paiement async (ACSS etc.) : session completed peut arriver unpaid.
-      if (evt.type === "checkout.session.completed" && s.payment_status === "unpaid") {
-        return json({ ignore: "awaiting async payment" });
-      }
-
-      const cd = s.customer_details || {};
-      const nom = (cd.name || s.customer_name || "").trim().split(" ");
-      // Forfait EXACT paye (price id / metadata / client_reference_id) — pas un statut unique.
-      const forfait = resoudreForfait(forfaitFromStripeObject(s) || "");
-      if (!forfait) {
-        // e.g. invoice PaymentIntent $999 (99900¢) — not in Grow Hub catalog.
-        // Vorixa service géré ($499/$999/$1500/$3000) is handled by Vorixa, not this portail.
-        // Never invent grow_hub_growth; that would unlock the wrong portal tier.
-        return json({
-          recu: true,
-          ignore: isVorixaManagedStripeObject(s)
-            ? "vorixa_service_gere"
-            : "paiement sans forfait resolu",
-          type: evt.type,
-          payment_id: s.id || evt.id,
-          amount_cents: s.amount_total ?? s.amount_paid ?? s.total ?? s.amount_due ?? s.amount ?? null,
-        });
-      }
-      const isInvoice = evt.type === "invoice.paid" || evt.type === "invoice.payment_succeeded";
-      const isRenewal = isInvoice && (s.billing_reason === "subscription_cycle" || s.billing_reason === "subscription_update");
-      // Cle stable (session / invoice), pas l'event id — rejeux Stripe = zero doublon.
-      const paymentKey = s.id || evt.id;
-      const email = emailFromStripeObject(s);
-      if (!email) return json({ ignore: "paiement sans courriel" });
-
-      const checkoutSessionId = String(s.id || "").startsWith("cs_")
-        ? s.id
-        : String(s.checkout_session || "");
-      const forfaitForCache = forfait;
-      // Sync before HubSpot waitUntil — claim by session_id must work without Stripe API.
-      await putSessionMap(env, checkoutSessionId, { email, forfait: forfaitForCache });
-
-      ctx.waitUntil(ensureBwLastCheckoutSessionProp(env).catch(() => false));
-      ctx.waitUntil(traiterPaiement(env, {
-        email,
-        prenom: nom[0] || "", nom: nom.slice(1).join(" ") || "Client",
-        entreprise: s.metadata?.entreprise || "",
-        forfait,
-        payment_id: paymentKey,
-        checkout_session_id: checkoutSessionId,
-        montant: (s.amount_total ?? s.amount_paid ?? s.total ?? s.amount ?? 0) / 100,
-        renouvellement: isRenewal,
-        segment: isRenewal ? "renouvellement stripe" : "paiement stripe",
-      }).catch((e) => console.log("erreur traitement", e)));
-      return json({ recu: true, type: evt.type, payment_id: paymentKey });
+      return json(await runAutonomyTick(env));
     }
 
-    // --- Portail Client Master ---
+    if (url.pathname === "/ops/engine" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      return json(await engineStatus(env));
+    }
+
+    if (url.pathname === "/crm/customers" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      return json({ ok: true, storage: hasMasterDb(env) ? "d1" : "absent", ...(await listCustomers(env)) });
+    }
+
+    if (url.pathname === "/ops/customers/import-hubspot" && request.method === "POST") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      try {
+        return json(await importHubspotCustomersOnce(env));
+      } catch (e) {
+        return json({ erreur: String(e.message || e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/crm/leads" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      const q = Object.fromEntries(url.searchParams);
+      return json(await listMasterLeads(env, q));
+    }
+
+    const crmPatch = url.pathname.match(/^\/crm\/leads\/([^/]+)$/);
+    if (crmPatch && request.method === "PATCH") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      const p = await request.json();
+      const lead = await patchMasterLead(env, decodeURIComponent(crmPatch[1]), p);
+      if (!lead) return json({ erreur: "lead introuvable" }, 404);
+      return json({ ok: true, lead });
+    }
+
+    // Stripe webhook retired: all new payments are Paddle-only.
     if (url.pathname === "/portal/claim" && request.method === "POST") {
       try {
         const p = await request.json();
@@ -1351,31 +1658,46 @@ export default {
         if (!leadOk && !fulfillOk) {
           return json({ erreur: "cle invalide" }, 401);
         }
-        const p = await request.json();
-        const email = String(p.email || "").trim().toLowerCase();
+        let p;
+        try { p = await request.json(); } catch { return json({ erreur: "json invalide" }, 400); }
+        const txn = p?.transaction || p?.data || {};
+        const email = String(
+          p.email || p.customer_email || p.customer?.email || txn.customer?.email || "",
+        ).trim().toLowerCase();
         if (!email.includes("@")) return json({ erreur: "courriel invalide" }, 400);
-        const forfait = resoudreForfait(p.forfait || p.plan) || "grow_hub_growth";
+        const resolved = forfaitFromProvisionPayload(p);
+        // Never block a paid activation: fall back to Growth, but flag it for ops review.
+        const forfait = resolved || "grow_hub_growth";
         const paymentId =
-          String(p.payment_id || "").trim() ||
+          String(p.payment_id || p.transaction_id || txn.id || "").trim() ||
           `manual:${email}:${forfait}:${new Date().toISOString().slice(0, 10)}`;
+        const txnCents = Number(txn?.details?.totals?.total || txn?.details?.totals?.grand_total || 0);
+        const montant = Number(p.montant || p.amount) || (txnCents > 0 ? txnCents / 100 : undefined);
+        const baseSegment = p.segment || (fulfillOk ? "paiement paddle vorixa" : "provision manuelle portail");
         if (paymentId.startsWith("txn_")) {
           await putSessionMap(env, paymentId, { email, forfait });
         }
-        const result = await traiterPaiement(env, {
-          email,
-          forfait,
-          payment_id: paymentId,
-          montant: p.montant,
-          entreprise: p.entreprise || "AlphaVit Lab",
-          prenom: p.prenom || "",
-          nom: p.nom || "",
-          segment: p.segment || (fulfillOk ? "paiement paddle vorixa" : "provision manuelle portail"),
-          checkout_session_id: p.session_id || p.checkout_session_id || paymentId,
-          processor: p.processor || (fulfillOk ? "paddle" : undefined),
-          renouvellement: !!p.renouvellement,
-        });
-        const session = await claimPortal(env, { email });
-        return json({ ok: true, provision: result, portal: session });
+        try {
+          const result = await traiterPaiement(env, {
+            email,
+            forfait,
+            payment_id: paymentId,
+            montant,
+            entreprise: p.entreprise || txn.custom_data?.entreprise || "",
+            prenom: p.prenom || "",
+            nom: p.nom || "",
+            segment: resolved ? baseSegment : `${baseSegment} - FORFAIT A VERIFIER`,
+            checkout_session_id: p.session_id || p.checkout_session_id || paymentId,
+            processor: p.processor || (fulfillOk ? "paddle" : undefined),
+            renouvellement: !!p.renouvellement,
+          });
+          const session = await claimPortal(env, { email });
+          return json({ ok: true, forfait_verifie: !!resolved, provision: result, portal: session });
+        } catch (e) {
+          console.error("provision portail", paymentId, e);
+          // 5xx so the relay / Paddle retries; deal creation is idempotent on payment_id.
+          return json({ erreur: String(e.message || e), payment_id: paymentId }, 502);
+        }
       } catch (e) {
         return json({ erreur: String(e.message || e) }, 400);
       }

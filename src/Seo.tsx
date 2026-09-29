@@ -49,45 +49,41 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
   const fr = lang === "fr";
   const map: Record<string, PageSeo> = {
     home: {
-      title: fr
-        ? "Master Leads · Twin Turbo Full Performance"
-        : "Master Leads · Twin Turbo Full Performance",
-      ogTitle: fr
-        ? "BlackWayConnect — Master Leads Twin Turbo"
-        : "BlackWayConnect — Master Leads Twin Turbo",
+      title: fr ? "Du premier lead au paiement" : "From the first lead to payment",
+      ogTitle: fr ? "BlackWayConnect — du lead au paiement" : "BlackWayConnect — from lead to payment",
       description: fr
-        ? "Master Leads Platform : Twin Turbo Volume + Qualité, scoring CRM BlackWay, checkout Paddle, Portail Client. Née au Québec — vendue mondialement."
-        : "Master Leads Platform: Twin Turbo Volume + Quality, BlackWay CRM scoring, Paddle checkout, Client Portal. Born in Québec — sold worldwide.",
+        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, essai de 14 jours."
+        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars, 14-day trial.",
     },
     outils: {
-      title: fr ? "Master Tools — arsenal lead-to-revenue" : "Master Tools — lead-to-revenue toolkit",
+      title: fr ? "Outils pour la prochaine action" : "Tools for the next step",
       ogTitle: fr
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, relance panier, générateur de soumission Paddle, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
-        : "Leak Score, cart recovery, Paddle quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
+        ? "Leak Score, courriel de relance, soumission à ton nom, checklist, ROI — 2 minutes, tu sors avec un fichier ou un mail."
+        : "Leak Score, follow-up email, quote in your name, checklist, ROI — 2 minutes, you leave with a file or an email.",
     },
     "outils/relance-panier": {
-      title: fr ? "Relance panier / devis abandonnés" : "Abandoned cart / quote recovery",
-      ogTitle: fr ? "Relance panier — combien dorment ?" : "Cart recovery — how much sits idle?",
+      title: fr ? "Courriel de relance panier / devis" : "Cart / quote follow-up email",
+      ogTitle: fr ? "Relance prête à coller — ton nom, ton lien" : "Follow-up ready to paste — your name, your link",
       description: fr
-        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 349 $."
-        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $349 lift.",
+        ? "Génère le courriel de relance HTML ou texte pour tes paniers abandonnés, à ton nom avec ton lien de paiement. Copie, colle dans Gmail."
+        : "Generate the HTML or text follow-up for abandoned carts, in your name with your payment link. Copy, paste into Gmail.",
     },
     "outils/soumission": {
-      title: fr ? "Générateur de soumission → Paddle" : "Quote generator → Paddle",
-      ogTitle: fr ? "Soumission → lien Paddle Growth" : "Quote → Paddle Growth link",
+      title: fr ? "Soumission à ton nom — imprimable" : "Quote in your name — printable",
+      ogTitle: fr ? "Soumission à ton nom en 2 minutes" : "Quote in your name in 2 minutes",
       description: fr
-        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Paddle Growth. Capture CRM incluse."
-        : "Draft a quote, copy the text and open Paddle Growth payment. CRM capture included.",
+        ? "Devis à ta raison sociale avec ton lien de paiement. Copie, imprime en PDF, garde une copie locale."
+        : "Quote under your business name with your payment link. Copy, print to PDF, keep a local copy.",
     },
     "outils/checklist": {
       title: fr ? "Checklist fermeture 7 jours" : "7-day close checklist",
-      ogTitle: fr ? "Checklist lead magnet — gratuit" : "Checklist lead magnet — free",
+      ogTitle: fr ? "Checklist fermeture 7 jours — sans courriel" : "7-day close checklist — no email needed",
       description: fr
-        ? "Huit actions pour fermer sans fuite. Courriel → checklist PDF. CTA Growth + Portail."
-        : "Eight actions to close without leakage. Email → PDF checklist. Growth + Portal CTAs.",
+        ? "Cases à cocher sauvegardées, liste de fermeture éditable, impression PDF. Aucun courriel requis."
+        : "Saved checkboxes, editable close list, print to PDF. No email required.",
     },
     tools: {
       title: "Master Tools",
@@ -112,8 +108,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Forfaits BlackWayConnect — 99 $ à 2 499 $ CAD/mois"
         : "BlackWayConnect plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Paddle pour Launch/Growth/Scale."
-        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle for Launch/Growth/Scale.",
+        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Abonnement Paddle, essai 14 jours."
+        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle subscription, 14-day trial.",
     },
     "forfaits-growth": {
       title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
@@ -133,6 +129,15 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Revenu #2 optionnel : outils terrain. Dashboard mobile = Portail inclus avec Grow Hub. Les deux se combinent dans le Portail Client Master."
         : "Optional revenue #2: field tools. Mobile dashboard = Portal included with Grow Hub. Both merge in Client Master Portal.",
     },
+    "modules-ia": {
+      title: fr ? "Modules IA · Chatbot + Accueil vocal" : "AI modules · Chatbot + Voice reception",
+      ogTitle: fr
+        ? "Chatbot IA dès 99 $ · Accueil vocal IA dès 149 $ CAD/mois"
+        : "AI Chatbot from $99 · AI Voice reception from $149 CAD/mo",
+      description: fr
+        ? "Chatbot IA pour ton site et accueil vocal IA pour ta ligne téléphonique. Abonnement mensuel Paddle, activé dans ton Portail Client Master."
+        : "AI chatbot for your website and AI voice reception for your phone line. Monthly Paddle subscription, activated in your Client Master Portal.",
+    },
     "app-forfaits": {
       title: fr ? "Pack Cellulaire" : "Cellular Pack",
       description: fr
@@ -145,8 +150,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment ça marche — paie, le forfait s’active"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis Launch, Growth ou Scale, paie avec Paddle, puis le Portail s’active automatiquement."
-        : "Pick Launch, Growth, or Scale, pay with Paddle, and the Portal activates automatically.",
+        ? "Choisis ton forfait (Spark à Partner), paie avec Paddle, puis le Portail s’active automatiquement."
+        : "Pick your plan (Spark to Partner), pay with Paddle, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
@@ -257,7 +262,7 @@ function buildJsonLd(lang: "fr" | "en", canonical: string, pageKey: string) {
     "@id": orgId,
     name: "BlackWayConnect",
     url: SITE,
-    logo: OG_IMAGE,
+    logo: `${SITE}/brand/bwc-logo.png`,
     email: EMAILS.service,
     telephone: [PHONES.local.display, PHONES.tollFree.display],
     address: {

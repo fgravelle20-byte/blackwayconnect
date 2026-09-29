@@ -129,6 +129,22 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blackwayconnect.com/modules-ia</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://blackwayconnect.com/modules-ia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackwayconnect.com/en/modules-ia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackwayconnect.com/modules-ia" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://blackwayconnect.com/en/modules-ia</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://blackwayconnect.com/modules-ia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackwayconnect.com/en/modules-ia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackwayconnect.com/modules-ia" />
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blackwayconnect.com/portail</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://blackwayconnect.com/portail" />
     <xhtml:link rel="alternate" hreflang="en" href="https://blackwayconnect.com/en/portail" />

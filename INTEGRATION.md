@@ -79,14 +79,9 @@ Unmapped Stripe amounts (e.g. a $999 CAD invoice PaymentIntent) do **not** unloc
 
 Vorixa **service géré** invoices / Payment Links ($499 Départ, $999 Croissance, $1500, $3000) are detected in `pipe/vorixaManaged.js` and return `ignore: vorixa_service_gere`. They must not unlock Grow Hub Growth ($499 collision). Collection playbook: `ops/vorixa-client-projects/`.
 
-Live Vorixa service-géré checkout (Managed Payments, 2026-09-13):
+Legacy Vorixa service-géré Stripe checkout (retired 2026-09-28):
 
-| Plan | CAD | Payment Link |
-|------|-----|--------------|
-| Départ | 499 | https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t |
-| Croissance | 999 | https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u |
-| Personnalisé | 1500 | https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v |
-| Personnalisé | 3000 | https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w |
+All previous Stripe Payment Links are disabled. Historical IDs remain only in code for reconciliation of old Stripe events. New Vorixa checkout traffic must use the Paddle-backed Vorixa pricing/checkout flow.
 
 Pipe resolve order: Vorixa guard → metadata `bw_forfait` → `client_reference_id` → `payment_link` (plink map) → price id → line description → amount cents.
 
@@ -106,8 +101,8 @@ Pipe resolve order: Vorixa guard → metadata `bw_forfait` → `client_reference
 | Cell Fleet | — | pipe prêt (`cell_fleet`) | rank cell 3 | **GAP** — Payment Link à créer |
 | Cell Command | — | pipe prêt (`cell_command`) | rank cell 4 | **GAP** — Payment Link à créer |
 
-**CTA site :** `/forfaits` → chaque carte → `checkoutUrl(plan)` = Payment Link + `client_reference_id=site_web:grow_hub_*` + UTM.  
-**Redirect Stripe (vérifié live) :** `after_completion` → `https://blackwayconnect.com/portail?session_id={CHECKOUT_SESSION_ID}` sur les 6 plinks Grow Hub.  
+**CTA site :** `/forfaits` → chaque carte self-serve → `checkoutUrl(plan)` → Paddle `/payer?plan=…` + UTM.  
+**Stripe Payment Links :** tous désactivés; conservés uniquement comme références historiques pour rapprochement.  
 **HubSpot :** `bw_forfait` + `bw_forfait_paye` = clé exacte ; cellulaire → `bw_forfait_cellulaire` si prop existe.  
 **Catalog code :** `src/stripeConfig.ts` · `src/portalTools.ts` · `pipe/index.js` (`PRICE_TO_FORFAIT` + `PLINK_TO_FORFAIT` + `AMOUNT_CENTS_TO_FORFAIT`).
 
@@ -136,9 +131,9 @@ Voir `base44/README.md`.
 | Site contact form | `form_web` via `/api/lead` |
 | AI Secretary widget | `source=campagne` + `message` contains `bw_source=ai_secretary_24h` |
 | App signup / in-app lead | `app_mobile` → pipe `/lead` with `X-BW-Key` |
-| Site Stripe checkout | Payment Link + `client_reference_id=site_web:grow_hub_*` + UTM |
+| Site Paddle checkout | `/payer?plan=…` + UTM; fulfillment via Paddle webhook |
 | Mobile app deep link | `bw_source=mobile_app`, `bw_ref=site`, optional `bw_forfait` |
-| Stripe Checkout / invoices | Stripe events → `/webhooks/stripe` (HMAC) |
+| Legacy Stripe history | Stripe events → `/webhooks/stripe` retained only for historical reconciliation |
 
 Pipe forfait keys already include Grow Hub + `ai_scale` (Application mobile & IA).
 

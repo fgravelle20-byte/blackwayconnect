@@ -1,4 +1,4 @@
-/** Portail Master — outils Type A (web) + Type B (cellulaire). Unlock = union des deux plans. */
+/** Portail Master — outils Type A (web) + Type B (cellulaire). Unlock = union des deux plans. Master CRM = cerveau. */
 
 import {
   CELLULAIRE_PLANS,
@@ -64,7 +64,12 @@ export const WEB_PORTAL_TOOLS: PortalTool[] = [
 ];
 
 export const CELL_PORTAL_TOOLS: PortalTool[] = [
-  { id: "cell_capture", path: "/portail/capture", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
+  { id: "cell_capture", path: "/portail/capture", minWebPlan: 1, minCellPlan: 1, line: "cellulaire" },
+  { id: "cell_pipeline", path: "/portail/pipeline", minWebPlan: 1, minCellPlan: 2, line: "cellulaire" },
+  { id: "cell_checkout", path: "/portail/cell-checkout", minWebPlan: 1, minCellPlan: 2, line: "cellulaire" },
+  { id: "cell_streak", path: "/portail/streak", minWebPlan: 1, minCellPlan: 3, line: "cellulaire" },
+  { id: "cell_fleet_ops", path: "/portail/fleet", minWebPlan: 1, minCellPlan: 3, line: "cellulaire" },
+  { id: "cell_merge", path: "/portail/merge", minWebPlan: 1, minCellPlan: 4, line: "cellulaire" },
   { id: "forfaits_cellulaire", path: "/forfaits-cellulaire", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
   { id: "support", path: "/contact", minWebPlan: 0, minCellPlan: 1, line: "cellulaire" },
 ];
@@ -78,7 +83,7 @@ export function planRank(forfait: string | null | undefined): number {
 export function splitForfaits(forfait: string | null | undefined, forfaitCellulaire?: string | null) {
   const a = String(forfait || "").trim();
   const b = String(forfaitCellulaire || "").trim();
-  const web = !isCellulaireForfait(a) && a ? a : "";
+  const web = a && !isCellulaireForfait(a) && !a.startsWith("ia_") ? a : "";
   const cell =
     (isCellulaireForfait(b) && b) || (isCellulaireForfait(a) && a) || "";
   return { forfaitWeb: web || null, forfaitCellulaire: cell || null };
@@ -92,7 +97,9 @@ export function toolUnlocked(
   const w = planRank(forfaitWeb);
   const c = cellulaireRank(forfaitCellulaire);
   if (tool.line === "web") return tool.minWebPlan > 0 && w >= tool.minWebPlan;
-  return tool.minCellPlan > 0 && c >= tool.minCellPlan;
+  const byCell = tool.minCellPlan > 0 && c >= tool.minCellPlan;
+  const byWeb = tool.minWebPlan > 0 && w >= tool.minWebPlan;
+  return byCell || byWeb;
 }
 
 /** Tools listed on a cellulaire plan (for marketing page). */

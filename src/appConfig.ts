@@ -4,7 +4,7 @@
  * Type A (revenu #1): Grow Hub web /forfaits — inclut accès mobile au Portail (surplus $0).
  * Pitch: « Contrôle ton dashboard partout sur mobile. L’app est incluse. »
  * Type B (revenu #2 optionnel): Pack Cellulaire /forfaits-cellulaire — outils terrain.
- * Merge: un Portail Master + HubSpot (union des outils A + B).
+ * Merge: un Portail Master + Master CRM BlackWayConnect (union des outils A + B).
  */
 
 export const SITE_ORIGIN = "https://blackwayconnect.com";
@@ -24,8 +24,6 @@ export const APP_WEB_URL = MOBILE_DASHBOARD_URL;
 /** Empty until App Store listing is Ready for Sale. ASC Apple ID (internal): 6797345749 — not a public URL. */
 export const APP_STORE_URL = "";
 export const PLAY_STORE_URL = "";
-
-export const STRIPE_WEBHOOK_URL = "https://api.blackwayconnect.com/webhooks/stripe";
 
 export const APP_QR_PATH = "/qr-app.svg";
 export const SITE_QR_PATH = "/qr-site.svg";

@@ -73,13 +73,13 @@ const sections = [
     title: "Paiements",
     state: "Paddle",
     detail:
-      "Caisse réelle : Paddle (Launch, Growth, Scale). RevenueCat = ouvertures d'app, pas des payeurs. HubSpot rendez-vous ≠ argent reçu.",
+      "Caisse réelle : Paddle. RevenueCat = ouvertures d'app, pas des payeurs. Étapes Master CRM + fulfillment Paddle — le solde se vérifie dans Paddle.",
   },
   {
     title: "Automatisations",
     state: "Actif",
     detail:
-      "Leads Tools/Portail → HubSpot · webhooks Paddle → forfait + portail. Suivi d’exécution encore partiel.",
+      "Leads Tools/Portail → Master CRM BlackWayConnect · webhooks Paddle → forfait + portail. Suivi d’exécution encore partiel.",
   },
 ];
 
@@ -138,7 +138,7 @@ export function OwnerConsolePage() {
             </Link>
             <p className="owner-console__eyebrow">ESPACE PROPRIÉTAIRE · PRIVÉ · TWIN TURBO</p>
             <h1>Tout ce qui entre. Tout ce qui avance.</h1>
-            <p>Cockpit leads / deals / scores — pipeline BlackWay HubSpot en direct.</p>
+            <p>Cockpit leads / deals / scores — Master CRM BlackWayConnect.</p>
             <p className="owner-console__cash">
               L'argent BlackWay est Paddle. RevenueCat compte des ouvertures d'app, pas des abonnements.
             </p>
@@ -162,7 +162,7 @@ export function OwnerConsolePage() {
                   <code>CF_ACCESS_AUD</code>, <code>BW_OWNER_EMAIL</code>.
                 </li>
                 <li>
-                  Confirmer <code>BW_LEAD_KEY</code> (site + pipe) et <code>HUBSPOT_TOKEN</code> (pipe).
+                  Confirmer <code>BW_LEAD_KEY</code> (site + pipe). Master CRM : <code>/crm</code>.
                 </li>
                 <li>
                   Doc : <code>ops/OWNER_CONSOLE.md</code>

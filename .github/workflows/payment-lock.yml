@@ -49,12 +49,24 @@ jobs:
           if [ -n "$hit" ]; then
             echo "::warning::Guarded payment files changed:"
             echo "$hit"
-            if [ "$locked" = "true" ] && [ "$unlock" != "1" ]; then
-              echo "::error::PAYMENT LOCK: guarded files changed while locked=true without unlock_ack. See ops/payment-lock/README.md"
-              exit 1
+            # Allow only the final lock restoration:
+            # - LOCKED.json is the only guarded file changed
+            # - the resulting file is locked
+            # - unlock_ack has been removed
+            relock_only=false
+            if [ "$(printf '%s' "$hit" | sed '/^$/d' | wc -l)" -eq 1 ] \
+              && [ "$(printf '%s' "$hit" | sed '/^$/d')" = "$LOCK" ] \
+              && [ "$locked" = "true" ] \
+              && [ "$unlock" != "1" ]; then
+              relock_only=true
             fi
-            if [ "$unlock" = "1" ]; then
-              echo "Unlock acknowledged — owner review required (CODEOWNERS)."
+            if [ "$relock_only" = true ]; then
+              echo "Final payment lock restoration detected."
+            elif [ "$unlock" != "1" ]; then
+              echo "::error::Payment changes require unlock_ack. See ops/payment-lock/README.md"
+              exit 1
+            else
+              echo "Unlock acknowledged — owner CODEOWNERS review required."
             fi
           else
             echo "No guarded payment files changed."

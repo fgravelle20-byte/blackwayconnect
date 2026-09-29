@@ -1,28 +1,16 @@
-# BACKLOG — Pack Cellulaire Stripe (NE PAS FAIRE MAINTENANT)
+# RETIRÉ — Pack Cellulaire Stripe
 
-**Priorité actuelle = déployer l’app Apple** → `base44/APPLE_TESTFLIGHT_CHECKLIST.md`.  
-Revenir ici seulement après TestFlight / App Store utiles.
+Stripe n'est plus un canal de paiement pour les nouvelles ventes BlackWayConnect.
 
----
+## Règle active
 
-# Stripe — Pack Cellulaire (revenu #2)
+- Processeur de nouveaux paiements : **Paddle**
+- Ne créer aucun nouveau Payment Link Stripe.
+- Ne remettre aucune URL `buy.stripe.com` dans le site, l'app mobile, les courriels ou les outils.
+- Les offres Cellulaire restent **sur demande** tant que des prix Paddle dédiés et approuvés ne sont pas ajoutés.
+- Le Portail et les webhooks Stripe existants peuvent rester pour l'historique, remboursements et rapprochement des anciennes transactions.
 
-Créer **4 Payment Links** (CAD / mois, récurrents) dans Stripe Dashboard → Payment Links.
-
-Success URL (tous) :
-`https://blackwayconnect.com/portail?session_id={CHECKOUT_SESSION_ID}`
-
-| Key | Nom | Prix | Metadata produit / link |
-|-----|-----|------|-------------------------|
-| cell_signal | Cell Signal | 79 | `bw_forfait=cell_signal` |
-| cell_route | Cell Route | 199 | `bw_forfait=cell_route` |
-| cell_fleet | Cell Fleet ★ | 399 | `bw_forfait=cell_fleet` |
-| cell_command | Cell Command | 799 | `bw_forfait=cell_command` |
-
-Après création, coller les URLs `https://buy.stripe.com/...` dans :
-1. `src/cellulaireConfig.ts` → `paymentLink` de chaque plan
-2. `worker/index.ts` → `CELLULAIRE_CHECKOUT`
-
-Puis `npm run deploy`.
-
-Webhook déjà : `https://api.blackwayconnect.com/webhooks/stripe`
+Voir :
+- `src/cellulaireConfig.ts`
+- `src/paddleCatalog.ts`
+- `ops/payment-lock/LOCKED.json`

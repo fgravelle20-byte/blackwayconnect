@@ -1,4 +1,4 @@
-/** Shared lead capture → site Worker `/api/lead` → pipe → HubSpot. */
+/** Shared lead capture → site Worker `/api/lead` → pipe Master CRM (HubSpot optional sync). */
 
 export type PostLeadResult = {
   ok: boolean;

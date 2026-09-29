@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { postLead } from "../lib/postLead";
 import { trackLead } from "../tracking";
 import { FEATURED_PLAN, PLANS, checkoutUrl, type PlanKey } from "../stripeConfig";
+import { CELLULAIRE_PLANS, type CellulairePlanKey } from "../cellulaireConfig";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -29,13 +30,17 @@ function readSession(): PortalSession | null {
   }
 }
 
-const FORFAIT_OPTIONS: { value: PlanKey | "enterprise"; labelFr: string; labelEn: string }[] = [
-  { value: "grow_hub_spark", labelFr: "Spark", labelEn: "Spark" },
-  { value: "grow_hub_launch", labelFr: "Launch", labelEn: "Launch" },
-  { value: "grow_hub_growth", labelFr: "Growth ★", labelEn: "Growth ★" },
-  { value: "grow_hub_scale", labelFr: "Scale", labelEn: "Scale" },
-  { value: "grow_hub_command", labelFr: "Command", labelEn: "Command" },
-  { value: "grow_hub_partner", labelFr: "Partner", labelEn: "Partner" },
+const FORFAIT_OPTIONS: { value: PlanKey | CellulairePlanKey | "enterprise"; labelFr: string; labelEn: string }[] = [
+  { value: "grow_hub_spark", labelFr: "Web · Spark", labelEn: "Web · Spark" },
+  { value: "grow_hub_launch", labelFr: "Web · Launch", labelEn: "Web · Launch" },
+  { value: "grow_hub_growth", labelFr: "Web · Growth ★", labelEn: "Web · Growth ★" },
+  { value: "grow_hub_scale", labelFr: "Web · Scale", labelEn: "Web · Scale" },
+  { value: "grow_hub_command", labelFr: "Web · Command", labelEn: "Web · Command" },
+  { value: "grow_hub_partner", labelFr: "Web · Partner", labelEn: "Web · Partner" },
+  { value: "cell_signal", labelFr: "Cell · Signal", labelEn: "Cell · Signal" },
+  { value: "cell_route", labelFr: "Cell · Route", labelEn: "Cell · Route" },
+  { value: "cell_fleet", labelFr: "Cell · Fleet", labelEn: "Cell · Fleet" },
+  { value: "cell_command", labelFr: "Cell · Command", labelEn: "Cell · Command" },
   { value: "enterprise", labelFr: "Entreprise", labelEn: "Enterprise" },
 ];
 
@@ -43,7 +48,6 @@ const FORFAIT_OPTIONS: { value: PlanKey | "enterprise"; labelFr: string; labelEn
 export function PortalCapturePage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
-  const navigate = useNavigate();
   const [session, setSession] = useState<PortalSession | null>(null);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
@@ -52,16 +56,11 @@ export function PortalCapturePage() {
 
   useEffect(() => {
     const s = readSession();
-    if (!s) {
-      navigate(path("/portail"), { replace: true });
-      return;
-    }
     setSession(s);
-  }, [navigate, path]);
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!session) return;
     setPending(true);
     setStatus("idle");
     setError("");
@@ -75,8 +74,8 @@ export function PortalCapturePage() {
       telephone: String(fd.get("telephone") || ""),
       message: [
         "bw_source=portail_capture",
-        `captured_by=${session.email}`,
-        `portal_forfait=${session.forfait}`,
+        `captured_by=${session?.email || "field"}`,
+        session?.forfait ? `portal_forfait=${session.forfait}` : "",
         String(fd.get("message") || ""),
       ]
         .filter(Boolean)
@@ -103,14 +102,10 @@ export function PortalCapturePage() {
     setStatus("err");
   }
 
-  if (!session) {
-    return (
-      <section className="section section--page">
-        <div className="shell">
-          <p role="status">{fr ? "Connexion portail…" : "Portal sign-in…"}</p>
-        </div>
-      </section>
-    );
+  function planAmount(value: string): string {
+    if (value in PLANS) return ` · ${PLANS[value as PlanKey].amountCad}$`;
+    if (value in CELLULAIRE_PLANS) return ` · ${CELLULAIRE_PLANS[value as CellulairePlanKey].amountCad}$`;
+    return "";
   }
 
   const growthHref = checkoutUrl(FEATURED_PLAN, {
@@ -128,10 +123,21 @@ export function PortalCapturePage() {
             {fr ? "Capturer un lead → CRM BlackWay" : "Capture a lead → BlackWay CRM"}
           </h1>
           <p className="lede">
-            {fr
-              ? `Connecté : ${session.email}. La fiche crée contact + deal dans le pipeline BlackWay.`
-              : `Signed in: ${session.email}. Creates contact + deal in the BlackWay pipeline.`}
+            {session
+              ? fr
+                ? `Connecté : ${session.email}. La fiche crée un dossier dans le CRM BlackWay.`
+                : `Signed in: ${session.email}. Creates a record in BlackWay CRM.`
+              : fr
+                ? "Capture terrain → CRM BlackWay. Connexion portail optionnelle pour lier le compte."
+                : "Field capture → BlackWay CRM. Portal sign-in is optional to link the account."}
           </p>
+          {!session ? (
+            <p className="cta-row" style={{ marginTop: "0.75rem" }}>
+              <Link className="btn btn--ghost" to={path("/portail")}>
+                {fr ? "Connexion portail" : "Portal sign-in"}
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         <form className="form tools-capture" onSubmit={onSubmit}>
@@ -152,7 +158,7 @@ export function PortalCapturePage() {
           <div className="form-grid">
             <div className="field">
               <label htmlFor="pc-ent">{fr ? "Entreprise" : "Company"}</label>
-              <input id="pc-ent" name="entreprise" autoComplete="organization" />
+              <input id="pc-ent" name="entreprise" required autoComplete="organization" />
             </div>
             <div className="field">
               <label htmlFor="pc-tel">{fr ? "Téléphone" : "Phone"}</label>
@@ -166,7 +172,7 @@ export function PortalCapturePage() {
                 {FORFAIT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>
                     {fr ? o.labelFr : o.labelEn}
-                    {o.value in PLANS ? ` · ${PLANS[o.value as PlanKey].amountCad}$` : ""}
+                    {planAmount(o.value)}
                   </option>
                 ))}
               </select>

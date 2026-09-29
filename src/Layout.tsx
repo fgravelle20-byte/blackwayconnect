@@ -108,6 +108,7 @@ export function Layout() {
       <NavLink to={path("/services")}>{t.nav.services}</NavLink>
       <NavLink to={path("/grow-hub")}>{t.nav.grow}</NavLink>
       <NavLink to={path("/forfaits-cellulaire")}>{t.nav.cellulaire}</NavLink>
+      <NavLink to={path("/modules-ia")}>{t.nav.modulesIa}</NavLink>
       <NavLink to={path("/qui-sommes-nous")}>{t.nav.mission}</NavLink>
       <NavLink to={path("/faq")}>{t.nav.faq}</NavLink>
     </>
@@ -130,11 +131,14 @@ export function Layout() {
           <Link to={path("/")} className="brand" aria-label={`${t.brand} home`}>
             <img
               className="brand__logo"
-              src="/logo.png"
-              width={160}
-              height={40}
+              src="/brand/bwc-logo-480.png"
+              srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+              sizes="160px"
+              width={480}
+              height={215}
               alt={t.brand}
               decoding="async"
+              fetchPriority="high"
             />
             <span className="brand__text">
               <span className="brand__name">{t.brand}</span>
@@ -192,7 +196,17 @@ export function Layout() {
         <div className="shell site-footer__inner">
           <div className="site-footer__grid">
             <div className="site-footer__col">
-              <p className="site-footer__label">{t.brand}</p>
+              <img
+                className="site-footer__logo"
+                src="/brand/bwc-logo-480.png"
+                srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+                sizes="168px"
+                width={480}
+                height={215}
+                alt={t.brand}
+                loading="lazy"
+                decoding="async"
+              />
               <p className="site-footer__blurb">{t.footer}</p>
               <nav className="site-footer__links" aria-label={lang === "fr" ? "Portail" : "Portal"}>
                 <Link to={path("/portail")}>{t.ctaApp}</Link>
@@ -207,6 +221,8 @@ export function Layout() {
                 <Link to={path("/portail")}>{t.nav.portal}</Link>
                 <Link to={path("/outils")}>{t.nav.tools}</Link>
                 <Link to={path("/grow-hub")}>{t.nav.grow}</Link>
+                <Link to={path("/forfaits-cellulaire")}>{t.nav.cellulaire}</Link>
+                <Link to={path("/modules-ia")}>{t.nav.modulesIa}</Link>
               </nav>
             </div>
 

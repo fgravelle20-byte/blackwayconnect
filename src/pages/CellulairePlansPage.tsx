@@ -3,7 +3,6 @@ import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
   FEATURED_CELLULAIRE,
-  STRIPE_CELLULAIRE_TODO,
   cellulaireCheckoutUrl,
   isCellulaireCheckoutReady,
   type CellulairePlanKey,
@@ -49,13 +48,15 @@ export function CellulairePlansPage() {
           </div>
         </div>
 
-        {!anyLive ? (
-          <p className="form-status" role="status">
-            {fr
+        <p className="form-status" role="status">
+          {anyLive
+            ? fr
+              ? "Essai gratuit 14 jours, paiement sécurisé Paddle. Le pack s’active dans ton Portail dès l’abonnement."
+              : "14-day free trial, secure Paddle payment. The pack unlocks in your Portal as soon as you subscribe."
+            : fr
               ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Paddle sera proposé avec l’offre finale."
               : "Cellular Pack is quote-based — contact BlackWay below. Paddle payment will be included with the final offer."}
-          </p>
-        ) : null}
+        </p>
 
         <div className="plan-rail">
           {CELLULAIRE_ORDER.map((key) => {
@@ -85,7 +86,9 @@ export function CellulairePlansPage() {
                   {plan.tools
                     .filter((t) => t !== "support" && t !== "forfaits_cellulaire")
                     .map((t) => (
-                      <li key={t}>{toolLabel(t, fr)}</li>
+                      <li key={t}>
+                        <Link to={path(TOOL_HREF[t] || "/portail")}>{toolLabel(t, fr)}</Link>
+                      </li>
                     ))}
                 </ul>
                 <a
@@ -125,26 +128,19 @@ export function CellulairePlansPage() {
           <ContactForm source="app_mobile" />
         </div>
 
-        <details style={{ marginTop: "2rem" }}>
-          <summary className="lede">
-            {fr
-              ? "Offres Cellulaire disponibles sur demande"
-              : "Cellular offers available on request"}
-          </summary>
-          <ul className="lede">
-            {STRIPE_CELLULAIRE_TODO.map((row) => (
-              <li key={row.key}>
-                <code>{row.key}</code> — {row.name} — {row.amountCad} CAD/mo — metadata{" "}
-                <code>{row.metadata}</code> — success{" "}
-                <code>https://blackwayconnect.com/portail?session_id=&#123;CHECKOUT_SESSION_ID&#125;</code>
-              </li>
-            ))}
-          </ul>
-        </details>
       </div>
     </section>
   );
 }
+
+const TOOL_HREF: Record<string, string> = {
+  cell_capture: "/portail/capture",
+  cell_pipeline: "/portail/pipeline",
+  cell_checkout: "/portail/cell-checkout",
+  cell_merge: "/portail/merge",
+  cell_streak: "/portail/streak",
+  cell_fleet_ops: "/portail/fleet",
+};
 
 function toolLabel(id: string, fr: boolean): string {
   const map: Record<string, { fr: string; en: string }> = {

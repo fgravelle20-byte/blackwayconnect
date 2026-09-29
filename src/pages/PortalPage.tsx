@@ -20,9 +20,24 @@ import {
   type PortalToolId,
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
+import { MODULES_IA, isModuleIaKey } from "../modulesIaConfig";
 import { trackPurchase } from "../tracking";
+import { readLeakScore } from "../lib/portalSession";
 
 const STORAGE_KEY = "bw_portal_session";
+
+/** Real Paddle txn_… only — never claim on catalog placeholders like {txn_id}. */
+function isLivePaddleTransactionId(raw: string | null): boolean {
+  if (!raw) return false;
+  let t = raw.trim();
+  try {
+    t = decodeURIComponent(t);
+  } catch {
+    /* keep raw */
+  }
+  if (t.includes("{") || t.includes("}")) return false;
+  return /^txn_[a-zA-Z0-9]+$/.test(t);
+}
 
 type PortalSession = {
   token: string;
@@ -34,6 +49,9 @@ type PortalSession = {
   labelCellulaire?: string | null;
   amountCad: number;
   amountCadCellulaire?: number;
+  forfaitChatbot?: string | null;
+  forfaitVocal?: string | null;
+  modules?: { key: string; label: string; amountCad: number }[];
   exp: number;
 };
 
@@ -111,8 +129,8 @@ const TOOL_COPY: Partial<
     en: { title: "Mobile pipeline", body: "Advance deals on the road.", cta: "Open" },
   },
   cell_checkout: {
-    fr: { title: "Checkout prospect", body: "Envoyer un lien de paiement depuis le terrain.", cta: "Ouvrir" },
-    en: { title: "Prospect checkout", body: "Send a lien de paiement from the field.", cta: "Open" },
+    fr: { title: "Checkout prospect", body: "Envoyer un lien Paddle Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
+    en: { title: "Prospect checkout", body: "Send a Grow Hub Paddle link from the field (Cellular Pack = request).", cta: "Open" },
   },
   cell_streak: {
     fr: { title: "Streak terrain", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
@@ -222,7 +240,7 @@ export function PortalPage() {
     async (body: Record<string, string>) => {
       setBusy(true);
       setError(null);
-      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 5 : 1;
+      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 8 : 1;
       let lastErr = fr ? "Accès refusé" : "Access denied";
       try {
         for (let i = 0; i < attempts; i++) {
@@ -252,6 +270,9 @@ export function PortalPage() {
               labelCellulaire: data.labelCellulaire,
               amountCad: data.amountCad,
               amountCadCellulaire: data.amountCadCellulaire,
+              forfaitChatbot: data.forfaitChatbot,
+              forfaitVocal: data.forfaitVocal,
+              modules: data.modules,
               exp: data.exp,
             });
             if (params.get("session_id") || params.get("sessionId") || params.get("transaction_id") || params.get("transactionId")) {
@@ -292,6 +313,10 @@ export function PortalPage() {
       setEmail(emailParam);
     }
     if (transactionId) {
+      if (!isLivePaddleTransactionId(transactionId)) {
+        setBooting(false);
+        return;
+      }
       void claim({ transaction_id: transactionId, plan });
       setBooting(false);
       return;
@@ -349,6 +374,16 @@ export function PortalPage() {
     return (
       <section className="section section--page section--portal">
         <div className="shell portal-login">
+          <img
+            className="portal-login__logo"
+            src="/brand/bwc-logo-480.png"
+            srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+            sizes="220px"
+            width={480}
+            height={215}
+            alt="BlackWayConnect"
+            decoding="async"
+          />
           <p className="eyebrow">{fr ? "Portail Client Master" : "Client Master Portal"}</p>
           <h1 className="display page-hero__title">
             {fr ? "Connexion sans mot de passe." : "Passwordless sign-in."}
@@ -387,6 +422,8 @@ export function PortalPage() {
                 <Link to={path("/forfaits")}>Voir les forfaits Grow Hub</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire</Link>
+                {" · "}
+                <Link to={path("/modules-ia")}>Chatbot + Accueil vocal IA</Link>
               </>
             ) : (
               <>
@@ -394,6 +431,8 @@ export function PortalPage() {
                 <Link to={path("/forfaits")}>See Grow Hub plans</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Cellular Pack</Link>
+                {" · "}
+                <Link to={path("/modules-ia")}>AI Chatbot + Voice reception</Link>
               </>
             )}
           </p>
@@ -419,6 +458,16 @@ export function PortalPage() {
   const cellLabel = forfaitCell
     ? CELLULAIRE_PLANS[forfaitCell as CellulairePlanKey]?.nameFr || session.labelCellulaire
     : null;
+  const moduleKeys = [session.forfaitChatbot, session.forfaitVocal, session.forfait].filter(
+    (k, i, all): k is string => !!k && isModuleIaKey(k) && all.indexOf(k) === i,
+  );
+  const modules = moduleKeys.length
+    ? moduleKeys.map((k) => {
+        const m = MODULES_IA[k as keyof typeof MODULES_IA];
+        return { key: k, label: fr ? m.nameFr : m.nameEn, amountCad: m.amountCad };
+      })
+    : session.modules || [];
+  const lastLeak = typeof window !== "undefined" ? readLeakScore() : null;
 
   return (
     <section className="section section--page section--portal">
@@ -430,6 +479,15 @@ export function PortalPage() {
               {fr ? "Centre de contrôle Grow Hub" : "Grow Hub control center"}
             </h1>
             <p className="lede portal-head__meta">{session.email}</p>
+            {lastLeak ? (
+              <p className="lede" style={{ marginTop: "0.35rem" }}>
+                {fr
+                  ? `Dernier Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Qualité ${lastLeak.quality}`
+                  : `Last Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Quality ${lastLeak.quality}`}
+                {" · "}
+                <Link to={path("/diagnostic")}>{fr ? "Refaire" : "Run again"}</Link>
+              </p>
+            ) : null}
             <p className="lede" style={{ marginTop: "0.5rem" }}>
               {fr
                 ? "Master Leads — dashboard web + mobile (ajoute cette page à l’écran d’accueil). Les apps stores arrivent ensuite."
@@ -444,8 +502,8 @@ export function PortalPage() {
         <div className="portal-status" role="status">
           <span className="portal-status__dot" aria-hidden />
           {fr
-            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile: Portail web · Pack Cellulaire: ${hasCell ? "oui" : "non"}`
-            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile: web Portal · Cellular Pack: ${hasCell ? "yes" : "no"}`}
+            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile: Portail web · Pack Cellulaire: ${hasCell ? "oui" : "non"} · Modules IA: ${modules.length || "non"}`
+            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile: web Portal · Cellular Pack: ${hasCell ? "yes" : "no"} · AI modules: ${modules.length || "no"}`}
         </div>
 
         <section className="portal-inbox" aria-labelledby="portal-inbox-title">
@@ -597,6 +655,35 @@ export function PortalPage() {
               </a>
             ) : null}
           </div>
+
+          <div className="portal-plan__card">
+            <p className="portal-plan__label">
+              {fr ? "Modules IA · Chatbot + Accueil vocal" : "AI modules · Chatbot + Voice reception"}
+            </p>
+            {modules.length ? (
+              <>
+                <h2>{modules.map((m) => m.label).join(" · ")}</h2>
+                <p className="portal-plan__price">
+                  {`${modules.reduce((sum, m) => sum + (m.amountCad || 0), 0)} $ CAD / ${fr ? "mois" : "mo"}`}
+                </p>
+                <p className="lede" style={{ fontSize: "0.95rem" }}>
+                  {fr
+                    ? "Activation par l’équipe BlackWay : on te contacte pour brancher ton site ou ta ligne."
+                    : "Activated by the BlackWay team: we contact you to connect your website or phone line."}
+                </p>
+              </>
+            ) : (
+              <>
+                <h2>{fr ? "Pas encore" : "Not yet"}</h2>
+                <p className="portal-plan__price">{fr ? "Dès 99 $ CAD / mois" : "From $99 CAD / mo"}</p>
+              </>
+            )}
+            {!session.forfaitChatbot || !session.forfaitVocal ? (
+              <Link className="btn btn--primary" to={path("/modules-ia")}>
+                {fr ? "Ajouter un module IA" : "Add an AI module"}
+              </Link>
+            ) : null}
+          </div>
         </div>
 
         <div className="portal-actions" style={{ marginTop: "1.5rem" }}>
@@ -646,7 +733,7 @@ export function PortalPage() {
                 })}
                 rel="noopener noreferrer"
               >
-                {fr ? "Demander Cell Fleet" : "Request Cell Fleet"}
+                {fr ? "Ajouter Cell Fleet" : "Add Cell Fleet"}
               </a>
             </div>
           </aside>

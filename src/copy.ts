@@ -10,6 +10,7 @@ export type Copy = {
     pricing: string;
     how: string;
     cellulaire: string;
+    modulesIa: string;
     mission: string;
     team: string;
     contact: string;
@@ -131,6 +132,7 @@ export const copy: Record<Lang, Copy> = {
       pricing: "Forfaits",
       how: "Comment ça marche",
       cellulaire: "Pack Cellulaire",
+      modulesIa: "Chatbot + Accueil vocal IA",
       mission: "Mission",
       team: "Équipe",
       contact: "Contact",
@@ -145,15 +147,15 @@ export const copy: Record<Lang, Copy> = {
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
     appEyebrow: "Inclus avec Grow Hub",
-    appTitle: "Votre portail client, accessible partout.",
+    appTitle: "Le portail client est inclus.",
     appBody:
-      "Chaque forfait Grow Hub inclut le Portail Client Master (web + mobile navigateur). Apps stores : bientôt. Pack Cellulaire = optionnel.",
+      "Chaque forfait Grow Hub ouvre le portail sur le web et dans le navigateur mobile. Les applications de magasin arrivent ensuite. Le pack cellulaire est optionnel.",
     appNote:
-      "Portail inclus → /portail (PWA / écran d’accueil). Pack terrain optionnel → /forfaits-cellulaire.",
+      "Le portail s’ouvre depuis le site. Le pack terrain se choisit à part.",
     heroEyebrow: "Québec · Mondial",
-    heroTitle: "Master Leads. Twin Turbo Full Performance.",
+    heroTitle: "Du premier lead au paiement.",
     heroBody:
-      "Deux moteurs — Volume + Qualité — scorés, livrés, prouvés. Grow Hub Growth — 349 $/mois, Paddle, annulable. Portail inclus dès le jour 1.",
+      "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, essai de 14 jours, annulable.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
@@ -182,58 +184,58 @@ export const copy: Record<Lang, Copy> = {
       { value: "FR / EN", label: "Parcours bilingues" },
       { value: "Paddle", label: "Checkout sécurisé" },
     ],
-    growTitle: "De la première visite au revenu récurrent.",
+    growTitle: "Trois étapes. Pas une pile d’outils.",
     growBody:
-      "Grow Hub indique la prochaine action pour chaque occasion — puis automatise le suivi pour que rien ne refroidisse entre le formulaire et le paiement.",
+      "La demande entre, elle est classée, la prochaine action est claire. Le suivi ne dépend plus d’une boîte courriel.",
     growPoints: [
-      "Site, formulaires et campagnes → un seul dossier prospect, scoré.",
-      "Urgence, budget et langue fixent la priorité réelle — pas l’ordre d’arrivée.",
-      "Pipeline, relances, soumissions et paiements avancent dans le même fil.",
+      "Le site, les formulaires et les campagnes alimentent un seul dossier.",
+      "L’urgence, le budget et la langue décident de la priorité.",
+      "Relance, soumission et paiement restent dans le même fil.",
     ],
-    plansTitle: "Commencez léger. Montez sans changer de système.",
+    plansTitle: "Choisissez le palier. Le système reste le même.",
     plansBody:
-      "Grille Grow Hub complète (CAD/mois, taxes en sus). Launch / Growth / Scale = Paddle (essai 14 jours). Spark / Command / Partner = contact. Portail inclus.",
+      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne (Paddle), avec un essai de 14 jours.",
     plans: [
       {
         key: "grow_hub_spark",
         name: "Spark",
         price: "99 $ / mois",
-        blurb: "Entrée légère — pipeline + secrétaire IA 24h.",
+        blurb: "Pour démarrer : dossier client et secrétaire IA.",
       },
       {
         key: "grow_hub_launch",
         name: "Launch",
         price: "149 $ / mois",
-        blurb: "Pipeline structuré, relances cadrées, soumissions suivies.",
+        blurb: "Relances et soumissions suivies, sans tableur à part.",
       },
       {
         key: "grow_hub_growth",
         name: "Growth",
         price: "349 $ / mois",
-        blurb: "Twin Turbo Full Performance — score, relances, soumissions et paiements mesurés.",
+        blurb: "Le palier recommandé : score, relances, soumissions et paiements.",
       },
       {
         key: "grow_hub_scale",
         name: "Scale",
         price: "699 $ / mois",
-        blurb: "Multi-équipes et automatisations avancées — une seule plateforme revenu.",
+        blurb: "Plusieurs équipes sur la même plateforme.",
       },
       {
         key: "grow_hub_command",
         name: "Command",
         price: "1 249 $ / mois",
-        blurb: "Ops CRM + acquisition gérée quand la fuite exige de l’exécution.",
+        blurb: "L’équipe BlackWay opère le suivi avec vous.",
       },
       {
         key: "grow_hub_partner",
         name: "Partner",
         price: "2 499 $ / mois",
-        blurb: "Plateforme + mandat — puissance agence, discipline SaaS.",
+        blurb: "Plateforme et mandat, pour un volume plus élevé.",
       },
     ],
-    servicesTitle: "Une plateforme. Une équipe pour bâtir autour.",
+    servicesTitle: "Quatre usages. Un seul dossier client.",
     servicesBody:
-      "Ajoutez seulement ce qui augmente le revenu ou réduit le coût d’acquisition — toujours branché sur Grow Hub.",
+      "Site, application, secrétaire et visibilité écrivent dans le même pipeline.",
     services: [
       {
         title: "Sites haute conversion",
@@ -252,12 +254,12 @@ export const copy: Record<Lang, Copy> = {
         body: "Visibilité locale, contenu et mesure des sources — vous savez ce qui remplit le pipeline.",
       },
     ],
-    marketTitle: "Né au Québec. Vendu partout dans le monde.",
+    marketTitle: "Conçu au Québec. Utilisable ailleurs.",
     marketBody:
-      "Europe, Amériques, ailleurs — si un client veut Grow Hub, il s’abonne. Paiement Paddle mondial, parcours bilingues FR/EN, un seul système.",
-    consultTitle: "Parlez à l’équipe BlackWay.",
+      "Le parcours est en français et en anglais. Le paiement en ligne fonctionne au Canada, aux États-Unis et en Europe.",
+    consultTitle: "Une question avant de choisir.",
     consultBody:
-      "Décrivez votre pipeline et votre volume de leads — nous recommandons le forfait Grow Hub adapté, ou une consultation stratégique avant d’acheter.",
+      "Décrivez votre volume de demandes. On indique le forfait qui correspond, ou on en parle avant l’abonnement.",
     form: {
       first: "Prénom",
       last: "Nom",
@@ -363,26 +365,26 @@ export const copy: Record<Lang, Copy> = {
         },
       ],
     },
-    proofTitle: "Infrastructure commerciale, pas une pile d’outils.",
-    proofBody: "Paiements, CRM et portail client — un fil continu du premier clic à l’encaissement.",
+    proofTitle: "Ce qui est inclus avec Grow Hub.",
+    proofBody: "Le paiement, le dossier client et le portail font partie du même abonnement.",
     proofItems: [
-      "Paddle : abonnements et paiements en CAD, annulables, sans friction.",
-      "CRM BlackWay : pipeline et occasions synchronisés avec le dossier prospect.",
-      "Portail Client Master : dashboard web et mobile inclus avec Grow Hub.",
-      "Parcours bilingue FR/EN — une source de vérité, partout dans le monde.",
+      "Paiement en ligne en dollars canadiens, essai de 14 jours, annulable.",
+      "Chaque demande reste dans un dossier, du premier message au paiement.",
+      "Le portail client est inclus, sur le web et sur mobile.",
+      "Français et anglais, sans deuxième système.",
     ],
     proofQuotes: [],
     proofNote: "",
-    faqTitle: "Questions avant de démarrer.",
-    faqBody: "Réponses nettes pour choisir un forfait, un diagnostic ou une consultation.",
+    faqTitle: "Questions fréquentes.",
+    faqBody: "Les réponses courtes, avant de comparer les forfaits.",
     faq: [
       {
         q: "Puis-je m’abonner sans appel ?",
-        a: "Oui. Launch, Growth et Scale s’ouvrent en Paddle Checkout (/payer). Spark, Command et Partner passent par /contact. L’offre Entreprise se discute en consultation. Les Master Tools (/outils) aident à choisir le palier.",
+        a: "Oui. Tous les forfaits Grow Hub, le Pack Cellulaire et les modules IA (chatbot, accueil vocal) se paient en ligne. L’offre Entreprise se discute d’abord.",
       },
       {
         q: "Avez-vous un service client 24h ?",
-        a: "Oui. La Secrétaire IA BlackWay (Conseiller 24h) répond en continu sur le site — forfaits, diagnostic, Grow Hub et prise de coordonnées. Pour un humain : serviceclient@blackwayconnect.com.",
+        a: "La secrétaire du site répond en tout temps. Pour une personne : serviceclient@blackwayconnect.com.",
       },
       {
         q: "Où sont vos bureaux ?",
@@ -390,23 +392,23 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Où vont mes leads et paiements ?",
-        a: "Le site et l’app envoient les demandes vers le CRM BlackWay. Les webhooks Paddle alimentent le même dossier — paiements et abandons visibles rapidement.",
+        a: "Les demandes du site et le paiement en ligne arrivent dans le même dossier client.",
       },
       {
         q: "Le français et l’anglais sont-ils supportés ?",
-        a: "Oui. Français et anglais sur le site, les parcours et le CRM. Un client en Europe, au Canada ou ailleurs s’abonne via Paddle comme tout le monde.",
+        a: "Oui. Le site, le suivi et le paiement fonctionnent en français et en anglais.",
       },
       {
         q: "Quel forfait choisir ?",
-        a: "Spark pour tester, Launch pour structurer, Growth (recommandé) pour vendre et mesurer, Scale / Command / Partner pour multi-équipes, ops et mandat. Comparez aussi sur /forfaits ou /comment-ca-marche.",
+        a: "Spark pour essayer. Launch pour structurer. Growth pour vendre et mesurer. Scale, Command et Partner quand plusieurs personnes travaillent le même pipeline.",
       },
       {
         q: "Problème de facturation ?",
         a: "Écrivez à accounting@blackwayconnect.com. Pour le service général : serviceclient@blackwayconnect.com.",
       },
     ],
-    contactAside: "Préférez démarrer tout de suite ?",
-    contactFast: "Choisissez un forfait — paiement sécurisé Paddle, sans formulaire long.",
+    contactAside: "Ou commencez par un forfait.",
+    contactFast: "Tous les forfaits se paient en ligne. Le formulaire sert aux questions et à l’offre Entreprise.",
     footer: "Du lead au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
@@ -430,6 +432,7 @@ export const copy: Record<Lang, Copy> = {
       pricing: "Plans",
       how: "How it works",
       cellulaire: "Cellular Pack",
+      modulesIa: "AI Chatbot + Voice reception",
       mission: "Mission",
       team: "Team",
       contact: "Contact",
@@ -444,15 +447,14 @@ export const copy: Record<Lang, Copy> = {
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
     appEyebrow: "Included with Grow Hub",
-    appTitle: "Your client portal, available everywhere.",
+    appTitle: "The client portal is included.",
     appBody:
-      "Every Grow Hub plan includes the Client Master Portal (web + mobile browser). App stores: coming soon. Cellular Pack optional.",
-    appNote:
-      "Portal included → /portail (PWA / home screen). Optional field pack → /forfaits-cellulaire.",
+      "Every Grow Hub plan opens the portal on the web and in the mobile browser. Store apps come later. The cellular pack is optional.",
+    appNote: "Open the portal from the site. The field pack is chosen separately.",
     heroEyebrow: "Québec · Global",
-    heroTitle: "Master Leads. Twin Turbo Full Performance.",
+    heroTitle: "From the first lead to payment.",
     heroBody:
-      "Two engines — Volume + Quality — scored, delivered, proven. Grow Hub Growth — $349/mo, Paddle, cancel anytime. Portal included on day one.",
+      "Each request is sorted, followed up, and collected in the same record. Growth is $349 a month, with a 14-day trial you can cancel.",
     office: {
       eyebrow: "BlackWayConnect office",
       title: "A day inside the system.",
@@ -481,58 +483,57 @@ export const copy: Record<Lang, Copy> = {
       { value: "FR / EN", label: "Bilingual journeys" },
       { value: "Paddle", label: "Secure checkout" },
     ],
-    growTitle: "From first visit to recurring revenue.",
+    growTitle: "Three steps. Not a pile of tools.",
     growBody:
-      "Grow Hub names the next action for every opportunity — then automates follow-through so nothing cools between form and payment.",
+      "The request comes in, it is sorted, and the next action is clear. Follow-up no longer depends on an inbox.",
     growPoints: [
-      "Site, forms and campaigns → one scored prospect record.",
-      "Urgency, budget and language set real priority — not arrival order.",
-      "Pipeline, follow-ups, quotes and payments move in one thread.",
+      "The site, forms and campaigns feed one client record.",
+      "Urgency, budget and language set the priority.",
+      "Follow-up, quote and payment stay in the same thread.",
     ],
-    plansTitle: "Start light. Scale without switching systems.",
+    plansTitle: "Pick the level. Keep the same system.",
     plansBody:
-      "Full Grow Hub ladder (CAD/mo, plus applicable taxes). Launch / Growth / Scale = Paddle (14-day trial). Spark / Command / Partner = contact. Portal included.",
+      "Prices in Canadian dollars, before tax. Every plan is paid online (Paddle), with a 14-day trial.",
     plans: [
       {
         key: "grow_hub_spark",
         name: "Spark",
         price: "$99 / mo",
-        blurb: "Light entry — pipeline + 24/7 AI secretary.",
+        blurb: "To start: a client record and the AI secretary.",
       },
       {
         key: "grow_hub_launch",
         name: "Launch",
         price: "$149 / mo",
-        blurb: "Structured pipeline, disciplined follow-ups, quotes tracked.",
+        blurb: "Follow-ups and quotes tracked, without a side spreadsheet.",
       },
       {
         key: "grow_hub_growth",
         name: "Growth",
         price: "$349 / mo",
-        blurb: "Twin Turbo Full Performance — scoring, follow-ups, quotes and payments measured.",
+        blurb: "The recommended level: scoring, follow-ups, quotes and payments.",
       },
       {
         key: "grow_hub_scale",
         name: "Scale",
         price: "$699 / mo",
-        blurb: "Multi-team advanced automation — one revenue platform.",
+        blurb: "Several teams on the same platform.",
       },
       {
         key: "grow_hub_command",
         name: "Command",
         price: "$1,249 / mo",
-        blurb: "CRM ops + managed acquisition when leakage needs execution.",
+        blurb: "The BlackWay team runs follow-up with you.",
       },
       {
         key: "grow_hub_partner",
         name: "Partner",
         price: "$2,499 / mo",
-        blurb: "Platform + retainer — agency horsepower, SaaS discipline.",
+        blurb: "Platform and retainer, for a higher volume.",
       },
     ],
-    servicesTitle: "One platform. One team to build around it.",
-    servicesBody:
-      "Add only what raises revenue or cuts acquisition cost — always wired into Grow Hub.",
+    servicesTitle: "Four uses. One client record.",
+    servicesBody: "Site, app, secretary and visibility write into the same pipeline.",
     services: [
       {
         title: "High-conversion sites",
@@ -551,12 +552,12 @@ export const copy: Record<Lang, Copy> = {
         body: "Local visibility, content and source measurement — you know what fills the pipeline.",
       },
     ],
-    marketTitle: "Born in Québec. Sold worldwide.",
+    marketTitle: "Built in Québec. Usable elsewhere.",
     marketBody:
-      "Europe, the Americas, anywhere — if a client wants Grow Hub, they subscribe. Global Paddle checkout, bilingual FR/EN journeys, one system.",
-    consultTitle: "Talk to the BlackWay team.",
+      "The journey is in French and English. Online payment works in Canada, the United States and Europe.",
+    consultTitle: "A question before you choose.",
     consultBody:
-      "Share your pipeline and lead volume — we’ll recommend the right Grow Hub plan, or a strategy consult before you buy.",
+      "Describe your volume of requests. We point to the plan that fits, or we talk before you subscribe.",
     form: {
       first: "First name",
       last: "Last name",
@@ -662,26 +663,26 @@ export const copy: Record<Lang, Copy> = {
         },
       ],
     },
-    proofTitle: "Commercial infrastructure, not a tool stack.",
-    proofBody: "Payments, CRM and client portal — one continuous thread from first click to cash.",
+    proofTitle: "What Grow Hub includes.",
+    proofBody: "Payment, the client record and the portal are part of the same subscription.",
     proofItems: [
-      "Paddle: CAD subscriptions and payments, cancel anytime, no friction.",
-      "BlackWay CRM: pipeline and opportunities synced to the prospect record.",
-      "Client Master Portal: web and mobile dashboard included with Grow Hub.",
-      "Bilingual FR/EN journeys — one source of truth, worldwide.",
+      "Online payment in Canadian dollars, 14-day trial, cancel anytime.",
+      "Each request stays in one record, from the first message to payment.",
+      "The client portal is included, on the web and on mobile.",
+      "French and English, without a second system.",
     ],
     proofQuotes: [],
     proofNote: "",
-    faqTitle: "Questions before you start.",
-    faqBody: "Clear answers to pick a plan, a diagnostic or a consultation.",
+    faqTitle: "Common questions.",
+    faqBody: "Short answers, before you compare plans.",
     faq: [
       {
         q: "Can I subscribe without a call?",
-        a: "Yes. Launch, Growth and Scale open in Paddle Checkout (/payer). Spark, Command and Partner go through /contact. Enterprise is scoped in consultation. Master Tools (/outils) help you pick the tier.",
+        a: "Yes. Every Grow Hub plan, the Cellular Pack and the AI modules (chatbot, voice reception) are paid online. Enterprise is discussed first.",
       },
       {
         q: "Do you offer 24/7 client service?",
-        a: "Yes. The BlackWay AI Secretary (Advisor 24h) answers around the clock — plans, diagnostic, Grow Hub and lead capture. For a human: serviceclient@blackwayconnect.com.",
+        a: "The on-site secretary answers at any time. For a person: serviceclient@blackwayconnect.com.",
       },
       {
         q: "Where is your office?",
@@ -689,23 +690,23 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Where do leads and payments go?",
-        a: "The site and app send inquiries into BlackWay CRM. Paddle webhooks feed the same record — payments and abandonments visible quickly.",
+        a: "Site requests and online payment land in the same client record.",
       },
       {
         q: "Are French and English supported?",
-        a: "Yes. French and English on the site, journeys and CRM. A client in Europe, Canada or anywhere else subscribes via Paddle like everyone else.",
+        a: "Yes. The site, follow-up and payment work in French and English.",
       },
       {
         q: "Which plan should I pick?",
-        a: "Spark to test, Launch to structure, Growth (recommended) to sell and measure, Scale / Command / Partner for multi-team, ops and retainer. Compare on /forfaits or /how-it-works.",
+        a: "Spark to try it. Launch to structure the work. Growth to sell and measure. Scale, Command and Partner when several people share the same pipeline.",
       },
       {
         q: "Billing issue?",
         a: "Email accounting@blackwayconnect.com. For general support: serviceclient@blackwayconnect.com.",
       },
     ],
-    contactAside: "Prefer to start now?",
-    contactFast: "Pick a plan — secure Paddle checkout, no long form.",
+    contactAside: "Or start with a plan.",
+    contactFast: "Every plan is paid online. The form is for questions and Enterprise offers.",
     footer: "From lead to revenue. One connected growth system.",
     footerQrTitle: "Client portal",
     footerQrHint: "Scan to open the Client Master Portal — included with your plan.",

@@ -1,8 +1,9 @@
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
- * Distinct from Grow Hub web (Type A). Same Portail / HubSpot can hold both.
- * Stripe lien de paiements: empty until created in Dashboard — see STRIPE_CELLULAIRE_TODO.
+ * Distinct from Grow Hub web (Type A). Same Portail + Master CRM can hold both.
+ * Paddle checkout via /payer?plan=cell_* (14-day trial). Stripe is retired.
  */
+import { PADDLE_PRICES, paddlePlanUrl } from "./paddleCatalog";
 
 export type CellulairePlanKey =
   | "cell_signal"
@@ -26,7 +27,6 @@ export type CellulairePlan = {
   nameFr: string;
   nameEn: string;
   amountCad: number;
-  /** Empty until Stripe lien de paiement created — checkout falls back to contact. */
   paymentLink: string;
   priceId: string;
   productId: string;
@@ -43,8 +43,8 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Signal",
     nameEn: "Cell Signal",
     amountCad: 79,
-    paymentLink: "",
-    priceId: "",
+    paymentLink: paddlePlanUrl("cell_signal"),
+    priceId: PADDLE_PRICES.cell_signal,
     productId: "",
     tools: ["cell_capture", "forfaits_cellulaire", "support"],
     blurbFr: "Capture lead terrain — fiche rapide, sync CRM BlackWay.",
@@ -56,8 +56,8 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Route",
     nameEn: "Cell Route",
     amountCad: 199,
-    paymentLink: "",
-    priceId: "",
+    paymentLink: paddlePlanUrl("cell_route"),
+    priceId: PADDLE_PRICES.cell_route,
     productId: "",
     tools: ["cell_capture", "cell_pipeline", "cell_checkout", "forfaits_cellulaire", "support"],
     blurbFr: "Leads + checkout prospect en déplacement.",
@@ -69,8 +69,8 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Fleet",
     nameEn: "Cell Fleet",
     amountCad: 399,
-    paymentLink: "",
-    priceId: "",
+    paymentLink: paddlePlanUrl("cell_fleet"),
+    priceId: PADDLE_PRICES.cell_fleet,
     productId: "",
     featured: true,
     tools: [
@@ -91,8 +91,8 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Command",
     nameEn: "Cell Command",
     amountCad: 799,
-    paymentLink: "",
-    priceId: "",
+    paymentLink: paddlePlanUrl("cell_command"),
+    priceId: PADDLE_PRICES.cell_command,
     productId: "",
     tools: [
       "cell_capture",
@@ -125,8 +125,8 @@ export const CELLULAIRE_RANK: Record<string, number> = {
   cell_command: 4,
 };
 
-/** Stripe Dashboard — create these lien de paiements (CAD monthly), success → /portail?session_id={CHECKOUT_SESSION_ID} */
-export const STRIPE_CELLULAIRE_TODO = [
+/** Paddle catalog reference for Cellulaire prices (created live, see PADDLE_PRICES). */
+export const PADDLE_CELLULAIRE_TODO = [
   { key: "cell_signal", name: "Cell Signal", amountCad: 79, metadata: "bw_forfait=cell_signal" },
   { key: "cell_route", name: "Cell Route", amountCad: 199, metadata: "bw_forfait=cell_route" },
   { key: "cell_fleet", name: "Cell Fleet", amountCad: 399, metadata: "bw_forfait=cell_fleet" },
@@ -146,6 +146,9 @@ export function cellulaireCheckoutUrl(
   plan: CellulairePlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ): string {
+  if (isCellulaireCheckoutReady(plan)) {
+    return paddlePlanUrl(plan, { lang: opts.lang, source: opts.source || "cellulaire", content: opts.content });
+  }
   const path = opts.lang === "en" ? "/en/contact" : "/contact";
   const url = new URL(path, "https://blackwayconnect.com");
   url.searchParams.set("forfait", plan);
@@ -155,7 +158,6 @@ export function cellulaireCheckoutUrl(
 }
 
 export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
-  void plan;
-  return false;
+  const p = CELLULAIRE_PLANS[plan];
+  return p.priceId.startsWith("pri_") && /\/payer(\?|$)/.test(p.paymentLink);
 }
-

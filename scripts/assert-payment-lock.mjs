@@ -25,6 +25,12 @@ function mustInclude(file, needle, label) {
   else console.log(`OK ${label}`);
 }
 
+function mustNotInclude(file, needle, label) {
+  const text = read(file);
+  if (text.includes(needle)) fail(`${label}: forbidden in ${file} → ${needle}`);
+  else console.log(`OK ${label}`);
+}
+
 function mustMatch(file, re, label) {
   const text = read(file);
   if (!re.test(text)) fail(`${label}: pattern not found in ${file}`);
@@ -75,6 +81,13 @@ mustInclude(
   lock.bw_paddle_fulfill_key,
   "BW_PADDLE_FULFILL_KEY in wrangler vars",
 );
+
+
+mustNotInclude("mobile/capacitor.config.ts", "buy.stripe.com", "mobile cannot navigate to Stripe checkout");
+mustNotInclude("index.html", "buy.stripe.com", "public site cannot prefetch Stripe checkout");
+mustNotInclude("src/pages/CellulairePlansPage.tsx", "STRIPE_CELLULAIRE_TODO", "Cellulaire UI has no Stripe checkout backlog");
+mustInclude("src/cellulaireConfig.ts", "PADDLE_CELLULAIRE_TODO", "Cellulaire migration is Paddle-only");
+mustInclude("pipe/vorixaManaged.js", 'url.searchParams.set("provider", "paddle")', "Vorixa managed checkout routes to Paddle");
 
 mustInclude("src/stripeConfig.ts", 'processor: "paddle"', "checkout processor paddle");
 mustInclude("src/paddleCatalog.ts", "/payer", "checkout links → /payer");
