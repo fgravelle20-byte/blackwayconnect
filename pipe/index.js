@@ -25,8 +25,12 @@ import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
 import { scoreKingLead } from "./kingLeads.js";
 import { upsertMasterLead, listMasterLeads, patchMasterLead, runAutonomyTick, engineStatus } from "./masterCrm.js";
 import {
-  hasMasterDb, recordPayment, getCustomer, getPayment, customerIsActive, importCustomer, listCustomers, getMeta, setMeta,
+  hasMasterDb, recordPayment, getCustomer, getPayment, customerIsActive, customerIsBlocked, applySubscriptionStatus,
+  importCustomer, listCustomers, getMeta, setMeta,
 } from "./customers.js";
+
+const ABONNEMENT_INACTIF =
+  "Abonnement inactif (annulé ou en pause) — réactive ton forfait sur blackwayconnect.com/forfaits.";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -1108,6 +1112,7 @@ async function resolveAccess(env, email, hint) {
     console.log("master customer lookup", e);
   }
   if (customer) {
+    if (customerIsBlocked(customer)) throw new Error(ABONNEMENT_INACTIF);
     forfait = resoudreForfait(customer.forfait);
     forfaitCellulaire = resoudreForfait(customer.forfait_cellulaire);
   } else {
@@ -1209,6 +1214,7 @@ async function claimPortal(env, p) {
     } catch (e) {
       console.log("master customer lookup", e);
     }
+    if (customer && customerIsBlocked(customer)) throw new Error(ABONNEMENT_INACTIF);
     if (!customerIsActive(customer)) {
       const legacy = await legacyHubspotCustomer(env, emailIn);
       if (!legacy) {
@@ -1457,6 +1463,30 @@ export default {
       if (!ok) return json({ erreur: "signature Paddle invalide" }, 400);
       let evt;
       try { evt = JSON.parse(body); } catch { return json({ erreur: "json invalide" }, 400); }
+
+      const SUB_STATUS = {
+        "subscription.activated": "active",
+        "subscription.resumed": "active",
+        "subscription.past_due": "past_due",
+        "subscription.paused": "paused",
+        "subscription.canceled": "canceled",
+      };
+      if (SUB_STATUS[evt.event_type]) {
+        const sub = evt.data || {};
+        const forfait = forfaitFromPaddleTransaction(sub);
+        if (!forfait) return json({ recu: true, ignore: "abonnement Paddle non BlackWay", subscription_id: sub.id || null });
+        if (!hasMasterDb(env)) return json({ recu: true, ignore: "master db absente" });
+        try {
+          const email = await paddleCustomerEmail(env, sub.customer_id);
+          if (!email) throw new Error("abonnement Paddle sans courriel");
+          const customer = await applySubscriptionStatus(env, email, forfait, SUB_STATUS[evt.event_type]);
+          return json({ recu: true, type: evt.event_type, subscription_id: sub.id || null, statut: customer?.status || null });
+        } catch (error) {
+          console.error("erreur abonnement Paddle", evt.event_type, error);
+          return json({ erreur: "mise a jour abonnement temporairement indisponible" }, 502);
+        }
+      }
+
       if (evt.event_type !== "transaction.completed") return json({ ignore: evt.event_type });
 
       const transaction = evt.data || {};

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
@@ -129,6 +130,60 @@ test("health is ok on the Master DB without HubSpot", async () => {
   assert.equal(j.master_db, true);
   assert.equal(j.brain, "blackway_master_king");
   assert.equal(j.hubspot_sync, false);
+});
+
+test("Paddle webhooks: pay activates, cancel cuts access, replay does not revive, new payment does", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (u) => {
+    if (String(u.url || u).startsWith("https://api.paddle.com/customers/ctm_1")) {
+      return Response.json({ data: { email: "Sub@Client.ca" } });
+    }
+    return new Response("{}", { status: 500 });
+  };
+  try {
+    const env = { ...envNoHubspot(), PADDLE_WEBHOOK_SECRET: "whsec", PADDLE_API_KEY: "pdl" };
+    const hook = (event_type, data) => {
+      const body = JSON.stringify({ event_type, data });
+      const ts = Math.floor(Date.now() / 1000);
+      const h1 = createHmac("sha256", "whsec").update(`${ts}:${body}`).digest("hex");
+      return pipe.fetch(
+        new Request("https://api.blackwayconnect.com/webhooks/paddle", {
+          method: "POST", headers: { "paddle-signature": `ts=${ts};h1=${h1}` }, body,
+        }),
+        env,
+        { waitUntil() {} },
+      );
+    };
+    const items = [{ price: { id: "pri_01kxtn6b41wzt07rnzvyte4sn8" } }];
+    const claim = async () => (await call(env, "/portal/claim", { email: "sub@client.ca" })).status;
+
+    let r = await hook("transaction.completed", { id: "txn_s1", customer_id: "ctm_1", items, details: { totals: { total: "40126" } } });
+    assert.equal(r.status, 200, await r.text());
+    assert.equal(await claim(), 200);
+
+    r = await hook("subscription.past_due", { id: "sub_1", customer_id: "ctm_1", items });
+    assert.equal(r.status, 200);
+    assert.equal(await claim(), 200, "past_due keeps access during dunning");
+
+    r = await hook("subscription.canceled", { id: "sub_1", customer_id: "ctm_1", items });
+    assert.equal((await r.json()).statut, "canceled");
+    assert.equal(await claim(), 401);
+    assert.equal((await call(env, "/portal/claim", { transaction_id: "txn_s1" })).status, 401);
+
+    r = await hook("transaction.completed", { id: "txn_s1", customer_id: "ctm_1", items, details: { totals: { total: "40126" } } });
+    assert.equal(r.status, 200);
+    assert.equal(await claim(), 401, "replayed old payment must not revive access");
+
+    r = await hook("transaction.completed", { id: "txn_s2", customer_id: "ctm_1", items, details: { totals: { total: "40126" } } });
+    assert.equal(r.status, 200);
+    assert.equal(await claim(), 200, "new payment reactivates");
+
+    r = await hook("subscription.canceled", { id: "sub_x", customer_id: "ctm_1", items: [{ price: { id: "pri_vorixa" } }] });
+    assert.match(await r.text(), /non BlackWay/);
+    assert.equal(await claim(), 200);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });
 
 test("owner overview reads the Master DB", async () => {
