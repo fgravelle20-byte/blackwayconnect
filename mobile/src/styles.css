@@ -454,3 +454,76 @@ body {
 .loading-line.is-on {
   width: 70%;
 }
+
+/* --- RevenueCat access gate --- */
+.gate {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.5rem calc(2rem + var(--safe-bottom));
+  gap: 0.25rem;
+}
+
+.gate-lock {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  margin-bottom: 0.5rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+}
+
+.gate-lock svg {
+  width: 30px;
+  height: 30px;
+  fill: var(--red);
+}
+
+.gate h1 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0.25rem 0 0.35rem;
+}
+
+.gate p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 32ch;
+}
+
+.gate .cta-stack {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.gate-status {
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.gate-status.is-error {
+  color: var(--red-hot);
+}
+
+.gate-support {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: underline;
+}
+
+.btn[disabled] {
+  opacity: 0.55;
+  pointer-events: none;
+}

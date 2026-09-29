@@ -7,6 +7,15 @@ import {
   type TabId,
 } from "./config";
 import { initNativeChrome, openExternal, openSystem } from "./native";
+import {
+  isNativeStore,
+  hasApiKey,
+  configureRevenueCat,
+  isEntitled,
+  purchaseSubscription,
+  restoreEntitlement,
+  PurchaseCancelledError,
+} from "./revenuecat";
 
 type Lang = "fr" | "en";
 
@@ -46,6 +55,19 @@ const copy = {
     navContact: "Contact",
     webviewLabel: "Portail live",
     reload: "Recharger",
+    gateTitle: "Accès réservé aux abonnés",
+    gateBody:
+      "L’app BlackWay Connect nécessite un abonnement actif. Aucun accès gratuit.",
+    gateSubscribe: "S’abonner",
+    gateRestore: "Restaurer mes achats",
+    gateSupport: "Besoin d’aide ? Contacter le support",
+    gateChecking: "Vérification de l’abonnement…",
+    gatePurchasing: "Traitement de l’achat…",
+    gateRestoring: "Restauration…",
+    gateConfig: "Configuration RevenueCat manquante. Contacte le support.",
+    gateError: "Impossible de vérifier l’abonnement.",
+    gateRetry: "Réessayer",
+    gateLockedNote: "Après paiement, l’accès se débloque automatiquement.",
   },
   en: {
     brand: "BlackWay",
@@ -82,6 +104,19 @@ const copy = {
     navContact: "Contact",
     webviewLabel: "Live portal",
     reload: "Reload",
+    gateTitle: "Subscribers only",
+    gateBody:
+      "The BlackWay Connect app requires an active subscription. No free access.",
+    gateSubscribe: "Subscribe",
+    gateRestore: "Restore purchases",
+    gateSupport: "Need help? Contact support",
+    gateChecking: "Checking subscription…",
+    gatePurchasing: "Processing purchase…",
+    gateRestoring: "Restoring…",
+    gateConfig: "RevenueCat configuration missing. Contact support.",
+    gateError: "Could not verify your subscription.",
+    gateRetry: "Try again",
+    gateLockedNote: "Access unlocks automatically after payment.",
   },
 } as const;
 
@@ -332,9 +367,173 @@ function bind(): void {
   });
 }
 
+// --- RevenueCat access gate (no free access on iOS/Android) ---
+
+type GateStatus =
+  | "checking"
+  | "locked"
+  | "purchasing"
+  | "restoring"
+  | "config"
+  | "error";
+
+let gateState: { status: GateStatus; message?: string } = { status: "checking" };
+
+function gateIsBusy(): boolean {
+  return (
+    gateState.status === "checking" ||
+    gateState.status === "purchasing" ||
+    gateState.status === "restoring"
+  );
+}
+
+function renderPaywall(state: { status: GateStatus; message?: string }): void {
+  gateState = state;
+  const c = t();
+  const root = document.getElementById("app");
+  if (!root) return;
+
+  const busy = gateIsBusy();
+  const blocked = busy || state.status === "config";
+  const statusLine =
+    state.status === "checking"
+      ? c.gateChecking
+      : state.status === "purchasing"
+        ? c.gatePurchasing
+        : state.status === "restoring"
+          ? c.gateRestoring
+          : state.status === "config"
+            ? c.gateConfig
+            : state.status === "error"
+              ? state.message || c.gateError
+              : "";
+  const statusIsError = state.status === "error" || state.status === "config";
+
+  root.innerHTML = `
+    <div class="shell">
+      <header class="topbar">
+        <img src="/logo.png" alt="" width="34" height="34" />
+        <div class="brand">${c.brand} <span>${c.brandAccent}</span></div>
+      </header>
+      <main class="content">
+        <section class="panel is-active">
+          <div class="gate">
+            <div class="gate-lock">${ICONS.forfaits}</div>
+            <h1>${c.gateTitle}</h1>
+            <p>${c.gateBody}</p>
+            ${
+              statusLine
+                ? `<p class="gate-status ${statusIsError ? "is-error" : ""}">${statusLine}</p>`
+                : ""
+            }
+            <div class="cta-stack">
+              <button class="btn btn--primary" type="button" data-gate="subscribe" ${blocked ? "disabled" : ""}>${c.gateSubscribe}</button>
+              <button class="btn btn--soft" type="button" data-gate="restore" ${blocked ? "disabled" : ""}>${c.gateRestore}</button>
+              ${
+                state.status === "error"
+                  ? `<button class="btn btn--ghost" type="button" data-gate="retry">${c.gateRetry}</button>`
+                  : ""
+              }
+            </div>
+            <p class="note">${c.gateLockedNote}</p>
+            <a class="gate-support" href="${SUPPORT.mailto}" data-system="${SUPPORT.mailto}">${c.gateSupport}</a>
+            <div class="lang-row">
+              <button type="button" data-lang="fr" class="${lang === "fr" ? "is-on" : ""}">FR</button>
+              <button type="button" data-lang="en" class="${lang === "en" ? "is-on" : ""}">EN</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  `;
+
+  bindGate();
+}
+
+function bindGate(): void {
+  document.querySelectorAll<HTMLButtonElement>("[data-gate]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const action = btn.dataset.gate;
+      if (action === "subscribe") void onSubscribe();
+      if (action === "restore") void onRestore();
+      if (action === "retry") void enforceGate();
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-system]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      const url = (e.currentTarget as HTMLElement).dataset.system;
+      if (!url) return;
+      e.preventDefault();
+      void openSystem(url);
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-lang]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      lang = btn.dataset.lang as Lang;
+      localStorage.setItem("bw_lang", lang);
+      renderPaywall(gateState);
+    });
+  });
+}
+
+async function enforceGate(): Promise<void> {
+  renderPaywall({ status: "checking" });
+  if (!hasApiKey) {
+    renderPaywall({ status: "config" });
+    return;
+  }
+  try {
+    await configureRevenueCat();
+    if (await isEntitled()) {
+      render();
+      return;
+    }
+    renderPaywall({ status: "locked" });
+  } catch (e) {
+    renderPaywall({ status: "error", message: String((e as Error)?.message || e) });
+  }
+}
+
+async function onSubscribe(): Promise<void> {
+  renderPaywall({ status: "purchasing" });
+  try {
+    if (await purchaseSubscription()) {
+      render();
+      return;
+    }
+    renderPaywall({ status: "locked" });
+  } catch (e) {
+    if (e instanceof PurchaseCancelledError) {
+      renderPaywall({ status: "locked" });
+      return;
+    }
+    renderPaywall({ status: "error", message: String((e as Error)?.message || e) });
+  }
+}
+
+async function onRestore(): Promise<void> {
+  renderPaywall({ status: "restoring" });
+  try {
+    if (await restoreEntitlement()) {
+      render();
+      return;
+    }
+    renderPaywall({ status: "locked" });
+  } catch (e) {
+    renderPaywall({ status: "error", message: String((e as Error)?.message || e) });
+  }
+}
+
 async function boot() {
   await initNativeChrome();
-  render();
+  if (isNativeStore) {
+    await enforceGate();
+  } else {
+    // Web / dev preview is not gated so the app stays developable.
+    render();
+  }
   // Warm bootstrap (URLs already hardcoded from live API; refresh if needed later)
   try {
     await fetch(URLS.bootstrap, { method: "GET" });
