@@ -1457,6 +1457,7 @@ select {
 
   .site-footer__bar {
     flex-wrap: nowrap;
+    padding-right: 9.75rem;
   }
 }
 
