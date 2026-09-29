@@ -38,6 +38,7 @@
   "workers_dev": true,
   "routes": [
     { "pattern": "blackwayconnect.com", "custom_domain": true },
+    { "pattern": "www.blackwayconnect.com", "custom_domain": true },
     { "pattern": "blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
   ],
   "ai": {
