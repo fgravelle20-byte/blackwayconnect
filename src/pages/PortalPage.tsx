@@ -25,6 +25,19 @@ import { agentLog } from "../debugAgentLog";
 
 const STORAGE_KEY = "bw_portal_session";
 
+/** Real Paddle txn_… only — never claim on catalog placeholders like {txn_id}. */
+function isLivePaddleTransactionId(raw: string | null): boolean {
+  if (!raw) return false;
+  let t = raw.trim();
+  try {
+    t = decodeURIComponent(t);
+  } catch {
+    /* keep raw */
+  }
+  if (t.includes("{") || t.includes("}")) return false;
+  return /^txn_[a-zA-Z0-9]+$/.test(t);
+}
+
 type PortalSession = {
   token: string;
   email: string;
@@ -293,6 +306,19 @@ export function PortalPage() {
       setEmail(emailParam);
     }
     if (transactionId) {
+      if (!isLivePaddleTransactionId(transactionId)) {
+        // #region agent log
+        agentLog(
+          "PortalPage.tsx:claim-skip",
+          "ignore placeholder transaction_id",
+          { skipped: true, looksLikePlaceholder: true },
+          "A",
+          "post-fix",
+        );
+        // #endregion
+        setBooting(false);
+        return;
+      }
       void claim({ transaction_id: transactionId, plan });
       setBooting(false);
       return;

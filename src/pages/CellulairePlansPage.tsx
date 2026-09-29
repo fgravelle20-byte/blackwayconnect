@@ -5,7 +5,6 @@ import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
   FEATURED_CELLULAIRE,
-  PADDLE_CELLULAIRE_TODO,
   cellulaireCheckoutUrl,
   isCellulaireCheckoutReady,
   type CellulairePlanKey,
@@ -155,22 +154,6 @@ export function CellulairePlansPage() {
           <ContactForm source="app_mobile" />
         </div>
 
-        <details style={{ marginTop: "2rem" }}>
-          <summary className="lede">
-            {fr
-              ? "Offres Cellulaire disponibles sur demande"
-              : "Cellular offers available on request"}
-          </summary>
-          <ul className="lede">
-            {PADDLE_CELLULAIRE_TODO.map((row) => (
-              <li key={row.key}>
-                <code>{row.key}</code> — {row.name} — {row.amountCad} CAD/mo — metadata{" "}
-                <code>{row.metadata}</code> — success Paddle{" "}
-                <code>https://blackwayconnect.com/portail?transaction_id=&#123;txn_id&#125;</code>
-              </li>
-            ))}
-          </ul>
-        </details>
       </div>
     </section>
   );
