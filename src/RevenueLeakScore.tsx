@@ -10,6 +10,8 @@ import {
 } from "./scoreCopy";
 import { computeTwinTurbo, twinTurboLeadFields } from "./leadEngines";
 import { ShareBar } from "./ShareBar";
+import { saveLeakScore } from "./lib/portalSession";
+import { copyText } from "./lib/clientMailHtml";
 
 type Phase = "intro" | "quiz" | "result";
 
@@ -47,6 +49,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
   const [plan, setPlan] = useState<PlanKey>("grow_hub_growth");
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [pending, setPending] = useState(false);
+  const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const animated = useAnimatedScore(score, phase === "result");
   const twin = computeTwinTurbo({ leakScore: leakRaw || score, answers });
@@ -65,6 +68,13 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
       setScore(twinR.twinScore);
       setPlan(twinR.recommendedPlan);
       setPhase("result");
+      saveLeakScore({
+        twin: twinR.twinScore,
+        volume: twinR.volumeTurbo,
+        quality: twinR.qualityTurbo,
+        leakRaw: s,
+        at: new Date().toISOString(),
+      });
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     }
   }
@@ -234,6 +244,40 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             ))}
           </ul>
 
+          <div className="cta-row no-print" style={{ marginTop: "1rem" }}>
+            <button
+              type="button"
+              className="btn btn--ghost"
+              onClick={async () => {
+                const bandLine = band === "low" ? sc.leakLow : band === "mid" ? sc.leakMid : sc.leakHigh;
+                const date = new Date().toLocaleDateString(lang === "fr" ? "fr-CA" : "en-CA");
+                const text = [
+                  `Leak Score — ${date}`,
+                  lang === "fr"
+                    ? `Twin ${twin.twinScore}/100 · Volume ${twin.volumeTurbo} · Qualité ${twin.qualityTurbo} · fuite brute ${leakRaw}`
+                    : `Twin ${twin.twinScore}/100 · Volume ${twin.volumeTurbo} · Quality ${twin.qualityTurbo} · raw leak ${leakRaw}`,
+                  bandLine,
+                  ...sc.diagnoses[band].map((l) => `• ${l}`),
+                  `${lang === "fr" ? "Forfait suggéré" : "Suggested plan"} : ${planMeta.name} (${planMeta.price})`,
+                ].join("\n");
+                const ok = await copyText(text);
+                setCopied(ok);
+                if (ok) window.setTimeout(() => setCopied(false), 2000);
+              }}
+            >
+              {copied
+                ? lang === "fr"
+                  ? "Copié"
+                  : "Copied"
+                : lang === "fr"
+                  ? "Copier le résumé"
+                  : "Copy summary"}
+            </button>
+            <button type="button" className="btn btn--ghost" onClick={() => window.print()}>
+              {lang === "fr" ? "Imprimer la carte" : "Print card"}
+            </button>
+          </div>
+
           <div className="rls__rec">
             <p className="eyebrow">{planMeta.name}</p>
             <p className="price">{planMeta.price}</p>
@@ -243,7 +287,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             </p>
           </div>
 
-          <div className="rls__save">
+          <div className="rls__save no-print">
             <h3>{sc.saveTitle}</h3>
             <p>{sc.saveBody}</p>
             <form className="form" onSubmit={onSave}>
@@ -269,7 +313,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             </form>
           </div>
 
-          <div className="cta-row" style={{ marginTop: "1.5rem" }}>
+          <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
             <a
               className="btn btn--primary"
               href={checkoutUrl(plan, { lang, source: "revenue_leak_score", content: "result_subscribe" })}

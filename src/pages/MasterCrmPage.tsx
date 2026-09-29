@@ -23,6 +23,12 @@ type Lead = {
   message: string;
   briefing: string;
   notes?: { at: string; body: string }[];
+  machine?: {
+    next_action?: string;
+    checkout?: string;
+    script?: { channel?: string; subject?: string; body?: string };
+    touches?: number;
+  };
 };
 
 type Board = {
@@ -40,6 +46,7 @@ const STAGES = [
   { id: "won", fr: "Gagné", en: "Won" },
   { id: "lost", fr: "Perdu", en: "Lost" },
   { id: "leak", fr: "Fuite", en: "Leak" },
+  { id: "archive", fr: "Archive", en: "Archive" },
 ];
 
 const KEY_STORE = "bw_ops_key";
@@ -57,6 +64,7 @@ export function MasterCrmPage() {
   const [filter, setFilter] = useState({ market: "", grade: "", stage: "" });
   const [open, setOpen] = useState<string | null>(null);
   const [note, setNote] = useState("");
+  const [engine, setEngine] = useState<{ at?: string | null; acted?: number; scanned?: number } | null>(null);
 
   async function load(opsKey = key) {
     const q = new URLSearchParams();
@@ -81,12 +89,30 @@ export function MasterCrmPage() {
       if (opsKey) sessionStorage.setItem(KEY_STORE, opsKey);
       setKey(opsKey);
       setBoard(data);
+      void fetch("/api/crm/engine", { headers, credentials: "include" })
+        .then((r) => r.json())
+        .then((e) => setEngine(e as { at?: string | null; acted?: number; scanned?: number }))
+        .catch(() => undefined);
       return true;
     } catch {
       setBoard(null);
       return false;
     } finally {
       window.clearTimeout(timer);
+    }
+  }
+
+  async function runEngine() {
+    setBusy(true);
+    try {
+      const headers: Record<string, string> = {};
+      if (key) headers["X-BW-Key"] = key;
+      const res = await fetch("/api/crm/engine", { method: "POST", headers, credentials: "include" });
+      const data = (await res.json()) as { at?: string; acted?: number; scanned?: number };
+      if (res.ok) setEngine(data);
+      await load();
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -262,6 +288,16 @@ export function MasterCrmPage() {
           <button className="btn btn--ghost" type="button" onClick={() => void load()} disabled={busy}>
             {fr ? "Rafraîchir" : "Refresh"}
           </button>
+          <button className="btn btn--primary" type="button" onClick={() => void runEngine()} disabled={busy}>
+            {fr ? "Lancer le moteur" : "Run engine"}
+          </button>
+          <span className="crm-sub">
+            {engine?.at
+              ? `${fr ? "Tick" : "Tick"} ${engine.acted ?? 0}/${engine.scanned ?? 0}`
+              : fr
+                ? "Moteur: aucun tick encore (cron 15 min)"
+                : "Engine: no tick yet (15m cron)"}
+          </span>
           <Link className="btn btn--ghost" to={path("/leads")}>
             {fr ? "Page leads publique" : "Public leads page"}
           </Link>
@@ -277,6 +313,7 @@ export function MasterCrmPage() {
                 <th>Score</th>
                 <th>SLA</th>
                 <th>{fr ? "Étape" : "Stage"}</th>
+                <th>{fr ? "Moteur" : "Engine"}</th>
               </tr>
             </thead>
             <tbody>
@@ -295,6 +332,7 @@ export function MasterCrmPage() {
                   <td>{l.score}</td>
                   <td>{l.slaMinutes}m</td>
                   <td>{l.stage}</td>
+                  <td>{l.machine?.next_action || "—"}</td>
                 </tr>
               ))}
             </tbody>
@@ -317,6 +355,15 @@ export function MasterCrmPage() {
               {openLead.marketLabel} · {openLead.industrie} · {openLead.taille}
             </p>
             <pre className="crm-brief">{openLead.briefing}</pre>
+            {openLead.machine?.script ? (
+              <pre className="crm-brief">
+                {openLead.machine.next_action}
+                {"\n"}
+                {openLead.machine.script.body}
+                {"\n"}
+                {openLead.machine.checkout}
+              </pre>
+            ) : null}
             <div className="field">
               <label htmlFor="note">{fr ? "Note interne" : "Internal note"}</label>
               <textarea id="note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />

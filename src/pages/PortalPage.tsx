@@ -21,6 +21,7 @@ import {
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
 import { trackPurchase } from "../tracking";
+import { readLeakScore } from "../lib/portalSession";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -235,7 +236,7 @@ export function PortalPage() {
     async (body: Record<string, string>) => {
       setBusy(true);
       setError(null);
-      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 5 : 1;
+      const attempts = body.session_id || body.sessionId || body.transaction_id || body.transactionId ? 8 : 1;
       let lastErr = fr ? "Accès refusé" : "Access denied";
       try {
         for (let i = 0; i < attempts; i++) {
@@ -439,6 +440,7 @@ export function PortalPage() {
   const cellLabel = forfaitCell
     ? CELLULAIRE_PLANS[forfaitCell as CellulairePlanKey]?.nameFr || session.labelCellulaire
     : null;
+  const lastLeak = typeof window !== "undefined" ? readLeakScore() : null;
 
   return (
     <section className="section section--page section--portal">
@@ -450,6 +452,15 @@ export function PortalPage() {
               {fr ? "Centre de contrôle Grow Hub" : "Grow Hub control center"}
             </h1>
             <p className="lede portal-head__meta">{session.email}</p>
+            {lastLeak ? (
+              <p className="lede" style={{ marginTop: "0.35rem" }}>
+                {fr
+                  ? `Dernier Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Qualité ${lastLeak.quality}`
+                  : `Last Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Quality ${lastLeak.quality}`}
+                {" · "}
+                <Link to={path("/diagnostic")}>{fr ? "Refaire" : "Run again"}</Link>
+              </p>
+            ) : null}
             <p className="lede" style={{ marginTop: "0.5rem" }}>
               {fr
                 ? "Master Leads — dashboard web + mobile (ajoute cette page à l’écran d’accueil). Les apps stores arrivent ensuite."

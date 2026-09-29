@@ -3040,7 +3040,83 @@ a.bw-agent__chip {
   font-weight: 700;
 }
 
+.mail-preview {
+  width: 100%;
+  min-height: 22rem;
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #111;
+}
+
+.checklist-magnet--boxes {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist-magnet--boxes label {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.checklist-magnet--boxes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.checklist-add {
+  flex: 1 1 14rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
 @media print {
+  .no-print {
+    display: none !important;
+  }
+
+  html {
+    color-scheme: light !important;
+  }
+
+  html,
+  body,
+  .section--tools {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body *:not(svg):not(svg *) {
+    color: #111 !important;
+  }
+
+  .rls__hint {
+    display: none !important;
+  }
+
+  .section--tools input[type="checkbox"] {
+    appearance: auto !important;
+    background: #fff !important;
+    accent-color: #111;
+  }
+
+  .quote-print-root {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  .quote-print-root .quote-preview {
+    border: 0 !important;
+    font-size: 11pt !important;
+  }
+
   .site-header,
   .contact-bar,
   .site-footer,
@@ -3050,6 +3126,15 @@ a.bw-agent__chip {
   .tools-capture,
   .share-bar {
     display: none !important;
+  }
+
+  .quote-print-root,
+  .rls__result,
+  .quote-preview {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    max-height: none !important;
   }
 
   .checklist-magnet {

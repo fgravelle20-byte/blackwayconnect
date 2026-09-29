@@ -9,6 +9,7 @@
  *   POST /portal/claim      -> session_id (Cache) ou email -> jeton portail
  *   GET  /portal/me         -> refresh session portail
  *   GET  /crm/leads         -> Master CRM board (X-BW-Key)
+ *   POST /ops/engine/tick   -> SLA/relance machine (cron 15 min + X-BW-Key)
  * Portail — pipeline BlackWay. HubSpot is optional sync, not the product brain.
  * Claim apres paiement: Paddle webhook + Cache; aucune cle Stripe requise.
  *
@@ -22,7 +23,7 @@
 
 import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
 import { scoreKingLead } from "./kingLeads.js";
-import { upsertMasterLead, listMasterLeads, patchMasterLead } from "./masterCrm.js";
+import { upsertMasterLead, listMasterLeads, patchMasterLead, runAutonomyTick, engineStatus } from "./masterCrm.js";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -441,9 +442,10 @@ async function traiterPaiement(env, p) {
   // Keep "paddle"/"cellulaire" in notes + segment; never send them as bw_source.
   const hsSource = cell || processor === "paddle" ? "portail" : "stripe";
   const segment = p.segment || (cell ? "cellulaire" : `paiement ${processor}`);
+  const who = p.entreprise || [p.prenom, p.nom].join(" ").trim() || p.email;
   const dealLabel = p.renouvellement
-    ? `${f.label} - RENOUVELLEMENT - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`
-    : `${f.label} - PAYE - ${p.entreprise || [p.prenom, p.nom].join(" ").trim()}`;
+    ? `${f.label} - RENOUVELLEMENT - ${who}`
+    : `${f.label} - PAYE - ${who}`;
   const sessionPropOk = await ensureBwLastCheckoutSessionProp(env);
   const contactProps = {
     firstname: p.prenom || "", lastname: p.nom || "", company: p.entreprise || "",
@@ -480,7 +482,23 @@ async function traiterPaiement(env, p) {
     bw_stripe_payment_id: p.payment_id, bw_idempotency_key: `pay:${p.payment_id}`,
     bw_segment: segment,
   }, contactId);
-  if (!d.cree) return { deal: d.id, statut: "deja traite - aucun doublon" };
+  if (!d.cree) {
+    try {
+      await recordMasterLead(env, {
+        email: p.email,
+        prenom: p.prenom,
+        nom: p.nom,
+        entreprise: p.entreprise,
+        forfait,
+        source: "portail",
+        stage: "won",
+        message: `Paddle ${p.payment_id}`,
+      });
+    } catch (e) {
+      console.log("master crm pay upsert", e);
+    }
+    return { deal: d.id, statut: "deja traite - aucun doublon" };
+  }
   await hs(env, "POST", "/crm/v3/objects/notes", {
     properties: {
       hs_timestamp: new Date().toISOString(),
@@ -488,6 +506,20 @@ async function traiterPaiement(env, p) {
     },
     associations: [{ to: { id: d.id }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 214 }] }],
   });
+  try {
+    await recordMasterLead(env, {
+      email: p.email,
+      prenom: p.prenom,
+      nom: p.nom,
+      entreprise: p.entreprise,
+      forfait,
+      source: "portail",
+      stage: "won",
+      message: `Paddle ${p.payment_id} ${p.montant || ""} CAD`,
+    });
+  } catch (e) {
+    console.log("master crm pay upsert", e);
+  }
   return { contact: contactId, deal: d.id, score: sc, statut: "cree" };
 }
 
@@ -743,6 +775,24 @@ function forfaitFromPaddleTransaction(transaction) {
   return null;
 }
 
+/** Relay payload → forfait. Accepts plan keys, Paddle price ids, custom_data or a raw transaction. */
+function forfaitFromProvisionPayload(p) {
+  const direct = resoudreForfait(
+    p?.forfait || p?.plan || p?.bw_forfait
+      || p?.custom_data?.bw_forfait || p?.customData?.bw_forfait,
+  );
+  if (direct) return direct;
+  const priceId = String(p?.price_id || p?.priceId || "").trim();
+  if (priceId && PADDLE_PRICE_TO_FORFAIT[priceId]) return PADDLE_PRICE_TO_FORFAIT[priceId];
+  const txn = p?.transaction || p?.data;
+  if (txn && typeof txn === "object") {
+    const fromTxn = forfaitFromPaddleTransaction(txn);
+    if (fromTxn) return fromTxn;
+  }
+  if (Array.isArray(p?.items)) return forfaitFromPaddleTransaction({ items: p.items });
+  return null;
+}
+
 async function paddleCustomerEmail(env, customerId) {
   const key = String(env.PADDLE_API_KEY || "").trim();
   if (!key || !String(customerId || "").startsWith("ctm_")) return "";
@@ -969,9 +1019,12 @@ async function signaturePaddleValide(secret, payload, header) {
   return mismatch === 0;
 }
 
-export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, signaturePaddleValide, isVorixaManagedStripeObject };
+export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, forfaitFromProvisionPayload, signaturePaddleValide, isVorixaManagedStripeObject };
 
 export default {
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(runAutonomyTick(env));
+  },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -1018,6 +1071,8 @@ export default {
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
         portal_claim_needs_stripe_secret: false,
+        engine: true,
+        engine_email: !!env.EMAIL,
       });
     }
 
@@ -1155,6 +1210,20 @@ export default {
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
+    if (url.pathname === "/ops/engine/tick" && request.method === "POST") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      return json(await runAutonomyTick(env));
+    }
+
+    if (url.pathname === "/ops/engine" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      return json(await engineStatus(env));
+    }
+
     if (url.pathname === "/crm/leads" && request.method === "GET") {
       if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
         return json({ erreur: "cle invalide" }, 401);
@@ -1220,31 +1289,46 @@ export default {
         if (!leadOk && !fulfillOk) {
           return json({ erreur: "cle invalide" }, 401);
         }
-        const p = await request.json();
-        const email = String(p.email || "").trim().toLowerCase();
+        let p;
+        try { p = await request.json(); } catch { return json({ erreur: "json invalide" }, 400); }
+        const txn = p?.transaction || p?.data || {};
+        const email = String(
+          p.email || p.customer_email || p.customer?.email || txn.customer?.email || "",
+        ).trim().toLowerCase();
         if (!email.includes("@")) return json({ erreur: "courriel invalide" }, 400);
-        const forfait = resoudreForfait(p.forfait || p.plan) || "grow_hub_growth";
+        const resolved = forfaitFromProvisionPayload(p);
+        // Never block a paid activation: fall back to Growth, but flag it for ops review.
+        const forfait = resolved || "grow_hub_growth";
         const paymentId =
-          String(p.payment_id || "").trim() ||
+          String(p.payment_id || p.transaction_id || txn.id || "").trim() ||
           `manual:${email}:${forfait}:${new Date().toISOString().slice(0, 10)}`;
+        const txnCents = Number(txn?.details?.totals?.total || txn?.details?.totals?.grand_total || 0);
+        const montant = Number(p.montant || p.amount) || (txnCents > 0 ? txnCents / 100 : undefined);
+        const baseSegment = p.segment || (fulfillOk ? "paiement paddle vorixa" : "provision manuelle portail");
         if (paymentId.startsWith("txn_")) {
           await putSessionMap(env, paymentId, { email, forfait });
         }
-        const result = await traiterPaiement(env, {
-          email,
-          forfait,
-          payment_id: paymentId,
-          montant: p.montant,
-          entreprise: p.entreprise || "AlphaVit Lab",
-          prenom: p.prenom || "",
-          nom: p.nom || "",
-          segment: p.segment || (fulfillOk ? "paiement paddle vorixa" : "provision manuelle portail"),
-          checkout_session_id: p.session_id || p.checkout_session_id || paymentId,
-          processor: p.processor || (fulfillOk ? "paddle" : undefined),
-          renouvellement: !!p.renouvellement,
-        });
-        const session = await claimPortal(env, { email });
-        return json({ ok: true, provision: result, portal: session });
+        try {
+          const result = await traiterPaiement(env, {
+            email,
+            forfait,
+            payment_id: paymentId,
+            montant,
+            entreprise: p.entreprise || txn.custom_data?.entreprise || "",
+            prenom: p.prenom || "",
+            nom: p.nom || "",
+            segment: resolved ? baseSegment : `${baseSegment} - FORFAIT A VERIFIER`,
+            checkout_session_id: p.session_id || p.checkout_session_id || paymentId,
+            processor: p.processor || (fulfillOk ? "paddle" : undefined),
+            renouvellement: !!p.renouvellement,
+          });
+          const session = await claimPortal(env, { email });
+          return json({ ok: true, forfait_verifie: !!resolved, provision: result, portal: session });
+        } catch (e) {
+          console.error("provision portail", paymentId, e);
+          // 5xx so the relay / Paddle retries; deal creation is idempotent on payment_id.
+          return json({ erreur: String(e.message || e), payment_id: paymentId }, 502);
+        }
       } catch (e) {
         return json({ erreur: String(e.message || e) }, 400);
       }
