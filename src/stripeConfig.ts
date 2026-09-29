@@ -1,23 +1,10 @@
 import { isPaddlePlanKey, paddlePlanUrl } from "./paddleCatalog";
 
 /**
- * Stripe Grow Hub catalog — live lien de paiements on merchant acct_1TDZjzAG7HUL9Rtr.
- *
- * PAYMENT-LOCKED for Paddle Launch/Growth/Scale — see ops/payment-lock/.
- * processor must remain "paddle"; paid plans must use paddlePlanUrl → /payer.
- *
- * Public URLs here are the single source of truth for site CTAs, `/api/config`,
- * and mobile bootstrap. Do not hardcode a parallel buy.stripe.com list in the worker.
- *
- * `plink_1UDT7lAG7HUL9Rtr6j7UWahF` is NOT a valid live lien de paiement on this
- * account (Stripe `resource_missing`). Do not wire it. Create replacements in
- * **Live** mode on this same account (not Test, not a Connect platform account),
- * then paste both the `plink_…` id and the `https://buy.stripe.com/…` URL here.
- *
- * 2026-09-13: the six `plink_1UCmB*` URLs were briefly `active: false` on
- * this account (Stripe listed them deactivated). They were reactivated the
- * same day. Vorixa service-géré checkout is a separate catalog —
- * see `pipe/vorixaManaged.js`.
+ * BlackWay Grow Hub catalog — checkout is Paddle only.
+ * Launch / Growth / Scale → /payer. Spark / Command / Partner → /contact.
+ * Legacy Stripe price / plink IDs stay for inbound webhook forfait mapping only.
+ * See ops/payment-lock/.
  */
 
 export type PlanKey =
@@ -39,16 +26,19 @@ export type PlanCatalog = {
   featured?: boolean;
 };
 
-/** Self-serve monthly ladder (CAD). Enterprise = contact only. */
+function contactCheckout(plan: PlanKey): string {
+  return `https://blackwayconnect.com/contact?forfait=${plan}&bw_source=site_web`;
+}
+
+/** Self-serve monthly ladder (CAD). Enterprise / remaining plans = contact only. */
 export const PLANS: Record<PlanKey, PlanCatalog> = {
   grow_hub_spark: {
     key: "grow_hub_spark",
     forfait: "grow_hub_spark",
     priceId: "price_1U1FKzAG7HUL9RtrC2bJrFVP",
     productId: "prod_V1HuBVHegAkaHb",
-    /** Old lien de paiement was deactivated by Stripe — replaced 2026-09-06 with a fresh, active one. */
     paymentLinkId: "plink_1UCmB6AG7HUL9RtrpvUpROqh",
-    paymentLink: "https://buy.stripe.com/28EeVc0zz9Rhas604SeIw1U",
+    paymentLink: contactCheckout("grow_hub_spark"),
     amountCad: 99,
   },
   grow_hub_launch: {
@@ -57,7 +47,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLbAG7HUL9Rtr3QF6c4pC",
     productId: "prod_V1HvK45vGGJ68K",
     paymentLinkId: "plink_1UCmBxAG7HUL9RtrUdOVuMNm",
-    paymentLink: "https://buy.stripe.com/3cI3cueqp0gH57McREeIw1X",
+    paymentLink: paddlePlanUrl("grow_hub_launch"),
     amountCad: 149,
   },
   grow_hub_growth: {
@@ -66,7 +56,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLcAG7HUL9RtrgSob9cmw",
     productId: "prod_V1Hv0CUSd3Gal9",
     paymentLinkId: "plink_1UCmBzAG7HUL9RtrG7wA53Aq",
-    paymentLink: "https://buy.stripe.com/aFa5kC6XX8Nd43IdVIeIw1Y",
+    paymentLink: paddlePlanUrl("grow_hub_growth"),
     amountCad: 349,
     featured: true,
   },
@@ -76,7 +66,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLdAG7HUL9RtrWL5IQyME",
     productId: "prod_V1HvMstGzO6z9Z",
     paymentLinkId: "plink_1UCmC0AG7HUL9RtrSOaDDzbo",
-    paymentLink: "https://buy.stripe.com/9B600i1DD8Ndbwa6tgeIw1Z",
+    paymentLink: paddlePlanUrl("grow_hub_scale"),
     amountCad: 699,
   },
   grow_hub_command: {
@@ -85,7 +75,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLeAG7HUL9Rtrc8R6DEdZ",
     productId: "prod_V1Hv4OhF6vomby",
     paymentLinkId: "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
-    paymentLink: "https://buy.stripe.com/14A6oGfut0gHgQubNAeIw1V",
+    paymentLink: contactCheckout("grow_hub_command"),
     amountCad: 1249,
   },
   grow_hub_partner: {
@@ -94,7 +84,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLfAG7HUL9RtruTYWaERD",
     productId: "prod_V1HvFolyqB03rO",
     paymentLinkId: "plink_1UCmBKAG7HUL9RtrFzh2ZDB1",
-    paymentLink: "https://buy.stripe.com/eVq7sK9658Nd43IeZMeIw1W",
+    paymentLink: contactCheckout("grow_hub_partner"),
     amountCad: 2499,
   },
 };
@@ -107,22 +97,21 @@ export const PLAN_ORDER: PlanKey[] = [
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
-/** The web and mobile bootstrap use the same BlackWay checkout route. */
+/** The web and mobile bootstrap use the same BlackWay Paddle checkout route. */
 export const CHECKOUT_LINKS = {
-  grow_hub_spark: "https://blackwayconnect.com/contact?forfait=grow_hub_spark&bw_source=site_web",
-  grow_hub_launch: paddlePlanUrl("grow_hub_launch"),
-  grow_hub_growth: paddlePlanUrl("grow_hub_growth"),
-  grow_hub_scale: paddlePlanUrl("grow_hub_scale"),
-  grow_hub_command: "https://blackwayconnect.com/contact?forfait=grow_hub_command&bw_source=site_web",
-  grow_hub_partner: "https://blackwayconnect.com/contact?forfait=grow_hub_partner&bw_source=site_web",
+  grow_hub_spark: PLANS.grow_hub_spark.paymentLink,
+  grow_hub_launch: PLANS.grow_hub_launch.paymentLink,
+  grow_hub_growth: PLANS.grow_hub_growth.paymentLink,
+  grow_hub_scale: PLANS.grow_hub_scale.paymentLink,
+  grow_hub_command: PLANS.grow_hub_command.paymentLink,
+  grow_hub_partner: PLANS.grow_hub_partner.paymentLink,
   currency: "cad" as const,
   processor: "paddle" as const,
   storefront: "https://blackwayconnect.com/forfaits",
 };
 
 /**
- * Previous lien de paiement IDs (public URLs deactivated 2026-09-06).
- * Keep for webhook forfait resolution on older Checkout Sessions.
+ * Legacy Stripe lien de paiement IDs — inbound webhook forfait resolution only.
  */
 export const LEGACY_PAYMENT_LINK_IDS: Record<string, PlanKey> = {
   plink_1U1FMTAG7HUL9RtrDCjxRIl6: "grow_hub_spark",
@@ -133,7 +122,7 @@ export const LEGACY_PAYMENT_LINK_IDS: Record<string, PlanKey> = {
   plink_1U1FMYAG7HUL9RtruMZLdQo2: "grow_hub_partner",
 };
 
-/** Live + legacy lien de paiement IDs → Grow Hub forfait (pipe webhook fallback). */
+/** Legacy Stripe plink IDs → Grow Hub forfait (pipe webhook fallback). */
 export function paymentLinkToForfait(): Record<string, PlanKey> {
   const map: Record<string, PlanKey> = { ...LEGACY_PAYMENT_LINK_IDS };
   for (const plan of Object.values(PLANS)) {
@@ -143,13 +132,10 @@ export function paymentLinkToForfait(): Record<string, PlanKey> {
 }
 
 export const STRIPE_WEBHOOK = "https://api.blackwayconnect.com/webhooks/stripe";
-/** Primary post-checkout destination — Client Master Portal (session_id when lien de paiement supports it). */
 export const PORTAL_URL = "https://blackwayconnect.com/portail";
-export const PORTAL_SUCCESS_URL =
-  "https://blackwayconnect.com/portail?session_id={CHECKOUT_SESSION_ID}";
+export const PORTAL_SUCCESS_URL = "https://blackwayconnect.com/portail";
 export const THANK_YOU_URL = PORTAL_SUCCESS_URL;
-/** Secondary activation checklist (kept for deep links / email). */
-export const MERCI_URL = "https://blackwayconnect.com/merci?src=stripe";
+export const MERCI_URL = "https://blackwayconnect.com/merci?src=paddle";
 
 export function checkoutUrl(
   plan: PlanKey,

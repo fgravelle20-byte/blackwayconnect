@@ -1,7 +1,7 @@
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
- * Distinct from Grow Hub web (Type A). Same Portail / HubSpot can hold both.
- * Paddle checkout: quote-based for now. Stripe checkout is retired.
+ * Distinct from Grow Hub web (Type A). Same Portail + Master CRM can hold both.
+ * Paddle checkout: quote-based until dedicated Cellulaire price IDs exist. Stripe is retired.
  */
 
 export type CellulairePlanKey =
@@ -154,8 +154,9 @@ export function cellulaireCheckoutUrl(
   return url.toString();
 }
 
+/** Dedicated Cellulaire Paddle prices do not exist yet — never invent pri_ IDs. */
 export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
-  void plan;
-  return false;
+  const p = CELLULAIRE_PLANS[plan];
+  return p.priceId.startsWith("pri_") && /\/payer(\?|$)/.test(p.paymentLink);
 }
 

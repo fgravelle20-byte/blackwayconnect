@@ -1,7 +1,8 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { ShareBar } from "../ShareBar";
+import { agentLog } from "../debugAgentLog";
 import {
   checkoutUrl,
   FEATURED_PLAN,
@@ -150,6 +151,26 @@ export function ToolsPage() {
   const [cmpStatus, setCmpStatus] = useState<"idle" | "ok" | "err">("idle");
   const [cmpPending, setCmpPending] = useState(false);
 
+  useEffect(() => {
+    // #region agent log
+    agentLog(
+      "ToolsPage.tsx:mount",
+      "web tools advertised",
+      {
+        hrefs: {
+          relance: path("/outils/relance-panier"),
+          soumission: path("/outils/soumission"),
+          checklist: path("/outils/checklist"),
+          roi: "#roi",
+          comparer: "#comparateur",
+        },
+        featuredCheckout: checkoutUrl(FEATURED_PLAN, { lang, source: "audit" }),
+      },
+      "C",
+    );
+    // #endregion
+  }, [lang, path]);
+
   const result = useMemo(() => {
     const potential = leads * ticket * (closeRate / 100);
     // Follow-up lag amplifies leakage (each extra day beyond 1 ≈ +6% of potential lost).
@@ -196,6 +217,9 @@ export function ToolsPage() {
       langue: lang,
       bw_ref: "master_tools",
     });
+    // #region agent log
+    agentLog("ToolsPage.tsx:onSaveRoi", "roi lead submit", { ok, plan: result.plan }, "C");
+    // #endregion
     setRoiStatus(ok ? "ok" : "err");
     setRoiPending(false);
     if (ok) e.currentTarget.reset();

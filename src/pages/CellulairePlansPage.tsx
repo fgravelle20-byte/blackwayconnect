@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { agentLog } from "../debugAgentLog";
 import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
@@ -19,6 +21,32 @@ export function CellulairePlansPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
   const anyLive = CELLULAIRE_ORDER.some((k) => isCellulaireCheckoutReady(k));
+
+  useEffect(() => {
+    // #region agent log
+    agentLog(
+      "CellulairePlansPage.tsx:mount",
+      "cellulaire checkout state",
+      {
+        anyLive,
+        plans: CELLULAIRE_ORDER.map((k) => ({
+          k,
+          ready: isCellulaireCheckoutReady(k),
+          hasPaymentLink: !!CELLULAIRE_PLANS[k].paymentLink,
+          hrefHost: (() => {
+            try {
+              return new URL(cellulaireCheckoutUrl(k, { lang, source: "audit" })).pathname;
+            } catch {
+              return "bad";
+            }
+          })(),
+          toolCount: CELLULAIRE_PLANS[k].tools.length,
+        })),
+      },
+      "A",
+    );
+    // #endregion
+  }, [anyLive, lang]);
 
   return (
     <section className="section section--page section--app-plans">
@@ -85,7 +113,9 @@ export function CellulairePlansPage() {
                   {plan.tools
                     .filter((t) => t !== "support" && t !== "forfaits_cellulaire")
                     .map((t) => (
-                      <li key={t}>{toolLabel(t, fr)}</li>
+                      <li key={t}>
+                        <Link to={path(TOOL_HREF[t] || "/portail")}>{toolLabel(t, fr)}</Link>
+                      </li>
                     ))}
                 </ul>
                 <a
@@ -135,8 +165,8 @@ export function CellulairePlansPage() {
             {PADDLE_CELLULAIRE_TODO.map((row) => (
               <li key={row.key}>
                 <code>{row.key}</code> — {row.name} — {row.amountCad} CAD/mo — metadata{" "}
-                <code>{row.metadata}</code> — success{" "}
-                <code>https://blackwayconnect.com/portail?session_id=&#123;CHECKOUT_SESSION_ID&#125;</code>
+                <code>{row.metadata}</code> — success Paddle{" "}
+                <code>https://blackwayconnect.com/portail?transaction_id=&#123;txn_id&#125;</code>
               </li>
             ))}
           </ul>
@@ -145,6 +175,15 @@ export function CellulairePlansPage() {
     </section>
   );
 }
+
+const TOOL_HREF: Record<string, string> = {
+  cell_capture: "/portail/capture",
+  cell_pipeline: "/portail/pipeline",
+  cell_checkout: "/portail/cell-checkout",
+  cell_merge: "/portail/merge",
+  cell_streak: "/portail/streak",
+  cell_fleet_ops: "/portail/fleet",
+};
 
 function toolLabel(id: string, fr: boolean): string {
   const map: Record<string, { fr: string; en: string }> = {
