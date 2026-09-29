@@ -4,7 +4,7 @@ Code source : ce dépôt, branche `main`. Site public : `blackway-site`. Traitem
 
 ## Ce que la vue lit réellement
 
-Les 50 opportunités les plus récemment modifiées du pipeline BlackWay dans HubSpot, leurs contacts associés, leurs étapes de vente et leur statut de livraison. Ces nombres sont des aperçus, pas des totaux. « Paiement reçu » signifie l'étape HubSpot, pas un rapprochement bancaire. RevenueCat (app blackway-connect) compte des ouvertures d'app, pas des payeurs Grow Hub — la caisse réelle est Paddle. Aucun appel ni message n'est inventé.
+Les 50 dossiers les plus récents du Master CRM BlackWay (D1). HubSpot n'est qu'un miroir optionnel : il ne rapporte pas d'argent et ne débloque pas le portail. « Encaissé Paddle » = paiement vérifié dans la base Master. Une étape CRM n'est pas un rapprochement bancaire. RevenueCat (app blackway-connect) compte des ouvertures d'app, pas des payeurs Grow Hub — la caisse réelle est Paddle sur `blackwayconnect.com/payer`. Aucun appel ni message n'est inventé.
 
 ## Activer l'accès privé avant déploiement
 
@@ -19,7 +19,7 @@ La vérification Access valide signature RS256, émetteur, audience et courriel 
 
 - Téléphonie : identifier le fournisseur et le webhook qui détient les appels BlackWay; le code actuel affiche des numéros publics sans journal d'appels centralisé. Ne pas mélanger avec l'assistant Vapi/Telnyx de l'app VORIXA.
 - Messages : relier la boîte et les conversations à un journal d'activité privé.
-- Paiements : rapprocher directement les événements Paddle avec les dossiers HubSpot avant d'afficher des montants encaissés.
+- Paiements : afficher uniquement les événements Paddle du Master DB. Ne jamais compter une étape HubSpot comme de l'argent.
 - Automatisations : journaliser déclenchement, réussite et échec dans un événement propriétaire unique.
 
 ## Live après master tools update (2026-09-25)
