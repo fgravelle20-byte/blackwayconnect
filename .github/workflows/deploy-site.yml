@@ -1,6 +1,7 @@
 name: Deploy site (blackway-site)
 
 # Production deploy path = Cloudflare Workers Builds (blackway-site).
+# Recovery trigger: 2026-09-29 DNS/domain incident.
 # This workflow verifies npm build only — no wrangler deploy.
 # Paddle live token is required in Workers Builds; GitHub secret is optional mirror.
 
