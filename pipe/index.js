@@ -524,6 +524,70 @@ async function verifyPortalToken(env, token) {
   return { email, forfait, exp };
 }
 
+/** Short-lived proof that the customer opened a link delivered to their mailbox. */
+async function mintPortalLoginLink(env, email) {
+  const secret = String(env.BW_PORTAL_SECRET || "").trim();
+  if (!secret) throw new Error("connexion portail indisponible");
+  const exp = Math.floor(Date.now() / 1000) + 10 * 60;
+  const nonce = b64urlEncode(crypto.getRandomValues(new Uint8Array(24)));
+  const payload = `login|${email}|${exp}|${nonce}`;
+  return `${b64urlEncode(new TextEncoder().encode(payload))}.${await hmacSign(secret, payload)}`;
+}
+
+async function emailFromPortalLoginLink(env, token) {
+  const secret = String(env.BW_PORTAL_SECRET || "").trim();
+  const [encoded, signature, extra] = String(token || "").split(".");
+  if (!secret || !encoded || !signature || extra || encoded.length > 1024) {
+    throw new Error("lien de connexion invalide");
+  }
+  let payload;
+  try { payload = new TextDecoder().decode(b64urlDecodeToBytes(encoded)); }
+  catch { throw new Error("lien de connexion invalide"); }
+  if (!await hmacVerify(secret, payload, signature)) throw new Error("lien de connexion invalide");
+  const [kind, email, expString, nonce] = payload.split("|");
+  const exp = Number(expString);
+  if (kind !== "login" || !email?.includes("@") || !nonce || !Number.isInteger(exp)
+    || exp < Date.now() / 1000 || exp > Date.now() / 1000 + 600) {
+    throw new Error("lien de connexion expiré ou invalide");
+  }
+  return email;
+}
+
+async function sendPortalLoginLink(env, emailInput) {
+  const email = String(emailInput || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    throw new Error("courriel invalide");
+  }
+  const resendKey = String(env.RESEND_API_KEY || "").trim();
+  if (!resendKey || !String(env.BW_PORTAL_SECRET || "").trim()) {
+    throw new Error("connexion par courriel non configurée");
+  }
+  // Same response for unknown and active customers; never reveal who has paid.
+  const result = { ok: true, message: "Si ce compte est actif, un lien de connexion a été envoyé." };
+  const contact = await searchHsContact(env, "email", email);
+  if (!contact || !contactHasCustomerAccess(contact.properties || {})) return result;
+
+  const throttleKey = new Request(`https://bw-pipe-session-cache.internal/login/${encodeURIComponent(email)}`);
+  if (await caches.default.match(throttleKey)) return result;
+  const token = await mintPortalLoginLink(env, email);
+  const link = `https://blackwayconnect.com/portail#portal_login=${encodeURIComponent(token)}`;
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: "BlackWayConnect <noreply@blackwayconnect.com>",
+      to: [email],
+      subject: "Votre lien de connexion BlackWayConnect",
+      text: `Ouvrez votre portail client avec ce lien (valide 10 minutes) : ${link}\n\nSi vous n'avez rien demandé, ignorez ce message.`,
+    }),
+  });
+  if (!response.ok) throw new Error(`envoi du lien impossible (${response.status})`);
+  await caches.default.put(throttleKey, new Response("1", {
+    headers: { "Cache-Control": "public, max-age=60" },
+  }));
+  return result;
+}
+
 function portalSessionShape(email, forfait, token, exp, forfaitCellulaire) {
   const cellKey = isCellulaireForfait(forfaitCellulaire)
     ? forfaitCellulaire
@@ -725,6 +789,23 @@ async function paddleCustomerEmail(env, customerId) {
   return String(body?.data?.email || "").trim().toLowerCase();
 }
 
+/** Resolve the logged-in portal customer's Paddle ID server-side for Retain. */
+async function paddleCustomerIdForEmail(env, email) {
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key || !email) return null;
+  const url = new URL("https://api.paddle.com/customers");
+  url.searchParams.set("email", email);
+  const response = await fetch(url, { headers: { Authorization: `Bearer ${key}` } });
+  if (!response.ok) return null;
+  const body = await response.json();
+  const customer = (body.data || []).find((item) =>
+    String(item.email || "").toLowerCase() === email.toLowerCase() &&
+    /^ctm_[a-z0-9]{26}$/.test(String(item.id || "")) &&
+    item.status === "active",
+  );
+  return customer?.id || null;
+}
+
 /** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
 async function listPortalLeads(env, token) {
   const session = await verifyPortalToken(env, token);
@@ -898,7 +979,10 @@ async function portalMe(env, token) {
   }
   if (!FORFAITS[forfait]) forfait = tokenForfait || "grow_hub_growth";
   const minted = await mintPortalToken(env, email, forfait);
-  return portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  const session = portalSessionShape(email, forfait, minted.token, minted.exp, forfaitCellulaire);
+  // A valid portal token is required above; never resolve a customer from a URL email.
+  session.paddleCustomerId = await paddleCustomerIdForEmail(env, email);
+  return session;
 }
 
 /** Verification de signature Stripe (HMAC SHA-256, tolerance 5 min) */
@@ -987,6 +1071,7 @@ export default {
         paddle_ready: (paddleApiKey && paddleWebhookSecret) || paddleFulfillRelay,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
+        portal_email_login: !!String(env.RESEND_API_KEY || "").trim() && !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
         portal_claim_needs_stripe_secret: false,
       });
@@ -1127,10 +1212,21 @@ export default {
     }
 
     // Stripe webhook retired: all new payments are Paddle-only.\n
+    if (url.pathname === "/portal/login-link" && request.method === "POST") {
+      try {
+        const p = await request.json();
+        return json(await sendPortalLoginLink(env, p.email));
+      } catch (e) {
+        return json({ erreur: String(e.message || e) }, 503);
+      }
+    }
+
     if (url.pathname === "/portal/claim" && request.method === "POST") {
       try {
         const p = await request.json();
-        return json(await claimPortal(env, p));
+        // A transaction ID or an email alone is not proof of mailbox ownership.
+        const email = await emailFromPortalLoginLink(env, p.login_token);
+        return json(await claimPortal(env, { email }));
       } catch (e) {
         return json({ erreur: String(e.message || e) }, 401);
       }

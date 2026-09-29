@@ -490,6 +490,24 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/portal/login-link") {
+      if (request.method !== "POST") return corsJson(request, { erreur: "methode non autorisee" }, 405);
+      try {
+        const body = await request.json();
+        const upstream = await fetch(`${env.PIPE_URL}/portal/login-link`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        return new Response(await upstream.text(), {
+          status: upstream.status,
+          headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...corsHeaders(request) },
+        });
+      } catch {
+        return corsJson(request, { erreur: "portail indisponible" }, 502);
+      }
+    }
+
     if (url.pathname === "/api/portal/claim") {
       if (request.method !== "POST") {
         return corsJson(request, { erreur: "methode non autorisee" }, 405);

@@ -4,10 +4,12 @@ import { useLang } from "../i18n";
 import { isPaddlePlanKey, PADDLE_PRICES } from "../paddleCatalog";
 
 type PaddleClient = {
+  Initialized?: boolean;
   Initialize(options: {
     token: string;
     eventCallback?: (event: { name?: string; data?: { transaction_id?: string } }) => void;
   }): void;
+  Update(options: { eventCallback: (event: { name?: string; data?: { transaction_id?: string } }) => void }): void;
   Checkout: { open(options: {
     items: { priceId: string; quantity: number }[];
     customData: Record<string, string>;
@@ -75,18 +77,18 @@ export function CheckoutPage() {
         const token = await resolvePaddleClientToken();
         await loadPaddle();
         if (cancelled || !window.Paddle) return;
-        if (!initialized) {
-          window.Paddle.Initialize({
-            token,
-            eventCallback: (event) => {
+        const eventCallback = (event: { name?: string; data?: { transaction_id?: string } }) => {
               if (event.name !== "checkout.completed") return;
               const transactionId = String(event.data?.transaction_id || "");
               if (!transactionId.startsWith("txn_")) return;
               const portal = new URL(path("/portail"), window.location.origin);
               portal.searchParams.set("transaction_id", transactionId);
               window.location.assign(portal.toString());
-            },
-          });
+            };
+        if (window.Paddle.Initialized) {
+          window.Paddle.Update({ eventCallback });
+        } else if (!initialized) {
+          window.Paddle.Initialize({ token, eventCallback });
           initialized = true;
         }
         const successUrl = new URL(path("/merci"), window.location.origin);
