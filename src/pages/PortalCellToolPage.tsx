@@ -4,7 +4,6 @@ import { useLang } from "../i18n";
 import { postLead } from "../lib/postLead";
 import { checkoutUrl, isCheckoutReady, PLANS, type PlanKey } from "../stripeConfig";
 import { cellulaireCheckoutUrl } from "../cellulaireConfig";
-import { agentLog } from "../debugAgentLog";
 
 const STORAGE_KEY = "bw_portal_session";
 const STREAK_KEY = "bw_cell_streak";
@@ -100,7 +99,6 @@ export function PortalCellToolPage() {
 
   useEffect(() => {
     const s = readSession();
-    agentLog("PortalCellToolPage.tsx:boot", "cell tool open", { mode, hasSession: !!s }, "B", "post-fix");
     setSession(s);
     setStreak(readJson<string[]>(STREAK_KEY, []));
     setFleet(readJson<string[]>(FLEET_KEY, []));
@@ -117,7 +115,6 @@ export function PortalCellToolPage() {
         const local = readJson<PortalLead[]>(LOCAL_LEADS_KEY, []);
         const seen = new Set(remote.map((l) => l.id));
         setLeads([...remote, ...local.filter((l) => !seen.has(l.id))]);
-        agentLog("PortalCellToolPage.tsx:pipeline", "leads loaded", { ok: res.ok, n: remote.length }, "B", "post-fix");
       } catch {
         setLeads(readJson<PortalLead[]>(LOCAL_LEADS_KEY, []));
       }
@@ -156,7 +153,6 @@ export function PortalCellToolPage() {
       langue: lang,
       bw_ref: "cell_pipeline",
     });
-    agentLog("PortalCellToolPage.tsx:pipeline-add", "field lead", { ok: out.ok }, "B", "post-fix");
     setBusy(false);
     if (!out.ok) {
       setErr(out.error || (fr ? "Envoi CRM impossible" : "CRM send failed"));
@@ -195,7 +191,6 @@ export function PortalCellToolPage() {
       langue: lang,
       bw_ref: "cell_checkout",
     });
-    agentLog("PortalCellToolPage.tsx:checkout", "prospect checkout send", { ok: out.ok, plan: payPlan }, "B", "post-fix");
     if (out.ok) {
       setStatus(fr ? "Prospect envoyé au CRM. Copiez le lien Paddle Grow Hub." : "Prospect sent to CRM. Copy the Grow Hub Paddle link.");
       setErr("");

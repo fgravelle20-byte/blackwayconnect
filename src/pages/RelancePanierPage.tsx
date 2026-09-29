@@ -5,7 +5,6 @@ import { FEATURED_PLAN, PLANS, checkoutUrl } from "../stripeConfig";
 import { trackInitiateCheckout, trackLead, trackViewContent } from "../tracking";
 import { useEffect } from "react";
 import { postLead } from "../lib/postLead";
-import { agentLog } from "../debugAgentLog";
 
 /** Abandoned quote / cart recovery checker → Growth checkout + BlackWay CRM. */
 export function RelancePanierPage() {
@@ -80,9 +79,6 @@ export function RelancePanierPage() {
         lift: Math.round(result.lift),
       },
     });
-    // #region agent log
-    agentLog("RelancePanierPage.tsx:onSave", "relance lead submit", { ok: out.ok, hasScore: out.score != null }, "C");
-    // #endregion
     if (out.ok) {
       trackLead();
       setLeadScore(out.score ?? result.twinScore);

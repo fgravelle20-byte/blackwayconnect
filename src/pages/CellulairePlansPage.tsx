@@ -1,11 +1,8 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { agentLog } from "../debugAgentLog";
 import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
   FEATURED_CELLULAIRE,
-  PADDLE_CELLULAIRE_TODO,
   cellulaireCheckoutUrl,
   isCellulaireCheckoutReady,
   type CellulairePlanKey,
@@ -21,32 +18,6 @@ export function CellulairePlansPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
   const anyLive = CELLULAIRE_ORDER.some((k) => isCellulaireCheckoutReady(k));
-
-  useEffect(() => {
-    // #region agent log
-    agentLog(
-      "CellulairePlansPage.tsx:mount",
-      "cellulaire checkout state",
-      {
-        anyLive,
-        plans: CELLULAIRE_ORDER.map((k) => ({
-          k,
-          ready: isCellulaireCheckoutReady(k),
-          hasPaymentLink: !!CELLULAIRE_PLANS[k].paymentLink,
-          hrefHost: (() => {
-            try {
-              return new URL(cellulaireCheckoutUrl(k, { lang, source: "audit" })).pathname;
-            } catch {
-              return "bad";
-            }
-          })(),
-          toolCount: CELLULAIRE_PLANS[k].tools.length,
-        })),
-      },
-      "A",
-    );
-    // #endregion
-  }, [anyLive, lang]);
 
   return (
     <section className="section section--page section--app-plans">
@@ -155,22 +126,6 @@ export function CellulairePlansPage() {
           <ContactForm source="app_mobile" />
         </div>
 
-        <details style={{ marginTop: "2rem" }}>
-          <summary className="lede">
-            {fr
-              ? "Offres Cellulaire disponibles sur demande"
-              : "Cellular offers available on request"}
-          </summary>
-          <ul className="lede">
-            {PADDLE_CELLULAIRE_TODO.map((row) => (
-              <li key={row.key}>
-                <code>{row.key}</code> — {row.name} — {row.amountCad} CAD/mo — metadata{" "}
-                <code>{row.metadata}</code> — success Paddle{" "}
-                <code>https://blackwayconnect.com/portail?transaction_id=&#123;txn_id&#125;</code>
-              </li>
-            ))}
-          </ul>
-        </details>
       </div>
     </section>
   );

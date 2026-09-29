@@ -5,7 +5,6 @@ import { postLead } from "../lib/postLead";
 import { trackLead } from "../tracking";
 import { FEATURED_PLAN, PLANS, checkoutUrl, type PlanKey } from "../stripeConfig";
 import { CELLULAIRE_PLANS, type CellulairePlanKey } from "../cellulaireConfig";
-import { agentLog } from "../debugAgentLog";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -57,7 +56,6 @@ export function PortalCapturePage() {
 
   useEffect(() => {
     const s = readSession();
-    agentLog("PortalCapturePage.tsx:boot", "capture session", { hasSession: !!s, forfait: s?.forfait ? "set" : "" }, "D");
     setSession(s);
   }, []);
 
