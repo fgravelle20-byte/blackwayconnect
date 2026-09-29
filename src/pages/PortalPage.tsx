@@ -355,8 +355,8 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Paddle. Aucun mot de passe n’est requis."
-              : "On iPhone or desktop, enter the exact email used with Paddle. No password is required."}
+              ? "Sur iPhone ou ordinateur, entrez le courriel exact du reçu Paddle. Ouvrir l’app n’est pas un paiement — le forfait s’active après /payer."
+              : "On iPhone or desktop, enter the exact email on the Paddle receipt. Opening the app is not a payment — the plan activates after /payer."}
           </p>
           <form
             className="portal-login__form"
@@ -388,13 +388,17 @@ export function PortalPage() {
           <p className="portal-login__hint">
             {fr ? (
               <>
-                Pas encore client ? <Link to={path("/forfaits")}>Grow Hub web</Link>
+                Pas encore client ? Paiement Paddle (Safari) → <Link to={path("/forfaits")}>Grow Hub</Link>
+                {" · "}
+                <Link to={path("/payer")}>/payer</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire (optionnel)</Link>
               </>
             ) : (
               <>
-                Not a client yet? <Link to={path("/forfaits")}>Grow Hub web</Link>
+                Not a client yet? Paddle payment (Safari) → <Link to={path("/forfaits")}>Grow Hub</Link>
+                {" · "}
+                <Link to={path("/payer")}>/payer</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Cellular Pack (optional)</Link>
               </>

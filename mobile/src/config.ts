@@ -33,7 +33,7 @@ export const URLS = {
   checklist: withTrack("/outils/checklist"),
   roi: withTrack("/outils#roi"),
   growHub: withTrack("/grow-hub"),
-  /** Stripe Grow Hub — MUST open in external Safari / Chrome (Apple IAP). */
+  /** Grow Hub storefront — MUST open in external Safari (Apple IAP). Cash = Paddle /payer, not RevenueCat. */
   forfaits: withTrack("/forfaits", {
     utm_medium: "app_store",
     utm_campaign: "external_checkout",

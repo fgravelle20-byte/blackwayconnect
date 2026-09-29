@@ -28,7 +28,7 @@ export async function initNativeChrome(): Promise<void> {
   });
 }
 
-/** Stripe / forfaits — always external (Safari / Chrome). Apple IAP compliance. */
+/** Forfaits / Paddle — always external Safari. Apple IAP: no in-app checkout, no RevenueCat purchases. */
 export async function openExternal(url: string): Promise<void> {
   if (isNative) {
     await Browser.open({ url, presentationStyle: "popover" });

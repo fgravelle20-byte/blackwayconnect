@@ -67,7 +67,7 @@ Viewport 1 seulement :
   `https://blackwayconnect.com/forfaits?utm_source=grow_hub_app&utm_medium=app_store&utm_campaign=external_checkout&bw_source=mobile_app&bw_ref=base44_app`
 
 Sous le fold (pas dans le hero) :
-- 3 trust chips **honnêtes** seulement : « Stripe → HubSpot », « Bilingue FR/EN », « Québec · Canada · US »
+- 3 trust chips **honnêtes** seulement : « Paddle → Portail », « Bilingue FR/EN », « Québec · Canada · US »
 - Aucun compteur inventé
 
 ### 2) Portail — LE cœur (pas une coquille)
@@ -82,7 +82,7 @@ Deux modes :
   → navigue vers  
   `https://blackwayconnect.com/portail?email={encodeURIComponent(email)}&bw_source=mobile_app&bw_ref=base44_app`  
   (le site **auto-claim** via `?email=` → `POST /api/portal/claim` — **ne réinvente pas** l’auth HubSpot côté Base44)
-- Lien secondaire : ouvrir Portail sans email (même URL sans query)
+- Lien secondaire : **interdit** « Ouvrir sans courriel » — le portail exige le courriel payeur Paddle. L’ouverture de l’app n’est pas un paiement (RevenueCat New Customers ≠ payeurs).
 
 **B — WebView embarquée (idéal si Base44 le permet)**  
 Charge `site.portal` en WebView pleine hauteur sous une barre « Portail » minimale.  

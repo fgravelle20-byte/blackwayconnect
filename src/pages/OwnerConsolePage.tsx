@@ -71,9 +71,9 @@ const sections = [
   },
   {
     title: "Paiements",
-    state: "Partiel",
+    state: "Paddle",
     detail:
-      "Étapes HubSpot + Paddle fulfillment. Le solde bancaire se vérifie dans Paddle / processeur.",
+      "Caisse réelle = Paddle (Launch / Growth / Scale) sur /payer. RevenueCat New Customers = ouvertures d’app, pas des payeurs. 0 $ MRR dans RevenueCat est normal : pas d’IAP. HubSpot Associations / rendez-vous ≠ argent reçu.",
   },
   {
     title: "Automatisations",
@@ -139,6 +139,10 @@ export function OwnerConsolePage() {
             <p className="owner-console__eyebrow">ESPACE PROPRIÉTAIRE · PRIVÉ · TWIN TURBO</p>
             <h1>Tout ce qui entre. Tout ce qui avance.</h1>
             <p>Cockpit leads / deals / scores — pipeline BlackWay HubSpot en direct.</p>
+            <p className="owner-console__cash">
+              L’argent BlackWay est Paddle (dashboard Paddle + étape CRM « Paiement reçu »). RevenueCat
+              sur l’app blackway-connect compte des ouvertures d’app, pas des abonnements Grow Hub.
+            </p>
           </div>
           <button onClick={() => setRefresh((value) => value + 1)} disabled={loading}>
             Actualiser
@@ -184,7 +188,7 @@ export function OwnerConsolePage() {
             <div className="owner-console__stats">
               <div>
                 <strong>{data.contacts.length}</strong>
-                <span>Contacts récents</span>
+                <span>Contacts CRM (pas des payeurs)</span>
               </div>
               <div>
                 <strong>{data.deals.length}</strong>
@@ -211,7 +215,7 @@ export function OwnerConsolePage() {
             )}
 
             <section className="owner-console__panel">
-              <h2>Nouvelles entrées et clients</h2>
+              <h2>Nouvelles entrées CRM</h2>
               {data.contacts.length ? (
                 <div className="owner-console__list">
                   {data.contacts.map((contact) => {

@@ -4,7 +4,7 @@ Code source : ce dépôt, branche `main`. Site public : `blackway-site`. Traitem
 
 ## Ce que la vue lit réellement
 
-Les 50 opportunités les plus récemment modifiées du pipeline BlackWay dans HubSpot, leurs contacts associés, leurs étapes de vente et leur statut de livraison. Ces nombres sont des aperçus, pas des totaux. « Paiement reçu » signifie l'étape HubSpot, pas un rapprochement bancaire. Aucun appel ni message n'est inventé.
+Les 50 opportunités les plus récemment modifiées du pipeline BlackWay dans HubSpot, leurs contacts associés, leurs étapes de vente et leur statut de livraison. Ces nombres sont des aperçus, pas des totaux. « Paiement reçu » signifie l'étape HubSpot, pas un rapprochement bancaire. RevenueCat (app blackway-connect) compte des ouvertures d'app, pas des payeurs Grow Hub — la caisse réelle est Paddle. Aucun appel ni message n'est inventé.
 
 ## Activer l'accès privé avant déploiement
 
