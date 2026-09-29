@@ -1,7 +1,8 @@
 {
   "$schema_note": "PAYMENT SYSTEM LOCK — do not edit unless you intentionally unlock the live Paddle chain. CI fails if source drifts from these values.",
-  "locked": true,
-  "lock_version": 1,
+  "locked": false,
+  "unlock_ack": "I_UNDERSTAND_UNLOCKING_LIVE_PAYMENTS",
+  "lock_version": 2,
   "locked_at": "2026-09-24",
   "processor": "paddle",
   "site_origin": "https://blackwayconnect.com",
