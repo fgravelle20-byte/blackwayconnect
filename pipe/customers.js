@@ -40,6 +40,8 @@ export async function recordPayment(env, p) {
     )
     .run();
   const created = (ins.meta?.changes || 0) > 0;
+  // A replayed payment must not reactivate a customer who canceled since.
+  if (!created) return { created };
   await db
     .prepare(
       `INSERT INTO customers (email, prenom, nom, entreprise, forfait, forfait_cellulaire, status, processor, last_payment_id, source, created_at, updated_at)
@@ -82,8 +84,52 @@ export async function getPayment(env, paymentId) {
   return env.BW_DB.prepare("SELECT * FROM payments WHERE payment_id = ?1").bind(String(paymentId)).first();
 }
 
+/** past_due keeps access during Paddle dunning; canceled/paused cut it. */
+const ACCESS_STATUSES = new Set(["active", "past_due"]);
+
 export function customerIsActive(c) {
-  return !!c && c.status === "active" && !!(c.forfait || c.forfait_cellulaire);
+  return !!c && ACCESS_STATUSES.has(c.status) && !!(c.forfait || c.forfait_cellulaire);
+}
+
+export function customerIsBlocked(c) {
+  return !!c && !customerIsActive(c);
+}
+
+/**
+ * Apply a Paddle subscription lifecycle change to one forfait of a customer.
+ * canceled/paused remove that forfait (access ends when none is left); active/past_due (re)grant it.
+ */
+export async function applySubscriptionStatus(env, email, forfait, status) {
+  const db = env.BW_DB;
+  const e = norm(email);
+  if (!db || !e || !forfait) return null;
+  const now = new Date().toISOString();
+  const cell = String(forfait).startsWith(CELL_PREFIX);
+  const col = cell ? "forfait_cellulaire" : "forfait";
+  if (status === "canceled" || status === "paused") {
+    await db
+      .prepare(
+        `UPDATE customers SET ${col} = CASE WHEN ${col} = ?2 THEN NULL ELSE ${col} END, updated_at = ?3 WHERE email = ?1`,
+      )
+      .bind(e, forfait, now)
+      .run();
+    await db
+      .prepare(
+        "UPDATE customers SET status = ?2, updated_at = ?3 WHERE email = ?1 AND forfait IS NULL AND forfait_cellulaire IS NULL",
+      )
+      .bind(e, status, now)
+      .run();
+  } else {
+    await db
+      .prepare(
+        `INSERT INTO customers (email, ${col}, status, processor, source, created_at, updated_at)
+         VALUES (?1, ?2, ?3, 'paddle', 'abonnement', ?4, ?4)
+         ON CONFLICT(email) DO UPDATE SET ${col} = excluded.${col}, status = excluded.status, updated_at = excluded.updated_at`,
+      )
+      .bind(e, forfait, status, now)
+      .run();
+  }
+  return getCustomer(env, e);
 }
 
 /** Insert a customer imported from a legacy system without overwriting a newer local record. */
