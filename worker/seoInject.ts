@@ -80,8 +80,8 @@ function pageMeta(pageKey: string, lang: "fr" | "en"): PageMeta {
         ? "Forfaits Grow Hub — 99 $ à 2 499 $ CAD/mois"
         : "Grow Hub plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Launch/Growth/Scale en Paddle ; Spark/Command/Partner via /contact."
-        : "Spark $99 to Partner $2,499 CAD/mo. Launch/Growth/Scale on Paddle; Spark/Command/Partner via /contact.",
+        ? "Spark 99 $ à Partner 2 499 $ CAD/mois. Abonnement Paddle, essai 14 jours."
+        : "Spark $99 to Partner $2,499 CAD/mo. Paddle subscription, 14-day trial.",
     },
     "forfaits-growth": {
       title: fr

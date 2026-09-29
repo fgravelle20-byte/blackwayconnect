@@ -2,7 +2,7 @@ import { isPaddlePlanKey, paddlePlanUrl } from "./paddleCatalog";
 
 /**
  * BlackWay Grow Hub catalog — checkout is Paddle only.
- * Launch / Growth / Scale → /payer. Spark / Command / Partner → /contact.
+ * Spark / Launch / Growth / Scale / Command / Partner → /payer.
  * Legacy Stripe price / plink IDs stay for inbound webhook forfait mapping only.
  * See ops/payment-lock/.
  */
@@ -26,11 +26,7 @@ export type PlanCatalog = {
   featured?: boolean;
 };
 
-function contactCheckout(plan: PlanKey): string {
-  return `https://blackwayconnect.com/contact?forfait=${plan}&bw_source=site_web`;
-}
-
-/** Self-serve monthly ladder (CAD). Enterprise / remaining plans = contact only. */
+/** Self-serve monthly ladder (CAD). Every plan is sold through Paddle /payer. */
 export const PLANS: Record<PlanKey, PlanCatalog> = {
   grow_hub_spark: {
     key: "grow_hub_spark",
@@ -38,7 +34,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FKzAG7HUL9RtrC2bJrFVP",
     productId: "prod_V1HuBVHegAkaHb",
     paymentLinkId: "plink_1UCmB6AG7HUL9RtrpvUpROqh",
-    paymentLink: contactCheckout("grow_hub_spark"),
+    paymentLink: paddlePlanUrl("grow_hub_spark"),
     amountCad: 99,
   },
   grow_hub_launch: {
@@ -75,7 +71,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLeAG7HUL9Rtrc8R6DEdZ",
     productId: "prod_V1Hv4OhF6vomby",
     paymentLinkId: "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
-    paymentLink: contactCheckout("grow_hub_command"),
+    paymentLink: paddlePlanUrl("grow_hub_command"),
     amountCad: 1249,
   },
   grow_hub_partner: {
@@ -84,7 +80,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLfAG7HUL9RtruTYWaERD",
     productId: "prod_V1HvFolyqB03rO",
     paymentLinkId: "plink_1UCmBKAG7HUL9RtrFzh2ZDB1",
-    paymentLink: contactCheckout("grow_hub_partner"),
+    paymentLink: paddlePlanUrl("grow_hub_partner"),
     amountCad: 2499,
   },
 };

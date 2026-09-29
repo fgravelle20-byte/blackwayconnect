@@ -52,6 +52,12 @@ const FORFAITS = {
   cell_route:          { label: "Cell Route",                prix: 199,  delai: 7,  recurrent: true,  score: 68, line: "cellulaire" },
   cell_fleet:          { label: "Cell Fleet",                prix: 399,  delai: 7,  recurrent: true,  score: 82, line: "cellulaire" },
   cell_command:        { label: "Cell Command",              prix: 799,  delai: 7,  recurrent: true,  score: 90, line: "cellulaire" },
+  ia_chatbot_1:        { label: "Chatbot IA — 1 chatbot",    prix: 99,   delai: 7,  recurrent: true,  score: 60, line: "chatbot" },
+  ia_chatbot_5:        { label: "Chatbot IA — 5 chatbots",   prix: 249,  delai: 7,  recurrent: true,  score: 70, line: "chatbot" },
+  ia_chatbot_illimite: { label: "Chatbot IA — Illimité",     prix: 399,  delai: 7,  recurrent: true,  score: 80, line: "chatbot" },
+  ia_vocal_basic:      { label: "Accueil vocal IA — Basic",  prix: 149,  delai: 7,  recurrent: true,  score: 65, line: "vocal" },
+  ia_vocal_avance:     { label: "Accueil vocal IA — Avancé", prix: 299,  delai: 7,  recurrent: true,  score: 75, line: "vocal" },
+  ia_vocal_premium:    { label: "Accueil vocal IA — Premium",prix: 499,  delai: 7,  recurrent: true,  score: 85, line: "vocal" },
   enterprise:          { label: "Entreprise (sur devis)",    prix: 4999, delai: 14, recurrent: true,  score: 99, line: "web" },
 };
 
@@ -73,6 +79,20 @@ const PADDLE_PRICE_TO_FORFAIT = {
   pri_01kxtn6b6ba8szneb21wx51dz6: "grow_hub_growth",
   pri_01kxtn6befjw8m8gz9a5vwf0wf: "grow_hub_scale",
   pri_01kxtn6bgrd0wwv1sdsqjv5ry2: "grow_hub_scale",
+  // 2026-09-29 — remaining Grow Hub tiers, Pack Cellulaire, modules IA (monthly).
+  pri_01m3nt7rm1cc19134bb3e86fpb: "grow_hub_spark",
+  pri_01m3nt7rs3vajzyv8k8r57qswc: "grow_hub_command",
+  pri_01m3nt7rxx08w09zef4xf2rage: "grow_hub_partner",
+  pri_01m3nt7s39b94k4p7a13m3sya2: "cell_signal",
+  pri_01m3nt7s88bxrx8k6jph2gmtt2: "cell_route",
+  pri_01m3nt7sd8mkr915y6vtgs6m3p: "cell_fleet",
+  pri_01m3nt7sj4wndn0qkd9d855zpr: "cell_command",
+  pri_01m3nt7sqgkcqb2payzrn0f8cf: "ia_chatbot_1",
+  pri_01m3nt7ss5526fp4j6q98zdqc0: "ia_chatbot_5",
+  pri_01m3nt7stvq4ff1942nybarhxn: "ia_chatbot_illimite",
+  pri_01m3nt7szxc265whjs40e2y5pd: "ia_vocal_basic",
+  pri_01m3nt7t1k43gy04eyf71amkd5: "ia_vocal_avance",
+  pri_01m3nt7t39xq8pbggfeh6ejax4: "ia_vocal_premium",
 };
 
 // Payment Link IDs → forfait. Live ids from src/stripeConfig.ts PLUS the 2026-09-06
@@ -159,12 +179,21 @@ const ALIAS = {
   "fleet": "cell_fleet",
   "cell command": "cell_command",
   "cell_command": "cell_command",
+  "chatbot": "ia_chatbot_1",
+  "chatbot ia": "ia_chatbot_1",
+  "accueil vocal": "ia_vocal_basic",
+  "accueil vocal ia": "ia_vocal_basic",
   "enterprise": "enterprise",
   "entreprise": "enterprise",
 };
 
 function isCellulaireForfait(key) {
   return String(key || "").startsWith("cell_");
+}
+
+/** Product line of a forfait: web (Grow Hub) | cellulaire | chatbot | vocal. */
+function forfaitLine(key) {
+  return FORFAITS[key]?.line || (isCellulaireForfait(key) ? "cellulaire" : "web");
 }
 
 const FREE_MAIL = ["gmail.com","hotmail.com","hotmail.ca","outlook.com","yahoo.com","yahoo.ca","icloud.com","live.ca","videotron.ca","sympatico.ca"];
@@ -627,26 +656,27 @@ async function verifyPortalToken(env, token) {
   return { email, forfait, exp };
 }
 
-function portalSessionShape(email, forfait, token, exp, forfaitCellulaire) {
-  const cellKey = isCellulaireForfait(forfaitCellulaire)
-    ? forfaitCellulaire
-    : isCellulaireForfait(forfait)
-      ? forfait
-      : null;
-  const webKey = !isCellulaireForfait(forfait) && forfait ? forfait : null;
-  const primary = webKey || cellKey || forfait || "grow_hub_growth";
+function portalSessionShape(email, access, token, exp) {
+  const webKey = access.forfait && forfaitLine(access.forfait) === "web" ? access.forfait : null;
+  const cellKey = access.forfaitCellulaire || null;
+  const chatbotKey = access.forfaitChatbot || null;
+  const vocalKey = access.forfaitVocal || null;
+  const primary = access.forfait || "grow_hub_growth";
   const f = FORFAITS[primary] || FORFAITS.grow_hub_growth;
-  const fc = cellKey ? FORFAITS[cellKey] : null;
+  const line = (key) => (key ? { key, label: FORFAITS[key]?.label || key, amountCad: FORFAITS[key]?.prix || null } : null);
   return {
     token,
     email,
     forfait: primary,
     forfaitWeb: webKey,
     forfaitCellulaire: cellKey,
-    label: webKey ? (FORFAITS[webKey]?.label || f.label) : f.label,
-    labelCellulaire: fc ? fc.label : null,
-    amountCad: webKey ? (FORFAITS[webKey]?.prix || f.prix) : f.prix,
-    amountCadCellulaire: fc ? fc.prix : null,
+    forfaitChatbot: chatbotKey,
+    forfaitVocal: vocalKey,
+    label: f.label,
+    labelCellulaire: cellKey ? FORFAITS[cellKey]?.label || null : null,
+    amountCad: f.prix,
+    amountCadCellulaire: cellKey ? FORFAITS[cellKey]?.prix || null : null,
+    modules: [line(chatbotKey), line(vocalKey)].filter(Boolean),
     exp,
   };
 }
@@ -805,16 +835,14 @@ async function claimFromDealSession(env, sessionId) {
 }
 
 function forfaitFromPaddleTransaction(transaction) {
-  const fromCustom = resoudreForfait(
-    transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait,
-  );
-  if (fromCustom) return fromCustom;
+  // The paid price decides the forfait: custom_data is set by the browser and can be tampered with.
   const items = transaction?.items || transaction?.details?.line_items || [];
   for (const item of items) {
     const priceId = item?.price?.id || item?.price_id;
     if (priceId && PADDLE_PRICE_TO_FORFAIT[priceId]) return PADDLE_PRICE_TO_FORFAIT[priceId];
   }
-  return null;
+  if (items.length) return null;
+  return resoudreForfait(transaction?.custom_data?.bw_forfait || transaction?.custom_data?.forfait);
 }
 
 /** Relay payload → forfait. Accepts plan keys, Paddle price ids, custom_data or a raw transaction. */
@@ -928,7 +956,8 @@ async function masterOverview(env) {
       id: `cust:${c.email}`,
       firstname: c.prenom, lastname: c.nom, email: c.email, phone: "", company: c.entreprise,
       lifecyclestage: c.status === "active" ? "customer" : c.status,
-      bw_source: c.source, bw_lead_score: null, bw_forfait: c.forfait || c.forfait_cellulaire,
+      bw_source: c.source, bw_lead_score: null,
+      bw_forfait: c.forfait || c.forfait_cellulaire || c.forfait_chatbot || c.forfait_vocal,
       createdate: c.created_at, hs_lastmodifieddate: c.updated_at,
     })),
     ...leads
@@ -1103,8 +1132,7 @@ async function legacyHubspotCustomer(env, email) {
 
 /** Current plans for an email: Master DB first, legacy HubSpot fallback, then the hint. */
 async function resolveAccess(env, email, hint) {
-  let forfait = null;
-  let forfaitCellulaire = null;
+  const slots = { web: null, cellulaire: null, chatbot: null, vocal: null };
   let customer = null;
   try {
     customer = await getCustomer(env, email);
@@ -1113,20 +1141,28 @@ async function resolveAccess(env, email, hint) {
   }
   if (customer) {
     if (customerIsBlocked(customer)) throw new Error(ABONNEMENT_INACTIF);
-    forfait = resoudreForfait(customer.forfait);
-    forfaitCellulaire = resoudreForfait(customer.forfait_cellulaire);
+    slots.web = resoudreForfait(customer.forfait);
+    slots.cellulaire = resoudreForfait(customer.forfait_cellulaire);
+    slots.chatbot = resoudreForfait(customer.forfait_chatbot);
+    slots.vocal = resoudreForfait(customer.forfait_vocal);
   } else {
     const legacy = await legacyHubspotCustomer(env, email);
     if (legacy?.active) {
-      forfait = legacy.forfait;
-      forfaitCellulaire = legacy.forfaitCellulaire;
+      slots.web = legacy.forfait;
+      slots.cellulaire = legacy.forfaitCellulaire;
     }
   }
-  if (!forfait && hint && !isCellulaireForfait(hint)) forfait = hint;
-  if (!forfaitCellulaire && hint && isCellulaireForfait(hint)) forfaitCellulaire = hint;
-  if (!forfait) forfait = forfaitCellulaire || "grow_hub_growth";
+  // The Master DB is authoritative; a hint only fills in for customers not yet recorded there.
+  const hintKey = customer ? null : resoudreForfait(hint);
+  if (hintKey && !slots[forfaitLine(hintKey)]) slots[forfaitLine(hintKey)] = hintKey;
+  let forfait = slots.web || slots.cellulaire || slots.chatbot || slots.vocal || "grow_hub_growth";
   if (!FORFAITS[forfait]) forfait = "grow_hub_growth";
-  return { forfait, forfaitCellulaire };
+  return {
+    forfait,
+    forfaitCellulaire: slots.cellulaire,
+    forfaitChatbot: slots.chatbot,
+    forfaitVocal: slots.vocal,
+  };
 }
 
 /**
@@ -1233,16 +1269,16 @@ async function claimPortal(env, p) {
     throw new Error("session_id ou email requis");
   }
 
-  const access = await resolveAccess(env, email, forfait || resoudreForfait(p.plan));
+  const access = await resolveAccess(env, email, forfait);
   const { token, exp } = await mintPortalToken(env, email, access.forfait);
-  return portalSessionShape(email, access.forfait, token, exp, access.forfaitCellulaire);
+  return portalSessionShape(email, access, token, exp);
 }
 
 async function portalMe(env, token) {
   const { email, forfait: tokenForfait } = await verifyPortalToken(env, token);
   const access = await resolveAccess(env, email, tokenForfait);
   const minted = await mintPortalToken(env, email, access.forfait);
-  return portalSessionShape(email, access.forfait, minted.token, minted.exp, access.forfaitCellulaire);
+  return portalSessionShape(email, access, minted.token, minted.exp);
 }
 
 /** Verification de signature Stripe (HMAC SHA-256, tolerance 5 min) */

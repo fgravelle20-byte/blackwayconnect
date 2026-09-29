@@ -20,6 +20,7 @@ import {
   type PortalToolId,
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
+import { MODULES_IA, isModuleIaKey } from "../modulesIaConfig";
 import { trackPurchase } from "../tracking";
 import { readLeakScore } from "../lib/portalSession";
 
@@ -48,6 +49,9 @@ type PortalSession = {
   labelCellulaire?: string | null;
   amountCad: number;
   amountCadCellulaire?: number;
+  forfaitChatbot?: string | null;
+  forfaitVocal?: string | null;
+  modules?: { key: string; label: string; amountCad: number }[];
   exp: number;
 };
 
@@ -266,6 +270,9 @@ export function PortalPage() {
               labelCellulaire: data.labelCellulaire,
               amountCad: data.amountCad,
               amountCadCellulaire: data.amountCadCellulaire,
+              forfaitChatbot: data.forfaitChatbot,
+              forfaitVocal: data.forfaitVocal,
+              modules: data.modules,
               exp: data.exp,
             });
             if (params.get("session_id") || params.get("sessionId") || params.get("transaction_id") || params.get("transactionId")) {
@@ -409,12 +416,16 @@ export function PortalPage() {
                 Pas encore client ? <Link to={path("/forfaits")}>Grow Hub web</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire (optionnel)</Link>
+                {" · "}
+                <Link to={path("/modules-ia")}>Chatbot + Accueil vocal IA</Link>
               </>
             ) : (
               <>
                 Not a client yet? <Link to={path("/forfaits")}>Grow Hub web</Link>
                 {" · "}
                 <Link to={path("/forfaits-cellulaire")}>Cellular Pack (optional)</Link>
+                {" · "}
+                <Link to={path("/modules-ia")}>AI Chatbot + Voice reception</Link>
               </>
             )}
           </p>
@@ -440,6 +451,15 @@ export function PortalPage() {
   const cellLabel = forfaitCell
     ? CELLULAIRE_PLANS[forfaitCell as CellulairePlanKey]?.nameFr || session.labelCellulaire
     : null;
+  const moduleKeys = [session.forfaitChatbot, session.forfaitVocal, session.forfait].filter(
+    (k, i, all): k is string => !!k && isModuleIaKey(k) && all.indexOf(k) === i,
+  );
+  const modules = moduleKeys.length
+    ? moduleKeys.map((k) => {
+        const m = MODULES_IA[k as keyof typeof MODULES_IA];
+        return { key: k, label: fr ? m.nameFr : m.nameEn, amountCad: m.amountCad };
+      })
+    : session.modules || [];
   const lastLeak = typeof window !== "undefined" ? readLeakScore() : null;
 
   return (
@@ -475,8 +495,8 @@ export function PortalPage() {
         <div className="portal-status" role="status">
           <span className="portal-status__dot" aria-hidden />
           {fr
-            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile: Portail web · Pack Cellulaire: ${hasCell ? "oui" : "non"}`
-            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile: web Portal · Cellular Pack: ${hasCell ? "yes" : "no"}`}
+            ? `Actif — Web: ${hasWeb ? "oui" : "non"} · Mobile: Portail web · Pack Cellulaire: ${hasCell ? "oui" : "non"} · Modules IA: ${modules.length || "non"}`
+            : `Active — Web: ${hasWeb ? "yes" : "no"} · Mobile: web Portal · Cellular Pack: ${hasCell ? "yes" : "no"} · AI modules: ${modules.length || "no"}`}
         </div>
 
         <section className="portal-inbox" aria-labelledby="portal-inbox-title">
@@ -628,6 +648,35 @@ export function PortalPage() {
               </a>
             ) : null}
           </div>
+
+          <div className="portal-plan__card">
+            <p className="portal-plan__label">
+              {fr ? "Modules IA · Chatbot + Accueil vocal" : "AI modules · Chatbot + Voice reception"}
+            </p>
+            {modules.length ? (
+              <>
+                <h2>{modules.map((m) => m.label).join(" · ")}</h2>
+                <p className="portal-plan__price">
+                  {`${modules.reduce((sum, m) => sum + (m.amountCad || 0), 0)} $ CAD / ${fr ? "mois" : "mo"}`}
+                </p>
+                <p className="lede" style={{ fontSize: "0.95rem" }}>
+                  {fr
+                    ? "Activation par l’équipe BlackWay : on te contacte pour brancher ton site ou ta ligne."
+                    : "Activated by the BlackWay team: we contact you to connect your website or phone line."}
+                </p>
+              </>
+            ) : (
+              <>
+                <h2>{fr ? "Pas encore" : "Not yet"}</h2>
+                <p className="portal-plan__price">{fr ? "Dès 99 $ CAD / mois" : "From $99 CAD / mo"}</p>
+              </>
+            )}
+            {!session.forfaitChatbot || !session.forfaitVocal ? (
+              <Link className="btn btn--primary" to={path("/modules-ia")}>
+                {fr ? "Ajouter un module IA" : "Add an AI module"}
+              </Link>
+            ) : null}
+          </div>
         </div>
 
         <div className="portal-actions" style={{ marginTop: "1.5rem" }}>
@@ -677,7 +726,7 @@ export function PortalPage() {
                 })}
                 rel="noopener noreferrer"
               >
-                {fr ? "Demander Cell Fleet" : "Request Cell Fleet"}
+                {fr ? "Ajouter Cell Fleet" : "Add Cell Fleet"}
               </a>
             </div>
           </aside>

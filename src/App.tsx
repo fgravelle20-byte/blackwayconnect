@@ -26,6 +26,7 @@ const PortalCellToolPage = lazy(() => import("./pages/PortalCellToolPage").then(
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage").then((m) => ({ default: m.CheckoutPage })));
 const AppPlansPage = lazy(() => import("./pages/AppPlansPage").then((m) => ({ default: m.AppPlansPage })));
 const CellulairePlansPage = lazy(() => import("./pages/CellulairePlansPage").then((m) => ({ default: m.CellulairePlansPage })));
+const ModulesIaPage = lazy(() => import("./pages/ModulesIaPage").then((m) => ({ default: m.ModulesIaPage })));
 const GrowthLandingPage = lazy(() => import("./pages/GrowthLandingPage").then((m) => ({ default: m.GrowthLandingPage })));
 const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage").then((m) => ({ default: m.HowItWorksPage })));
 const RelancePanierPage = lazy(() => import("./pages/RelancePanierPage").then((m) => ({ default: m.RelancePanierPage })));
@@ -89,6 +90,9 @@ function routes(prefix = "") {
       <Route path="forfaits-cellulaire" element={<CellulairePlansPage />} />
       <Route path="cellulaire" element={<Navigate to="forfaits-cellulaire" replace />} />
       <Route path="pack-cellulaire" element={<Navigate to="forfaits-cellulaire" replace />} />
+      <Route path="modules-ia" element={<ModulesIaPage />} />
+      <Route path="chatbot" element={<Navigate to={{ pathname: "modules-ia", hash: "chatbot" }} replace />} />
+      <Route path="accueil-vocal" element={<Navigate to={{ pathname: "modules-ia", hash: "vocal" }} replace />} />
       <Route path="app-forfaits" element={<AppPlansPage />} />
       <Route path="comment-ca-marche" element={<HowItWorksPage />} />
       <Route path="how-it-works" element={<HowItWorksPage />} />

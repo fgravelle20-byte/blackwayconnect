@@ -3,7 +3,16 @@
  * Source of truth for portal access. HubSpot is an optional mirror.
  */
 
-const CELL_PREFIX = "cell_";
+/** One column per product line; a customer can hold one tier of each at the same time. */
+export const FORFAIT_COLUMNS = ["forfait", "forfait_cellulaire", "forfait_chatbot", "forfait_vocal"];
+
+export function forfaitColumn(forfait) {
+  const f = String(forfait || "");
+  if (f.startsWith("cell_")) return "forfait_cellulaire";
+  if (f.startsWith("ia_chatbot_")) return "forfait_chatbot";
+  if (f.startsWith("ia_vocal_")) return "forfait_vocal";
+  return "forfait";
+}
 
 export function hasMasterDb(env) {
   return !!env?.BW_DB;
@@ -22,7 +31,7 @@ export async function recordPayment(env, p) {
   const email = norm(p.email);
   if (!db || !email || !p.payment_id || !p.forfait) throw new Error("paiement incomplet pour Master DB");
   const now = new Date().toISOString();
-  const cell = String(p.forfait).startsWith(CELL_PREFIX);
+  const col = forfaitColumn(p.forfait);
   const ins = await db
     .prepare(
       `INSERT OR IGNORE INTO payments (payment_id, email, forfait, amount_cad, processor, renewal, segment, created_at)
@@ -44,14 +53,13 @@ export async function recordPayment(env, p) {
   if (!created) return { created };
   await db
     .prepare(
-      `INSERT INTO customers (email, prenom, nom, entreprise, forfait, forfait_cellulaire, status, processor, last_payment_id, source, created_at, updated_at)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'active', ?7, ?8, 'paiement', ?9, ?9)
+      `INSERT INTO customers (email, prenom, nom, entreprise, ${col}, status, processor, last_payment_id, source, created_at, updated_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, 'active', ?6, ?7, 'paiement', ?8, ?8)
        ON CONFLICT(email) DO UPDATE SET
          prenom = CASE WHEN excluded.prenom <> '' THEN excluded.prenom ELSE customers.prenom END,
          nom = CASE WHEN excluded.nom <> '' THEN excluded.nom ELSE customers.nom END,
          entreprise = CASE WHEN excluded.entreprise <> '' THEN excluded.entreprise ELSE customers.entreprise END,
-         forfait = COALESCE(excluded.forfait, customers.forfait),
-         forfait_cellulaire = COALESCE(excluded.forfait_cellulaire, customers.forfait_cellulaire),
+         ${col} = excluded.${col},
          status = 'active',
          processor = COALESCE(excluded.processor, customers.processor),
          last_payment_id = excluded.last_payment_id,
@@ -62,8 +70,7 @@ export async function recordPayment(env, p) {
       String(p.prenom || "").trim(),
       String(p.nom || "").trim(),
       String(p.entreprise || "").trim(),
-      cell ? null : p.forfait,
-      cell ? p.forfait : null,
+      p.forfait,
       p.processor || null,
       String(p.payment_id),
       now,
@@ -88,7 +95,7 @@ export async function getPayment(env, paymentId) {
 const ACCESS_STATUSES = new Set(["active", "past_due"]);
 
 export function customerIsActive(c) {
-  return !!c && ACCESS_STATUSES.has(c.status) && !!(c.forfait || c.forfait_cellulaire);
+  return !!c && ACCESS_STATUSES.has(c.status) && FORFAIT_COLUMNS.some((col) => !!c[col]);
 }
 
 export function customerIsBlocked(c) {
@@ -104,8 +111,7 @@ export async function applySubscriptionStatus(env, email, forfait, status) {
   const e = norm(email);
   if (!db || !e || !forfait) return null;
   const now = new Date().toISOString();
-  const cell = String(forfait).startsWith(CELL_PREFIX);
-  const col = cell ? "forfait_cellulaire" : "forfait";
+  const col = forfaitColumn(forfait);
   if (status === "canceled" || status === "paused") {
     await db
       .prepare(
@@ -115,7 +121,7 @@ export async function applySubscriptionStatus(env, email, forfait, status) {
       .run();
     await db
       .prepare(
-        "UPDATE customers SET status = ?2, updated_at = ?3 WHERE email = ?1 AND forfait IS NULL AND forfait_cellulaire IS NULL",
+        `UPDATE customers SET status = ?2, updated_at = ?3 WHERE email = ?1 AND ${FORFAIT_COLUMNS.map((c) => `${c} IS NULL`).join(" AND ")}`,
       )
       .bind(e, status, now)
       .run();

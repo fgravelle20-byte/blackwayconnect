@@ -10,7 +10,9 @@ import { runAutonomyTick, listMasterLeads, upsertMasterLead } from "./masterCrm.
 /** Minimal D1 shim over node:sqlite (same SQL engine as D1). */
 function d1() {
   const db = new DatabaseSync(":memory:");
-  db.exec(readFileSync(new URL("./migrations/0001_master_king.sql", import.meta.url), "utf8"));
+  for (const m of ["0001_master_king.sql", "0002_modules_ia.sql"]) {
+    db.exec(readFileSync(new URL(`./migrations/${m}`, import.meta.url), "utf8"));
+  }
   const stmt = (sql, args = []) => ({
     bind: (...a) => stmt(sql, a),
     run: async () => ({ meta: { changes: Number(db.prepare(sql).run(...args).changes) } }),
@@ -181,6 +183,73 @@ test("Paddle webhooks: pay activates, cancel cuts access, replay does not revive
     r = await hook("subscription.canceled", { id: "sub_x", customer_id: "ctm_1", items: [{ price: { id: "pri_vorixa" } }] });
     assert.match(await r.text(), /non BlackWay/);
     assert.equal(await claim(), 200);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("modules IA and Pack Cellulaire each get their own portal line, never Grow Hub for free", async () => {
+  const env = envNoHubspot();
+  const provision = (email, price_id, payment_id) =>
+    call(env, "/portal/provision", { email, price_id, payment_id }, { "X-BW-Fulfill-Key": "k" });
+
+  let r = await provision("bot@shop.ca", "pri_01m3nt7sqgkcqb2payzrn0f8cf", "txn_m1");
+  let j = await r.json();
+  assert.equal(r.status, 200, JSON.stringify(j));
+  assert.equal(j.portal.forfait, "ia_chatbot_1");
+  assert.equal(j.portal.forfaitWeb, null);
+  assert.equal(j.portal.forfaitChatbot, "ia_chatbot_1");
+
+  const claim = await (await call(env, "/portal/claim", { email: "bot@shop.ca", plan: "grow_hub_partner" })).json();
+  assert.equal(claim.forfaitWeb, null, "a client-sent plan must not unlock Grow Hub");
+
+  r = await provision("bot@shop.ca", "pri_01m3nt7t1k43gy04eyf71amkd5", "txn_m2");
+  r = await provision("bot@shop.ca", "pri_01m3nt7s39b94k4p7a13m3sya2", "txn_m3");
+  r = await provision("bot@shop.ca", "pri_01m3nt7rm1cc19134bb3e86fpb", "txn_m4");
+  j = await r.json();
+  assert.equal(j.portal.forfait, "grow_hub_spark");
+  assert.equal(j.portal.forfaitWeb, "grow_hub_spark");
+  assert.equal(j.portal.forfaitCellulaire, "cell_signal");
+  assert.equal(j.portal.forfaitChatbot, "ia_chatbot_1");
+  assert.equal(j.portal.forfaitVocal, "ia_vocal_avance");
+  assert.deepEqual(j.portal.modules.map((m) => m.key), ["ia_chatbot_1", "ia_vocal_avance"]);
+});
+
+test("canceling one module keeps the others; canceling the last one cuts access", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (u) =>
+    String(u.url || u).startsWith("https://api.paddle.com/customers/ctm_2")
+      ? Response.json({ data: { email: "multi@client.ca" } })
+      : new Response("{}", { status: 500 });
+  try {
+    const env = { ...envNoHubspot(), PADDLE_WEBHOOK_SECRET: "whsec", PADDLE_API_KEY: "pdl" };
+    const hook = (event_type, data) => {
+      const body = JSON.stringify({ event_type, data });
+      const ts = Math.floor(Date.now() / 1000);
+      const h1 = createHmac("sha256", "whsec").update(`${ts}:${body}`).digest("hex");
+      return pipe.fetch(
+        new Request("https://api.blackwayconnect.com/webhooks/paddle", {
+          method: "POST", headers: { "paddle-signature": `ts=${ts};h1=${h1}` }, body,
+        }),
+        env,
+        { waitUntil() {} },
+      );
+    };
+    const chatbot = [{ price: { id: "pri_01m3nt7ss5526fp4j6q98zdqc0" } }];
+    const vocal = [{ price: { id: "pri_01m3nt7t39xq8pbggfeh6ejax4" } }];
+    await hook("transaction.completed", { id: "txn_c1", customer_id: "ctm_2", items: chatbot });
+    await hook("transaction.completed", { id: "txn_c2", customer_id: "ctm_2", items: vocal });
+
+    await hook("subscription.canceled", { id: "sub_c1", customer_id: "ctm_2", items: chatbot });
+    let r = await call(env, "/portal/claim", { email: "multi@client.ca" });
+    let j = await r.json();
+    assert.equal(r.status, 200, JSON.stringify(j));
+    assert.equal(j.forfaitChatbot, null);
+    assert.equal(j.forfaitVocal, "ia_vocal_premium");
+
+    await hook("subscription.canceled", { id: "sub_c2", customer_id: "ctm_2", items: vocal });
+    r = await call(env, "/portal/claim", { email: "multi@client.ca" });
+    assert.equal(r.status, 401);
   } finally {
     globalThis.fetch = realFetch;
   }

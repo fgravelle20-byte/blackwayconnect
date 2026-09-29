@@ -83,7 +83,7 @@ export function planRank(forfait: string | null | undefined): number {
 export function splitForfaits(forfait: string | null | undefined, forfaitCellulaire?: string | null) {
   const a = String(forfait || "").trim();
   const b = String(forfaitCellulaire || "").trim();
-  const web = !isCellulaireForfait(a) && a ? a : "";
+  const web = a && !isCellulaireForfait(a) && !a.startsWith("ia_") ? a : "";
   const cell =
     (isCellulaireForfait(b) && b) || (isCellulaireForfait(a) && a) || "";
   return { forfaitWeb: web || null, forfaitCellulaire: cell || null };

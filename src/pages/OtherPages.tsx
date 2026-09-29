@@ -113,6 +113,11 @@ export function PricingPage() {
                 {fr
                   ? "Optionnel : Pack Cellulaire / Terrain (revenu #2) →"
                   : "Optional: Cellular / Field Pack (revenue #2) →"}
+              </Link>{" "}
+              <Link className="btn btn--ghost" to={path("/modules-ia")}>
+                {fr
+                  ? "Modules IA : Chatbot dès 99 $ · Accueil vocal dès 149 $ →"
+                  : "AI modules: Chatbot from $99 · Voice reception from $149 →"}
               </Link>
             </p>
           </div>
