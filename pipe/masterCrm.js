@@ -1,9 +1,13 @@
 /**
  * BlackWay Master CRM — source of truth for leads.
  * HubSpot is optional. The board lives on blackwayconnect.com/crm
+ *
+ * Storage: D1 (BW_DB, one row per lead) when bound; legacy single-blob KV otherwise.
+ * The legacy KV board is copied into D1 once, on first D1 access.
  */
 
 import { decide, deliverActionEmail, deliverOpsDigest, isFirstPartySource } from "./engine.js";
+import { getMeta, setMeta } from "./customers.js";
 
 const KEY = "crm:master:v1";
 const ENGINE_KEY = "crm:engine:last";
@@ -59,19 +63,92 @@ async function saveBoard(env, board) {
   return board;
 }
 
-export async function upsertMasterLead(env, p, king) {
+/* ---------- D1 storage ---------- */
+
+const kvBoardMigrated = new WeakSet();
+
+function rowToLead(row) {
+  let data = {};
+  try { data = JSON.parse(row.data || "{}"); } catch { data = {}; }
+  return { ...data, id: row.id, stage: row.stage };
+}
+
+function leadRowStatement(db, lead) {
+  return db
+    .prepare(
+      `INSERT INTO leads (id, email, entreprise, stage, grade, market, score, data, created_at, updated_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+       ON CONFLICT(email, entreprise) DO UPDATE SET
+         stage = excluded.stage, grade = excluded.grade, market = excluded.market, score = excluded.score,
+         data = excluded.data, updated_at = excluded.updated_at`,
+    )
+    .bind(
+      lead.id,
+      lead.email,
+      lead.entreprise || "",
+      lead.stage,
+      lead.grade || null,
+      lead.market || null,
+      Number.isFinite(Number(lead.score)) ? Number(lead.score) : null,
+      JSON.stringify(lead),
+      lead.created_at || new Date().toISOString(),
+      lead.updated_at || new Date().toISOString(),
+    );
+}
+
+async function updateLeadRow(db, lead) {
+  await db
+    .prepare("UPDATE leads SET stage = ?2, data = ?3, updated_at = ?4 WHERE id = ?1")
+    .bind(lead.id, lead.stage, JSON.stringify(lead), lead.updated_at)
+    .run();
+}
+
+async function ensureKvBoardMigrated(env) {
+  if (!env.BW_DB || kvBoardMigrated.has(env.BW_DB)) return;
+  if (await getMeta(env, "kv_board_migrated")) {
+    kvBoardMigrated.add(env.BW_DB);
+    return;
+  }
   const board = await loadBoard(env);
+  const leads = (board.leads || []).filter((l) => l?.email && l?.id);
+  for (let i = 0; i < leads.length; i += 50) {
+    const chunk = leads.slice(i, i + 50).map((l) =>
+      env.BW_DB
+        .prepare(
+          `INSERT OR IGNORE INTO leads (id, email, entreprise, stage, grade, market, score, data, created_at, updated_at)
+           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`,
+        )
+        .bind(
+          l.id, l.email, l.entreprise || "", STAGES.includes(l.stage) ? l.stage : "inbox",
+          l.grade || null, l.market || null,
+          Number.isFinite(Number(l.score)) ? Number(l.score) : null,
+          JSON.stringify(l), l.created_at || new Date().toISOString(), l.updated_at || new Date().toISOString(),
+        ),
+    );
+    await env.BW_DB.batch(chunk);
+  }
+  await setMeta(env, "kv_board_migrated", `${new Date().toISOString()} n=${leads.length}`);
+  kvBoardMigrated.add(env.BW_DB);
+}
+
+async function loadLeadsD1(env) {
+  await ensureKvBoardMigrated(env);
+  const r = await env.BW_DB.prepare("SELECT * FROM leads ORDER BY created_at DESC LIMIT ?1").bind(MAX).all();
+  return (r.results || []).map(rowToLead);
+}
+
+/* ---------- shared ---------- */
+
+function buildLead(p, king, existing) {
   const now = new Date().toISOString();
-  const email = String(p.email || "").trim().toLowerCase();
-  const existing = board.leads.find((l) => l.email === email && l.entreprise === String(p.entreprise || "").trim());
-  const lead = {
+  return {
     id: existing?.id || crypto.randomUUID(),
     created_at: existing?.created_at || now,
     updated_at: now,
-    prenom: String(p.prenom || p.firstName || "").trim(),
-    nom: String(p.nom || p.lastName || "").trim(),
-    email,
-    telephone: String(p.telephone || p.phone || "").trim(),
+    prenom: String(p.prenom || p.firstName || "").trim() || existing?.prenom || "",
+    nom: String(p.nom || p.lastName || "").trim() || existing?.nom || "",
+    email: String(p.email || "").trim().toLowerCase(),
+    telephone: String(p.telephone || p.phone || "").trim() || existing?.telephone || "",
     entreprise: String(p.entreprise || p.company || "").trim(),
     pays: String(p.pays || p.country || "").trim(),
     market: king.market,
@@ -94,19 +171,46 @@ export async function upsertMasterLead(env, p, king) {
     notes: existing?.notes || [],
     machine: existing?.machine || null,
   };
+}
+
+export async function upsertMasterLead(env, p, king) {
+  const email = String(p.email || "").trim().toLowerCase();
+  const entreprise = String(p.entreprise || p.company || "").trim();
+  if (env.BW_DB) {
+    await ensureKvBoardMigrated(env);
+    const row = await env.BW_DB
+      .prepare("SELECT * FROM leads WHERE email = ?1 AND entreprise = ?2")
+      .bind(email, entreprise)
+      .first();
+    const lead = buildLead(p, king, row ? rowToLead(row) : null);
+    await leadRowStatement(env.BW_DB, lead).run();
+    return lead;
+  }
+  const board = await loadBoard(env);
+  const existing = board.leads.find((l) => l.email === email && l.entreprise === entreprise);
+  const lead = buildLead(p, king, existing);
   board.leads = [lead, ...board.leads.filter((l) => l.id !== lead.id)].slice(0, MAX);
   await saveBoard(env, board);
   return lead;
 }
 
 export async function listMasterLeads(env, query = {}) {
-  const board = await loadBoard(env);
-  let leads = board.leads || [];
+  let all;
+  let updatedAt = null;
+  if (env.BW_DB) {
+    all = await loadLeadsD1(env);
+    updatedAt = all.reduce((m, l) => (String(l.updated_at || "") > m ? String(l.updated_at) : m), "") || null;
+  } else {
+    const board = await loadBoard(env);
+    all = board.leads || [];
+    updatedAt = board.updated_at;
+  }
+  let leads = all;
   if (query.market) leads = leads.filter((l) => l.market === query.market);
   if (query.grade) leads = leads.filter((l) => l.grade === query.grade);
   if (query.stage) leads = leads.filter((l) => l.stage === query.stage);
   const counts = {
-    total: (board.leads || []).length,
+    total: all.length,
     inbox: 0,
     contacted: 0,
     qualified: 0,
@@ -119,91 +223,67 @@ export async function listMasterLeads(env, query = {}) {
     surgical: 0,
     by_market: {},
   };
-  for (const l of board.leads || []) {
+  for (const l of all) {
     if (counts[l.stage] != null) counts[l.stage] += 1;
     if (l.grade === "KING") counts.king += 1;
     if (l.grade === "SURGICAL") counts.surgical += 1;
     counts.by_market[l.market] = (counts.by_market[l.market] || 0) + 1;
   }
-  return { ok: true, platform: "blackway_master_crm", updated_at: board.updated_at, counts, leads };
-}
-
-function isJunkLead(l) {
-  const email = String(l.email || "").toLowerCase();
-  const local = email.split("@")[0] || "";
-  const src = `${l.source || ""} ${l.message || ""} ${l.entreprise || ""}`.toLowerCase();
-  if (!email.includes("@")) return true;
-  if (email.endsWith("@hubspot.com")) return true;
-  if (email.startsWith("noreply@")) return true;
-  if (email.endsWith("@example.com")) return true;
-  if (/(smoke|e2e|bw-lock|bw-paddle|audit-smoke|activation-smoke|dns-lock|cutover)/i.test(email)) return true;
-  if (email.endsWith("@blackwayconnect.com") && /(\+|smoke|test|lock)/i.test(local)) return true;
-  if (src.includes("fulfill.smoke")) return true;
-  return false;
-}
-
-function paymentLooksFake(l) {
-  const blob = `${l.message || ""} ${(l.notes || []).map((n) => n.body).join(" ")}`.toLowerCase();
-  if (/cs_|pi_|ch_|in_/.test(blob)) return false;
-  if (/txn_lock|txn_enum|paddle-e2e|bw-lock/.test(blob)) return true;
-  if (l.stage === "won" && /aucune \(pas d.id stripe\)|pas d’id stripe|pas d'id stripe/.test(blob)) return true;
-  return l.stage === "won" && /txn_/.test(blob);
-}
-
-export async function purgeJunkLeads(env) {
-  const board = await loadBoard(env);
-  const kept = [];
-  const removed = [];
-  const demoted = [];
-  const now = new Date().toISOString();
-  for (const l of board.leads || []) {
-    if (isJunkLead(l)) {
-      removed.push(l.email);
-      continue;
-    }
-    if (paymentLooksFake(l) && l.stage === "won") {
-      l.stage = "qualified";
-      l.notes = [{ at: now, body: "Paiement non prouvé Stripe (id test ou absent). Pas un encaissement confirmé." }, ...(l.notes || [])].slice(0, 50);
-      l.updated_at = now;
-      demoted.push(l.email);
-    }
-    kept.push(l);
-  }
-  board.leads = kept;
-  await saveBoard(env, board);
-  return { ok: true, kept: kept.length, removed: removed.length, demoted: demoted.length, removed_emails: removed.slice(0, 80), demoted_emails: demoted };
+  return {
+    ok: true,
+    platform: "blackway_master_crm",
+    storage: env.BW_DB ? "d1" : "kv",
+    updated_at: updatedAt,
+    counts,
+    leads,
+  };
 }
 
 export async function patchMasterLead(env, id, patch) {
-  const board = await loadBoard(env);
-  const i = board.leads.findIndex((l) => l.id === id);
-  if (i < 0) return null;
+  let lead;
+  let board = null;
+  if (env.BW_DB) {
+    await ensureKvBoardMigrated(env);
+    const row = await env.BW_DB.prepare("SELECT * FROM leads WHERE id = ?1").bind(id).first();
+    if (!row) return null;
+    lead = rowToLead(row);
+  } else {
+    board = await loadBoard(env);
+    lead = board.leads.find((l) => l.id === id);
+    if (!lead) return null;
+  }
   const now = new Date().toISOString();
-  const lead = board.leads[i];
   if (patch.stage && STAGES.includes(patch.stage)) lead.stage = patch.stage;
   if (typeof patch.note === "string" && patch.note.trim()) {
     lead.notes = [{ at: now, body: patch.note.trim().slice(0, 2000) }, ...(lead.notes || [])].slice(0, 50);
   }
   if (patch.machine && typeof patch.machine === "object") lead.machine = patch.machine;
   lead.updated_at = now;
-  board.leads[i] = lead;
-  await saveBoard(env, board);
+  if (env.BW_DB) {
+    await updateLeadRow(env.BW_DB, lead);
+  } else {
+    await saveBoard(env, board);
+  }
   return lead;
 }
 
 export async function runAutonomyTick(env, now = Date.now()) {
-  const board = await loadBoard(env);
+  const d1 = !!env.BW_DB;
+  const board = d1 ? null : await loadBoard(env);
+  const leads = d1 ? await loadLeadsD1(env) : board.leads || [];
+  const changed = [];
   const actions = [];
   let sends = 0;
   let parked = 0;
   const iso = new Date(now).toISOString();
-  for (const lead of board.leads || []) {
+  for (const lead of leads) {
     if (lead.stage === "leak" && lead.machine?.next_action === "relance_leak" && !isFirstPartySource(lead.source)) {
       lead.stage = "archive";
       lead.machine = { ...(lead.machine || {}), next_action: "parked_import", last_tick: iso };
       lead.updated_at = iso;
       lead.notes = [{ at: iso, body: "engine:parked_import not a live site/Paddle capture" }, ...(lead.notes || [])].slice(0, 50);
       parked += 1;
+      changed.push(lead);
       continue;
     }
     const d = decide(lead, now);
@@ -227,6 +307,7 @@ export async function runAutonomyTick(env, now = Date.now()) {
     lead.updated_at = new Date(now).toISOString();
     const line = `engine:${d.machine.next_action} send=${d.machine.sent_ok ? "1" : "0"} ${d.machine.script?.body || ""}`.slice(0, 2000);
     lead.notes = [{ at: lead.updated_at, body: line }, ...(lead.notes || [])].slice(0, 50);
+    changed.push(lead);
     actions.push({
       id: lead.id,
       email: lead.email,
@@ -237,37 +318,38 @@ export async function runAutonomyTick(env, now = Date.now()) {
       sent: !!d.machine.sent_ok,
     });
   }
-  if (actions.length || parked) await saveBoard(env, board);
+  if (d1) {
+    // Row-level writes: leads created or edited during the tick are never overwritten.
+    for (const lead of changed) await updateLeadRow(env.BW_DB, lead);
+  } else if (changed.length) {
+    await saveBoard(env, board);
+  }
   const summary = {
     ok: true,
     at: new Date(now).toISOString(),
-    scanned: (board.leads || []).length,
+    storage: d1 ? "d1" : "kv",
+    scanned: leads.length,
     acted: actions.length,
     parked,
     emailed: sends,
     actions: actions.slice(0, 80),
   };
-  const kv = store(env);
-  if (kv) {
-    try {
-      await kv.put(ENGINE_KEY, JSON.stringify(summary));
-    } catch (e) {
-      console.log("engine kv put", e);
-    }
+  try {
+    if (d1) await setMeta(env, ENGINE_KEY, JSON.stringify(summary));
+    else await store(env)?.put(ENGINE_KEY, JSON.stringify(summary));
+  } catch (e) {
+    console.log("engine status put", e);
   }
   await deliverOpsDigest(env, summary);
   return summary;
 }
 
 export async function engineStatus(env) {
-  const kv = store(env);
-  if (kv) {
-    try {
-      const raw = await kv.get(ENGINE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {
-      console.log("engine kv get", e);
-    }
+  try {
+    const raw = env.BW_DB ? await getMeta(env, ENGINE_KEY) : await store(env)?.get(ENGINE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.log("engine status get", e);
   }
   return { ok: true, at: null, scanned: 0, acted: 0, actions: [] };
 }
