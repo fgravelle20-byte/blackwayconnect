@@ -3801,3 +3801,122 @@ body:has(.growth-ads-bar) .bw-agent {
   bottom: max(6.5rem, calc(env(safe-area-inset-bottom) + 6rem));
 }
 
+.crm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.crm-stat {
+  border: 1px solid var(--line);
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.35rem;
+}
+.crm-stat strong {
+  display: block;
+  font-size: 1.35rem;
+}
+.crm-stat span,
+.crm-markets,
+.crm-empty,
+.crm-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.crm-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+}
+.crm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.crm-table th,
+.crm-table td {
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.crm-table select {
+  max-width: 9rem;
+}
+.crm-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.crm-drawer {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+.crm-brief {
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.75rem;
+}
+.crm-stage-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+.crm-grade {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ops-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 2rem;
+}
+.ops-kpi {
+  border: 1px solid var(--line);
+  padding: 0.85rem 1rem;
+  border-radius: 0.35rem;
+  display: grid;
+  gap: 0.25rem;
+}
+.ops-light {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  display: inline-block;
+  background: #666;
+}
+.ops-light.is-on {
+  background: #2ecc71;
+}
+.ops-h2 {
+  margin: 1.75rem 0 0.75rem;
+}
+.ops-stages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+.ops-stage {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  border: 1px solid var(--line);
+  padding: 0.85rem 1rem;
+  border-radius: 0.35rem;
+}
+.ops-links,
+.ops-prices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  padding: 0;
+  list-style: none;
+}
+

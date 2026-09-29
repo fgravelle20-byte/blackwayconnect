@@ -22,6 +22,7 @@ const DiagnosticPage = lazy(() => import("./pages/DiagnosticPage").then((m) => (
 const ToolsPage = lazy(() => import("./pages/ToolsPage").then((m) => ({ default: m.ToolsPage })));
 const PortalPage = lazy(() => import("./pages/PortalPage").then((m) => ({ default: m.PortalPage })));
 const PortalCapturePage = lazy(() => import("./pages/PortalCapturePage").then((m) => ({ default: m.PortalCapturePage })));
+const PortalCellToolPage = lazy(() => import("./pages/PortalCellToolPage").then((m) => ({ default: m.PortalCellToolPage })));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage").then((m) => ({ default: m.CheckoutPage })));
 const AppPlansPage = lazy(() => import("./pages/AppPlansPage").then((m) => ({ default: m.AppPlansPage })));
 const CellulairePlansPage = lazy(() => import("./pages/CellulairePlansPage").then((m) => ({ default: m.CellulairePlansPage })));
@@ -35,6 +36,9 @@ const UpcomingMaquette = lazy(() => import("./maquettes/MaquettesIndexPage").the
 const GMartelApp = lazy(() => import("./maquettes/g-martel/GMartelApp").then((m) => ({ default: m.GMartelApp })));
 const AvenirChatbotApp = lazy(() => import("./vorixa-chatbot/AvenirChatbotApp").then((m) => ({ default: m.AvenirChatbotApp })));
 const OwnerConsolePage = lazy(() => import("./pages/OwnerConsolePage").then((m) => ({ default: m.OwnerConsolePage })));
+const OwnerDashboardPage = lazy(() => import("./pages/OwnerDashboardPage").then((m) => ({ default: m.OwnerDashboardPage })));
+const MasterCrmPage = lazy(() => import("./pages/MasterCrmPage").then((m) => ({ default: m.MasterCrmPage })));
+const KingLeadsPage = lazy(() => import("./pages/KingLeadsPage").then((m) => ({ default: m.KingLeadsPage })));
 
 function LangSync() {
   const { pathname } = useLocation();
@@ -63,6 +67,7 @@ function routes(prefix = "") {
     <>
       <Route index element={<HomePage />} />
       <Route path="grow-hub" element={<GrowHubPage />} />
+      <Route path="growhub" element={<Navigate to="grow-hub" replace />} />
       <Route path="outils" element={<ToolsPage />} />
       <Route path="outils/relance-panier" element={<RelancePanierPage />} />
       <Route path="outils/soumission" element={<SoumissionPage />} />
@@ -82,16 +87,33 @@ function routes(prefix = "") {
       <Route path="forfaits-growth" element={<GrowthLandingPage />} />
       <Route path="growth" element={<Navigate to="forfaits-growth" replace />} />
       <Route path="forfaits-cellulaire" element={<CellulairePlansPage />} />
+      <Route path="cellulaire" element={<Navigate to="forfaits-cellulaire" replace />} />
+      <Route path="pack-cellulaire" element={<Navigate to="forfaits-cellulaire" replace />} />
       <Route path="app-forfaits" element={<AppPlansPage />} />
       <Route path="comment-ca-marche" element={<HowItWorksPage />} />
       <Route path="how-it-works" element={<HowItWorksPage />} />
       <Route path="diagnostic" element={<DiagnosticPage />} />
       <Route path="score" element={<Navigate to="diagnostic" replace />} />
       <Route path="portail" element={<PortalPage />} />
+      <Route path="portail/claim" element={<PortalPage />} />
       <Route path="portail/capture" element={<PortalCapturePage />} />
+      <Route path="portail/pipeline" element={<PortalCellToolPage />} />
+      <Route path="portail/cell-checkout" element={<PortalCellToolPage />} />
+      <Route path="portail/streak" element={<PortalCellToolPage />} />
+      <Route path="portail/fleet" element={<PortalCellToolPage />} />
+      <Route path="portail/merge" element={<PortalCellToolPage />} />
       <Route path="payer" element={<CheckoutPage />} />
       <Route path="portal" element={<PortalPage />} />
+      <Route path="portal/claim" element={<PortalPage />} />
       <Route path="portal/capture" element={<PortalCapturePage />} />
+      <Route path="portal/pipeline" element={<PortalCellToolPage />} />
+      <Route path="portal/cell-checkout" element={<PortalCellToolPage />} />
+      <Route path="portal/streak" element={<PortalCellToolPage />} />
+      <Route path="portal/fleet" element={<PortalCellToolPage />} />
+      <Route path="portal/merge" element={<PortalCellToolPage />} />
+      <Route path="crm" element={<MasterCrmPage />} />
+      <Route path="leads" element={<KingLeadsPage />} />
+      <Route path="master-leads" element={<Navigate to="leads" replace />} />
       <Route path="equipe" element={<TeamPage />} />
       <Route path="qui-sommes-nous" element={<MissionPage />} />
       <Route path="mission" element={<MissionPage />} />
@@ -117,6 +139,7 @@ export default function App() {
       <Suspense fallback={null}>
       <Routes>
         <Route path="/controle" element={<OwnerConsolePage />} />
+        <Route path="/controle/app" element={<OwnerDashboardPage />} />
         <Route path="/vorixa/chatbot" element={<AvenirChatbotApp />} />
         <Route path="/vorixa/chatbot/*" element={<AvenirChatbotApp />} />
         <Route path="/maquettes/l-avenir" element={<Navigate to="/vorixa/chatbot/apercu" replace />} />

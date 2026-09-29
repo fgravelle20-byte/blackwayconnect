@@ -4,7 +4,7 @@
  * Type A (revenu #1): Grow Hub web /forfaits — inclut accès mobile au Portail (surplus $0).
  * Pitch: « Contrôle ton dashboard partout sur mobile. L’app est incluse. »
  * Type B (revenu #2 optionnel): Pack Cellulaire /forfaits-cellulaire — outils terrain.
- * Merge: un Portail Master + HubSpot (union des outils A + B).
+ * Merge: un Portail Master + Master CRM BlackWayConnect (union des outils A + B).
  */
 
 export const SITE_ORIGIN = "https://blackwayconnect.com";

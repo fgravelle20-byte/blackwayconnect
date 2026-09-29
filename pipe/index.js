@@ -4,12 +4,13 @@
  * Endpoints:
  *   GET  /health            -> etat du service + presence des secrets (sans fuite)
  *   GET  /paddle/client-config -> jeton client live_… pour /payer (public navigateur)
- *   POST /lead              -> formulaire site web  -> Contact + Deal "Nouvelle opportunite"
- *   POST /webhooks/paddle   -> paiement Paddle verifie -> active le forfait (HubSpot + portail)
- *   POST /portal/claim      -> session_id (Cache/HubSpot) ou email -> jeton portail
+ *   POST /lead              -> formulaire site web  -> Master CRM (+ HubSpot optionnel)
+ *   POST /webhooks/paddle   -> paiement Paddle verifie -> active le forfait (portail + CRM)
+ *   POST /portal/claim      -> session_id (Cache) ou email -> jeton portail
  *   GET  /portal/me         -> refresh session portail
- * Portail HubSpot 343472254 - pipeline BlackWay - Revenue (2117849055)
- * Claim apres paiement: Paddle webhook + Cache + HubSpot; aucune cle Stripe requise.
+ *   GET  /crm/leads         -> Master CRM board (X-BW-Key)
+ * Portail — pipeline BlackWay. HubSpot is optional sync, not the product brain.
+ * Claim apres paiement: Paddle webhook + Cache; aucune cle Stripe requise.
  *
  * Activation auto (signature verifiee): checkout.session.completed | async_payment_succeeded
  * | invoice.paid | invoice.payment_succeeded → bw_forfait + bw_forfait_paye = forfait paye
@@ -20,6 +21,8 @@
  */
 
 import { isVorixaManagedStripeObject } from "./vorixaManaged.js";
+import { scoreKingLead } from "./kingLeads.js";
+import { upsertMasterLead, listMasterLeads, patchMasterLead } from "./masterCrm.js";
 
 const HS = "https://api.hubapi.com";
 const PIPELINE = "2117849055";
@@ -160,7 +163,7 @@ const FREE_MAIL = ["gmail.com","hotmail.com","hotmail.ca","outlook.com","yahoo.c
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, GET, PATCH, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, X-BW-Key, Authorization",
 };
 
@@ -362,11 +365,23 @@ async function createDeal(env, name, stage, props, contactId) {
   throw new Error("deal KO " + msg.slice(0, 300));
 }
 
+async function recordMasterLead(env, p) {
+  try {
+    const king = scoreKingLead(p);
+    return await upsertMasterLead(env, p, king);
+  } catch (e) {
+    console.log("master crm upsert", e);
+    return null;
+  }
+}
+
 async function traiterLead(env, p) {
+  const master = await recordMasterLead(env, p);
   const forfait = resoudreForfait(p.forfait) || "grow_hub_growth";
   const f = FORFAITS[forfait];
   const base = score(forfait, p.email, f.prix, f.recurrent);
   const sc = twinTurboLeadScore(base, p);
+  try {
   const contactId = await upsertContact(env, p.email, {
     firstname: p.prenom || "", lastname: p.nom || "", phone: p.telephone || "", company: p.entreprise || "",
     bw_forfait: forfait, bw_source: p.source || "form_web", bw_urgence: p.urgence || "normal",
@@ -397,7 +412,21 @@ async function traiterLead(env, p) {
     volume_turbo: p.volume_turbo ?? null,
     quality_turbo: p.quality_turbo ?? null,
     statut: d.cree ? "cree" : "doublon evite",
+    master_crm: master?.id || null,
+    brain: "blackway_master_crm",
   };
+  } catch (e) {
+    if (master) {
+      return {
+        contact: master.id,
+        deal: null,
+        score: master.score,
+        statut: "master_crm",
+        brain: "blackway_master_crm",
+      };
+    }
+    throw e;
+  }
 }
 
 async function traiterPaiement(env, p) {
@@ -1126,7 +1155,26 @@ export default {
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
     }
 
-    // Stripe webhook retired: all new payments are Paddle-only.\n
+    if (url.pathname === "/crm/leads" && request.method === "GET") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      const q = Object.fromEntries(url.searchParams);
+      return json(await listMasterLeads(env, q));
+    }
+
+    const crmPatch = url.pathname.match(/^\/crm\/leads\/([^/]+)$/);
+    if (crmPatch && request.method === "PATCH") {
+      if (!env.BW_LEAD_KEY || request.headers.get("X-BW-Key") !== env.BW_LEAD_KEY) {
+        return json({ erreur: "cle invalide" }, 401);
+      }
+      const p = await request.json();
+      const lead = await patchMasterLead(env, decodeURIComponent(crmPatch[1]), p);
+      if (!lead) return json({ erreur: "lead introuvable" }, 404);
+      return json({ ok: true, lead });
+    }
+
+    // Stripe webhook retired: all new payments are Paddle-only.
     if (url.pathname === "/portal/claim" && request.method === "POST") {
       try {
         const p = await request.json();

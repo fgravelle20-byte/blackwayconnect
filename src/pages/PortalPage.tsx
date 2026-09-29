@@ -21,6 +21,7 @@ import {
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
 import { trackPurchase } from "../tracking";
+import { agentLog } from "../debugAgentLog";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -111,8 +112,8 @@ const TOOL_COPY: Partial<
     en: { title: "Mobile pipeline", body: "Advance deals on the road.", cta: "Open" },
   },
   cell_checkout: {
-    fr: { title: "Checkout prospect", body: "Envoyer un lien de paiement depuis le terrain.", cta: "Ouvrir" },
-    en: { title: "Prospect checkout", body: "Send a lien de paiement from the field.", cta: "Open" },
+    fr: { title: "Checkout prospect", body: "Envoyer un lien Paddle Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
+    en: { title: "Prospect checkout", body: "Send a Grow Hub Paddle link from the field (Cellular Pack = request).", cta: "Open" },
   },
   cell_streak: {
     fr: { title: "Streak terrain", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
@@ -712,6 +713,25 @@ function ToolGrid(props: {
   lockedLabel: string;
 }) {
   const { title, tools, forfaitWeb, forfaitCell, fr, path, openSecretary, lockedCta, lockedLabel } = props;
+  useEffect(() => {
+    // #region agent log
+    if (title.toLowerCase().includes("cell")) {
+      agentLog(
+        "PortalPage.tsx:ToolGrid",
+        "cell tools in portal",
+        {
+          forfaitCell: forfaitCell || "",
+          tools: tools.map((t) => ({
+            id: t.id,
+            path: t.path || "",
+            unlocked: toolUnlocked(forfaitWeb, forfaitCell, t),
+          })),
+        },
+        "B",
+      );
+    }
+    // #endregion
+  }, [title, tools, forfaitWeb, forfaitCell]);
   return (
     <>
       <h2 className="portal-grid__title" style={{ marginTop: "2rem" }}>
