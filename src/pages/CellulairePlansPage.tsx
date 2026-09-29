@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { agentLog } from "../debugAgentLog";
 import {
   CELLULAIRE_ORDER,
   CELLULAIRE_PLANS,
@@ -20,32 +18,6 @@ export function CellulairePlansPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
   const anyLive = CELLULAIRE_ORDER.some((k) => isCellulaireCheckoutReady(k));
-
-  useEffect(() => {
-    // #region agent log
-    agentLog(
-      "CellulairePlansPage.tsx:mount",
-      "cellulaire checkout state",
-      {
-        anyLive,
-        plans: CELLULAIRE_ORDER.map((k) => ({
-          k,
-          ready: isCellulaireCheckoutReady(k),
-          hasPaymentLink: !!CELLULAIRE_PLANS[k].paymentLink,
-          hrefHost: (() => {
-            try {
-              return new URL(cellulaireCheckoutUrl(k, { lang, source: "audit" })).pathname;
-            } catch {
-              return "bad";
-            }
-          })(),
-          toolCount: CELLULAIRE_PLANS[k].tools.length,
-        })),
-      },
-      "A",
-    );
-    // #endregion
-  }, [anyLive, lang]);
 
   return (
     <section className="section section--page section--app-plans">

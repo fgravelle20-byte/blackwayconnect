@@ -21,7 +21,6 @@ import {
 } from "../portalTools";
 import { PLANS, PLAN_ORDER, checkoutUrl, type PlanKey } from "../stripeConfig";
 import { trackPurchase } from "../tracking";
-import { agentLog } from "../debugAgentLog";
 
 const STORAGE_KEY = "bw_portal_session";
 
@@ -307,15 +306,6 @@ export function PortalPage() {
     }
     if (transactionId) {
       if (!isLivePaddleTransactionId(transactionId)) {
-        // #region agent log
-        agentLog(
-          "PortalPage.tsx:claim-skip",
-          "ignore placeholder transaction_id",
-          { skipped: true, looksLikePlaceholder: true },
-          "A",
-          "post-fix",
-        );
-        // #endregion
         setBooting(false);
         return;
       }
@@ -739,25 +729,6 @@ function ToolGrid(props: {
   lockedLabel: string;
 }) {
   const { title, tools, forfaitWeb, forfaitCell, fr, path, openSecretary, lockedCta, lockedLabel } = props;
-  useEffect(() => {
-    // #region agent log
-    if (title.toLowerCase().includes("cell")) {
-      agentLog(
-        "PortalPage.tsx:ToolGrid",
-        "cell tools in portal",
-        {
-          forfaitCell: forfaitCell || "",
-          tools: tools.map((t) => ({
-            id: t.id,
-            path: t.path || "",
-            unlocked: toolUnlocked(forfaitWeb, forfaitCell, t),
-          })),
-        },
-        "B",
-      );
-    }
-    // #endregion
-  }, [title, tools, forfaitWeb, forfaitCell]);
   return (
     <>
       <h2 className="portal-grid__title" style={{ marginTop: "2rem" }}>
