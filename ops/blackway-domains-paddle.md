@@ -29,11 +29,14 @@ Détail : [`ops/BLACKWAY-CA-FORBIDDEN.md`](./BLACKWAY-CA-FORBIDDEN.md).
 
 Production `wrangler.jsonc` binds `blackwayconnect.com` only.
 
-## Auto-fulfillment (2026-09-24)
+## Auto-fulfillment (2026-09-29)
 
-Paddle live notification `BlackWayConnect pipe fulfillment (Vorixa relay)` →
-`https://vorixa.ca/api/functions/blackwayPaddleWebhook` →
-`POST https://api.blackwayconnect.com/portal/provision` (`X-BW-Fulfill-Key`).
+Paddle live notification `BlackWay pipe direct` →
+`POST https://api.blackwayconnect.com/webhooks/paddle` (signed with `PADDLE_WEBHOOK_SECRET`) →
+payment + customer in D1 `bw-master`. The portal also verifies `txn_…` with the Paddle API if the webhook is late.
+
+The old `BlackWayConnect pipe fulfillment (Vorixa relay)` destination is deactivated.
+`POST /portal/provision` (`X-BW-Fulfill-Key`) stays available for manual/partner provisioning.
 
 Money lands in the Paddle seller account on checkout (same live seller as Vorixa).
 Forfait + portail activate on `transaction.completed` for Grow Hub price IDs.
