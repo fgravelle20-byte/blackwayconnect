@@ -58,8 +58,8 @@ export function Layout() {
   // Same visual weight for every desktop item — no oversized CTA pills.
   const desktopNav = (
     <>
+      <NavLink to={path("/plateforme")}>{lang === "fr" ? "Plateforme" : "Platform"}</NavLink>
       <NavLink to={path("/forfaits")}>{t.nav.pricing}</NavLink>
-      <NavLink to={howPath}>{t.nav.how}</NavLink>
       <NavLink to={path("/portail")}>{t.nav.portal}</NavLink>
       <NavLink to={path("/outils")}>{t.nav.tools}</NavLink>
       <NavLink to={path("/diagnostic")}>{sc.nav}</NavLink>
@@ -69,8 +69,8 @@ export function Layout() {
 
   const mobileNav = (
     <>
+      <NavLink to={path("/plateforme")}>{lang === "fr" ? "Plateforme" : "Platform"}</NavLink>
       <NavLink to={path("/forfaits")}>{t.nav.pricing}</NavLink>
-      <NavLink to={howPath}>{t.nav.how}</NavLink>
       <NavLink to={path("/portail")}>{t.nav.portal}</NavLink>
       <NavLink to={path("/contact")}>{t.nav.contact}</NavLink>
       <NavLink to={path("/outils")}>{t.nav.tools}</NavLink>
@@ -199,6 +199,7 @@ export function Layout() {
           <div className="site-footer__col">
             <p className="site-footer__label">{lang === "fr" ? "Produit" : "Product"}</p>
             <nav className="site-footer__links" aria-label="Footer product">
+              <Link to={path("/plateforme")}>{lang === "fr" ? "Plateforme" : "Platform"}</Link>
               <Link to={path("/forfaits")}>{t.nav.pricing}</Link>
               <Link to={howPath}>{t.nav.how}</Link>
               <Link to={path("/portail")}>{t.nav.portal}</Link>

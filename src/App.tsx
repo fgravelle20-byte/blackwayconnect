@@ -40,6 +40,7 @@ const OwnerConsolePage = lazy(() => import("./pages/OwnerConsolePage").then((m) 
 const OwnerDashboardPage = lazy(() => import("./pages/OwnerDashboardPage").then((m) => ({ default: m.OwnerDashboardPage })));
 const MasterCrmPage = lazy(() => import("./pages/MasterCrmPage").then((m) => ({ default: m.MasterCrmPage })));
 const KingLeadsPage = lazy(() => import("./pages/KingLeadsPage").then((m) => ({ default: m.KingLeadsPage })));
+const PlatformPage = lazy(() => import("./pages/PlatformPage").then((m) => ({ default: m.PlatformPage })));
 
 function LangSync() {
   const { pathname } = useLocation();
@@ -67,6 +68,8 @@ function routes(prefix = "") {
   return (
     <>
       <Route index element={<HomePage />} />
+      <Route path="plateforme" element={<PlatformPage />} />
+      <Route path="platform" element={<PlatformPage />} />
       <Route path="grow-hub" element={<GrowHubPage />} />
       <Route path="growhub" element={<Navigate to="grow-hub" replace />} />
       <Route path="outils" element={<ToolsPage />} />
