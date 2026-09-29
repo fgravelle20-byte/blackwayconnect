@@ -61,29 +61,29 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Master Tools — Leak Score, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, relance panier, générateur de soumission Paddle, checklist, ROI, Grow Hub — outils pour fermer plus et encaisser."
-        : "Leak Score, cart recovery, Paddle quote generator, checklist, ROI, Grow Hub — tools to close more and collect cash.",
+        ? "Leak Score, courriel de relance, soumission à ton nom, checklist, ROI — 2 minutes, tu sors avec un fichier ou un mail."
+        : "Leak Score, follow-up email, quote in your name, checklist, ROI — 2 minutes, you leave with a file or an email.",
     },
     "outils/relance-panier": {
-      title: fr ? "Relance panier / devis abandonnés" : "Abandoned cart / quote recovery",
-      ogTitle: fr ? "Relance panier — combien dorment ?" : "Cart recovery — how much sits idle?",
+      title: fr ? "Courriel de relance panier / devis" : "Cart / quote follow-up email",
+      ogTitle: fr ? "Relance prête à coller — ton nom, ton lien" : "Follow-up ready to paste — your name, your link",
       description: fr
-        ? "Estimateur libre-service : devis abandonnés → dollars exposés → gain Grow Hub Growth 349 $."
-        : "Self-serve checker: abandoned quotes → dollars exposed → Grow Hub Growth $349 lift.",
+        ? "Génère le courriel de relance HTML ou texte pour tes paniers abandonnés, à ton nom avec ton lien de paiement. Copie, colle dans Gmail."
+        : "Generate the HTML or text follow-up for abandoned carts, in your name with your payment link. Copy, paste into Gmail.",
     },
     "outils/soumission": {
-      title: fr ? "Générateur de soumission → Paddle" : "Quote generator → Paddle",
-      ogTitle: fr ? "Soumission → lien Paddle Growth" : "Quote → Paddle Growth link",
+      title: fr ? "Soumission à ton nom — imprimable" : "Quote in your name — printable",
+      ogTitle: fr ? "Soumission à ton nom en 2 minutes" : "Quote in your name in 2 minutes",
       description: fr
-        ? "Rédigez une soumission, copiez le texte et ouvrez le paiement Paddle Growth. Capture CRM incluse."
-        : "Draft a quote, copy the text and open Paddle Growth payment. CRM capture included.",
+        ? "Devis à ta raison sociale avec ton lien de paiement. Copie, imprime en PDF, garde une copie locale."
+        : "Quote under your business name with your payment link. Copy, print to PDF, keep a local copy.",
     },
     "outils/checklist": {
       title: fr ? "Checklist fermeture 7 jours" : "7-day close checklist",
-      ogTitle: fr ? "Checklist lead magnet — gratuit" : "Checklist lead magnet — free",
+      ogTitle: fr ? "Checklist fermeture 7 jours — sans courriel" : "7-day close checklist — no email needed",
       description: fr
-        ? "Huit actions pour fermer sans fuite. Courriel → checklist PDF. CTA Growth + Portail."
-        : "Eight actions to close without leakage. Email → PDF checklist. Growth + Portal CTAs.",
+        ? "Cases à cocher sauvegardées, liste de fermeture éditable, impression PDF. Aucun courriel requis."
+        : "Saved checkboxes, editable close list, print to PDF. No email required.",
     },
     tools: {
       title: "Master Tools",

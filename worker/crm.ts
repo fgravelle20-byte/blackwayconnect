@@ -1,4 +1,4 @@
-import { listMasterLeads, patchMasterLead, upsertMasterLead } from "../pipe/masterCrm.js";
+import { listMasterLeads, patchMasterLead, upsertMasterLead, runAutonomyTick, engineStatus } from "../pipe/masterCrm.js";
 import { scoreKingLead } from "../pipe/kingLeads.js";
 import { authorizeOwner } from "./ownerAuth";
 
@@ -86,4 +86,16 @@ export async function patchCrm(env: CrmEnv, id: string, body: Record<string, unk
   });
   if (upstream?.ok) return upstream.json();
   return patchMasterLead(env, id, body);
+}
+
+export async function tickCrm(env: CrmEnv) {
+  const upstream = await pipeCrm(env, "/ops/engine/tick", { method: "POST" });
+  if (upstream?.ok) return upstream.json();
+  return runAutonomyTick(env);
+}
+
+export async function getEngine(env: CrmEnv) {
+  const upstream = await pipeCrm(env, "/ops/engine", { method: "GET" });
+  if (upstream?.ok) return upstream.json();
+  return engineStatus(env);
 }

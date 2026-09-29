@@ -3,7 +3,7 @@ import { CHECKOUT_LINKS, PLANS } from "../src/stripeConfig";
 import { handleChat, type ChatLang, type ChatMessage } from "./chat";
 import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
 import { authorizeOwner } from "./ownerAuth";
-import { crmAuthorized, crmCookieHeader, crmLoginOk, listCrm, patchCrm, recordSiteLead } from "./crm";
+import { crmAuthorized, crmCookieHeader, crmLoginOk, getEngine, listCrm, patchCrm, recordSiteLead, tickCrm } from "./crm";
 
 export interface Env {
   ASSETS: Fetcher;
@@ -597,6 +597,28 @@ export default {
         return corsJson(request, { ok: true, lead: data });
       } catch (e) {
         return corsJson(request, { erreur: "crm indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/engine" && request.method === "GET") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        return corsJson(request, await getEngine(env));
+      } catch (e) {
+        return corsJson(request, { erreur: "engine indisponible", detail: String(e) }, 502);
+      }
+    }
+
+    if (url.pathname === "/api/crm/engine" && request.method === "POST") {
+      if (!(await crmAuthorized(request, env))) {
+        return corsJson(request, { erreur: "acces refuse" }, 401);
+      }
+      try {
+        return corsJson(request, await tickCrm(env));
+      } catch (e) {
+        return corsJson(request, { erreur: "engine indisponible", detail: String(e) }, 502);
       }
     }
 
