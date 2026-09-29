@@ -229,7 +229,7 @@ export function Layout() {
             <p className="site-footer__label">
               {lang === "fr" ? "Bureau & contact" : "Office & contact"}
             </p>
-            <ContactDetails compact />
+            <ContactDetails compact showMap={false} />
           </div>
         </div>
         <div className="shell site-footer__bottom">

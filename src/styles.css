@@ -1396,7 +1396,7 @@ select {
 
 @media (min-width: 960px) {
   .site-footer__grid {
-    grid-template-columns: 1.35fr 0.85fr 0.85fr 1.25fr;
+    grid-template-columns: 1.2fr 0.75fr 0.85fr 1.55fr;
     align-items: start;
     gap: 2rem 2.5rem;
   }
@@ -1440,7 +1440,8 @@ select {
   color: var(--ink);
   text-decoration: none;
   font-weight: 500;
-  word-break: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .contact-lines a:hover {
@@ -3185,7 +3186,10 @@ a.bw-agent__chip {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.55;
-  overflow-wrap: break-word;
+}
+
+.portal-login__hint a {
+  white-space: nowrap;
 }
 
 body.is-embed {

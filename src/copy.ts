@@ -410,9 +410,9 @@ export const copy: Record<Lang, Copy> = {
     footer: "Du lead au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
-    privacy: "Confidentialité (Privacy Notice)",
-    terms: "Conditions (Terms of Service)",
-    refund: "Remboursement (Refund Policy)",
+    privacy: "Confidentialité",
+    terms: "Conditions",
+    refund: "Remboursement",
     privacyBody:
       "Privacy Notice — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Paddle). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
     termsBody:
