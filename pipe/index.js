@@ -1156,6 +1156,19 @@ async function claimPortal(env, p) {
       }
     }
 
+    // Paddle is the payment ledger: verify txn_ there before any legacy HubSpot lookup.
+    if (!email && sessionId.startsWith("txn_")) {
+      try {
+        const fromPaddle = await activateFromPaddleTransaction(env, sessionId);
+        if (fromPaddle?.email) {
+          email = fromPaddle.email;
+          forfait = fromPaddle.forfait;
+        }
+      } catch (e) {
+        console.log("activateFromPaddleTransaction", e);
+      }
+    }
+
     if (!email && jeton(env)) {
       try {
         await ensureBwLastCheckoutSessionProp(env);
@@ -1180,18 +1193,6 @@ async function claimPortal(env, p) {
         }
       } catch (e) {
         console.log("claimFromDealSession", e);
-      }
-    }
-
-    if (!email && sessionId.startsWith("txn_")) {
-      try {
-        const fromPaddle = await activateFromPaddleTransaction(env, sessionId);
-        if (fromPaddle?.email) {
-          email = fromPaddle.email;
-          forfait = fromPaddle.forfait;
-        }
-      } catch (e) {
-        console.log("activateFromPaddleTransaction", e);
       }
     }
 
