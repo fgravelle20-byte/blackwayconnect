@@ -1,11 +1,9 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLang } from "./i18n";
-import { APP_QR_PATH, footerAppQrUrl } from "./appConfig";
 import { scoreCopy } from "./scoreCopy";
 import { AiSecretary } from "./AiSecretary";
-import { ContactDetails } from "./ContactDetails";
-import { EMAILS, PHONES } from "./siteContact";
+import { EMAILS, MAPS_SEARCH_URL, PHONES, SOCIAL } from "./siteContact";
 
 function isAppEmbed(search: string): boolean {
   const query = new URLSearchParams(search);
@@ -15,6 +13,22 @@ function isAppEmbed(search: string): boolean {
   } catch {
     return true;
   }
+}
+
+function FooterSocialIcon({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <a className="site-footer__social-link" href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+      {children}
+    </a>
+  );
 }
 
 export function Layout() {
@@ -175,66 +189,92 @@ export function Layout() {
       </main>
       {embed ? null : (
       <footer className="site-footer">
-        <div className="shell site-footer__grid">
-          <div className="site-footer__brand">
-            <p className="brand__name">{t.brand}</p>
-            <p className="site-footer__tagline">{t.footer}</p>
-            <a
-              className="footer-qr"
-              href={footerAppQrUrl(lang)}
-              rel="noopener noreferrer"
-              aria-label={t.footerQrTitle}
-            >
-              <img
-                className="footer-qr__img"
-                src={APP_QR_PATH}
-                width={96}
-                height={96}
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-              <span className="footer-qr__text">
-                <span className="footer-qr__title">{t.footerQrTitle}</span>
-                <span className="footer-qr__hint">{t.footerQrHint}</span>
+        <div className="shell site-footer__inner">
+          <div className="site-footer__grid">
+            <div className="site-footer__col">
+              <p className="site-footer__label">{t.brand}</p>
+              <p className="site-footer__blurb">{t.footer}</p>
+              <nav className="site-footer__links" aria-label={lang === "fr" ? "Portail" : "Portal"}>
+                <Link to={path("/portail")}>{t.ctaApp}</Link>
+              </nav>
+            </div>
+
+            <div className="site-footer__col">
+              <p className="site-footer__label">{lang === "fr" ? "Produit" : "Product"}</p>
+              <nav className="site-footer__links" aria-label={lang === "fr" ? "Produit" : "Product"}>
+                <Link to={path("/forfaits")}>{t.nav.pricing}</Link>
+                <Link to={howPath}>{t.nav.how}</Link>
+                <Link to={path("/portail")}>{t.nav.portal}</Link>
+                <Link to={path("/outils")}>{t.nav.tools}</Link>
+                <Link to={path("/grow-hub")}>{t.nav.grow}</Link>
+              </nav>
+            </div>
+
+            <div className="site-footer__col">
+              <p className="site-footer__label">{lang === "fr" ? "Entreprise" : "Company"}</p>
+              <nav className="site-footer__links" aria-label={lang === "fr" ? "Entreprise" : "Company"}>
+                <Link to={path("/qui-sommes-nous")}>{t.nav.mission}</Link>
+                <Link to={path("/equipe")}>{t.nav.team}</Link>
+                <Link to={path("/services")}>{t.nav.services}</Link>
+                <Link to={path("/faq")}>{t.nav.faq}</Link>
+                <Link to={path("/contact")}>{t.nav.contact}</Link>
+              </nav>
+            </div>
+
+            <div className="site-footer__col">
+              <p className="site-footer__label">{lang === "fr" ? "Contact" : "Contact"}</p>
+              <nav className="site-footer__links" aria-label={lang === "fr" ? "Contact" : "Contact"}>
+                <a href={MAPS_SEARCH_URL} target="_blank" rel="noopener noreferrer">
+                  313 Cuvillier Ouest
+                </a>
+                <a href={PHONES.local.href}>{PHONES.local.display}</a>
+                <a href={PHONES.tollFree.href}>{PHONES.tollFree.display}</a>
+                <a href={`mailto:${EMAILS.service}`}>{lang === "fr" ? "Service client" : "Client service"}</a>
+                <a href={`mailto:${EMAILS.accounting}`}>{lang === "fr" ? "Facturation" : "Billing"}</a>
+              </nav>
+            </div>
+          </div>
+
+          <div className="site-footer__bar">
+            <p className="site-footer__meta">
+              <span>© {new Date().getFullYear()} {t.brand}</span>
+              <span className="site-footer__sep" aria-hidden="true">
+                ·
               </span>
-            </a>
-          </div>
-
-          <div className="site-footer__col">
-            <p className="site-footer__label">{lang === "fr" ? "Produit" : "Product"}</p>
-            <nav className="site-footer__links" aria-label="Footer product">
-              <Link to={path("/forfaits")}>{t.nav.pricing}</Link>
-              <Link to={howPath}>{t.nav.how}</Link>
-              <Link to={path("/portail")}>{t.nav.portal}</Link>
-              <Link to={path("/outils")}>{t.nav.tools}</Link>
-              <Link to={path("/grow-hub")}>{t.nav.grow}</Link>
-            </nav>
-          </div>
-
-          <div className="site-footer__col">
-            <p className="site-footer__label">{lang === "fr" ? "Entreprise" : "Company"}</p>
-            <nav className="site-footer__links" aria-label="Footer company">
-              <Link to={path("/qui-sommes-nous")}>{t.nav.mission}</Link>
-              <Link to={path("/equipe")}>{t.nav.team}</Link>
-              <Link to={path("/faq")}>{t.nav.faq}</Link>
-              <Link to={path("/contact")}>{t.nav.contact}</Link>
-              <Link to={path("/confidentialite")}>{t.privacy}</Link>
-              <Link to={path("/conditions")}>{t.terms}</Link>
-              <Link to={path("/remboursement")}>{t.refund}</Link>
-            </nav>
-          </div>
-
-          <div className="site-footer__contact">
-            <p className="site-footer__label">
-              {lang === "fr" ? "Bureau & contact" : "Office & contact"}
+              <span>
+                {lang === "fr" ? "Né au Québec. Conçu pour le monde." : "Born in Québec. Built for the world."}
+              </span>
             </p>
-            <ContactDetails compact showMap={false} />
+            <nav className="site-footer__legal" aria-label={lang === "fr" ? "Mentions légales" : "Legal"}>
+              <Link to={path("/confidentialite")}>{lang === "fr" ? "Confidentialité" : "Privacy"}</Link>
+              <Link to={path("/conditions")}>{lang === "fr" ? "Conditions" : "Terms"}</Link>
+              <Link to={path("/remboursement")}>{lang === "fr" ? "Remboursement" : "Refund"}</Link>
+            </nav>
+            <nav className="site-footer__social" aria-label={lang === "fr" ? "Réseaux sociaux" : "Social"}>
+              <FooterSocialIcon href={SOCIAL.facebook} label="Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.6l.4-3H14V9Z" />
+                </svg>
+              </FooterSocialIcon>
+              <FooterSocialIcon href={SOCIAL.twitter} label="X">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M18.244 3H21l-6.52 7.45L22 21h-6.19l-4.84-5.91L5.4 21H2.64l6.97-7.97L2 3h6.35l4.37 5.39L18.244 3Zm-1.09 16.2h1.72L7.01 4.7H5.16l11.99 14.5Z" />
+                </svg>
+              </FooterSocialIcon>
+              <FooterSocialIcon href={SOCIAL.tiktok} label="TikTok">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M19.6 7.3a5.4 5.4 0 0 1-3.2-1.1v7.2a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.8a2.9 2.9 0 1 0 2 2.8V2.5h2.7a5.4 5.4 0 0 0 3.3 4.8v0Z" />
+                </svg>
+              </FooterSocialIcon>
+              <FooterSocialIcon href={SOCIAL.instagram} label="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </FooterSocialIcon>
+            </nav>
           </div>
-        </div>
-        <div className="shell site-footer__bottom">
-          <p>© {new Date().getFullYear()} {t.brand}</p>
-          <p>{lang === "fr" ? "Né au Québec. Conçu pour le monde." : "Born in Québec. Built for the world."}</p>
         </div>
       </footer>
       )}
