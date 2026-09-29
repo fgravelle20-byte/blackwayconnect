@@ -34,6 +34,35 @@ Support client reste `serviceclient@blackwayconnect.com`.
 
 ---
 
+## 🔒 Accès payant (RevenueCat) — aucun accès gratuit
+
+L’app est **verrouillée** sur iOS/Android : le Portail ne s’ouvre que si l’**entitlement**
+RevenueCat est actif. Sinon l’écran d’abonnement (paywall) s’affiche avec **S’abonner** +
+**Restaurer mes achats**. En web/dev l’app n’est pas verrouillée (pour pouvoir développer).
+
+Code : `src/revenuecat.ts` (config + entitlement + achat) et le gate dans `src/main.ts`.
+
+### Configuration (obligatoire pour que ça débloque)
+
+1. `app.revenuecat.com` → **Project settings → API keys** → copie les clés **publiques (SDK)** :
+   iOS `appl_…`, Android `goog_…`.
+2. `cp .env.example .env` puis remplis :
+   - `VITE_RC_IOS_KEY=appl_…`
+   - `VITE_RC_ANDROID_KEY=goog_…`
+   - `VITE_RC_ENTITLEMENT=pro` (le nom exact de ton entitlement RevenueCat)
+3. Dans RevenueCat : crée l’**Entitlement** (`pro`), un **Offering** « current » avec au moins
+   un **Product** relié à l’abonnement App Store / Google Play.
+4. `npm install` (ajoute `@revenuecat/purchases-capacitor`) puis `npm run sync`.
+
+> ⚠️ **Changement de stratégie App Store.** Historiquement l’app était « gratuite, sans achat
+> intégré, abos vendus sur le site » (voir `../base44/APP_STORE_CONNECT_SETUP.md`). Exiger un
+> abonnement **dans** l’app impose des **In-App Purchases** (Apple/Google) via RevenueCat — pas
+> un paiement Stripe web. Il faut donc créer les produits IAP côté ASC / Play, et mettre à jour
+> les *Review Notes*. Les clés publiques SDK sont sûres à embarquer ; ne jamais mettre la clé
+> **secrète** RevenueCat dans l’app.
+
+---
+
 ## 1 action pour voir l’app tourner (local web)
 
 ```bash
@@ -115,6 +144,7 @@ Checklist détaillée : `../base44/APPLE_TESTFLIGHT_CHECKLIST.md`
 
 | Écran | Comportement |
 |-------|----------------|
+| **Abonnement (paywall)** | iOS/Android : bloque l’app tant que l’entitlement RevenueCat n’est pas actif (S’abonner / Restaurer) |
 | **Accueil** | Brand + CTA Portail / Outils / Forfaits |
 | **Portail** | Claim email + iframe live `/portail` |
 | **Outils** | Tuiles → diagnostic, outils, comparer, relance, soumission, checklist, ROI, grow-hub |
