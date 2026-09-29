@@ -804,6 +804,43 @@ async function paddleCustomerEmail(env, customerId) {
   return String(body?.data?.email || "").trim().toLowerCase();
 }
 
+/** Pull path: verify txn_ with the Paddle API and activate, independent of webhook/relay delivery. */
+async function activateFromPaddleTransaction(env, transactionId) {
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key || !String(transactionId).startsWith("txn_")) return null;
+  const r = await fetch(
+    `https://api.paddle.com/transactions/${encodeURIComponent(transactionId)}?include=customer`,
+    { headers: { Authorization: `Bearer ${key}`, Accept: "application/json" } },
+  );
+  if (!r.ok) return null;
+  const txn = (await r.json())?.data || {};
+  if (!["completed", "paid"].includes(String(txn.status || ""))) return null;
+  const forfait = forfaitFromPaddleTransaction(txn);
+  if (!forfait) return null;
+  const email = String(txn.customer?.email || "").trim().toLowerCase()
+    || await paddleCustomerEmail(env, txn.customer_id);
+  if (!email) return null;
+  await putSessionMap(env, transactionId, { email, forfait });
+  const cents = Number(txn?.details?.totals?.total || txn?.details?.totals?.grand_total || 0);
+  try {
+    await traiterPaiement(env, {
+      email,
+      prenom: "",
+      nom: "",
+      entreprise: txn.custom_data?.entreprise || "",
+      forfait,
+      payment_id: transactionId,
+      checkout_session_id: transactionId,
+      montant: cents > 0 ? cents / 100 : FORFAITS[forfait].prix,
+      processor: "paddle",
+      segment: "paiement paddle (verification portail)",
+    });
+  } catch (e) {
+    console.error("activation paddle au claim", transactionId, e);
+  }
+  return { email, forfait };
+}
+
 /** Client inbox — HubSpot deals associated to the portal contact (Master Leads delivery). */
 async function listPortalLeads(env, token) {
   const session = await verifyPortalToken(env, token);
@@ -904,6 +941,17 @@ async function claimPortal(env, p) {
       }
     }
 
+    if (!email && sessionId.startsWith("txn_")) {
+      try {
+        const fromPaddle = await activateFromPaddleTransaction(env, sessionId);
+        if (fromPaddle?.email) {
+          email = fromPaddle.email;
+          forfait = fromPaddle.forfait;
+        }
+      } catch (e) {
+        console.log("activateFromPaddleTransaction", e);
+      }
+    }
 
     if (!email) {
       throw new Error(
