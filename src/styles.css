@@ -1436,6 +1436,12 @@ select {
   border-color: color-mix(in srgb, var(--ink) 35%, var(--line));
 }
 
+@media (max-width: 639px) {
+  .site-footer {
+    padding-bottom: max(1.5rem, calc(6.75rem + env(safe-area-inset-bottom)));
+  }
+}
+
 @media (min-width: 640px) {
   .site-footer__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
