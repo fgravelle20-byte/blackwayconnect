@@ -135,7 +135,7 @@ select {
 
 .brand__logo {
   display: block;
-  height: 2.15rem;
+  height: 3rem;
   width: auto;
   max-width: 15rem;
   object-fit: contain;
@@ -332,9 +332,8 @@ select {
     display: none !important;
   }
 
-  .brand__text {
-    display: grid;
-    gap: 0.12rem;
+  .brand__logo {
+    height: 3.5rem;
   }
 
   .brand {
@@ -1342,10 +1341,12 @@ summary:focus-visible {
   gap: 2.5rem 2rem;
 }
 
-.site-footer__brand .brand__name {
-  margin: 0 0 0.65rem;
-  font-size: 1.15rem;
-  letter-spacing: -0.02em;
+.site-footer__logo {
+  display: block;
+  width: 15rem;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 1rem;
 }
 
 .site-footer__tagline {
@@ -3308,6 +3309,14 @@ a.bw-agent__chip {
 .portal-login {
   max-width: 34rem;
   padding-block: clamp(2rem, 6vw, 4rem);
+}
+
+.portal-login__logo {
+  display: block;
+  width: 13.75rem;
+  max-width: 70%;
+  height: auto;
+  margin: 0 0 1.25rem;
 }
 
 .portal-login__form {

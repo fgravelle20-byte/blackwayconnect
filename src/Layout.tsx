@@ -100,11 +100,14 @@ export function Layout() {
           <Link to={path("/")} className="brand" aria-label={`${t.brand} home`}>
             <img
               className="brand__logo"
-              src="/logo.svg"
-              width={280}
-              height={48}
+              src="/brand/bwc-logo-480.png"
+              srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+              sizes="160px"
+              width={480}
+              height={215}
               alt={t.brand}
               decoding="async"
+              fetchPriority="high"
             />
             <span className="brand__text">
               <span className="brand__name">{t.brand}</span>
@@ -159,7 +162,17 @@ export function Layout() {
       <footer className="site-footer">
         <div className="shell site-footer__grid">
           <div className="site-footer__brand">
-            <p className="brand__name">{t.brand}</p>
+            <img
+              className="site-footer__logo"
+              src="/brand/bwc-logo-480.png"
+              srcSet="/brand/bwc-logo-480.png 480w, /brand/bwc-logo-960.png 960w"
+              sizes="240px"
+              width={480}
+              height={215}
+              alt={t.brand}
+              loading="lazy"
+              decoding="async"
+            />
             <p className="site-footer__tagline">{t.footer}</p>
             <a
               className="footer-qr"

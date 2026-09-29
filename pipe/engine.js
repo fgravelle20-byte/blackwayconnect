@@ -115,7 +115,7 @@ function emailShell({ preheader, hello, blurb, url, cta, fr }) {
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #2a2a2a;">
           <tr>
             <td style="background:#0a0a0a;padding:22px 28px;border-bottom:3px solid #e10600;">
-              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#e10600;">BlackWayConnect</p>
+              <img src="https://blackwayconnect.com/brand/bwc-logo-480.png" width="180" height="81" alt="BlackWayConnect" style="display:block;width:180px;height:auto;border:0;outline:none;color:#e10600;font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;">
               <p style="margin:6px 0 0;font-family:Georgia,Times,serif;font-size:22px;color:#ffffff;">${fr ? "On a gardé ta place." : "We kept your spot."}</p>
             </td>
           </tr>
