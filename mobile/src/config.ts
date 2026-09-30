@@ -1,6 +1,6 @@
 /** Live product URLs — Portail Client Master + outils (blackwayconnect.com). */
 
-export const SITE = "https://blackwayconnect.com";
+export const SITE = import.meta.env.DEV ? "http://127.0.0.1:5173" : "https://blackwayconnect.com";
 
 export const TRACK = {
   bw_source: "mobile_app",
@@ -24,7 +24,7 @@ export function withTrack(
 }
 
 export const URLS = {
-  portal: withTrack("/portail", { utm_campaign: "home_portal" }),
+  portal: withTrack("/portail", { embed: "1", utm_campaign: "home_portal" }),
   tools: withTrack("/outils", { utm_campaign: "tools" }),
   diagnostic: withTrack("/diagnostic"),
   compare: withTrack("/comparer"),
@@ -33,7 +33,7 @@ export const URLS = {
   checklist: withTrack("/outils/checklist"),
   roi: withTrack("/outils#roi"),
   growHub: withTrack("/grow-hub"),
-  /** Stripe Grow Hub — MUST open in external Safari / Chrome (Apple IAP). */
+  /** Grow Hub storefront — MUST open in external Safari (Apple IAP). Cash = Paddle /payer, not RevenueCat. */
   forfaits: withTrack("/forfaits", {
     utm_medium: "app_store",
     utm_campaign: "external_checkout",

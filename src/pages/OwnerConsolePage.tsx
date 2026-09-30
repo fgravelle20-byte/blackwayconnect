@@ -57,6 +57,19 @@ function scoreLabel(value?: string | number | null) {
   return Number.isFinite(n) ? String(Math.round(n)) : null;
 }
 
+/** HubSpot deal stages are not money. Only the Master DB Paddle ledger counts as cash. */
+function isPaddleCashLedger(data?: Overview | null) {
+  const payments = data?.sources?.payments || "";
+  return /paddle/i.test(payments) && !/hubspot/i.test(payments);
+}
+
+function dealCashLabel(deal: Deal, paddleCash: boolean) {
+  if (deal.dealstage === "3584700395") {
+    return paddleCash ? "Encaissé Paddle" : "Étape CRM — pas d'argent";
+  }
+  return deal.bw_livraison_statut || deal.bw_segment || "À traiter";
+}
+
 const sections = [
   {
     title: "Appels et ligne téléphonique",
@@ -71,9 +84,9 @@ const sections = [
   },
   {
     title: "Paiements",
-    state: "Partiel",
+    state: "Paddle",
     detail:
-      "Étapes Master CRM + fulfillment Paddle. Le solde bancaire se vérifie dans Paddle.",
+      "Caisse réelle : Paddle uniquement. HubSpot = contacts, pas de dollars. RevenueCat = ouvertures d'app. Le solde se vérifie dans Paddle.",
   },
   {
     title: "Automatisations",
@@ -122,7 +135,10 @@ export function OwnerConsolePage() {
     return () => controller.abort();
   }, [refresh]);
 
-  const paid = data?.deals.filter((deal) => deal.dealstage === "3584700395") || [];
+  const paddleCash = isPaddleCashLedger(data);
+  const paddlePaid = paddleCash
+    ? data?.deals.filter((deal) => deal.dealstage === "3584700395") || []
+    : [];
   const projects =
     data?.deals.filter((deal) => deal.bw_livraison_statut && deal.bw_livraison_statut !== "non_demarre") ||
     [];
@@ -139,6 +155,10 @@ export function OwnerConsolePage() {
             <p className="owner-console__eyebrow">ESPACE PROPRIÉTAIRE · PRIVÉ · TWIN TURBO</p>
             <h1>Tout ce qui entre. Tout ce qui avance.</h1>
             <p>Cockpit leads / deals / scores — Master CRM BlackWayConnect.</p>
+            <p className="owner-console__cash">
+              HubSpot ne rapporte pas d'argent. Caisse BlackWay = Paddle sur blackwayconnect.com/payer.
+              RevenueCat compte des ouvertures d'app, pas des payeurs.
+            </p>
           </div>
           <button onClick={() => setRefresh((value) => value + 1)} disabled={loading}>
             Actualiser
@@ -184,15 +204,15 @@ export function OwnerConsolePage() {
             <div className="owner-console__stats">
               <div>
                 <strong>{data.contacts.length}</strong>
-                <span>Contacts récents</span>
+                <span>Contacts CRM (pas des payeurs)</span>
               </div>
               <div>
                 <strong>{data.deals.length}</strong>
                 <span>Opportunités récentes</span>
               </div>
               <div>
-                <strong>{paid.length}</strong>
-                <span>Paiement reçu (CRM)</span>
+                <strong>{paddlePaid.length}</strong>
+                <span>{paddleCash ? "Encaissé Paddle" : "HubSpot n'encaisse pas"}</span>
               </div>
               <div>
                 <strong>{twin?.avgLeadScore ?? "—"}</strong>
@@ -211,7 +231,7 @@ export function OwnerConsolePage() {
             )}
 
             <section className="owner-console__panel">
-              <h2>Nouvelles entrées et clients</h2>
+              <h2>Nouvelles entrées CRM</h2>
               {data.contacts.length ? (
                 <div className="owner-console__list">
                   {data.contacts.map((contact) => {
@@ -251,7 +271,7 @@ export function OwnerConsolePage() {
             </section>
 
             <section className="owner-console__panel">
-              <h2>Ventes, paiements signalés et projets</h2>
+              <h2>Pipeline (le CRM n'est pas la caisse)</h2>
               {data.deals.length ? (
                 <div className="owner-console__list">
                   {data.deals.map((deal) => {
@@ -268,9 +288,7 @@ export function OwnerConsolePage() {
                         <div>
                           <span>
                             {sc ? `Score ${sc} · ` : ""}
-                            {deal.dealstage === "3584700395"
-                              ? "Paiement reçu (CRM)"
-                              : deal.bw_livraison_statut || deal.bw_segment || "À traiter"}
+                            {dealCashLabel(deal, paddleCash)}
                           </span>
                           <small>{date(deal.createdate || deal.hs_lastmodifieddate)}</small>
                         </div>

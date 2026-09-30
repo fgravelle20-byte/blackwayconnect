@@ -390,8 +390,8 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Paddle. Aucun mot de passe n’est requis."
-              : "On iPhone or desktop, enter the exact email used with Paddle. No password is required."}
+              ? "Entrez le courriel exact du reçu Paddle. Ouvrir l'application n'active pas un forfait."
+              : "Enter the exact email on the Paddle receipt. Opening the app does not activate a plan."}
           </p>
           <form
             className="portal-login__form"
@@ -416,24 +416,21 @@ export function PortalPage() {
           </form>
           {error ? <p className="form-status form-status--err">{error}</p> : null}
           <p className="portal-login__hint">
-            {fr
-              ? "Accès refusé? Vérifiez le courriel du reçu Paddle ou contactez serviceclient@blackwayconnect.com."
-              : "Access denied? Check the email on your Paddle receipt or contact serviceclient@blackwayconnect.com."}
-          </p>
-          <p className="portal-login__hint">
             {fr ? (
               <>
-                Pas encore client ? <Link to={path("/forfaits")}>Grow Hub web</Link>
+                Pas encore client ?{" "}
+                <Link to={path("/forfaits")}>Voir les forfaits Grow Hub</Link>
                 {" · "}
-                <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire (optionnel)</Link>
+                <Link to={path("/forfaits-cellulaire")}>Pack Cellulaire</Link>
                 {" · "}
                 <Link to={path("/modules-ia")}>Chatbot + Accueil vocal IA</Link>
               </>
             ) : (
               <>
-                Not a client yet? <Link to={path("/forfaits")}>Grow Hub web</Link>
+                Not a client yet?{" "}
+                <Link to={path("/forfaits")}>See Grow Hub plans</Link>
                 {" · "}
-                <Link to={path("/forfaits-cellulaire")}>Cellular Pack (optional)</Link>
+                <Link to={path("/forfaits-cellulaire")}>Cellular Pack</Link>
                 {" · "}
                 <Link to={path("/modules-ia")}>AI Chatbot + Voice reception</Link>
               </>

@@ -10,7 +10,7 @@ App native **iOS + Google Play** : shell métier qui charge le **vrai** Portail 
 | Bundle ID | `com.blackwayconnect.app` |
 | Nom | BlackWay Connect |
 | Portail | WebView → `https://blackwayconnect.com/portail` |
-| Forfaits / Stripe | **Navigateur externe** (Safari / Chrome) — règles Apple IAP |
+| Forfaits / Paddle | **Navigateur externe** (Safari / Chrome) — règles Apple IAP ; pas RevenueCat |
 | Contact | `serviceclient@blackwayconnect.com` · tel support (pas l’email Apple) |
 
 ## Compte Apple (interne — pas sur le site public)
@@ -118,7 +118,7 @@ Checklist détaillée : `../base44/APPLE_TESTFLIGHT_CHECKLIST.md`
 | **Accueil** | Brand + CTA Portail / Outils / Forfaits |
 | **Portail** | Claim email + iframe live `/portail` |
 | **Outils** | Tuiles → diagnostic, outils, comparer, relance, soumission, checklist, ROI, grow-hub |
-| **Forfaits** | Ouvre Safari/Chrome → `/forfaits` (Stripe externe) |
+| **Forfaits** | Ouvre Safari/Chrome → `/forfaits` (Paddle externe, pas d’IAP) |
 | **Contact** | `tel:` local / sans frais, `mailto:serviceclient@…`, pages contact + confidentialité |
 
 ---

@@ -681,11 +681,12 @@ function portalSessionShape(email, access, token, exp) {
   };
 }
 
+/** Portal unlock = paid Grow Hub / Pack Cellulaire — not HubSpot lifecycle alone.
+ *  App opens and CRM associations (RevenueCat "customers", deal contacts) are not payment. */
 function contactHasCustomerAccess(props) {
-  const life = String(props?.lifecyclestage || "").toLowerCase();
   const paid = String(props?.bw_forfait_paye || "").trim();
   const cell = String(props?.bw_forfait_cellulaire || "").trim();
-  return life === "customer" || !!paid || !!cell;
+  return !!paid || !!cell;
 }
 
 async function searchHsContact(env, propertyName, value) {

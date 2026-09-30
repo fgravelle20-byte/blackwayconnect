@@ -207,3 +207,58 @@ test("engine ignores HubSpot-era dumps and old form_web", () => {
 test("engine ignores won leads", () => {
   assert.equal(decide({ stage: "won", sla_due: "2000-01-01T00:00:00Z" }, Date.now()), null);
 });
+
+function mockHsContact(properties) {
+  const previousFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.includes("/crm/v3/objects/contacts/search")) {
+      return new Response(JSON.stringify({ results: [{ id: "c1", properties }] }), { status: 200 });
+    }
+    return new Response("{}", { status: 200 });
+  };
+  return () => {
+    globalThis.fetch = previousFetch;
+  };
+}
+
+async function claimByEmail(email) {
+  return pipe.fetch(new Request("https://api.blackwayconnect.com/portal/claim", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email }),
+  }), { HUBSPOT_TOKEN: "pat-test", BW_PORTAL_SECRET: "portal-secret" }, { waitUntil() {} });
+}
+
+test("email claim refuses HubSpot customer with no paid Grow Hub", async () => {
+  const restore = mockHsContact({
+    email: "lead@example.com",
+    lifecyclestage: "customer",
+  });
+  try {
+    const response = await claimByEmail("lead@example.com");
+    assert.equal(response.status, 401);
+    const body = await response.json();
+    assert.match(String(body.erreur), /paiement Paddle/i);
+  } finally {
+    restore();
+  }
+});
+
+test("email claim allows Grow Hub after Paddle even if HubSpot lifecycle is still lead", async () => {
+  const restore = mockHsContact({
+    email: "pay@example.com",
+    lifecyclestage: "lead",
+    bw_forfait_paye: "grow_hub_growth",
+  });
+  try {
+    const response = await claimByEmail("pay@example.com");
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.email, "pay@example.com");
+    assert.equal(body.forfait, "grow_hub_growth");
+    assert.ok(body.token);
+  } finally {
+    restore();
+  }
+});

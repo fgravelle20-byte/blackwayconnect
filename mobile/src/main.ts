@@ -19,17 +19,10 @@ const copy = {
     openPortal: "Ouvrir mon Portail",
     openTools: "Outils",
     openPlans: "Forfaits Grow Hub",
-    plansNote: "Checkout Stripe s’ouvre dans Safari / Chrome (règles Apple).",
-    trust1: "Stripe → HubSpot",
+    plansNote: "Le paiement Paddle s’ouvre dans Safari — l’app est gratuite, pas d’achat in-app.",
+    trust1: "Paddle → Portail",
     trust2: "Bilingue FR/EN",
     trust3: "Québec · Canada · US",
-    portalTitle: "Portail Client Master",
-    portalBody: "Entre avec le courriel du compte qui a payé Grow Hub.",
-    emailLabel: "Courriel du compte payeur",
-    emailPlaceholder: "toi@entreprise.com",
-    openDash: "Ouvrir mon dashboard",
-    openNoEmail: "Ouvrir sans courriel",
-    portalHint: "Dashboard mobile inclus avec Grow Hub.",
     toolsTitle: "Outils",
     toolsBody: "Liens réels vers le site — pas de coquille vide.",
     contactTitle: "Contact",
@@ -55,17 +48,10 @@ const copy = {
     openPortal: "Open my Portal",
     openTools: "Tools",
     openPlans: "Grow Hub plans",
-    plansNote: "Stripe checkout opens in Safari / Chrome (Apple rules).",
-    trust1: "Stripe → HubSpot",
+    plansNote: "Paddle checkout opens in Safari — this app is free, no in-app purchases.",
+    trust1: "Paddle → Portal",
     trust2: "Bilingual FR/EN",
     trust3: "Quebec · Canada · US",
-    portalTitle: "Client Master Portal",
-    portalBody: "Sign in with the email of the account that paid for Grow Hub.",
-    emailLabel: "Payer account email",
-    emailPlaceholder: "you@company.com",
-    openDash: "Open my dashboard",
-    openNoEmail: "Open without email",
-    portalHint: "Mobile dashboard included with Grow Hub.",
     toolsTitle: "Tools",
     toolsBody: "Real site deep links — no empty shell.",
     contactTitle: "Contact",
@@ -101,14 +87,10 @@ function t() {
   return copy[lang];
 }
 
-function portalUrl(email?: string): string {
-  if (email?.trim()) {
-    return withTrack("/portail", {
-      email: email.trim(),
-      utm_campaign: "portal_claim",
-    });
-  }
-  return URLS.portal;
+function portalUrl(opts: { embed?: boolean } = {}): string {
+  const extra: Record<string, string> = { utm_campaign: "home_portal" };
+  if (opts.embed !== false) extra.embed = "1";
+  return withTrack("/portail", extra);
 }
 
 function setTab(next: TabId) {
@@ -179,17 +161,6 @@ function render(): void {
               <button type="button" data-action="portal-reload">${c.reload}</button>
               <button type="button" data-action="portal-external">Safari</button>
             </div>
-          </div>
-          <div class="section" style="padding-bottom:.5rem">
-            <h2>${c.portalTitle}</h2>
-            <p>${c.portalBody}</p>
-            <form class="portal-form" id="portal-form">
-              <label for="portal-email">${c.emailLabel}</label>
-              <input id="portal-email" name="email" type="email" autocomplete="email" placeholder="${c.emailPlaceholder}" />
-              <button class="btn btn--primary" type="submit">${c.openDash}</button>
-              <button class="btn btn--ghost" type="button" data-action="portal-blank">${c.openNoEmail}</button>
-            </form>
-            <p class="note">${c.portalHint}</p>
           </div>
           <iframe
             id="portal-frame"
@@ -285,7 +256,6 @@ function bind(): void {
       if (action === "open-portal") setTab("portail");
       if (action === "open-tools") setTab("outils");
       if (action === "open-plans") void onForfaits();
-      if (action === "portal-blank") ensurePortalFrame(portalUrl());
       if (action === "portal-reload") {
         const frame = document.getElementById("portal-frame") as HTMLIFrameElement | null;
         if (frame?.src) {
@@ -293,17 +263,10 @@ function bind(): void {
           ensurePortalFrame(frame.src);
         }
       }
-      if (action === "portal-external") void openExternal(portalUrl());
+      if (action === "portal-external") void openExternal(portalUrl({ embed: false }));
       if (action === "open-contact-page") void openExternal(URLS.contact);
       if (action === "open-privacy") void openExternal(URLS.privacy);
     });
-  });
-
-  const form = document.getElementById("portal-form") as HTMLFormElement | null;
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = (document.getElementById("portal-email") as HTMLInputElement | null)?.value;
-    ensurePortalFrame(portalUrl(email));
   });
 
   document.querySelectorAll<HTMLButtonElement>("[data-tool]").forEach((btn) => {
