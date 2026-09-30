@@ -75,11 +75,33 @@ type Props = {
   compact?: boolean;
 };
 
+export function OfficeMap() {
+  const { lang } = useLang();
+  return (
+    <div className="office-map">
+      <iframe
+        title={lang === "fr" ? "Bureau BlackWayConnect — Google Maps" : "BlackWayConnect office — Google Maps"}
+        src={MAPS_EMBED_URL}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        allowFullScreen
+      />
+      <a className="office-map__open" href={MAPS_SEARCH_URL} target="_blank" rel="noopener noreferrer">
+        {lang === "fr" ? "Ouvrir dans Google Maps" : "Open in Google Maps"}
+      </a>
+    </div>
+  );
+}
+
+function EmailAddress({ address }: { address: string }) {
+  const [name, domain] = address.split("@");
+  return <>{name}<wbr />@{domain}</>;
+}
+
 export function ContactDetails({ showMap = true, compact = false }: Props) {
   const { lang } = useLang();
   const billing =
     lang === "fr" ? "Problèmes de facturation" : "Billing issues";
-  const mapsLabel = lang === "fr" ? "Ouvrir dans Google Maps" : "Open in Google Maps";
   const socialLabel = lang === "fr" ? "Réseaux sociaux" : "Social networks";
 
   return (
@@ -116,7 +138,7 @@ export function ContactDetails({ showMap = true, compact = false }: Props) {
         <li>
           <IconMail className="contact-lines__icon" />
           <div>
-            <a href={`mailto:${EMAILS.service}`}>{EMAILS.service}</a>
+            <a href={`mailto:${EMAILS.service}`}><EmailAddress address={EMAILS.service} /></a>
             <span className="contact-lines__sub">
               {lang === "fr" ? "Service client" : "Client service"}
             </span>
@@ -125,7 +147,7 @@ export function ContactDetails({ showMap = true, compact = false }: Props) {
         <li>
           <IconBill className="contact-lines__icon" />
           <div>
-            <a href={`mailto:${EMAILS.accounting}`}>{EMAILS.accounting}</a>
+            <a href={`mailto:${EMAILS.accounting}`}><EmailAddress address={EMAILS.accounting} /></a>
             <span className="contact-lines__sub">{billing}</span>
           </div>
         </li>
@@ -170,20 +192,7 @@ export function ContactDetails({ showMap = true, compact = false }: Props) {
         </a>
       </div>
 
-      {showMap ? (
-        <div className="office-map">
-          <iframe
-            title={lang === "fr" ? "Bureau BlackWayConnect — Google Maps" : "BlackWayConnect office — Google Maps"}
-            src={MAPS_EMBED_URL}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            allowFullScreen
-          />
-          <a className="office-map__open" href={MAPS_SEARCH_URL} target="_blank" rel="noopener noreferrer">
-            {mapsLabel}
-          </a>
-        </div>
-      ) : null}
+      {showMap ? <OfficeMap /> : null}
     </div>
   );
 }

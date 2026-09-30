@@ -4,7 +4,7 @@ import { useLang } from "./i18n";
 import { APP_QR_PATH, footerAppQrUrl } from "./appConfig";
 import { scoreCopy } from "./scoreCopy";
 import { AiSecretary } from "./AiSecretary";
-import { ContactDetails } from "./ContactDetails";
+import { ContactDetails, OfficeMap } from "./ContactDetails";
 import { EMAILS, PHONES } from "./siteContact";
 
 export function Layout() {
@@ -216,21 +216,26 @@ export function Layout() {
               <Link to={path("/equipe")}>{t.nav.team}</Link>
               <Link to={path("/faq")}>{t.nav.faq}</Link>
               <Link to={path("/contact")}>{t.nav.contact}</Link>
-              <Link to={path("/confidentialite")}>{t.privacy}</Link>
-              <Link to={path("/conditions")}>{t.terms}</Link>
-              <Link to={path("/remboursement")}>{t.refund}</Link>
             </nav>
           </div>
 
+        </div>
+        <div className="shell site-footer__office">
           <div className="site-footer__contact">
             <p className="site-footer__label">
               {lang === "fr" ? "Bureau & contact" : "Office & contact"}
             </p>
-            <ContactDetails compact />
+            <ContactDetails compact showMap={false} />
           </div>
+          <OfficeMap />
         </div>
         <div className="shell site-footer__bottom">
           <p>© {new Date().getFullYear()} {t.brand}</p>
+          <nav className="site-footer__legal" aria-label={lang === "fr" ? "Informations légales" : "Legal information"}>
+            <Link to={path("/confidentialite")}>{lang === "fr" ? "Confidentialité" : "Privacy"}</Link>
+            <Link to={path("/conditions")}>{lang === "fr" ? "Conditions" : "Terms"}</Link>
+            <Link to={path("/remboursement")}>{lang === "fr" ? "Remboursement" : "Refunds"}</Link>
+          </nav>
           <p>{lang === "fr" ? "Né au Québec. Conçu pour le monde." : "Born in Québec. Built for the world."}</p>
         </div>
       </footer>
@@ -238,4 +243,3 @@ export function Layout() {
     </>
   );
 }
-

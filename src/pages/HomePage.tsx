@@ -58,7 +58,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <>
+    <div className="home-page">
       <Hero />
 
       <section className="ops-strip" aria-label={lang === "fr" ? "Systèmes en ligne" : "Live systems"}>
@@ -229,6 +229,6 @@ export function HomePage() {
           </aside>
         </div>
       </section>
-    </>
+    </div>
   );
 }

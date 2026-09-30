@@ -18,18 +18,20 @@ export function Hero() {
         poster="/hero-poster.jpg"
         stills={["/hero-poster.jpg", "/office-team.jpg", "/office-morning.jpg"]}
       />
-      <div className="shell hero__content">
-        <h1 id="hero-brand" className="display">
-          {t.heroTitle}
-        </h1>
-        <p className="lede">{t.heroBody}</p>
-        <div className="cta-row">
-          <Link className="btn btn--primary" to={path("/forfaits-growth")}>
-            {lang === "fr" ? "Commencer avec Growth — 349 $/mois" : "Start with Growth — $349/mo"}
-          </Link>
-          <Link className="btn btn--ghost" to={howPath}>
-            {t.nav.how}
-          </Link>
+      <div className="shell hero__inner">
+        <div className="hero__content">
+          <h1 id="hero-brand" className="display">
+            {t.heroTitle}
+          </h1>
+          <p className="lede">{t.heroBody}</p>
+          <div className="cta-row">
+            <Link className="btn btn--primary" to={path("/forfaits-growth")}>
+              {lang === "fr" ? "Commencer avec Growth — 349 $/mois" : "Start with Growth — $349/mo"}
+            </Link>
+            <Link className="btn btn--ghost" to={howPath}>
+              {t.nav.how}
+            </Link>
+          </div>
         </div>
       </div>
     </section>
