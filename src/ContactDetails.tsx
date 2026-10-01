@@ -75,6 +75,11 @@ type Props = {
   compact?: boolean;
 };
 
+function EmailLabel({ email }: { email: string }) {
+  const [name, domain] = email.split("@");
+  return <>{name}@<wbr />{domain}</>;
+}
+
 export function ContactDetails({ showMap = true, compact = false }: Props) {
   const { lang } = useLang();
   const billing =
@@ -116,7 +121,7 @@ export function ContactDetails({ showMap = true, compact = false }: Props) {
         <li>
           <IconMail className="contact-lines__icon" />
           <div>
-            <a href={`mailto:${EMAILS.service}`}>{EMAILS.service}</a>
+            <a href={`mailto:${EMAILS.service}`}><EmailLabel email={EMAILS.service} /></a>
             <span className="contact-lines__sub">
               {lang === "fr" ? "Service client" : "Client service"}
             </span>
@@ -125,7 +130,7 @@ export function ContactDetails({ showMap = true, compact = false }: Props) {
         <li>
           <IconBill className="contact-lines__icon" />
           <div>
-            <a href={`mailto:${EMAILS.accounting}`}>{EMAILS.accounting}</a>
+            <a href={`mailto:${EMAILS.accounting}`}><EmailLabel email={EMAILS.accounting} /></a>
             <span className="contact-lines__sub">{billing}</span>
           </div>
         </li>
