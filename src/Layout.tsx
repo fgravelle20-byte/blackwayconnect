@@ -1,5 +1,6 @@
+import { PageLoading } from "./PageIntro";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useLang } from "./i18n";
 import { APP_QR_PATH, footerAppQrUrl } from "./appConfig";
 import { scoreCopy } from "./scoreCopy";
@@ -157,7 +158,7 @@ export function Layout() {
         </div>
       </header>
       <main>
-        <Outlet />
+        <Suspense fallback={<PageLoading />}><Outlet /></Suspense>
       </main>
       <footer className="site-footer">
         <div className="shell site-footer__grid">

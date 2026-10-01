@@ -1,3 +1,4 @@
+import { PageLoading } from "./PageIntro";
 import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Layout } from "./Layout";
@@ -140,7 +141,7 @@ export default function App() {
       <LangSync />
       <TrackingBoot />
       <Seo />
-      <Suspense fallback={null}>
+      <Suspense fallback={<PageLoading />}>
       <Routes>
         <Route path="/controle" element={<OwnerConsolePage />} />
         <Route path="/controle/app" element={<OwnerDashboardPage />} />

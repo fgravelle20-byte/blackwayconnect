@@ -1,3 +1,4 @@
+import { PageIntro } from "../PageIntro";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { ConvertStickyBar } from "../ConvertStickyBar";
@@ -29,7 +30,7 @@ export function GrowthLandingPage() {
     <>
       <section className="section section--page section--growth-landing">
         <div className="shell">
-          <div className="page-hero">
+          <PageIntro image="/office-ops.jpg">
             <p className="eyebrow">
               {fr ? "Essaie BlackWay · Grow Hub Growth" : "Try BlackWay · Grow Hub Growth"}
             </p>
@@ -69,7 +70,7 @@ export function GrowthLandingPage() {
                 ? " · Après paiement → Portail inclus."
                 : " · After payment → Portal included."}
             </p>
-          </div>
+          </PageIntro>
 
           <ul className="lede" style={{ maxWidth: "36rem", marginTop: "2rem", paddingLeft: "1.2rem" }}>
             <li>{fr ? "Pipeline + CRM BlackWay branché — prochaine action claire" : "Pipeline + BlackWay CRM — clear next action"}</li>

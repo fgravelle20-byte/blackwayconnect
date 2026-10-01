@@ -1,3 +1,4 @@
+import { PageIntro } from "../PageIntro";
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useLang } from "../i18n";
@@ -43,11 +44,11 @@ export function ServicesPage() {
   return (
     <section className="section section--page">
       <div className="shell">
-        <div className="page-hero">
+        <PageIntro image="/office-team.jpg">
           <p className="eyebrow">{t.nav.services}</p>
           <h1 className="display page-hero__title">{t.servicesTitle}</h1>
           <p className="lede">{t.servicesBody}</p>
-        </div>
+        </PageIntro>
         <div className="service-rail">
           {t.services.map((s, i) => (
             <article className="service-item" key={s.title}>
@@ -74,7 +75,7 @@ export function PricingPage() {
     <>
       <section className="section section--page section--with-convert-bar">
         <div className="shell">
-          <div className="page-hero">
+          <PageIntro image="/office-ops.jpg">
             <p className="eyebrow">{fr ? "Revenu #1 · Grow Hub Web" : "Revenue #1 · Grow Hub Web"}</p>
             <h1 className="display page-hero__title">
               {fr ? "Choisis. Abonne. Portail ouvert." : "Pick. Subscribe. Portal opens."}
@@ -120,7 +121,7 @@ export function PricingPage() {
                   : "AI modules: Chatbot from $99 · Voice reception from $149 →"}
               </Link>
             </p>
-          </div>
+          </PageIntro>
           <div className="plan-rail">
             {t.plans.map((plan) => (
               <article
@@ -295,11 +296,11 @@ export function FaqPage() {
   return (
     <section className="section section--page">
       <div className="shell">
-        <div className="page-hero">
+        <PageIntro image="/office-morning.jpg">
           <p className="eyebrow">{t.nav.faq}</p>
           <h1 className="display page-hero__title">{t.faqTitle}</h1>
           <p className="lede">{t.faqBody}</p>
-        </div>
+        </PageIntro>
         <div className="faq-list faq-list--page">
           {t.faq.map((item) => (
             <details className="faq-item" key={item.q}>

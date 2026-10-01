@@ -1,13 +1,13 @@
 .how-page { padding-bottom: 4rem; }
 .how-intro { display: grid; gap: 2rem; padding-block: clamp(2.5rem, 6vw, 5rem); align-items: center; }
 .how-intro__copy { min-width: 0; }
-.how-intro h1 { font-size: clamp(2.25rem, 4.5vw, 4rem); line-height: 1.06; letter-spacing: -0.04em; margin: 0.75rem 0 1.5rem; max-width: 13ch; }
+.how-intro h1 { font-size: var(--size-title); line-height: 1.06; letter-spacing: -0.04em; margin: 0.75rem 0 1.5rem; max-width: 13ch; }
 .how-intro .lede { font-size: 1.0625rem; line-height: 1.65; max-width: 37rem; }
 .how-intro__image { margin: 0; min-width: 0; }
 .how-intro__image img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 0.65rem; }
 .how-intro__image figcaption { font-size: 0.875rem; color: #bcbcc3; margin-top: 0.85rem; }
 .how-section-head { max-width: 48rem; margin-bottom: 2rem; }
-.how-page h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 1rem; }
+.how-page h2 { font-size: var(--size-heading); line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 1rem; }
 .how-page h3 { font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; margin: 0.8rem 0 1rem; letter-spacing: -0.02em; }
 .how-page p { overflow-wrap: anywhere; }
 .how-section-head > p:not(.eyebrow), .how-process__copy > p, .how-onboarding li > p, .how-final p { color: #c8c8cf; line-height: 1.65; }
