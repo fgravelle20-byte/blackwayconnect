@@ -20,6 +20,7 @@ const TermsPage = lazy(() => loadOther().then((m) => ({ default: m.TermsPage }))
 const RefundPage = lazy(() => loadOther().then((m) => ({ default: m.RefundPage })));
 const DiagnosticPage = lazy(() => import("./pages/DiagnosticPage").then((m) => ({ default: m.DiagnosticPage })));
 const ToolsPage = lazy(() => import("./pages/ToolsPage").then((m) => ({ default: m.ToolsPage })));
+const ConnectionsPage = lazy(() => import("./pages/ConnectionsPage").then((m) => ({ default: m.ConnectionsPage })));
 const PortalPage = lazy(() => import("./pages/PortalPage").then((m) => ({ default: m.PortalPage })));
 const PortalCapturePage = lazy(() => import("./pages/PortalCapturePage").then((m) => ({ default: m.PortalCapturePage })));
 const PortalCellToolPage = lazy(() => import("./pages/PortalCellToolPage").then((m) => ({ default: m.PortalCellToolPage })));
@@ -99,6 +100,8 @@ function routes(prefix = "") {
       <Route path="diagnostic" element={<DiagnosticPage />} />
       <Route path="score" element={<Navigate to="diagnostic" replace />} />
       <Route path="portail" element={<PortalPage />} />
+      <Route path="portail/connexions" element={<ConnectionsPage />} />
+      <Route path="portal/connections" element={<ConnectionsPage />} />
       <Route path="portail/claim" element={<PortalPage />} />
       <Route path="portail/capture" element={<PortalCapturePage />} />
       <Route path="portail/pipeline" element={<PortalCellToolPage />} />
