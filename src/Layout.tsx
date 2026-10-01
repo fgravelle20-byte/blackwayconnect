@@ -216,21 +216,22 @@ export function Layout() {
               <Link to={path("/equipe")}>{t.nav.team}</Link>
               <Link to={path("/faq")}>{t.nav.faq}</Link>
               <Link to={path("/contact")}>{t.nav.contact}</Link>
-              <Link to={path("/confidentialite")}>{t.privacy}</Link>
-              <Link to={path("/conditions")}>{t.terms}</Link>
-              <Link to={path("/remboursement")}>{t.refund}</Link>
             </nav>
           </div>
-
-          <div className="site-footer__contact">
-            <p className="site-footer__label">
-              {lang === "fr" ? "Bureau & contact" : "Office & contact"}
-            </p>
-            <ContactDetails compact />
-          </div>
+        </div>
+        <div className="shell site-footer__contact">
+          <p className="site-footer__label">
+            {lang === "fr" ? "Bureau & contact" : "Office & contact"}
+          </p>
+          <ContactDetails compact />
         </div>
         <div className="shell site-footer__bottom">
           <p>© {new Date().getFullYear()} {t.brand}</p>
+          <nav className="site-footer__legal" aria-label={lang === "fr" ? "Informations légales" : "Legal information"}>
+            <Link to={path("/confidentialite")}>{lang === "fr" ? "Confidentialité" : "Privacy"}</Link>
+            <Link to={path("/conditions")}>{lang === "fr" ? "Conditions" : "Terms of service"}</Link>
+            <Link to={path("/remboursement")}>{lang === "fr" ? "Remboursement" : "Refund policy"}</Link>
+          </nav>
           <p>{lang === "fr" ? "Né au Québec. Conçu pour le monde." : "Born in Québec. Built for the world."}</p>
         </div>
       </footer>
