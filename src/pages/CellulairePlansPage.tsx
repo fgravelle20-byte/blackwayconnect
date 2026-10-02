@@ -1,3 +1,4 @@
+import { PageIntro } from "../PageIntro";
 import { Link } from "react-router-dom";
 import {
   CELLULAIRE_ORDER,
@@ -22,7 +23,7 @@ export function CellulairePlansPage() {
   return (
     <section className="section section--page section--app-plans">
       <div className="shell">
-        <div className="page-hero">
+        <PageIntro image="/office-morning.jpg">
           <p className="eyebrow">
             {fr
               ? "Revenu #2 optionnel · Pack Cellulaire / Terrain"
@@ -46,7 +47,7 @@ export function CellulairePlansPage() {
               {fr ? "Dashboard mobile (inclus)" : "Mobile dashboard (included)"}
             </Link>
           </div>
-        </div>
+        </PageIntro>
 
         <p className="form-status" role="status">
           {anyLive

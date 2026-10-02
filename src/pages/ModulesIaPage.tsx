@@ -1,3 +1,4 @@
+import { PageIntro } from "../PageIntro";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { ContactForm } from "../ContactForm";
@@ -55,7 +56,7 @@ export function ModulesIaPage() {
   return (
     <section className="section section--page section--app-plans">
       <div className="shell">
-        <div className="page-hero">
+        <PageIntro image="/office-team.jpg">
           <p className="eyebrow">{fr ? "Modules IA · abonnement mensuel" : "AI modules · monthly subscription"}</p>
           <h1 className="display page-hero__title">
             {fr
@@ -75,7 +76,7 @@ export function ModulesIaPage() {
               {fr ? "Pack Cellulaire" : "Cellular Pack"}
             </Link>
           </div>
-        </div>
+        </PageIntro>
 
         <div id="chatbot" className="app-plans-lead">
           <h2 className="display">{fr ? "Chatbot IA" : "AI Chatbot"}</h2>
