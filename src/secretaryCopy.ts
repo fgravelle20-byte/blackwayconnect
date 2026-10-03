@@ -31,7 +31,7 @@ export const secretaryCopy: Record<Lang, SecretaryCopy> = {
     subtitle: "Conseiller revenu · disponible 24h/24",
     badge: "24h/24",
     greeting:
-      "Bonjour — je suis la secrétaire IA BlackWayConnect, disponible 24h/24. Forfaits Grow Hub, diagnostic Leak Score, ou prise de coordonnées : comment puis-je vous aider ?",
+      "Bonjour — je suis la secrétaire IA BlackWayConnect, disponible 24h/24. Forfaits Grow Hub, diagnostic commercial, ou prise de coordonnées : comment puis-je vous aider ?",
     placeholder: "Votre question…",
     send: "Envoyer",
     close: "Fermer le chat",

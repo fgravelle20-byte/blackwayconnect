@@ -9,7 +9,7 @@ export function AppCta() {
   return (
     <section className="section" id="app" aria-labelledby="app-title">
       <div className="shell app-cta">
-        <div className="section__head" style={{ marginBottom: 0 }}>
+        <div className="section__head">
           <p className="eyebrow">{t.appEyebrow}</p>
           <h2 id="app-title">{t.appTitle}</h2>
           <p>{t.appBody}</p>

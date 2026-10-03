@@ -68,7 +68,7 @@ export function SoumissionPage() {
   const payIsBlackWay = /blackwayconnect\.com|\/payer\b/i.test(payUrl);
 
   const proposal = useMemo(() => {
-    const shop = vendorCompany.trim() || (fr ? "[Ton entreprise]" : "[Your company]");
+    const shop = vendorCompany.trim() || (fr ? "[Votre entreprise]" : "[Your company]");
     const who = client.trim() || (fr ? "[Client]" : "[Client]");
     const svc = service.trim() || (fr ? "[Service]" : "[Service]");
     const amt = amount.toLocaleString(fr ? "fr-CA" : "en-CA");
@@ -85,7 +85,7 @@ export function SoumissionPage() {
         `Validité : ${delay}`,
         extra ? `Notes : ${extra}` : null,
         ``,
-        pay ? `Paiement : ${pay}` : `Paiement : (ajoute ton lien Interac / facture / Paddle)`,
+        pay ? `Paiement : ${pay}` : "Paiement : (ajoute votre lien Interac / facture / Paddle)",
         ``,
         sign ? `— ${shop} · ${sign}` : `— ${shop}`,
       ]
@@ -180,9 +180,9 @@ export function SoumissionPage() {
     <section className="section section--page section--tools">
       <div className="shell">
         <div className="page-hero no-print">
-          <p className="eyebrow">{fr ? "Master Tools · Soumission" : "Master Tools · Quote"}</p>
+          <p className="eyebrow">{fr ? "Outils de travail · Soumission" : "Master Tools · Quote"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Devis à TON nom — imprimable en 2 minutes." : "Quote in YOUR name — printable in 2 minutes."}
+            {fr ? "Devis à votre nom — imprimable en 2 minutes." : "Quote in YOUR name — printable in 2 minutes."}
           </h1>
           <p className="lede">
             {fr
@@ -194,15 +194,15 @@ export function SoumissionPage() {
         <div className="roi-grid">
           <form className="roi-form no-print" onSubmit={(e) => e.preventDefault()}>
             <label>
-              {fr ? "Ton entreprise" : "Your company"}
+              {fr ? "Votre entreprise" : "Your company"}
               <input value={vendorCompany} onChange={(e) => setVendorCompany(e.target.value)} />
             </label>
             <label>
-              {fr ? "Ton courriel" : "Your email"}
+              {fr ? "Votre courriel" : "Your email"}
               <input value={vendorEmail} onChange={(e) => setVendorEmail(e.target.value)} />
             </label>
             <label>
-              {fr ? "Ton téléphone" : "Your phone"}
+              {fr ? "Votre téléphone" : "Your phone"}
               <input value={vendorPhone} onChange={(e) => setVendorPhone(e.target.value)} />
             </label>
             <label>
@@ -226,7 +226,7 @@ export function SoumissionPage() {
               <input value={notes} onChange={(e) => setNotes(e.target.value)} />
             </label>
             <label>
-              {fr ? "Ton lien de paiement" : "Your payment link"}
+              {fr ? "Votre lien de paiement" : "Your payment link"}
               <input
                 value={payUrl}
                 onChange={(e) => setPayUrl(e.target.value)}
@@ -236,7 +236,7 @@ export function SoumissionPage() {
             {payIsBlackWay ? (
               <p className="form-status form-status--err">
                 {fr
-                  ? "Ce lien est le checkout BlackWay. Ton client doit payer TON lien (Interac, facture, ton Paddle/Stripe)."
+                  ? "Ce lien sert à votre abonnement BlackWayConnect. Indiquez plutôt les instructions de paiement de votre entreprise."
                   : "That's the BlackWay checkout. Your customer must pay YOUR link (e-transfer, invoice, your Paddle/Stripe)."}
               </p>
             ) : null}
@@ -245,7 +245,7 @@ export function SoumissionPage() {
           <aside className="roi-result quote-print-root">
             <p className="roi-result__label no-print">{fr ? "Aperçu soumission" : "Quote preview"}</p>
             <pre className="quote-preview">{proposal}</pre>
-            <div className="cta-row no-print" style={{ marginTop: "1.1rem" }}>
+            <div className="cta-row no-print">
               <button type="button" className="btn btn--ghost" onClick={copyProposal}>
                 {copied ? (fr ? "Copié" : "Copied") : fr ? "Copier le texte" : "Copy text"}
               </button>
@@ -307,7 +307,7 @@ export function SoumissionPage() {
           )}
         </form>
 
-        <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
+        <div className="cta-row no-print">
           <a
             className="btn btn--ghost"
             href={growthHref}
@@ -315,10 +315,10 @@ export function SoumissionPage() {
             target="_blank"
             onClick={() => trackInitiateCheckout({ plan: FEATURED_PLAN, value: PLANS[FEATURED_PLAN].amountCad })}
           >
-            {fr ? "BlackWay Growth (toi, pas ton client)" : "BlackWay Growth (you, not your customer)"}
+            {fr ? "BlackWay Growth (vous, pas votre client)" : "BlackWay Growth (you, not your customer)"}
           </a>
           <Link className="btn btn--ghost" to={path("/outils")}>
-            {fr ? "← Master Tools" : "← Master Tools"}
+            {fr ? "← Outils de travail" : "← Master Tools"}
           </Link>
         </div>
       </div>

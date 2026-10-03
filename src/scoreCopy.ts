@@ -52,8 +52,8 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     of: "sur",
     resultEyebrow: "Votre score",
     scoreLabel: "pression / 100",
-    leakLow: "Pression légère — Twin Turbo Lock : industrialiser sans chaos.",
-    leakMid: "Pression réelle — Turbo Qualité : leads qui meurent entre demande et relance.",
+    leakLow: "Pression légère — Structure de suivi : industrialiser sans chaos.",
+    leakMid: "Pression réelle — Turbo Qualité : prospects qui meurent entre demande et relance.",
     leakHigh: "Pression critique — Twin Turbo Full : le revenu s’évapore avant le CRM.",
     why: "Pourquoi ce moteur",
     saveTitle: "Gardez votre diagnostic Twin Turbo",
@@ -74,7 +74,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     questions: [
       {
         id: "volume",
-        prompt: "Combien de leads entrent par mois ?",
+        prompt: "Combien de prospects entrent par mois ?",
         options: [
           { id: "v1", label: "Moins de 20", leak: 8 },
           { id: "v2", label: "20 à 80", leak: 14 },
@@ -97,7 +97,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
         prompt: "Où vivent vraiment vos opportunités ?",
         options: [
           { id: "c1", label: "CRM unique, à jour", leak: 4 },
-          { id: "c2", label: "CRM + tableurs / boîtes courriel", leak: 14 },
+          { id: "c2", label: "CRM + tableurs / boîvos courriel", leak: 14 },
           { id: "c3", label: "Surtout courriels et notes", leak: 20 },
           { id: "c4", label: "Nulle part de façon fiable", leak: 24 },
         ],
@@ -109,12 +109,12 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
           { id: "b1", label: "Un seul marché / une langue", leak: 6 },
           { id: "b2", label: "Deux langues, parcours partiels", leak: 14 },
           { id: "b3", label: "Deux marchés, outils séparés", leak: 18 },
-          { id: "b4", label: "On improvise à chaque lead", leak: 22 },
+          { id: "b4", label: "On improvise à chaque prospect", leak: 22 },
         ],
       },
       {
-        id: "close",
-        prompt: "Taux de conclusion approximatif (lead → vente) ?",
+        id: "conclusion des ventes",
+        prompt: "Taux de conclusion approximatif (prospect → vente) ?",
         options: [
           { id: "cl1", label: "20 %+", leak: 5 },
           { id: "cl2", label: "10–20 %", leak: 12 },
@@ -135,27 +135,27 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     ],
     diagnoses: {
       low: [
-        "Base saine — Twin Turbo Lock : standardiser avant d’ajouter du volume.",
-        "Priorité : pipeline unique, score CRM et récupération paiements.",
+        "Base saine — Structure de suivi : standardiser avant d’ajouter du volume.",
+        "Priorité : suivi commercial unique, score CRM et récupération paiements.",
       ],
       mid: [
-        "Turbo Qualité en retrait : leads chauds qui refroidissent entre formulaire et relance.",
+        "Des prospects intéressés attendent trop longtemps entre leur demande et votre relance.",
         "Devis / paiements sans remontée CRM = revenu invisible.",
       ],
       high: [
-        "Twin Turbo Full : volume et close dépassent le stack — chaque jour coûte du cash.",
+        "Votre volume de demandes et vos ventes dépassent la capacité de vos outils actuels. Chaque délai peut entraîner une perte de revenus.",
         "FR/EN, CRM éclaté et paiements non suivis multiplient les fuites.",
       ],
     },
     planWhy: {
-      grow_hub_spark: "Spark pour valider le stack sans surinvestir — pipeline + secrétaire IA.",
+      grow_hub_spark: "Spark pour valider le ensemble d’outils sans surinvestir — suivi commercial + secrétaire IA.",
       grow_hub_launch:
-        "Launch = Twin Turbo Lock : structure les premières demandes sans surconstruire.",
+        "Launch = Structure de suivi : structure les premières demandes sans surconstruire.",
       grow_hub_growth:
-        "Growth = Twin Turbo Full Performance : score, relances, soumissions, paiements → CRM BlackWay.",
+        "Growth = Suivi commercial complet : score, relances, soumissions, paiements → CRM BlackWay.",
       grow_hub_scale:
-        "Scale = Twin Turbo Max : multi-équipes / marchés / langues, une provenance revenu.",
-      grow_hub_command: "Command quand la fuite exige ops CRM + acquisition gérée.",
+        "Scale = Suivi commercial multiéquipes : multi-équipes / marchés / langues, une suivi des revenus.",
+      grow_hub_command: "Command quand la fuite exige opérations CRM + acquisition gérée.",
       grow_hub_partner: "Partner pour remplacer un mandat agence par plateforme + exécution.",
     },
   },
@@ -170,7 +170,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     of: "of",
     resultEyebrow: "Your score",
     scoreLabel: "pressure / 100",
-    leakLow: "Light pressure — Twin Turbo Lock: industrialize without chaos.",
+    leakLow: "Light pressure — Structure de suivi: industrialize without chaos.",
     leakMid: "Real pressure — Quality Turbo: leads die between inquiry and follow-up.",
     leakHigh: "Critical pressure — Twin Turbo Full: revenue evaporates before the CRM.",
     why: "Why this engine",
@@ -253,7 +253,7 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     ],
     diagnoses: {
       low: [
-        "Sound base — Twin Turbo Lock: standardize before adding volume.",
+        "Sound base — Structure de suivi: standardize before adding volume.",
         "Priority: one pipeline, CRM score, payment recovery.",
       ],
       mid: [
@@ -267,11 +267,11 @@ export const scoreCopy: Record<Lang, ScoreCopy> = {
     },
     planWhy: {
       grow_hub_spark: "Spark to prove the stack without over-investing — pipeline + AI secretary.",
-      grow_hub_launch: "Launch = Twin Turbo Lock: early demand without overbuilding.",
+      grow_hub_launch: "Launch = Structure de suivi: early demand without overbuilding.",
       grow_hub_growth:
-        "Growth = Twin Turbo Full Performance: scoring, follow-ups, quotes, payments → BlackWay CRM.",
+        "Growth = Suivi commercial complet: scoring, follow-ups, quotes, payments → BlackWay CRM.",
       grow_hub_scale:
-        "Scale = Twin Turbo Max: multi-team / market / language, one revenue provenance.",
+        "Scale = Suivi commercial multiéquipes: multi-team / market / language, one revenue provenance.",
       grow_hub_command: "Command when leakage needs CRM ops + managed acquisition.",
       grow_hub_partner: "Partner to replace an agency retainer with platform + execution.",
     },

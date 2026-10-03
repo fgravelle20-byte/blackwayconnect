@@ -102,32 +102,32 @@ export function RelancePanierPage() {
     <section className="section section--page section--tools">
       <div className="shell">
         <div className="page-hero">
-          <p className="eyebrow">{fr ? "Master Tools · Relance panier" : "Master Tools · Cart recovery"}</p>
+          <p className="eyebrow">{fr ? "Outils de travail · Relance panier" : "Master Tools · Cart recovery"}</p>
           <h1 className="display page-hero__title">
             {fr ? "2 minutes : le courriel de relance, prêt à coller." : "2 minutes: the follow-up email, ready to paste."}
           </h1>
           <p className="lede">
             {fr
-              ? "Tes clients, ton nom, TON lien de paiement. Copie HTML ou texte — colle dans Gmail. On n’envoie rien à leur place."
+              ? "Préparez votre relance avec le nom de votre entreprise et vos instructions de paiement. Copiez le message au format HTML ou texte, puis envoyez-le depuis votre messagerie."
               : "Your clients, your name, YOUR payment link. Copy HTML or text — paste into Gmail. We don’t send for you."}
           </p>
         </div>
 
-        <div className="roi-form" style={{ marginBottom: "1.5rem" }}>
+        <div className="roi-form">
           <label>
-            {fr ? "Ton prénom (signature)" : "Your first name (sign-off)"}
+            {fr ? "Votre prénom (signature)" : "Your first name (sign-off)"}
             <input value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
           </label>
           <label>
-            {fr ? "Ton entreprise" : "Your company"}
+            {fr ? "Votre entreprise" : "Your company"}
             <input value={vendorCompany} onChange={(e) => setVendorCompany(e.target.value)} />
           </label>
           <label>
-            {fr ? "Ton téléphone" : "Your phone"}
+            {fr ? "Votre téléphone" : "Your phone"}
             <input value={vendorPhone} onChange={(e) => setVendorPhone(e.target.value)} inputMode="tel" />
           </label>
           <label>
-            {fr ? "Ton courriel" : "Your email"}
+            {fr ? "Votre courriel" : "Your email"}
             <input value={vendorEmail} onChange={(e) => setVendorEmail(e.target.value)} type="email" />
           </label>
         </div>
@@ -168,17 +168,17 @@ export function RelancePanierPage() {
                 </div>
                 <div className="field">
                   <label htmlFor={`rp-pay-${row.id}`}>
-                    {fr ? "Ton lien ou instruction de paiement" : "Your payment link or instruction"}
+                    {fr ? "Votre lien ou instruction de paiement" : "Your payment link or instruction"}
                   </label>
                   <input
                     id={`rp-pay-${row.id}`}
                     value={row.payUrl}
                     onChange={(e) => patch(row.id, { payUrl: e.target.value })}
-                    placeholder={fr ? "https://… ou Interac à paiement@tonshop.ca" : "https://… or e-transfer to pay@yourshop.ca"}
+                    placeholder={fr ? "https://… ou Interac à paiement@votreentreprise.ca" : "https://… or e-transfer to pay@yourshop.ca"}
                   />
                 </div>
               </div>
-              <div className="cta-row no-print" style={{ marginTop: "1rem" }}>
+              <div className="cta-row no-print">
                 <button type="button" className="btn btn--primary" onClick={() => copyRow(row, "html")}>
                   {copiedId === `${row.id}-html` ? (fr ? "Copié" : "Copied") : fr ? "Copier le HTML" : "Copy HTML"}
                 </button>
@@ -215,12 +215,12 @@ export function RelancePanierPage() {
         })}
 
         {rows.length < 8 ? (
-          <button type="button" className="btn btn--ghost no-print" style={{ marginTop: "1rem" }} onClick={() => setRows((l) => [...l, newRow()])}>
+          <button type="button" className="btn btn--ghost no-print"  onClick={() => setRows((l) => [...l, newRow()])}>
             {fr ? "+ Autre panier" : "+ Another cart"}
           </button>
         ) : null}
 
-        <div className="roi-grid" style={{ marginTop: "2.5rem" }}>
+        <div className="roi-grid">
           <form className="roi-form" onSubmit={(e) => e.preventDefault()}>
             <p className="tools-capture__title">{fr ? "Estimateur (optionnel)" : "Estimator (optional)"}</p>
             <label>
@@ -240,13 +240,13 @@ export function RelancePanierPage() {
             <p className="roi-result__label">{fr ? "Exposé mensuel" : "Monthly exposed"}</p>
             <p className="roi-result__big">{Math.round(result.exposed).toLocaleString(fr ? "fr-CA" : "en-CA")} $</p>
             <p className="roi-result__row">
-              <span>{fr ? "Gain si tu relances (~42 %)" : "Lift if you follow up (~42%)"}</span>
+              <span>{fr ? "Gain si vous relances (~42 %)" : "Lift if you follow up (~42%)"}</span>
               <strong>{Math.round(result.lift).toLocaleString(fr ? "fr-CA" : "en-CA")} $</strong>
             </p>
           </aside>
         </div>
 
-        <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
+        <div className="cta-row no-print">
           <a
             className="btn btn--ghost"
             href={growthHref}
@@ -261,8 +261,8 @@ export function RelancePanierPage() {
           </Link>
         </div>
 
-        <p className="lede" style={{ marginTop: "2rem" }}>
-          <Link to={path("/outils")}>{fr ? "← Master Tools" : "← Master Tools"}</Link>
+        <p className="lede">
+          <Link to={path("/outils")}>{fr ? "← Outils de travail" : "← Master Tools"}</Link>
         </p>
       </div>
     </section>

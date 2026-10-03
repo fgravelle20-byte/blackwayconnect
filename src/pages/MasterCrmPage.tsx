@@ -226,7 +226,7 @@ export function MasterCrmPage() {
         <div className="page-hero">
           <p className="eyebrow">BLACKWAY · MASTER LEADS & CRM</p>
           <h1 className="display page-hero__title">
-            {fr ? "Le cerveau des leads. Ici." : "The leads brain. Here."}
+            {fr ? "Votre suivi commercial centralisé." : "The leads brain. Here."}
           </h1>
           <p className="lede">
             {fr
@@ -299,7 +299,7 @@ export function MasterCrmPage() {
                 : "Engine: no tick yet (15m cron)"}
           </span>
           <Link className="btn btn--ghost" to={path("/leads")}>
-            {fr ? "Page leads publique" : "Public leads page"}
+            {fr ? "Page prospects publique" : "Public leads page"}
           </Link>
         </div>
 
@@ -338,7 +338,7 @@ export function MasterCrmPage() {
             </tbody>
           </table>
           {!leads.length ? (
-            <p className="crm-empty">{fr ? "Aucun lead encore. La page /leads envoie ici." : "No leads yet. /leads sends here."}</p>
+            <p className="crm-empty">{fr ? "Aucun prospect encore. La page /prospects envoie ici." : "No leads yet. /leads sends here."}</p>
           ) : null}
         </div>
 

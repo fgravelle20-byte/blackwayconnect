@@ -229,11 +229,11 @@ export function PortalCellToolPage() {
   }
 
   const titles: Record<Mode, { fr: string; en: string }> = {
-    pipeline: { fr: "Pipeline mobile", en: "Mobile pipeline" },
-    checkout: { fr: "Checkout prospect", en: "Prospect checkout" },
-    streak: { fr: "Streak terrain", en: "Field streak" },
-    fleet: { fr: "Fleet ops", en: "Fleet ops" },
-    merge: { fr: "Merge web + cellulaire", en: "Merge web + cellular" },
+    pipeline: { fr: "Suivi commercial mobile", en: "Mobile pipeline" },
+    checkout: { fr: "Paiement du prospect", en: "Prospect checkout" },
+    streak: { fr: "Suivi des activités", en: "Field streak" },
+    fleet: { fr: "Gestion des équipes", en: "Fleet ops" },
+    merge: { fr: "Synchronisation web et mobile", en: "Merge web + cellular" },
   };
 
   const run = consecutiveStreak(streak);
@@ -251,7 +251,7 @@ export function PortalCellToolPage() {
               : "Field mode — sign in to the portal to link the paying account CRM."}
         </p>
         {!session ? (
-          <p className="cta-row" style={{ marginBottom: "1rem" }}>
+          <p className="cta-row">
             <Link className="btn btn--ghost" to={path("/portail")}>
               {fr ? "Connexion portail" : "Portal sign-in"}
             </Link>
@@ -287,12 +287,12 @@ export function PortalCellToolPage() {
                 {fr ? "Capturer → CRM BlackWay" : "Capture → BlackWay CRM"}
               </button>
             </form>
-            <div className="crm-table-wrap" style={{ marginTop: "1.5rem" }}>
+            <div className="crm-table-wrap">
               <table className="crm-table">
                 <thead>
                   <tr>
-                    <th>{fr ? "Lead" : "Lead"}</th>
-                    <th>Stage</th>
+                    <th>{fr ? "Prospect" : "Lead"}</th>
+                    <th>{fr ? "Étape" : "Stage"}</th>
                     <th>Score</th>
                   </tr>
                 </thead>
@@ -317,7 +317,7 @@ export function PortalCellToolPage() {
               {!leads.length ? (
                 <p className="crm-empty">
                   {fr
-                    ? "Aucun lead encore — capturez ci-dessus. Les dossiers du portail apparaissent après connexion."
+                    ? "Aucun prospect encore — capturez ci-dessus. Les dossiers du portail apparaissent après connexion."
                     : "No leads yet — capture above. Portal records appear after sign-in."}
                 </p>
               ) : null}
@@ -355,7 +355,7 @@ export function PortalCellToolPage() {
             </div>
             <p className="lede">
               {fr
-                ? "Ceci n’est pas un Pack Cellulaire. C’est le checkout Grow Hub Launch / Growth / Scale déjà en Paddle. Pack Cellulaire = demande ci-dessous."
+                ? "Ceci n’est pas un Pack Cellulaire. C’est le paiement en ligne Grow Hub Launch / Growth / Scale déjà en Paddle. Pack Cellulaire = demande ci-dessous."
                 : "This is not a Cellular Pack. It is the live Grow Hub Launch / Growth / Scale Paddle checkout. Cellular Pack = request below."}
             </p>
             <p className="lede">
@@ -451,7 +451,7 @@ export function PortalCellToolPage() {
           </div>
         ) : null}
 
-        <p style={{ marginTop: "2rem" }}>
+        <p>
           <Link to={path("/portail")}>{fr ? "← Portail" : "← Portal"}</Link>
         </p>
       </div>

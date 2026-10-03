@@ -238,9 +238,9 @@ export function ToolsPage() {
       id: "leak",
       featured: true,
       eyebrow: "01",
-      title: fr ? "Revenue Leak Score" : "Revenue Leak Score",
+      title: fr ? "Diagnostic commercial" : "Revenue Leak Score",
       body: fr
-        ? "60 s. Carte Twin Volume / Qualité — copie le résumé, imprime, ça reste sur ton portail."
+        ? "Évaluez votre volume de demandes et la qualité de vos suivis. Copiez ou imprimez votre résumé."
         : "60s. Twin Volume / Quality card — copy the summary, print, it stays on your portal.",
       to: path("/diagnostic"),
       cta: fr ? "Lancer le diagnostic" : "Run diagnostic",
@@ -252,7 +252,7 @@ export function ToolsPage() {
       eyebrow: "02",
       title: fr ? "Relance panier / devis" : "Cart / quote recovery",
       body: fr
-        ? "Génère le courriel HTML à coller dans Gmail. Ton nom. Ton lien de paiement."
+        ? "Préparez un courriel de relance au nom de votre entreprise, avec vos propres coordonnées."
         : "Generate the HTML email to paste in Gmail. Your name. Your payment link.",
       to: path("/outils/relance-panier"),
       cta: fr ? "Écrire la relance" : "Write the follow-up",
@@ -262,9 +262,9 @@ export function ToolsPage() {
       id: "soumission",
       featured: true,
       eyebrow: "03",
-      title: fr ? "Soumission à ton nom" : "Quote in your name",
+      title: fr ? "Soumission à votre nom" : "Quote in your name",
       body: fr
-        ? "Devis imprimable. Ton client paie TON lien — pas /payer BlackWay."
+        ? "Préparez une soumission imprimable au nom de votre entreprise, avec vos propres instructions de paiement."
         : "Printable quote. Your customer pays YOUR link — not BlackWay /payer.",
       to: path("/outils/soumission"),
       cta: fr ? "Créer une soumission" : "Create a quote",
@@ -274,12 +274,12 @@ export function ToolsPage() {
       id: "checklist",
       featured: true,
       eyebrow: "04",
-      title: fr ? "Checklist fermeture 7 jours" : "7-day close checklist",
+      title: fr ? "Liste de vérification fermeture 7 jours" : "7-day close checklist",
       body: fr
         ? "Coche tout de suite. Liste éditable. Imprime. Pas de mur email."
         : "Check immediately. Editable list. Print. No email wall.",
       to: path("/outils/checklist"),
-      cta: fr ? "Ouvrir la checklist" : "Open checklist",
+      cta: fr ? "Ouvrir la liste de vérification" : "Open checklist",
       primary: true,
     },
     {
@@ -312,7 +312,7 @@ export function ToolsPage() {
       eyebrow: "07",
       title: fr ? "Comparateur GHL / HubSpot / Agence" : "GHL / HubSpot / Agency comparer",
       body: fr
-        ? "Où BlackWay gagne sur le prix, l’exécution bilingue et le parcours lead-to-revenue."
+        ? "Où BlackWay gagne sur le prix, l’exécution bilingue et le parcours de la demande au revenu."
         : "Where BlackWay wins on price, bilingual execution and lead-to-revenue.",
       to: "#comparateur",
       cta: fr ? "Voir le comparatif" : "See comparison",
@@ -354,13 +354,13 @@ export function ToolsPage() {
     <section className="section section--page section--tools">
       <div className="shell shell--wide">
         <div className="page-hero tools-hero">
-          <p className="eyebrow">{fr ? "Master Tools" : "Master Tools"}</p>
+          <p className="eyebrow">{fr ? "Outils de travail" : "Master Tools"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "2 minutes. Tu sors avec un mail, un devis, une liste." : "2 minutes. You leave with an email, a quote, a list."}
+            {fr ? "Des outils pour préparer votre prochaine action." : "2 minutes. You leave with an email, a quote, a list."}
           </h1>
           <p className="lede">
             {fr
-              ? "Quatre outils pour TON shop. Growth est en bas si tu veux BlackWay — pas collé dans tes devis."
+              ? "Préparez vos relances, vos soumissions et votre suivi au nom de votre entreprise. Comparez les forfaits pour accéder aux outils adaptés à vos besoins."
               : "Four tools for YOUR shop. Growth is at the bottom if you want BlackWay — not pasted into your quotes."}
           </p>
         </div>
@@ -476,7 +476,7 @@ export function ToolsPage() {
                 <span>{fr ? "ROI indicatif" : "Indicative ROI"}</span>
                 <strong>{result.roi}×</strong>
               </p>
-              <div className="cta-row" style={{ marginTop: "1.1rem" }}>
+              <div className="cta-row">
                 <a
                   className="btn btn--primary"
                   href={checkoutUrl(result.plan, {
@@ -573,7 +573,7 @@ export function ToolsPage() {
             </table>
           </div>
 
-          <div className="cta-row" style={{ marginTop: "1.5rem" }}>
+          <div className="cta-row">
             <a
               className="btn btn--primary"
               href={checkoutUrl(FEATURED_PLAN, {
@@ -703,7 +703,7 @@ export function ToolsPage() {
               );
             })}
           </div>
-          <div className="cta-row" style={{ marginTop: "1.5rem" }}>
+          <div className="cta-row">
             <Link className="btn btn--primary" to={path("/forfaits")}>
               {fr ? "Page forfaits complète" : "Full pricing page"}
             </Link>

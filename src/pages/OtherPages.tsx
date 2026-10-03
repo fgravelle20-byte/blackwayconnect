@@ -76,16 +76,16 @@ export function PricingPage() {
       <section className="section section--page section--with-convert-bar">
         <div className="shell">
           <PageIntro image="/office-ops.jpg">
-            <p className="eyebrow">{fr ? "Revenu #1 · Grow Hub Web" : "Revenue #1 · Grow Hub Web"}</p>
+            <p className="eyebrow">{fr ? "Forfaits Grow Hub" : "Revenue #1 · Grow Hub Web"}</p>
             <h1 className="display page-hero__title">
-              {fr ? "Choisis. Abonne. Portail ouvert." : "Pick. Subscribe. Portal opens."}
+              {fr ? "Choisissez votre forfait. Accédez à vos outils." : "Pick. Subscribe. Portal opens."}
             </h1>
             <p className="lede">
               {fr
                 ? "Launch, Growth ou Scale — plus Spark, Command et Partner. La plupart des PME partent sur Growth (349 $/mois) — essai 14 jours, Portail + mobile inclus. Paddle. Annulable."
                 : "Launch, Growth, or Scale — plus Spark, Command, and Partner. Most SMBs start on Growth ($349/mo) — 14-day trial, Portal + mobile included. Paddle. Cancel anytime."}
             </p>
-            <div className="cta-row" style={{ marginTop: "1.25rem" }}>
+            <div className="cta-row">
               <a
                 className="btn btn--primary"
                 href={growthHref}
@@ -101,18 +101,18 @@ export function PricingPage() {
                 {fr ? `Appeler ${PHONES.tollFree.display}` : `Call ${PHONES.tollFree.display}`}
               </a>
               <Link className="btn btn--ghost" to={path("/forfaits-growth")}>
-                {fr ? "Page offre Growth" : "Growth offer page"}
+                {fr ? "Découvrir l’offre Growth" : "Growth offer page"}
               </Link>
             </div>
-            <p className="lede" style={{ marginTop: "0.75rem" }}>
+            <p className="lede">
               {fr
-                ? "Inclus avec chaque forfait : Portail Client Master + accès mobile."
+                ? "Inclus avec chaque forfait : portail client + accès mobile."
                 : "Included with every plan: Client Master Portal + mobile access."}
             </p>
-            <p className="lede" style={{ marginTop: "0.75rem" }}>
+            <p className="lede">
               <Link className="btn btn--ghost" to={path("/forfaits-cellulaire")}>
                 {fr
-                  ? "Optionnel : Pack Cellulaire / Terrain (revenu #2) →"
+                  ? "En option : Pack Cellulaire"
                   : "Optional: Cellular / Field Pack (revenue #2) →"}
               </Link>{" "}
               <Link className="btn btn--ghost" to={path("/modules-ia")}>
@@ -155,7 +155,7 @@ export function PricingPage() {
               </article>
             ))}
           </div>
-          <div className="cta-row" style={{ marginTop: "2.25rem" }}>
+          <div className="cta-row">
             <a
               className="btn btn--primary"
               href={checkoutUrl("grow_hub_growth", { lang, source: "site_web", content: "pricing_footer_growth" })}
@@ -168,7 +168,7 @@ export function PricingPage() {
               {lang === "fr" ? "S’abonner Growth — 349 $/mois" : "Subscribe Growth — $349/mo"}
             </a>
             <Link className="btn btn--ghost" to={path("/diagnostic")}>
-              {fr ? "Leak Score 60 s" : "60s Leak Score"}
+              {fr ? "Diagnostic de 60 secondes" : "60s Leak Score"}
             </Link>
             <Link className="btn btn--ghost" to={path("/contact")}>
               {t.ctaConsult}
@@ -216,7 +216,7 @@ export function TeamPage() {
               />
             ))}
         </div>
-        <div className="cta-row" style={{ marginTop: "2rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--primary" to={path("/qui-sommes-nous")}>
             {t.nav.mission}
           </Link>
@@ -253,7 +253,7 @@ export function MissionPage() {
           <h2>{m.visionTitle}</h2>
           <p>{m.visionBody}</p>
         </div>
-        <div className="section__head" style={{ marginTop: "2.5rem" }}>
+        <div className="section__head">
           <h2>{m.valuesTitle}</h2>
         </div>
         <div className="mission-values">
@@ -275,7 +275,7 @@ export function MissionPage() {
             />
           ))}
         </div>
-        <div className="cta-row" style={{ marginTop: "2rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--primary" to={path("/contact")}>
             {t.ctaConsult}
           </Link>
@@ -309,7 +309,7 @@ export function FaqPage() {
             </details>
           ))}
         </div>
-        <div className="cta-row" style={{ marginTop: "2rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--primary" to={path("/contact")}>
             {t.ctaConsult}
           </Link>
@@ -396,17 +396,17 @@ export function MerciPage() {
           {
             n: "02",
             title: "CRM mis à jour",
-            body: "Compte client et occasion créés dans le CRM BlackWay. Onboarding déjà dans le pipeline.",
+            body: "Compte client et occasion créés dans le CRM BlackWay. Votre accompagnement initial est déjà prévu dans le suivi commercial.",
           },
           {
             n: "03",
             title: "Semaine 1 — activation",
-            body: "Accès Grow Hub, cadrage pipeline et première configuration. On vous contacte sous 24–48 h ouvrables.",
+            body: "Accès Grow Hub, cadrage suivi commercial et première configuration. On vous contacte sous 24–48 h ouvrables.",
           },
           {
             n: "04",
             title: "Accès inclus",
-            body: "Site, Master Tools, Portail Client Master + dashboard mobile (surplus inclus). Pack Cellulaire = optionnel.",
+            body: "Site, Outils de travail, portail client + tableau de bord mobile (surplus inclus). Pack Cellulaire = optionnel.",
           },
         ]
       : [
@@ -446,7 +446,7 @@ export function MerciPage() {
           {
             n: "03",
             title: "Prochaine action",
-            body: "Réponse sous peu — ou passez directement au checkout si vous êtes prêt.",
+            body: "Réponse sous peu — ou passez directement au paiement en ligne si vous êtes prêt.",
           },
         ]
       : [
@@ -495,7 +495,7 @@ export function MerciPage() {
                 ? `Paiement Paddle confirmé${planName ? ` — ${planName}` : ""}${amount != null ? ` (${amount} $ / mois)` : ""}. Votre compte CRM BlackWay est créé automatiquement. Voici vos prochaines étapes — rien à gérer manuellement de votre côté.`
                 : `Paddle payment confirmed${planName ? ` — ${planName}` : ""}${amount != null ? ` ($${amount} / month)` : ""}. Your BlackWay CRM account is created automatically. Here’s what happens next — nothing for you to chase.`
               : fr
-                ? "Votre demande est dans le pipeline BlackWay. On vous contacte sous peu — ou choisissez un forfait pour activer tout de suite."
+                ? "Votre demande est dans le suivi commercial BlackWay. On vous contacte sous peu — ou choisissez un forfait pour activer tout de suite."
                 : "Your request is in the BlackWay pipeline. We’ll reach out shortly — or pick a plan to activate now."}
           </p>
           {paid && planCopy ? <p className="merci-plan-blurb">{planCopy.blurb}</p> : null}
@@ -536,7 +536,7 @@ export function MerciPage() {
               )}
               {paid ? (
                 <Link className="btn btn--ghost" to={path("/portail")}>
-                  {fr ? "Dashboard mobile (inclus)" : "Mobile dashboard (included)"}
+                  {fr ? "Tableau de bord mobile inclus" : "Mobile dashboard (included)"}
                 </Link>
               ) : null}
               {paid ? (
@@ -548,7 +548,7 @@ export function MerciPage() {
                 {fr ? "Aperçu Grow Hub (site)" : "Grow Hub preview (site)"}
               </Link>
               <Link className="btn btn--ghost" to={path("/outils")}>
-                {fr ? "Master Tools" : "Master Tools"}
+                {fr ? "Outils de travail" : "Master Tools"}
               </Link>
               <a className="btn btn--ghost" href="mailto:serviceclient@blackwayconnect.com">
                 serviceclient@blackwayconnect.com
@@ -572,7 +572,7 @@ export function MerciPage() {
             <img src={APP_QR_PATH} width={160} height={160} alt={fr ? "QR Grow Hub app" : "Grow Hub app QR"} />
             <figcaption>
               {fr
-                ? "Scanner → Portail Master (dashboard mobile inclus)"
+                ? "Scanner → Portail Master (tableau de bord mobile inclus)"
                 : "Scan → Master Portal (mobile dashboard included)"}
             </figcaption>
           </figure>

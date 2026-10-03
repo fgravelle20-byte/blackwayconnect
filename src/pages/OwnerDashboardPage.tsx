@@ -120,7 +120,7 @@ export function OwnerDashboardPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Ici tu vois l’état réel du produit : site, Paddle, Master CRM, portail client, preview Base44, App Store. Le /portail est pour tes clients payants — celui-ci est pour toi."
+              ? "Ici vous voyez l’état réel du produit : site, Paddle, Master CRM, portail client, preview Base44, App Store. Le /portail est pour vos clients payants — celui-ci est pour vous."
               : "Live product state: site, Paddle, Master CRM, client portal, Base44 preview, App Store. /portail is for paying customers — this one is yours."}
           </p>
           {data?.generatedAt ? (
@@ -130,7 +130,7 @@ export function OwnerDashboardPage() {
           ) : null}
           {err ? (
             <p className="form-status form-status--err">
-              {fr ? "Lecture /api/ops indisponible." : "/api/ops read failed."}
+              {fr ? "Lecture /api/opérations indisponible." : "/api/ops read failed."}
             </p>
           ) : null}
         </div>
@@ -139,7 +139,7 @@ export function OwnerDashboardPage() {
           <article className="ops-kpi">
             <Light on={site.ok !== false} />
             <strong>Site</strong>
-            <span>{site.lead_key ? (fr ? "clé lead OK" : "lead key OK") : (fr ? "clé lead absente" : "lead key missing")}</span>
+            <span>{site.lead_key ? (fr ? "clé prospect OK" : "lead key OK") : (fr ? "clé prospect absente" : "lead key missing")}</span>
           </article>
           <article className="ops-kpi">
             <Light on={pipe.ok === true} />

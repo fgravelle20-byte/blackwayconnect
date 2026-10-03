@@ -124,7 +124,7 @@ export type Copy = {
 export const copy: Record<Lang, Copy> = {
   fr: {
     brand: "BlackWayConnect",
-    tagline: "Du lead au revenu. Sans fuite.",
+    tagline: "Du premier contact au revenu.",
     nav: {
       grow: "Grow Hub",
       tools: "Outils",
@@ -153,18 +153,18 @@ export const copy: Record<Lang, Copy> = {
     appNote:
       "Le portail s’ouvre depuis le site. Le pack terrain se choisit à part.",
     heroEyebrow: "Québec · Mondial",
-    heroTitle: "Du premier lead au paiement.",
+    heroTitle: "Du premier contact au paiement.",
     heroBody:
       "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, essai de 14 jours, annulable.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
-      body: "Du matin où le pipeline s’ouvre jusqu’aux décisions qui ferment la journée — l’équipe gère le revenu, pas une jungle d’onglets.",
+      body: "Du matin où le suivi commercial s’ouvre jusqu’aux décisions qui ferment la journée — l’équipe gère le revenu, pas une jungle d’onglets.",
       beats: {
         morning: {
           label: "08:30",
           title: "Ouverture du bureau",
-          body: "Les demandes de la nuit sont déjà scorées. Priorités claires avant le premier café.",
+          body: "Les demandes de la nuit sont déjà évaluées. Priorités claires avant le premier café.",
         },
         team: {
           label: "11:00",
@@ -182,9 +182,9 @@ export const copy: Record<Lang, Copy> = {
       { value: "Twin", label: "Turbo Volume + Qualité" },
       { value: "60 s", label: "Diagnostic Master Leads" },
       { value: "FR / EN", label: "Parcours bilingues" },
-      { value: "Paddle", label: "Checkout sécurisé" },
+      { value: "Paddle", label: "Paiement sécurisé" },
     ],
-    growTitle: "Trois étapes. Pas une pile d’outils.",
+    growTitle: "Un suivi en trois étapes.",
     growBody:
       "La demande entre, elle est classée, la prochaine action est claire. Le suivi ne dépend plus d’une boîte courriel.",
     growPoints: [
@@ -192,7 +192,7 @@ export const copy: Record<Lang, Copy> = {
       "L’urgence, le budget et la langue décident de la priorité.",
       "Relance, soumission et paiement restent dans le même fil.",
     ],
-    plansTitle: "Choisissez le palier. Le système reste le même.",
+    plansTitle: "Un forfait adapté à votre entreprise.",
     plansBody:
       "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne (Paddle), avec un essai de 14 jours.",
     plans: [
@@ -233,31 +233,31 @@ export const copy: Record<Lang, Copy> = {
         blurb: "Plateforme et mandat, pour un volume plus élevé.",
       },
     ],
-    servicesTitle: "Quatre usages. Un seul dossier client.",
+    servicesTitle: "Quatre solutions. Un dossier client.",
     servicesBody:
-      "Site, application, secrétaire et visibilité écrivent dans le même pipeline.",
+      "Site, application, secrétaire et visibilité écrivent dans le même suivi commercial.",
     services: [
       {
-        title: "Sites haute conversion",
-        body: "Pages, SEO local et formulaires reliés au pipeline — chaque visite peut devenir une occasion suivie.",
+        title: "Sites web et conversion",
+        body: "Reliez vos pages, votre référencement local et vos formulaires au suivi de vos occasions de vente.",
       },
       {
-        title: "Applications web et mobile",
-        body: "Portails clients et produits sur les mêmes données que votre CRM — zéro double saisie.",
+        title: "Applications web et mobiles",
+        body: "Centralisez les portails clients et les applications autour des dossiers de votre CRM, sans double saisie.",
       },
       {
-        title: "Agents IA et automatisations",
-        body: "Chat, routage, suivis et opérations supervisées — l’IA accélère, l’équipe décide.",
+        title: "Agents IA et automatisation",
+        body: "Simplifiez les conversations, les relances et les opérations avec des agents IA supervisés par votre équipe.",
       },
       {
         title: "SEO et acquisition",
-        body: "Visibilité locale, contenu et mesure des sources — vous savez ce qui remplit le pipeline.",
+        body: "Suivez votre visibilité locale, vos contenus et vos sources de demandes pour guider vos efforts commerciaux.",
       },
     ],
     marketTitle: "Conçu au Québec. Utilisable ailleurs.",
     marketBody:
       "Le parcours est en français et en anglais. Le paiement en ligne fonctionne au Canada, aux États-Unis et en Europe.",
-    consultTitle: "Une question avant de choisir.",
+    consultTitle: "Besoin d’aide pour choisir ?",
     consultBody:
       "Décrivez votre volume de demandes. On indique le forfait qui correspond, ou on en parle avant l’abonnement.",
     form: {
@@ -274,89 +274,71 @@ export const copy: Record<Lang, Copy> = {
     },
     teamTitle: "L’équipe derrière le système.",
     teamBody:
-      "Stratèges, builders et opérateurs focalisés sur le revenu encaissé — pas sur la collection d’outils à la mode.",
+      "Stratèges, concepteurs et spécialistes des opérations réunis pour structurer vos ventes et votre suivi client.",
     teamGallery: [
       {
         src: "/office-team.jpg",
-        title: "Ops qui ferme la journée",
-        body: "Écrans allumés, priorités scorées — l’équipe lit le pipeline, pas une jungle d’onglets.",
+        title: "Des opérations coordonnées",
+        body: "Votre équipe retrouve les priorités et les prochaines actions dans un même espace de suivi.",
       },
       {
         src: "/team/team-collab.jpg",
-        title: "Autour de la table, une seule vérité",
-        body: "Connect. Build. Grow. — stratégie et exécution sur le même dossier prospect.",
+        title: "Une équipe bien informée",
+        body: "La stratégie et les actions de votre équipe s’appuient sur le même dossier client.",
       },
       {
         src: "/office-ops.jpg",
-        title: "Focus pipeline",
-        body: "Un dossier à la fois — lecture, score, prochaine action. Pas de théâtre.",
-      },
-      {
-        src: "/photos/slot-atelier.jpg",
-        title: "Atelier terrain",
-        body: "Prochaine photo : déposez-la dans public/photos/incoming/ — le slot s’active tout seul.",
-        optional: true,
-      },
-      {
-        src: "/photos/slot-ops.jpg",
-        title: "Ops en direct",
-        body: "Slot prêt pour IMG_2084 / IMG_2068 — accroche professionnelle dès le drop.",
-        optional: true,
+        title: "Un suivi commercial clair",
+        body: "Chaque dossier rassemble le contexte, les priorités et la prochaine action à entreprendre.",
       },
     ],
     mission: {
       eyebrow: "Qui nous sommes",
-      title: "Notre mission : du lead au revenu, sans fuite.",
+      title: "Notre mission : simplifier votre croissance.",
       body: "BlackWayConnect bâtit le système commercial bilingue qui transforme chaque demande en prochaine action qui encaisse — du Québec au reste du monde.",
       heroSrc: "/photos/brand-pillar.jpg",
       heroTitle: "Votre vision. Notre solution. Votre succès.",
-      heroBody: "Connect. Build. Grow. — une marque noire et rouge, une promesse claire : fermer plus sans empiler d’outils.",
+      heroBody: "Une plateforme pour centraliser vos demandes, structurer vos suivis et accompagner votre croissance.",
       visionTitle: "La vision",
       visionBody:
-        "Un seul fil du premier clic au paiement Paddle. Moins de friction, plus de provenance revenu — pour les équipes qui vendent vraiment.",
+        "Un seul fil du premier clic au paiement Paddle. Moins de friction, plus de suivi des revenus — pour les équipes qui vendent vraiment.",
       valuesTitle: "Ce qui nous guide",
       values: [
         {
-          title: "Preuve avant gadget",
-          body: "On diagnostique la fuite avant de vendre du bruit technologique.",
+          title: "Des besoins bien définis",
+          body: "Nous évaluons vos besoins avant de proposer des outils adaptés à votre activité.",
         },
         {
-          title: "Une provenance revenu",
-          body: "Site, CRM, soumissions et paiements dans le même système — zéro version conflictuelle.",
+          title: "Un suivi centralisé",
+          body: "Vos demandes, vos soumissions et votre suivi commercial restent associés au même dossier.",
         },
         {
-          title: "Bilingue par design",
-          body: "FR/EN, CA/US — parcours et messages adaptés sans dupliquer la stack.",
+          title: "Un parcours bilingue",
+          body: "Vos parcours et vos messages sont adaptés en français et en anglais dans un même environnement.",
         },
       ],
       photos: [
         {
           src: "/team/team-collab.jpg",
           title: "L’équipe qui tient le système",
-          body: "Sept regards, une table, une carte monde — BlackWayConnect en formation de combat commercial.",
+          body: "Une équipe qui partage le contexte de chaque dossier pour coordonner ses prochaines actions.",
         },
         {
           src: "/office-ops.jpg",
           title: "Connectés pour encaisser",
-          body: "Infrastructure, branding, collaboration : le terrain où le revenu se décide.",
-        },
-        {
-          src: "/photos/slot-mission.jpg",
-          title: "Prochaine scène mission",
-          body: "Slot ouvert — déposez IMG_2275 ou EA1F9549 dans public/photos/incoming/.",
-          optional: true,
+          body: "Infrastructure, identité de marque et collaboration soutiennent le suivi de vos activités.",
         },
       ],
     },
     field: {
       eyebrow: "Sur le terrain",
       title: "L’équipe en action — pas une brochure.",
-      body: "Derrière le Grow Hub : des humains qui alignent pipeline, ops et marque. Voici le terrain BlackWay.",
+      body: "Derrière le Grow Hub : des humains qui alignent suivi commercial, opérations et marque. Voici le terrain BlackWay.",
       items: [
         {
           src: "/photos/field-01.jpg",
-          title: "War room commerciale",
-          body: "Autour du bois, devant la carte — chaque lead a une prochaine action.",
+          title: "Coordination commerciale",
+          body: "Autour du bois, devant la carte — chaque prospect a une prochaine action.",
         },
         {
           src: "/photos/brand-pillar.jpg",
@@ -391,7 +373,7 @@ export const copy: Record<Lang, Copy> = {
         a: "313 Cuvillier Ouest, local 302, J4L 0B2, Québec, Canada. La carte Google est dans le pied de page et sur la page Contact.",
       },
       {
-        q: "Où vont mes leads et paiements ?",
+        q: "Où vont mes prospects et paiements ?",
         a: "Les demandes du site et le paiement en ligne arrivent dans le même dossier client.",
       },
       {
@@ -400,7 +382,7 @@ export const copy: Record<Lang, Copy> = {
       },
       {
         q: "Quel forfait choisir ?",
-        a: "Spark pour essayer. Launch pour structurer. Growth pour vendre et mesurer. Scale, Command et Partner quand plusieurs personnes travaillent le même pipeline.",
+        a: "Spark pour essayer. Launch pour structurer. Growth pour vendre et mesurer. Scale, Command et Partner quand plusieurs personnes travaillent le même suivi commercial.",
       },
       {
         q: "Problème de facturation ?",
@@ -408,19 +390,19 @@ export const copy: Record<Lang, Copy> = {
       },
     ],
     contactAside: "Ou commencez par un forfait.",
-    contactFast: "Tous les forfaits se paient en ligne. Le formulaire sert aux questions et à l’offre Entreprise.",
-    footer: "Du lead au revenu. Un seul système de croissance connecté.",
+    contactFast: "Comparez les forfaits ou utilisez le formulaire pour poser une question à notre équipe.",
+    footer: "Du prospect au revenu. Un seul système de croissance connecté.",
     footerQrTitle: "Portail client",
     footerQrHint: "Scannez pour ouvrir le Portail Client Master — inclus avec votre forfait.",
-    privacy: "Confidentialité (Privacy Notice)",
-    terms: "Conditions (Terms of Service)",
-    refund: "Remboursement (Refund Policy)",
+    privacy: "Politique de confidentialité",
+    terms: "Conditions d’utilisation",
+    refund: "Politique de remboursement",
     privacyBody:
-      "Privacy Notice — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Paddle). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
+      "Politique de confidentialité — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Paddle). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
     termsBody:
-      "Terms of Service — L'utilisation du site et des services BlackWayConnect implique l'acceptation des présentes conditions, de la Privacy Notice et de la Refund Policy. Les services sont fournis selon les forfaits convenus ; montants en CAD sauf indication contraire. Usage interdit à des fins illégales ou abusives. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact : serviceclient@blackwayconnect.com.",
+      "Conditions d’utilisation — L'utilisation du site et des services BlackWayConnect implique l'acceptation des présentes conditions, de la politique de confidentialité et de la politique de remboursement. Les services sont fournis selon les forfaits convenus ; montants en CAD sauf indication contraire. Usage interdit à des fins illégales ou abusives. BlackWayConnect / 9495-5457 Québec Inc., Canada. Contact : serviceclient@blackwayconnect.com.",
     refundBody:
-      "Refund Policy — Vous pouvez annuler un abonnement selon les modalités de l'offre ; l'accès demeure en général jusqu'à la fin de la période déjà payée. Les frais déjà engagés ne sont pas automatiquement remboursables ; chaque demande est évaluée selon la loi applicable (incluant la protection du consommateur au Québec/Canada) et les services fournis. Demande : serviceclient@blackwayconnect.com (idéalement sous 14 jours) avec date, montant et référence de transaction.",
+      "Politique de remboursement — Vous pouvez annuler un abonnement selon les modalités de l'offre ; l'accès demeure en général jusqu'à la fin de la période déjà payée. Les frais déjà engagés ne sont pas automatiquement remboursables ; chaque demande est évaluée selon la loi applicable (incluant la protection du consommateur au Québec/Canada) et les services fournis. Demande : serviceclient@blackwayconnect.com (idéalement sous 14 jours) avec date, montant et référence de transaction.",
   },
   en: {
     brand: "BlackWayConnect",
@@ -589,18 +571,6 @@ export const copy: Record<Lang, Copy> = {
         title: "Pipeline focus",
         body: "One file at a time — read, score, next action. No theatre.",
       },
-      {
-        src: "/photos/slot-atelier.jpg",
-        title: "Field atelier",
-        body: "Next photo: drop it in public/photos/incoming/ — the slot activates itself.",
-        optional: true,
-      },
-      {
-        src: "/photos/slot-ops.jpg",
-        title: "Live ops",
-        body: "Slot ready for IMG_2084 / IMG_2068 — professional caption on drop.",
-        optional: true,
-      },
     ],
     mission: {
       eyebrow: "Who we are",
@@ -637,12 +607,6 @@ export const copy: Record<Lang, Copy> = {
           src: "/office-ops.jpg",
           title: "Connected to collect",
           body: "Infrastructure, branding, collaboration: the field where revenue decides.",
-        },
-        {
-          src: "/photos/slot-mission.jpg",
-          title: "Next mission frame",
-          body: "Open slot — drop IMG_2275 or EA1F9549 into public/photos/incoming/.",
-          optional: true,
         },
       ],
     },

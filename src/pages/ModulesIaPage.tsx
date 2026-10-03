@@ -33,9 +33,9 @@ export function ModulesIaPage() {
             <p className="price">
               {plan.amountCad} $ / {fr ? "mois" : "mo"}
             </p>
-            <ul className="plan-item__blurb" style={{ marginBottom: "1rem", paddingLeft: "1.1rem" }}>
+            <ul className="plan-item__blurb" style={{  paddingLeft: "1.1rem" }}>
               {(fr ? plan.featuresFr : plan.featuresEn).map((f) => (
-                <li key={f}>{f}</li>
+                <li key={f}>{fr ? f.replace("ton site", "votre site").replace("ta ligne", "votre ligne").replace("ton équipe", "votre équipe").replace("Leads", "Prospects").replace("leads", "prospects") : f}</li>
               ))}
             </ul>
             <a
@@ -60,15 +60,15 @@ export function ModulesIaPage() {
           <p className="eyebrow">{fr ? "Modules IA · abonnement mensuel" : "AI modules · monthly subscription"}</p>
           <h1 className="display page-hero__title">
             {fr
-              ? "Chatbot IA pour ton site. Accueil vocal IA pour ta ligne."
+              ? "Un assistant IA pour votre site et votre téléphone."
               : "AI chatbot for your website. AI voice reception for your phone line."}
           </h1>
           <p className="lede">
             {fr
-              ? "Chaque module s’ajoute à ton Portail Client Master, avec ou sans Grow Hub. Paiement sécurisé Paddle, en dollars canadiens, annulable en tout temps."
+              ? "Chaque module s’ajoute à votre portail client, avec ou sans Grow Hub. Paiement sécurisé Paddle, en dollars canadiens, annulable en tout temps."
               : "Each module is added to your Client Master Portal, with or without Grow Hub. Secure Paddle payment in Canadian dollars, cancel anytime."}
           </p>
-          <div className="cta-row" style={{ marginTop: "1.25rem" }}>
+          <div className="cta-row">
             <Link className="btn btn--ghost" to={path("/forfaits")}>
               {fr ? "Forfaits Grow Hub" : "Grow Hub plans"}
             </Link>
@@ -83,14 +83,14 @@ export function ModulesIaPage() {
         </div>
         {rail(CHATBOT_ORDER)}
 
-        <div id="vocal" className="app-plans-lead" style={{ marginTop: "2.5rem" }}>
+        <div id="vocal" className="app-plans-lead">
           <h2 className="display">{fr ? "Accueil vocal IA (ligne téléphonique)" : "AI Voice reception (phone line)"}</h2>
         </div>
         {rail(VOCAL_ORDER)}
 
-        <div className="app-plans-lead" style={{ marginTop: "2.5rem" }}>
+        <div className="app-plans-lead">
           <h2 className="display">
-            {fr ? "Une question avant de t’abonner ?" : "A question before subscribing?"}
+            {fr ? "Une question avant de vous abonner ?" : "A question before subscribing?"}
           </h2>
           <ContactForm source="modules_ia" />
         </div>

@@ -77,7 +77,7 @@ const TOOL_COPY: Partial<
     en: { title: "Twin Turbo Leak Score", body: "60s diagnostic — Volume + Quality → recommended engine.", cta: "Run" },
   },
   outils: {
-    fr: { title: "Master Tools", body: "Arsenal : score, relance, soumission, ROI, secrétaire IA.", cta: "Ouvrir" },
+    fr: { title: "Outils de travail", body: "Arsenal : score, relance, soumission, ROI, secrétaire IA.", cta: "Ouvrir" },
     en: { title: "Master Tools", body: "Arsenal: score, recovery, quotes, ROI, AI secretary.", cta: "Open" },
   },
   relance_panier: {
@@ -89,7 +89,7 @@ const TOOL_COPY: Partial<
     en: { title: "Quote → Paddle", body: "Generate a quote + Growth payment link.", cta: "Create" },
   },
   checklist: {
-    fr: { title: "Checklist 7 jours", body: "Lead magnet — actions pour fermer sans fuite.", cta: "Ouvrir" },
+    fr: { title: "Liste de vérification 7 jours", body: "Lead magnet — actions pour fermer sans fuite.", cta: "Ouvrir" },
     en: { title: "7-day checklist", body: "Lead magnet — actions to close without leakage.", cta: "Open" },
   },
   roi: {
@@ -113,7 +113,7 @@ const TOOL_COPY: Partial<
     en: { title: "Grow Hub web plans", body: "Revenue #1 — Spark → Partner.", cta: "See web plans" },
   },
   lead_capture: {
-    fr: { title: "Capture lead CRM", body: "Fiche rapide → contact + occasion dans le CRM BlackWay.", cta: "Capturer" },
+    fr: { title: "Capture prospect CRM", body: "Fiche rapide → contact + occasion dans le CRM BlackWay.", cta: "Capturer" },
     en: { title: "CRM lead capture", body: "Quick card → contact + opportunity in BlackWay CRM.", cta: "Capture" },
   },
   support: {
@@ -121,7 +121,7 @@ const TOOL_COPY: Partial<
     en: { title: "Client support", body: "serviceclient@ · accounting@ for billing.", cta: "Contact" },
   },
   cell_capture: {
-    fr: { title: "Capture lead terrain", body: "Fiche rapide sur le terrain → CRM BlackWay.", cta: "Ouvrir" },
+    fr: { title: "Capture prospect terrain", body: "Fiche rapide sur le terrain → CRM BlackWay.", cta: "Ouvrir" },
     en: { title: "Field lead capture", body: "Quick field card → BlackWay CRM.", cta: "Open" },
   },
   cell_pipeline: {
@@ -137,15 +137,15 @@ const TOOL_COPY: Partial<
     en: { title: "Field streak", body: "Daily field activity rhythm.", cta: "Open" },
   },
   cell_fleet_ops: {
-    fr: { title: "Fleet ops", body: "Multi-user terrain — équipe en route.", cta: "Ouvrir" },
+    fr: { title: "Fleet opérations", body: "Multi-user terrain — équipe en route.", cta: "Ouvrir" },
     en: { title: "Fleet ops", body: "Multi-user field — team on the road.", cta: "Open" },
   },
   cell_merge: {
-    fr: { title: "Merge web + cellulaire", body: "Ops complets — deux revenus, un compte.", cta: "Portail" },
+    fr: { title: "Merge web + cellulaire", body: "Opérations complets — deux revenus, un compte.", cta: "Portail" },
     en: { title: "Merge web + cellular", body: "Full ops — two revenues, one account.", cta: "Portal" },
   },
   forfaits_cellulaire: {
-    fr: { title: "Pack Cellulaire", body: "Revenu #2 optionnel — outils terrain Signal → Command.", cta: "Voir le pack" },
+    fr: { title: "Pack Cellulaire", body: "Outils mobiles optionnels — outils terrain Signal → Command.", cta: "Voir le pack" },
     en: { title: "Cellular Pack", body: "Optional revenue #2 — field tools Signal → Command.", cta: "See pack" },
   },
 };
@@ -411,7 +411,7 @@ export function PortalPage() {
               />
             </label>
             <button type="submit" className="btn btn--primary" disabled={busy}>
-              {fr ? "Ouvrir mon dashboard" : "Open my dashboard"}
+              {fr ? "Ouvrir mon tableau de bord" : "Open my dashboard"}
             </button>
           </form>
           {error ? <p className="form-status form-status--err">{error}</p> : null}
@@ -483,7 +483,7 @@ export function PortalPage() {
             </h1>
             <p className="lede portal-head__meta">{session.email}</p>
             {lastLeak ? (
-              <p className="lede" style={{ marginTop: "0.35rem" }}>
+              <p className="lede">
                 {fr
                   ? `Dernier Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Qualité ${lastLeak.quality}`
                   : `Last Leak Score · Twin ${lastLeak.twin} · Volume ${lastLeak.volume} · Quality ${lastLeak.quality}`}
@@ -491,9 +491,9 @@ export function PortalPage() {
                 <Link to={path("/diagnostic")}>{fr ? "Refaire" : "Run again"}</Link>
               </p>
             ) : null}
-            <p className="lede" style={{ marginTop: "0.5rem" }}>
+            <p className="lede">
               {fr
-                ? "Master Leads — dashboard web + mobile (ajoute cette page à l’écran d’accueil). Les apps stores arrivent ensuite."
+                ? "Retrouvez votre tableau de bord sur ordinateur et sur mobile. Ajoutez cette page à l’écran d’accueil de votre téléphone."
                 : "Master Leads — web + mobile dashboard (add this page to your home screen). App stores come next."}
             </p>
           </div>
@@ -513,7 +513,7 @@ export function PortalPage() {
           <div className="portal-inbox__head">
             <div>
               <p className="eyebrow">Master Leads</p>
-              <h2 id="portal-inbox-title">{fr ? "Mes leads livrés" : "My delivered leads"}</h2>
+              <h2 id="portal-inbox-title">{fr ? "Mes demandes reçues" : "My delivered leads"}</h2>
               <p className="lede">
                 {fr
                   ? "Pipeline BlackWay lié à votre compte — score Twin Turbo + statut de livraison."
@@ -543,7 +543,7 @@ export function PortalPage() {
             <div className="portal-inbox__empty">
               <p>
                 {fr
-                  ? "Aucun lead livré pour l’instant. Dès qu’un dossier BlackWay est associé à votre courriel, il apparaît ici."
+                  ? "Aucun prospect livré pour l’instant. Dès qu’un dossier BlackWay est associé à votre courriel, il apparaît ici."
                   : "No delivered leads yet. As soon as a BlackWay record is linked to your email, it appears here."}
               </p>
               <Link className="btn btn--primary" to={path("/diagnostic")}>
@@ -576,9 +576,9 @@ export function PortalPage() {
           )}
         </section>
 
-        <div className="portal-plan" style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
+        <div className="portal-plan">
           <div className="portal-plan__card">
-            <p className="portal-plan__label">{fr ? "Revenu #1 · Grow Hub Web" : "Revenue #1 · Grow Hub Web"}</p>
+            <p className="portal-plan__label">{fr ? "Forfaits Grow Hub" : "Revenue #1 · Grow Hub Web"}</p>
             <h2>{hasWeb ? webLabel || session.label : fr ? "Aucun forfait web" : "No web plan"}</h2>
             <p className="portal-plan__price">
               {hasWeb && session.amountCad && !isCellulaireForfait(session.forfait)
@@ -604,23 +604,23 @@ export function PortalPage() {
 
           <div className="portal-plan__card">
             <p className="portal-plan__label">
-              {fr ? "Surplus inclus · Dashboard mobile" : "Included surplus · Mobile dashboard"}
+              {fr ? "Tableau de bord mobile inclus" : "Included surplus · Mobile dashboard"}
             </p>
             <h2>{fr ? "Portail sur mobile" : "Portal on mobile"}</h2>
             <p className="portal-plan__price">{fr ? "Inclus avec Grow Hub" : "Included with Grow Hub"}</p>
-            <p className="lede" style={{ fontSize: "0.95rem" }}>
+            <p className="lede" >
               {fr
                 ? "Même Portail dans le navigateur mobile — ajoutez à l’écran d’accueil. Apps stores : bientôt."
                 : "Same Portal in mobile browser — add to home screen. App stores: coming soon."}
             </p>
             <Link className="btn btn--primary" to={path("/portail")}>
-              {fr ? "Ouvrir le dashboard mobile" : "Open mobile dashboard"}
+              {fr ? "Ouvrir le tableau de bord mobile" : "Open mobile dashboard"}
             </Link>
           </div>
 
           <div className="portal-plan__card">
             <p className="portal-plan__label">
-              {fr ? "Revenu #2 · Pack Cellulaire (optionnel)" : "Revenue #2 · Cellular Pack (optional)"}
+              {fr ? "Outils mobiles · Pack Cellulaire (optionnel)" : "Revenue #2 · Cellular Pack (optional)"}
             </p>
             <h2>
               {hasCell
@@ -669,9 +669,9 @@ export function PortalPage() {
                 <p className="portal-plan__price">
                   {`${modules.reduce((sum, m) => sum + (m.amountCad || 0), 0)} $ CAD / ${fr ? "mois" : "mo"}`}
                 </p>
-                <p className="lede" style={{ fontSize: "0.95rem" }}>
+                <p className="lede" >
                   {fr
-                    ? "Activation par l’équipe BlackWay : on te contacte pour brancher ton site ou ta ligne."
+                    ? "L’équipe BlackWay vous contacte pour configurer votre site ou votre ligne téléphonique."
                     : "Activated by the BlackWay team: we contact you to connect your website or phone line."}
                 </p>
               </>
@@ -689,7 +689,7 @@ export function PortalPage() {
           </div>
         </div>
 
-        <div className="portal-actions" style={{ marginTop: "1.5rem" }}>
+        <div className="portal-actions">
           <p className="portal-actions__label">{fr ? "Actions rapides" : "Quick actions"}</p>
           <div className="cta-row">
             <Link className="btn btn--primary" to={path("/diagnostic")}>
@@ -708,22 +708,21 @@ export function PortalPage() {
           <aside
             className="portal-upsell"
             style={{
-              marginTop: "1.75rem",
+
               padding: "1.25rem 1.5rem",
               border: "1px solid rgba(225,6,0,0.35)",
-              borderRadius: "4px",
-            }}
+              borderRadius: "4px"}}
           >
-            <p className="eyebrow">{fr ? "Upsell · Revenu #2" : "Upsell · Revenue #2"}</p>
-            <h2 className="display" style={{ fontSize: "1.5rem", margin: "0.35rem 0" }}>
-              {fr ? "Ajoute le Pack Cellulaire Fleet — 399 $/mois" : "Add Cellular Pack Fleet — $399/mo"}
+            <p className="eyebrow">{fr ? "Outils mobiles complémentaires" : "Upsell · Revenue #2"}</p>
+            <h2 className="display" >
+              {fr ? "Ajoutez le Pack Cellulaire Fleet — 399 $/mois" : "Add Cellular Pack Fleet — $399/mo"}
             </h2>
             <p className="lede">
               {fr
-                ? "Outils terrain (capture, pipeline, checkout prospect) — merge dans ce Portail. Dashboard mobile déjà inclus."
+                ? "Retrouvez vos outils de capture et de suivi commercial dans ce portail. Le tableau de bord mobile est déjà inclus."
                 : "Field tools (capture, pipeline, prospect checkout) — merge into this Portal. Mobile dashboard already included."}
             </p>
-            <div className="cta-row" style={{ marginTop: "1rem" }}>
+            <div className="cta-row">
               <Link className="btn btn--primary" to={path("/forfaits-cellulaire")}>
                 {fr ? "Voir Pack Cellulaire" : "See Cellular Pack"}
               </Link>
@@ -770,7 +769,7 @@ export function PortalPage() {
           <h2>{fr ? "Support & facturation" : "Support & billing"}</h2>
           <p>
             {fr
-              ? "Dashboard mobile inclus avec Grow Hub. Pack Cellulaire = surplus optionnel. Facturation : accounting@blackwayconnect.com."
+              ? "Tableau de bord mobile inclus avec Grow Hub. Pack Cellulaire = surplus optionnel. Facturation : accounting@blackwayconnect.com."
               : "Mobile dashboard included with Grow Hub. Cellular Pack = optional surplus. Billing: accounting@blackwayconnect.com."}
           </p>
           <div className="cta-row">
@@ -801,7 +800,7 @@ function ToolGrid(props: {
   const { title, tools, forfaitWeb, forfaitCell, fr, path, openSecretary, lockedCta, lockedLabel } = props;
   return (
     <>
-      <h2 className="portal-grid__title" style={{ marginTop: "2rem" }}>
+      <h2 className="portal-grid__title">
         {title}
       </h2>
       <div className="portal-grid">

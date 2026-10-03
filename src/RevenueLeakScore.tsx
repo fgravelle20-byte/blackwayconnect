@@ -191,7 +191,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             <button
               type="button"
               className="btn btn--ghost"
-              style={{ marginTop: "1rem" }}
+
               onClick={() => setStep((s) => s - 1)}
             >
               {sc.back}
@@ -244,7 +244,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             ))}
           </ul>
 
-          <div className="cta-row no-print" style={{ marginTop: "1rem" }}>
+          <div className="cta-row no-print">
             <button
               type="button"
               className="btn btn--ghost"
@@ -313,7 +313,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
             </form>
           </div>
 
-          <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
+          <div className="cta-row no-print">
             <a
               className="btn btn--primary"
               href={checkoutUrl(plan, { lang, source: "revenue_leak_score", content: "result_subscribe" })}

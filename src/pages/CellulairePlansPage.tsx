@@ -26,25 +26,25 @@ export function CellulairePlansPage() {
         <PageIntro image="/office-morning.jpg">
           <p className="eyebrow">
             {fr
-              ? "Revenu #2 optionnel · Pack Cellulaire / Terrain"
+              ? "Outils mobiles optionnels · Pack Cellulaire / Terrain"
               : "Optional revenue #2 · Cellular / Field Pack"}
           </p>
           <h1 className="display page-hero__title">
             {fr
-              ? "Outils terrain en surplus — merge avec ton Portail."
+              ? "Des outils mobiles réunis dans votre portail."
               : "Field tools as surplus — merge with your Portal."}
           </h1>
           <p className="lede">
             {fr
-              ? "Ce n’est pas l’app dashboard (déjà incluse avec Grow Hub). C’est un pack d’outils terrain différents (Signal → Command) qui se combine dans le même Portail Client Master."
+              ? "Le portail mobile est inclus avec Grow Hub. Le Pack Cellulaire ajoute des outils de terrain, de Signal à Command, dans le même espace client."
               : "This is not the dashboard app (already included with Grow Hub). It is a pack of different field tools (Signal → Command) that merges into the same Client Master Portal."}
           </p>
-          <div className="cta-row" style={{ marginTop: "1.25rem" }}>
+          <div className="cta-row">
             <Link className="btn btn--primary" to={path("/forfaits")}>
               {fr ? "D’abord : Grow Hub web (revenu #1)" : "First: Grow Hub web (revenue #1)"}
             </Link>
             <Link className="btn btn--ghost" to={path("/portail")}>
-              {fr ? "Dashboard mobile (inclus)" : "Mobile dashboard (included)"}
+              {fr ? "Tableau de bord mobile inclus" : "Mobile dashboard (included)"}
             </Link>
           </div>
         </PageIntro>
@@ -52,7 +52,7 @@ export function CellulairePlansPage() {
         <p className="form-status" role="status">
           {anyLive
             ? fr
-              ? "Essai gratuit 14 jours, paiement sécurisé Paddle. Le pack s’active dans ton Portail dès l’abonnement."
+              ? "Essai gratuit 14 jours, paiement sécurisé Paddle. Le pack s’active dans votre Portail dès l’abonnement."
               : "14-day free trial, secure Paddle payment. The pack unlocks in your Portal as soon as you subscribe."
             : fr
               ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Paddle sera proposé avec l’offre finale."
@@ -83,7 +83,7 @@ export function CellulairePlansPage() {
                   {plan.amountCad} $ / {fr ? "mois" : "mo"}
                 </p>
                 <p className="plan-item__blurb">{fr ? plan.blurbFr : plan.blurbEn}</p>
-                <ul className="plan-item__blurb" style={{ marginBottom: "1rem", paddingLeft: "1.1rem" }}>
+                <ul className="plan-item__blurb" style={{  paddingLeft: "1.1rem" }}>
                   {plan.tools
                     .filter((t) => t !== "support" && t !== "forfaits_cellulaire")
                     .map((t) => (
@@ -111,13 +111,13 @@ export function CellulairePlansPage() {
           })}
         </div>
 
-        <div id="outils" className="app-plans-lead" style={{ marginTop: "2.5rem" }}>
+        <div id="outils" className="app-plans-lead">
           <h2 className="display">
             {fr ? "Outils terrain (différents du web)" : "Field tools (different from web)"}
           </h2>
           <p className="lede">
             {fr
-              ? "Capture, pipeline mobile, checkout prospect, streak, fleet, merge web — pas le score/ROI/comparateur du site. Dashboard mobile = Portail (inclus)."
+              ? "Capture de demandes, suivi commercial mobile et coordination de vos activités : retrouvez vos outils de terrain dans votre portail client."
               : "Capture, mobile pipeline, prospect checkout, streak, fleet, web merge — not the site score/ROI/comparer. Mobile dashboard = Portal (included)."}
           </p>
         </div>
@@ -145,11 +145,11 @@ const TOOL_HREF: Record<string, string> = {
 
 function toolLabel(id: string, fr: boolean): string {
   const map: Record<string, { fr: string; en: string }> = {
-    cell_capture: { fr: "Capture lead terrain", en: "Field lead capture" },
+    cell_capture: { fr: "Capture prospect terrain", en: "Field lead capture" },
     cell_pipeline: { fr: "Pipeline mobile", en: "Mobile pipeline" },
     cell_checkout: { fr: "Checkout prospect", en: "Prospect checkout" },
     cell_streak: { fr: "Streak quotidien", en: "Daily streak" },
-    cell_fleet_ops: { fr: "Ops multi-user", en: "Multi-user ops" },
+    cell_fleet_ops: { fr: "Opérations multi-user", en: "Multi-user ops" },
     cell_merge: { fr: "Merge Grow Hub web", en: "Merge Grow Hub web" },
   };
   const row = map[id];

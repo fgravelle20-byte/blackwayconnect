@@ -90,7 +90,7 @@ export function Layout() {
       <header className="site-header">
         <div className="contact-bar">
           <div className="shell contact-bar__inner">
-            <span>{lang === "fr" ? "Parler a BlackWay" : "Talk to BlackWay"}</span>
+            <span>{lang === "fr" ? "Parler à BlackWay" : "Talk to BlackWay"}</span>
             <a href={PHONES.tollFree.href} aria-label={`${lang === "fr" ? "Appeler" : "Call"} ${PHONES.tollFree.display}`}>
               {PHONES.tollFree.display}
             </a>

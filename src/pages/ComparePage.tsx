@@ -142,7 +142,7 @@ export function ComparePage() {
           </table>
         </div>
 
-        <div className="cta-row" style={{ marginTop: "2.25rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--primary" to={path("/forfaits")}>
             {fr ? `Voir les forfaits (dès ${hero} $ Growth)` : `See plans (from $${hero} Growth)`}
           </Link>

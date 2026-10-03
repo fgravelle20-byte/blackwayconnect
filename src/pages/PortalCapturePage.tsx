@@ -132,7 +132,7 @@ export function PortalCapturePage() {
                 : "Field capture → BlackWay CRM. Portal sign-in is optional to link the account."}
           </p>
           {!session ? (
-            <p className="cta-row" style={{ marginTop: "0.75rem" }}>
+            <p className="cta-row">
               <Link className="btn btn--ghost" to={path("/portail")}>
                 {fr ? "Connexion portail" : "Portal sign-in"}
               </Link>
@@ -195,7 +195,7 @@ export function PortalCapturePage() {
           {status === "ok" && (
             <p className="form-status form-status--ok">
               {fr
-                ? `Lead créé${score != null ? ` · score ${score}` : ""}. Visible dans ton pipeline.`
+                ? `Prospect créé${score != null ? ` · score ${score}` : ""}. Visible dans votre suivi commercial.`
                 : `Lead created${score != null ? ` · score ${score}` : ""}. Visible in your pipeline.`}
             </p>
           )}
@@ -206,7 +206,7 @@ export function PortalCapturePage() {
           )}
         </form>
 
-        <div className="cta-row" style={{ marginTop: "1.5rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--ghost" to={path("/portail")}>
             {fr ? "← Portail" : "← Portal"}
           </Link>

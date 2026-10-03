@@ -44,7 +44,7 @@ export function GrowthLandingPage() {
                 ? "Score, relances, soumissions et portail sont inclus. Essai de 14 jours, annulable."
                 : "Scoring, follow-ups, quotes and the portal are included. 14-day trial, cancel anytime."}
             </p>
-            <div className="cta-row" style={{ marginTop: "1.5rem" }}>
+            <div className="cta-row">
               <a
                 className="btn btn--primary"
                 href={href}
@@ -61,7 +61,7 @@ export function GrowthLandingPage() {
                 {fr ? "D’abord : Leak Score 60 s" : "First: 60s Leak Score"}
               </Link>
             </div>
-            <p className="lede" style={{ marginTop: "1.25rem" }}>
+            <p className="lede">
               {fr ? "Humain local :" : "Local human:"}{" "}
               <a href={PHONES.local.href}>{PHONES.local.display}</a>
               {" · "}
@@ -72,14 +72,14 @@ export function GrowthLandingPage() {
             </p>
           </PageIntro>
 
-          <ul className="lede" style={{ maxWidth: "36rem", marginTop: "2rem", paddingLeft: "1.2rem" }}>
+          <ul className="lede" style={{ maxWidth: "36rem",  paddingLeft: "1.2rem" }}>
             <li>{fr ? "Pipeline + CRM BlackWay branché — prochaine action claire" : "Pipeline + BlackWay CRM — clear next action"}</li>
-            <li>{fr ? "Portail Master + accès mobile le jour 1" : "Master Portal + mobile access on day one"}</li>
+            <li>{fr ? "portail client + accès mobile le jour 1" : "Master Portal + mobile access on day one"}</li>
             <li>{fr ? "Secrétaire IA 24h sur le site" : "AI Secretary 24/7 on the site"}</li>
             <li>{fr ? "Paddle. Annulable. Upsell Cellulaire optionnel." : "Paddle. Cancel anytime. Optional Cellular upsell."}</li>
           </ul>
 
-          <p className="lede" style={{ marginTop: "2rem" }}>
+          <p className="lede">
             <Link to={path("/forfaits")}>
               {fr ? "Voir tous les paliers Spark → Partner" : "See all tiers Spark → Partner"}
             </Link>

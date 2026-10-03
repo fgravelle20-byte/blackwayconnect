@@ -160,7 +160,7 @@ export function HomePage() {
         <div className="shell">
           <div className="market">
             <h2>{t.marketTitle}</h2>
-            <p style={{ marginTop: "0.85rem" }}>{t.marketBody}</p>
+            <p>{t.marketBody}</p>
           </div>
         </div>
       </section>
@@ -179,7 +179,7 @@ export function HomePage() {
               </details>
             ))}
           </div>
-          <div className="cta-row" style={{ marginTop: "1.75rem" }}>
+          <div className="cta-row">
             <Link className="btn btn--primary" to={path("/faq")}>
               {t.nav.faq}
             </Link>

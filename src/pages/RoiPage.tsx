@@ -113,7 +113,7 @@ export function RoiPage() {
               <span>{fr ? "ROI indicatif" : "Indicative ROI"}</span>
               <strong>{result.roi}×</strong>
             </p>
-            <div className="cta-row" style={{ marginTop: "1.25rem" }}>
+            <div className="cta-row">
               <a
                 className="btn btn--primary"
                 href={checkoutUrl(result.plan, { lang, source: "roi_calculator", content: "roi_subscribe" })}

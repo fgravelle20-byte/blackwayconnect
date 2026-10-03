@@ -26,7 +26,7 @@ export function FieldStrip() {
             />
           ))}
         </div>
-        <div className="cta-row" style={{ marginTop: "1.75rem" }}>
+        <div className="cta-row">
           <Link className="btn btn--primary" to={path("/qui-sommes-nous")}>
             {t.nav.mission}
           </Link>

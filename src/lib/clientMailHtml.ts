@@ -39,7 +39,7 @@ function signature(p: FollowupMail, shop: string) {
 export function followupSubject(p: FollowupMail) {
   const first = p.buyerName.trim().split(/\s+/)[0] || "";
   const shop = p.vendorCompany.trim();
-  if (p.fr) return `${first ? `${first}, o` : "O"}n a gardé ta place${shop ? ` — ${shop}` : ""}`;
+  if (p.fr) return `${first ? `${first}, o` : "O"}n a conservé votre place${shop ? ` — ${shop}` : ""}`;
   return `${first ? `${first}, w` : "W"}e kept your spot${shop ? ` — ${shop}` : ""}`;
 }
 
@@ -47,10 +47,10 @@ export function followupText(p: FollowupMail) {
   const who = p.buyerName.trim() || (p.fr ? "bonjour" : "there");
   const shop = p.vendorCompany.trim() || (p.fr ? "notre équipe" : "our team");
   const amt = p.amountCad.toLocaleString(p.fr ? "fr-CA" : "en-CA");
-  const pay = p.payUrl.trim() || (p.fr ? "(ajoute ton lien de paiement)" : "(add your payment link)");
+  const pay = p.payUrl.trim() || (p.fr ? "(ajoutez votre lien de paiement)" : "(add your payment link)");
   const sign = signature(p, shop).join(" · ");
   if (p.fr) {
-    return `Bonjour ${who},\n\nOn a gardé ta place. Le montant en attente est ${amt} $ CAD.\n\nPayer / confirmer : ${pay}\n\nDes questions ? Réponds à ce courriel.\n\n— ${sign || shop}`;
+    return `Bonjour ${who},\n\nOn a conservé votre place. Le montant en attente est ${amt} $ CAD.\n\nPayer / confirmer : ${pay}\n\nDes questions ? Répondez à ce courriel.\n\n— ${sign || shop}`;
   }
   return `Hi ${who},\n\nWe kept your spot. The amount waiting is $${amt} CAD.\n\nPay / confirm: ${pay}\n\nQuestions? Just reply.\n\n— ${sign || shop}`;
 }
@@ -66,14 +66,14 @@ export function followupHtml(p: FollowupMail) {
   const link = httpUrl(pay);
   const cta = fr ? "Ouvrir le paiement" : "Open payment";
   const blurb = fr
-    ? `On a gardé ta place. Montant en attente : <strong style="color:#fff;">${amt} $ CAD</strong>. Un clic — pas de pièce jointe.`
+    ? `On a conservé votre place. Montant en attente : <strong style="color:#fff;">${amt} $ CAD</strong>. Un clic — pas de pièce jointe.`
     : `We kept your spot. Amount waiting: <strong style="color:#fff;">$${amt} CAD</strong>. One click — no attachment.`;
   const btn = link
-    ? `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:8px;background:#e10600;"><a href="${escHtml(link)}" style="display:inline-block;padding:14px 22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;">${cta}</a></td></tr></table>
+    ? `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:8px;background:#e10600;"><a href="${escHtml(link)}" style="display:inline-block;padding:14px 22px;font-family:Geist Mono,monospace;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;">${cta}</a></td></tr></table>
        <p style="margin:22px 0 0;font-size:13px;color:#8a8a8a;word-break:break-all;">${escHtml(link)}</p>`
     : pay
       ? `<p style="margin:0;padding:14px 16px;border-left:3px solid #e10600;background:#111111;color:#ffffff;"><strong>${fr ? "Pour payer :" : "To pay:"}</strong> ${escHtml(pay)}</p>`
-      : `<p style="margin:0;color:#e10600;font-size:14px;">${fr ? "Ajoute ton lien de paiement (Interac, facture, Paddle…)." : "Add your payment link (e-transfer, invoice, Paddle…)."}</p>`;
+      : `<p style="margin:0;color:#e10600;font-size:14px;">${fr ? "Ajoutez votre lien de paiement (Interac, facture, Paddle…)." : "Add your payment link (e-transfer, invoice, Paddle…)."}</p>`;
   const footer = signature(p, p.vendorCompany.trim() || (fr ? "Votre entreprise" : "Your company"))
     .map(escHtml)
     .join(" · ");
@@ -87,19 +87,19 @@ export function followupHtml(p: FollowupMail) {
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #2a2a2a;">
         <tr>
           <td style="background:#0a0a0a;padding:22px 28px;border-bottom:3px solid #e10600;">
-            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#e10600;">${shop}</p>
-            <p style="margin:6px 0 0;font-family:Georgia,Times,serif;font-size:22px;color:#ffffff;">${fr ? "On a gardé ta place." : "We kept your spot."}</p>
+            <p style="margin:0;font-family:Geist Mono,monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#e10600;">${shop}</p>
+            <p style="margin:6px 0 0;font-family:Outfit,sans-serif;font-size:22px;color:#ffffff;">${fr ? "Nous avons conservé votre place." : "We kept your spot."}</p>
           </td>
         </tr>
         <tr>
-          <td style="padding:28px;font-family:Arial,Helvetica,sans-serif;color:#e8e8e8;font-size:16px;line-height:1.55;">
+          <td style="padding:28px;font-family:Geist Mono,monospace;color:#e8e8e8;font-size:16px;line-height:1.55;">
             <p style="margin:0 0 16px;color:#ffffff;font-size:18px;">${hello}</p>
             <p style="margin:0 0 24px;color:#cfcfcf;">${blurb}</p>
             ${btn}
           </td>
         </tr>
         <tr>
-          <td style="padding:18px 28px 24px;border-top:1px solid #2a2a2a;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888888;">
+          <td style="padding:18px 28px 24px;border-top:1px solid #2a2a2a;font-family:Geist Mono,monospace;font-size:12px;color:#888888;">
             ${footer}
           </td>
         </tr>

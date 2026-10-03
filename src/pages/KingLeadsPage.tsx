@@ -10,7 +10,7 @@ export function KingLeadsPage() {
         <div className="page-hero">
           <p className="eyebrow">MASTER LEADS · WORLD</p>
           <h1 className="display page-hero__title">
-            {fr ? "Leads entreprise. Partout." : "Company leads. Anywhere."}
+            {fr ? "Des demandes pour votre entreprise." : "Company leads. Anywhere."}
           </h1>
           <p className="lede">
             {fr

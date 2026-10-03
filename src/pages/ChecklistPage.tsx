@@ -137,18 +137,18 @@ export function ChecklistPage() {
     <section className="section section--page section--tools">
       <div className="shell">
         <div className="page-hero no-print">
-          <p className="eyebrow">{fr ? "Master Tools · Checklist" : "Master Tools · Checklist"}</p>
+          <p className="eyebrow">{fr ? "Outils de travail · Liste de vérification" : "Master Tools · Checklist"}</p>
           <h1 className="display page-hero__title">
             {fr ? "Coche. Imprime. Avance." : "Check. Print. Move."}
           </h1>
           <p className="lede">
             {fr
-              ? `Ops BlackWay ${opsPct} % · ta fermeture 7 jours ${closePct} %. Rien n’est derrière un mur email.`
+              ? `Opérations BlackWay : ${opsPct} % · votre suivi sur 7 jours : ${closePct} %. Aucun courriel requis.`
               : `BlackWay ops ${opsPct}% · your 7-day close ${closePct}%. Nothing behind an email wall.`}
           </p>
         </div>
 
-        <div className="tools-panel" style={{ marginTop: 0, borderTop: "none", paddingTop: 0 }}>
+        <div className="tools-panel" style={{  borderTop: "none", paddingTop: 0 }}>
           <h2>{fr ? `Ops BlackWay · ${opsPct} %` : `BlackWay ops · ${opsPct}%`}</h2>
           <ul className="checklist-magnet checklist-magnet--boxes">
             {ops.map((item) => (
@@ -161,7 +161,7 @@ export function ChecklistPage() {
             ))}
           </ul>
 
-          <h2 style={{ marginTop: "2rem" }}>{fr ? `Ta fermeture 7 jours · ${closePct} %` : `Your 7-day close · ${closePct}%`}</h2>
+          <h2 >{fr ? `Ta fermeture 7 jours · ${closePct} %` : `Your 7-day close · ${closePct}%`}</h2>
           <ul className="checklist-magnet checklist-magnet--boxes">
             {close.map((row) => (
               <li key={row.id}>
@@ -186,7 +186,7 @@ export function ChecklistPage() {
               </li>
             ))}
           </ul>
-          <div className="cta-row no-print" style={{ marginTop: "1rem" }}>
+          <div className="cta-row no-print">
             <input
               className="checklist-add"
               value={draft}
@@ -242,7 +242,7 @@ export function ChecklistPage() {
           {status === "err" && <p className="form-status form-status--err">{fr ? "Envoi impossible." : "Could not send."}</p>}
         </form>
 
-        <div className="cta-row no-print" style={{ marginTop: "1.5rem" }}>
+        <div className="cta-row no-print">
           <a
             className="btn btn--ghost"
             href={growthHref}
@@ -255,7 +255,7 @@ export function ChecklistPage() {
               : `BlackWay Growth — $${PLANS[FEATURED_PLAN].amountCad}/mo`}
           </a>
           <Link className="btn btn--ghost" to={path("/outils")}>
-            {fr ? "← Master Tools" : "← Master Tools"}
+            {fr ? "← Outils de travail" : "← Master Tools"}
           </Link>
         </div>
       </div>

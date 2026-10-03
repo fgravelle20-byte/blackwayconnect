@@ -49,8 +49,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
   const fr = lang === "fr";
   const map: Record<string, PageSeo> = {
     home: {
-      title: fr ? "Du premier lead au paiement" : "From the first lead to payment",
-      ogTitle: fr ? "BlackWayConnect — du lead au paiement" : "BlackWayConnect — from lead to payment",
+      title: fr ? "Du premier prospect au paiement" : "From the first lead to payment",
+      ogTitle: fr ? "BlackWayConnect — du prospect au paiement" : "BlackWayConnect — from lead to payment",
       description: fr
         ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, essai de 14 jours."
         : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars, 14-day trial.",
@@ -58,43 +58,43 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     outils: {
       title: fr ? "Outils pour la prochaine action" : "Tools for the next step",
       ogTitle: fr
-        ? "Master Tools — Leak Score, relance, soumission"
+        ? "Outils de travail — diagnostic commercial, relance, soumission"
         : "Master Tools — Leak Score, recovery, quotes",
       description: fr
-        ? "Leak Score, courriel de relance, soumission à ton nom, checklist, ROI — 2 minutes, tu sors avec un fichier ou un mail."
+        ? "Préparez vos relances, vos soumissions et vos listes de suivi. Évaluez vos priorités et le rendement estimé de vos activités."
         : "Leak Score, follow-up email, quote in your name, checklist, ROI — 2 minutes, you leave with a file or an email.",
     },
     "outils/relance-panier": {
       title: fr ? "Courriel de relance panier / devis" : "Cart / quote follow-up email",
-      ogTitle: fr ? "Relance prête à coller — ton nom, ton lien" : "Follow-up ready to paste — your name, your link",
+      ogTitle: fr ? "Relance prête à coller — votre nom, votre lien" : "Follow-up ready to paste — your name, your link",
       description: fr
-        ? "Génère le courriel de relance HTML ou texte pour tes paniers abandonnés, à ton nom avec ton lien de paiement. Copie, colle dans Gmail."
+        ? "Générez le courriel de relance HTML ou texte pour vos paniers abandonnés, à votre nom avec votre lien de paiement. Copiez, collez dans Gmail."
         : "Generate the HTML or text follow-up for abandoned carts, in your name with your payment link. Copy, paste into Gmail.",
     },
     "outils/soumission": {
-      title: fr ? "Soumission à ton nom — imprimable" : "Quote in your name — printable",
-      ogTitle: fr ? "Soumission à ton nom en 2 minutes" : "Quote in your name in 2 minutes",
+      title: fr ? "Soumission à votre nom — imprimable" : "Quote in your name — printable",
+      ogTitle: fr ? "Soumission à votre nom en 2 minutes" : "Quote in your name in 2 minutes",
       description: fr
-        ? "Devis à ta raison sociale avec ton lien de paiement. Copie, imprime en PDF, garde une copie locale."
+        ? "Devis à votre raison sociale avec votre lien de paiement. Copiez, imprimez en PDF, gardez une copie locale."
         : "Quote under your business name with your payment link. Copy, print to PDF, keep a local copy.",
     },
     "outils/checklist": {
-      title: fr ? "Checklist fermeture 7 jours" : "7-day close checklist",
-      ogTitle: fr ? "Checklist fermeture 7 jours — sans courriel" : "7-day close checklist — no email needed",
+      title: fr ? "Liste de vérification fermeture 7 jours" : "7-day close checklist",
+      ogTitle: fr ? "Liste de vérification fermeture 7 jours — sans courriel" : "7-day close checklist — no email needed",
       description: fr
         ? "Cases à cocher sauvegardées, liste de fermeture éditable, impression PDF. Aucun courriel requis."
         : "Saved checkboxes, editable close list, print to PDF. No email required.",
     },
     tools: {
-      title: "Master Tools",
+      title: fr ? "Outils de travail" : "Master Tools",
       description: fr
         ? "Arsenal d’outils BlackWayConnect pour diagnostiquer les fuites revenu et choisir un forfait Grow Hub."
         : "BlackWayConnect toolkit to diagnose revenue leaks and choose a Grow Hub plan.",
     },
     "grow-hub": {
-      title: fr ? "Grow Hub — aperçu pipeline" : "Grow Hub — pipeline preview",
+      title: fr ? "Grow Hub — aperçu suivi commercial" : "Grow Hub — pipeline preview",
       ogTitle: fr
-        ? "Grow Hub — pipeline bilingue interactif"
+        ? "Grow Hub — suivi commercial bilingue interactif"
         : "Grow Hub — interactive bilingual pipeline",
       description: fr
         ? "Pipeline bilingue interactif : prochaines actions, étapes et chemin vers l’abonnement Grow Hub."
@@ -113,9 +113,9 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     },
     "forfaits-growth": {
       title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
-      ogTitle: fr ? "Growth 349 $ — ferme plus de leads" : "Growth $349 — close more leads",
+      ogTitle: fr ? "Growth 349 $ — ferme plus de prospects" : "Growth $349 — close more leads",
       description: fr
-        ? "Landing pub : Grow Hub Growth 349 $ CAD/mois. Essai 14 jours, Portail + dashboard mobile inclus. Paddle."
+        ? "Forfait Grow Hub Growth 349 $ CAD/mois. Essai 14 jours, Portail + tableau de bord mobile inclus. Paddle."
         : "Ad landing: Grow Hub Growth $349 CAD/mo. 14-day trial, Portal + mobile dashboard included. Paddle.",
     },
     "forfaits-cellulaire": {
@@ -126,7 +126,7 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Pack Cellulaire — 79 $ à 799 $ CAD/mois (optionnel)"
         : "Cellular Pack — $79 to $799 CAD/mo (optional)",
       description: fr
-        ? "Revenu #2 optionnel : outils terrain. Dashboard mobile = Portail inclus avec Grow Hub. Les deux se combinent dans le Portail Client Master."
+        ? "Outils mobiles optionnels : outils terrain. Tableau de bord mobile = Portail inclus avec Grow Hub. Les deux se combinent dans le portail client."
         : "Optional revenue #2: field tools. Mobile dashboard = Portal included with Grow Hub. Both merge in Client Master Portal.",
     },
     "modules-ia": {
@@ -135,7 +135,7 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Chatbot IA dès 99 $ · Accueil vocal IA dès 149 $ CAD/mois"
         : "AI Chatbot from $99 · AI Voice reception from $149 CAD/mo",
       description: fr
-        ? "Chatbot IA pour ton site et accueil vocal IA pour ta ligne téléphonique. Abonnement mensuel Paddle, activé dans ton Portail Client Master."
+        ? "Chatbot IA pour votre site et accueil vocal IA pour votre ligne téléphonique. Abonnement mensuel Paddle, activé dans votre portail client."
         : "AI chatbot for your website and AI voice reception for your phone line. Monthly Paddle subscription, activated in your Client Master Portal.",
     },
     "app-forfaits": {
@@ -147,19 +147,19 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     "comment-ca-marche": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
       ogTitle: fr
-        ? "Comment ça marche — paie, le forfait s’active"
+        ? "Comment fonctionne BlackWayConnect"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis ton forfait (Spark à Partner), paie avec Paddle, puis le Portail s’active automatiquement."
+        ? "Choisissez votre forfait (Spark à Partner), payez avec Paddle, puis le Portail s’active automatiquement."
         : "Pick your plan (Spark to Partner), pay with Paddle, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
       ogTitle: fr
-        ? "Comment ça marche — paie, le forfait s’active"
+        ? "Comment fonctionne BlackWayConnect"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisis ton forfait, paie avec Paddle, activation auto du Portail (bw_forfait), puis tu contrôles."
+        ? "Choisissez votre forfait, payez avec Paddle, activation auto du Portail (bw_forfait), puis vous contrôlez."
         : "Pick a plan, pay on Paddle, Portal auto-activates (bw_forfait), then you control.",
     },
     diagnostic: {
@@ -174,55 +174,55 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     portail: {
       title: fr ? "Portail Client Master" : "Client Master Portal",
       ogTitle: fr
-        ? "Portail Client — dashboard web et mobile"
+        ? "Portail Client — tableau de bord web et mobile"
         : "Client Portal — web and mobile dashboard",
       description: fr
-        ? "Accédez à votre Portail Client Master après paiement Grow Hub. Outils, forfaits et support — un seul dashboard."
+        ? "Accédez à votre portail client après paiement Grow Hub. Outils, forfaits et support — un seul tableau de bord."
         : "Access your Client Master Portal after Grow Hub payment. Tools, plans and support — one dashboard.",
     },
     portal: {
       title: fr ? "Portail Client Master" : "Client Master Portal",
       description: fr
-        ? "Accédez à votre Portail Client Master après paiement Grow Hub."
+        ? "Accédez à votre portail client après paiement Grow Hub."
         : "Access your Client Master Portal after Grow Hub payment.",
     },
     score: {
       title: "Revenue Leak Score",
       description: fr
-        ? "Calculez où votre revenu fuit entre le lead et le paiement."
+        ? "Calculez où votre revenu fuit entre le prospect et le paiement."
         : "See where revenue leaks between lead and payment.",
     },
     services: {
       title: "Services",
       description: fr
-        ? "Sites haute conversion, apps, agents IA et SEO — toujours branchés sur une seule provenance revenu."
+        ? "Sites web, applications, agents IA et référencement : des solutions reliées à votre suivi commercial."
         : "High-conversion sites, apps, AI agents and SEO — always wired to one revenue provenance.",
     },
     equipe: {
       title: fr ? "Équipe" : "Team",
       description: fr
-        ? "Stratèges, builders et opérateurs derrière BlackWayConnect — focalisés sur le revenu encaissé."
+        ? "Stratèges, concepteurs et opérateurs derrière BlackWayConnect — focalisés sur le revenu encaissé."
         : "Strategists, builders and operators behind BlackWayConnect — focused on cash collected.",
     },
     "qui-sommes-nous": {
       title: fr ? "Qui nous sommes · Notre mission" : "Who we are · Our mission",
       ogTitle: fr
-        ? "BlackWayConnect — du lead au revenu, sans fuite"
+        ? "BlackWayConnect — du prospect au revenu, sans fuite"
         : "BlackWayConnect — lead to revenue, no leakage",
       description: fr
-        ? "Mission BlackWayConnect : système commercial bilingue lead-to-revenue — né au Québec, conçu pour le monde."
+        ? "Mission BlackWayConnect : système commercial bilingue de la demande au revenu — né au Québec, conçu pour le monde."
         : "BlackWayConnect mission: bilingual lead-to-revenue commercial system — born in Québec, built for the world.",
     },
     mission: {
       title: fr ? "Notre mission" : "Our mission",
       description: fr
-        ? "Du lead au revenu, sans fuite — vision, valeurs et équipe BlackWayConnect."
+        ? "Du prospect au revenu, sans fuite — vision, valeurs et équipe BlackWayConnect."
         : "Lead to revenue, no leakage — BlackWayConnect vision, values and team.",
     },
     faq: {
       title: "FAQ",
       description: fr
-        ? "Abonnement Paddle, service 24h, bureaux, leads, bilingue FR/EN et choix de forfait — réponses courtes."
+        ? "Abonnement Paddle, service 24h, bureaux, prospects, bilingue FR/EN et choix de forfait — réponses courtes."
         : "Paddle subscribe, 24/7 service, office, leads, bilingual FR/EN and plan choice — short answers.",
     },
     contact: {
@@ -234,13 +234,13 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     merci: {
       title: fr ? "Client actif — prochaines étapes" : "Active client — next steps",
       description: fr
-        ? "Paiement ou demande reçue. Checklist d’activation Grow Hub, CRM et contact."
+        ? "Paiement ou demande reçue. Liste de vérification d’activation Grow Hub, CRM et contact."
         : "Payment or request received. Grow Hub activation checklist, CRM and contact.",
     },
     "thank-you": {
       title: fr ? "Active client — next steps" : "Active client — next steps",
       description: fr
-        ? "Paiement ou demande reçue. Checklist d’activation Grow Hub, CRM et contact."
+        ? "Paiement ou demande reçue. Liste de vérification d’activation Grow Hub, CRM et contact."
         : "Payment or request received. Grow Hub activation checklist, CRM and contact.",
     },
   };
@@ -290,7 +290,7 @@ function buildJsonLd(lang: "fr" | "en", canonical: string, pageKey: string) {
     inLanguage: ["fr-CA", "en-CA"],
     publisher: { "@id": orgId },
     description: fr
-      ? "Plateforme lead-to-revenue bilingue — née au Québec, conçue pour le monde."
+      ? "Plateforme de la demande au revenu bilingue — née au Québec, conçue pour le monde."
       : "Bilingual lead-to-revenue platform — born in Québec, built for the world.",
   };
 
@@ -312,7 +312,7 @@ function buildJsonLd(lang: "fr" | "en", canonical: string, pageKey: string) {
         offerCount: "6",
       },
       description: fr
-        ? "Pipeline bilingue lead-to-revenue : relances, soumissions, paiements et CRM."
+        ? "Pipeline bilingue de la demande au revenu : relances, soumissions, paiements et CRM."
         : "Bilingual lead-to-revenue pipeline: follow-ups, quotes, payments and CRM.",
       publisher: { "@id": orgId },
       inLanguage: lang === "fr" ? "fr-CA" : "en-CA",
@@ -328,7 +328,7 @@ function buildJsonLd(lang: "fr" | "en", canonical: string, pageKey: string) {
       operatingSystem: "Web",
       url: canonical,
       description: fr
-        ? "Diagnostic 60 secondes des fuites revenu entre le lead et le paiement."
+        ? "Diagnostic 60 secondes des fuites revenu entre le prospect et le paiement."
         : "60-second diagnostic of revenue leaks between lead and payment.",
       publisher: { "@id": orgId },
       inLanguage: lang === "fr" ? "fr-CA" : "en-CA",
@@ -433,7 +433,7 @@ export function Seo() {
       "property",
       "og:image:alt",
       lang === "fr"
-        ? "BlackWayConnect — plateforme lead-to-revenue"
+        ? "BlackWayConnect — plateforme de la demande au revenu"
         : "BlackWayConnect — lead-to-revenue platform",
     );
 
@@ -445,7 +445,7 @@ export function Seo() {
       "name",
       "twitter:image:alt",
       lang === "fr"
-        ? "BlackWayConnect — plateforme lead-to-revenue"
+        ? "BlackWayConnect — plateforme de la demande au revenu"
         : "BlackWayConnect — lead-to-revenue platform",
     );
 

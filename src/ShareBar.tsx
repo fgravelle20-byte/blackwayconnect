@@ -37,31 +37,31 @@ function shareCopy(variant: ShareVariant, lang: "fr" | "en"): ShareCopy {
     home: {
       title: "BlackWayConnect",
       text: fr
-        ? "BlackWayConnect — plateforme lead-to-revenue bilingue (CA/US). Un système pour fermer plus."
+        ? "BlackWayConnect — plateforme de la demande au revenu bilingue (CA/US). Un système pour fermer plus."
         : "BlackWayConnect — bilingual lead-to-revenue platform (CA/US). One system to close more.",
-      proofTitle: fr ? "Faites circuler le système, pas un compteur fantôme." : "Spread the system — not a fake counter.",
+      proofTitle: fr ? "Partagez BlackWayConnect avec votre équipe." : "Spread the system — not a fake counter.",
       proofBody: fr
-        ? "Pas de « 500k likes ». Quand une équipe partage BlackWayConnect, Master Tools et le Leak Score voyagent pour de vrai."
+        ? "Faites découvrir les outils de travail et le diagnostic commercial aux personnes qui participent à vos ventes."
         : "No “500k likes.” When a team shares BlackWayConnect, Master Tools and Leak Score travel for real.",
     },
     diagnostic: {
       title: fr ? "Revenue Leak Score — BlackWayConnect" : "Revenue Leak Score — BlackWayConnect",
       text: fr
-        ? "J’ai fait le Revenue Leak Score (60 s). Diagnostic de fuite lead → paiement. Essayez-le :"
+        ? "J’ai fait le Revenue Leak Score (60 s). Diagnostic de fuite prospect → paiement. Essayez-le :"
         : "I ran the Revenue Leak Score (60s). Lead → payment leak diagnostic. Try it:",
       proofTitle: fr ? "Partagez ce diagnostic" : "Share this diagnostic",
       proofBody: fr
-        ? "Le Leak Score se propage quand les équipes l’envoient. Un lien clair vaut mieux qu’un compteur inventé."
+        ? "Le diagnostic commercial se propage quand les équipes l’envoient. Un lien clair vaut mieux qu’un compteur inventé."
         : "Leak Score spreads when teams send it. A clear link beats an invented counter.",
     },
     outils: {
-      title: fr ? "Master Tools — BlackWayConnect" : "Master Tools — BlackWayConnect",
+      title: fr ? "Outils de travail — BlackWayConnect" : "Master Tools — BlackWayConnect",
       text: fr
-        ? "Master Tools : Leak Score, relance panier, soumission Paddle, checklist, Grow Hub, ROI. Arsenal lead-to-revenue :"
+        ? "Outils de travail : diagnostic commercial, relance panier, soumission Paddle, liste de vérification, Grow Hub, ROI. Arsenal de la demande au revenu :"
         : "Master Tools: Leak Score, cart recovery, Paddle quotes, checklist, Grow Hub, ROI. Lead-to-revenue arsenal:",
       proofTitle: fr ? "Partagez ces outils" : "Share these tools",
       proofBody: fr
-        ? "Envoyez Master Tools à un associé. Viralité honnête : un kit utile, pas des likes fictifs."
+        ? "Partagez ces outils avec un associé pour préparer vos prochaines actions ensemble."
         : "Send Master Tools to a partner. Honest virality: a useful kit, not fake likes.",
     },
     forfaits: {
@@ -77,11 +77,11 @@ function shareCopy(variant: ShareVariant, lang: "fr" | "en"): ShareCopy {
     "grow-hub": {
       title: fr ? "Grow Hub — BlackWayConnect" : "Grow Hub — BlackWayConnect",
       text: fr
-        ? "Aperçu Grow Hub : pipeline bilingue, prochaines actions, chemin vers l’abonnement."
+        ? "Aperçu Grow Hub : suivi commercial bilingue, prochaines actions, chemin vers l’abonnement."
         : "Grow Hub preview: bilingual pipeline, next actions, path to subscribe.",
       proofTitle: fr ? "Partagez Grow Hub" : "Share Grow Hub",
       proofBody: fr
-        ? "Montrez le pipeline. Momentum réel = partages utiles, pas des badges inventés."
+        ? "Montrez à votre équipe comment centraliser les dossiers et préparer les prochaines actions."
         : "Show the pipeline. Real momentum = useful shares, not invented badges.",
     },
   };
