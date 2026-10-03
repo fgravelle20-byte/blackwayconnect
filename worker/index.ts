@@ -5,7 +5,9 @@ import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
 import { authorizeOwner } from "./ownerAuth";
 import { crmAuthorized, crmCookieHeader, crmLoginOk, getEngine, listCrm, patchCrm, recordSiteLead, tickCrm } from "./crm";
 
-export interface Env {
+import { handleIntegrations, type IntegrationEnv } from "./integrations";
+
+export interface Env extends IntegrationEnv {
   ASSETS: Fetcher;
   PIPE_URL: string;
   BW_LEAD_KEY: string;
@@ -261,6 +263,10 @@ export default {
     if (url.hostname === "www.blackwayconnect.com") {
       url.hostname = "blackwayconnect.com";
       return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.pathname === "/api/integrations" || url.pathname.startsWith("/api/integrations/")) {
+      return handleIntegrations(request, env);
     }
 
     // Keep the owner page private even when a GitHub merge deploys before Access setup.

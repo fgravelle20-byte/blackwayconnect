@@ -502,6 +502,8 @@ export function PortalPage() {
           </button>
         </header>
 
+        <p><Link className="btn btn--primary" to={path("/portail/connexions")}>{fr ? "Mes connexions — Google, Outlook, Jira" : "My connections — Google, Outlook, Jira"}</Link></p>
+
         <div className="portal-status" role="status">
           <span className="portal-status__dot" aria-hidden />
           {fr
