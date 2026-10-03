@@ -14,9 +14,9 @@ const PLANS = [
   { value: "cell_route", label: "Cellulaire · Route 199$" },
   { value: "cell_fleet", label: "Cellulaire · Fleet 399$" },
   { value: "cell_command", label: "Cellulaire · Command 799$" },
-  { value: "enterprise", label: "Entreprise / custom" },
+  { value: "enterprise", label: "Entreprise sur mesure" },
   { value: "website_lead_launch", label: "Site Fondation" },
-  { value: "revenue_system", label: "Systeme Revenu" },
+  { value: "revenue_system", label: "Système de revenus" },
   { value: "ai_scale", label: "Application mobile & IA" },
 ];
 

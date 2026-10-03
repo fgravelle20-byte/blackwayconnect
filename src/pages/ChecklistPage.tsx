@@ -139,7 +139,7 @@ export function ChecklistPage() {
         <div className="page-hero no-print">
           <p className="eyebrow">{fr ? "Outils de travail · Liste de vérification" : "Master Tools · Checklist"}</p>
           <h1 className="display page-hero__title">
-            {fr ? "Coche. Imprime. Avance." : "Check. Print. Move."}
+            {fr ? "Votre suivi, étape par étape." : "Check. Print. Move."}
           </h1>
           <p className="lede">
             {fr
@@ -149,7 +149,7 @@ export function ChecklistPage() {
         </div>
 
         <div className="tools-panel" style={{  borderTop: "none", paddingTop: 0 }}>
-          <h2>{fr ? `Ops BlackWay · ${opsPct} %` : `BlackWay ops · ${opsPct}%`}</h2>
+          <h2>{fr ? `Opérations BlackWay · ${opsPct} %` : `BlackWay ops · ${opsPct}%`}</h2>
           <ul className="checklist-magnet checklist-magnet--boxes">
             {ops.map((item) => (
               <li key={item}>
@@ -161,7 +161,7 @@ export function ChecklistPage() {
             ))}
           </ul>
 
-          <h2 >{fr ? `Ta fermeture 7 jours · ${closePct} %` : `Your 7-day close · ${closePct}%`}</h2>
+          <h2 >{fr ? `Votre suivi sur 7 jours · ${closePct} %` : `Your 7-day close · ${closePct}%`}</h2>
           <ul className="checklist-magnet checklist-magnet--boxes">
             {close.map((row) => (
               <li key={row.id}>

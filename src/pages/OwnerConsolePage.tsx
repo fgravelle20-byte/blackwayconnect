@@ -140,7 +140,7 @@ export function OwnerConsolePage() {
             <h1>Tout ce qui entre. Tout ce qui avance.</h1>
             <p>Cockpit leads / deals / scores — Master CRM BlackWayConnect.</p>
           </div>
-          <button onClick={() => setRefresh((value) => value + 1)} disabled={loading}>
+          <button className="btn btn--primary" onClick={() => setRefresh((value) => value + 1)} disabled={loading}>
             Actualiser
           </button>
         </header>

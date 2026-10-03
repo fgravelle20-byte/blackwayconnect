@@ -528,8 +528,8 @@ summary:focus-visible {
 .ops-strip__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 1.25rem;
-  padding: 0.85rem 0;
+  gap: var(--control-gap);
+  padding: 0;
 }
 
 .ops-strip a,
@@ -1678,8 +1678,8 @@ summary:focus-visible {
 }
 
 .legal {
-  max-width: 42rem;
-  padding: 4rem 0;
+  max-width: var(--max);
+  padding: var(--section-space) 0;
 }
 
 .legal h1 {

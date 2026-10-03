@@ -61,7 +61,7 @@ export function HomePage() {
     <>
       <Hero />
 
-      <section className="ops-strip" aria-label={lang === "fr" ? "Systèmes en ligne" : "Live systems"}>
+      <section className="section ops-strip" aria-label={lang === "fr" ? "Systèmes en ligne" : "Live systems"}>
         <div className="shell ops-strip__row">
           <Link to={path("/diagnostic")}>{lang === "fr" ? "Score de fuites" : "Leak score"}</Link>
           <button

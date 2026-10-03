@@ -117,7 +117,7 @@ const TOOL_COPY: Partial<
     en: { title: "CRM lead capture", body: "Quick card → contact + opportunity in BlackWay CRM.", cta: "Capture" },
   },
   support: {
-    fr: { title: "Support client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
+    fr: { title: "Service client", body: "serviceclient@ · accounting@ pour la facturation.", cta: "Contacter" },
     en: { title: "Client support", body: "serviceclient@ · accounting@ for billing.", cta: "Contact" },
   },
   cell_capture: {
@@ -125,23 +125,23 @@ const TOOL_COPY: Partial<
     en: { title: "Field lead capture", body: "Quick field card → BlackWay CRM.", cta: "Open" },
   },
   cell_pipeline: {
-    fr: { title: "Pipeline mobile", body: "Avancer les deals en déplacement.", cta: "Ouvrir" },
+    fr: { title: "Suivi commercial mobile", body: "Suivez vos occasions de vente en déplacement.", cta: "Ouvrir" },
     en: { title: "Mobile pipeline", body: "Advance deals on the road.", cta: "Open" },
   },
   cell_checkout: {
-    fr: { title: "Checkout prospect", body: "Envoyer un lien Paddle Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
+    fr: { title: "Paiement du prospect", body: "Envoyer un lien Paddle Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
     en: { title: "Prospect checkout", body: "Send a Grow Hub Paddle link from the field (Cellular Pack = request).", cta: "Open" },
   },
   cell_streak: {
-    fr: { title: "Streak terrain", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
+    fr: { title: "Suivi des activités", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
     en: { title: "Field streak", body: "Daily field activity rhythm.", cta: "Open" },
   },
   cell_fleet_ops: {
-    fr: { title: "Fleet opérations", body: "Multi-user terrain — équipe en route.", cta: "Ouvrir" },
+    fr: { title: "Gestion des équipes", body: "Coordonnez votre équipe pendant ses déplacements.", cta: "Ouvrir" },
     en: { title: "Fleet ops", body: "Multi-user field — team on the road.", cta: "Open" },
   },
   cell_merge: {
-    fr: { title: "Merge web + cellulaire", body: "Opérations complets — deux revenus, un compte.", cta: "Portail" },
+    fr: { title: "Synchronisation web et mobile", body: "Opérations complets — deux revenus, un compte.", cta: "Portail" },
     en: { title: "Merge web + cellular", body: "Full ops — two revenues, one account.", cta: "Portal" },
   },
   forfaits_cellulaire: {
@@ -766,7 +766,7 @@ export function PortalPage() {
         />
 
         <div className="portal-support">
-          <h2>{fr ? "Support & facturation" : "Support & billing"}</h2>
+          <h2>{fr ? "Service client et facturation" : "Support & billing"}</h2>
           <p>
             {fr
               ? "Tableau de bord mobile inclus avec Grow Hub. Pack Cellulaire = surplus optionnel. Facturation : accounting@blackwayconnect.com."
