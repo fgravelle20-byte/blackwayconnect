@@ -155,7 +155,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Mondial",
     heroTitle: "Du premier contact au paiement.",
     heroBody:
-      "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, essai de 14 jours, annulable.",
+      "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, facturé dès l’abonnement, annulable.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
@@ -194,7 +194,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Un forfait adapté à votre entreprise.",
     plansBody:
-      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne (Paddle), avec un essai de 14 jours.",
+      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne avec Paddle, dès l’abonnement, puis se renouvellent mensuellement.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -350,7 +350,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "Ce qui est inclus avec Grow Hub.",
     proofBody: "Le paiement, le dossier client et le portail font partie du même abonnement.",
     proofItems: [
-      "Paiement en ligne en dollars canadiens, essai de 14 jours, annulable.",
+      "Paiement en ligne en dollars canadiens, facturé dès l’abonnement, annulable.",
       "Chaque demande reste dans un dossier, du premier message au paiement.",
       "Le portail client est inclus, sur le web et sur mobile.",
       "Français et anglais, sans deuxième système.",
@@ -436,7 +436,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Global",
     heroTitle: "From the first lead to payment.",
     heroBody:
-      "Each request is sorted, followed up, and collected in the same record. Growth is $349 a month, with a 14-day trial you can cancel.",
+      "Each request is sorted, followed up, and collected in the same record. Growth is $349 a month, billed immediately at subscription, cancel anytime.",
     office: {
       eyebrow: "BlackWayConnect office",
       title: "A day inside the system.",
@@ -475,7 +475,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Pick the level. Keep the same system.",
     plansBody:
-      "Prices in Canadian dollars, before tax. Every plan is paid online (Paddle), with a 14-day trial.",
+      "Prices in Canadian dollars, before tax. Every plan is paid online with Paddle at subscription, then renews monthly.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -630,7 +630,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "What Grow Hub includes.",
     proofBody: "Payment, the client record and the portal are part of the same subscription.",
     proofItems: [
-      "Online payment in Canadian dollars, 14-day trial, cancel anytime.",
+      "Online payment in Canadian dollars, billed at subscription, cancel anytime.",
       "Each request stays in one record, from the first message to payment.",
       "The client portal is included, on the web and on mobile.",
       "French and English, without a second system.",
