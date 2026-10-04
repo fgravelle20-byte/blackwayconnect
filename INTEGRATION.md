@@ -89,12 +89,12 @@ Pipe resolve order: Vorixa guard → metadata `bw_forfait` → `client_reference
 
 | Forfait | Lien Stripe | Webhook map | Portail unlock | Statut |
 |---------|-------------|-------------|----------------|--------|
-| Spark `grow_hub_spark` | [buy…](https://buy.stripe.com/28EeVc0zz9Rhas604SeIw1U) · plink `…pvUpROqh` · price `…C2bJrFVP` | metadata + plink + price + 9900¢ | rank 1 (diagnostic, outils, checklist, secrétaire, forfaits, support) | **OK** |
-| Launch `grow_hub_launch` | [buy…](https://buy.stripe.com/3cI3cueqp0gH57McREeIw1X) · plink `…UdOVuMNm` · price `…3QF6c4pC` | idem | rank 2 (+ relance, soumission, roi, comparer, grow_hub) | **OK** |
-| Growth `grow_hub_growth` | [buy…](https://buy.stripe.com/aFa5kC6XX8Nd43IdVIeIw1Y) · plink `…G7wA53Aq` · price `…gSob9cmw` | idem (+ landing `/grow-hub-growth`) | rank 3 (tous outils web) | **OK** |
-| Scale `grow_hub_scale` | [buy…](https://buy.stripe.com/9B600i1DD8Ndbwa6tgeIw1Z) · plink `…SOaDDzbo` · price `…WL5IQyME` | idem | rank 4 (tous outils web) | **OK** |
-| Command `grow_hub_command` | [buy…](https://buy.stripe.com/14A6oGfut0gHgQubNAeIw1V) · plink `…nvIfFOMn` · price `…c8R6DEdZ` | idem | rank 5 (tous outils web) | **OK** |
-| Partner `grow_hub_partner` | [buy…](https://buy.stripe.com/eVq7sK9658Nd43IeZMeIw1W) · plink `…Fzh2ZDB1` · price `…uTYWaERD` | idem | rank 6 (tous outils web) | **OK** |
+| Spark `grow_hub_spark` | [buy…](https://blackwayconnect.com/payer) · plink `…pvUpROqh` · price `…C2bJrFVP` | metadata + plink + price + 9900¢ | rank 1 (diagnostic, outils, checklist, secrétaire, forfaits, support) | **OK** |
+| Launch `grow_hub_launch` | [buy…](https://blackwayconnect.com/payer) · plink `…UdOVuMNm` · price `…3QF6c4pC` | idem | rank 2 (+ relance, soumission, roi, comparer, grow_hub) | **OK** |
+| Growth `grow_hub_growth` | [buy…](https://blackwayconnect.com/payer) · plink `…G7wA53Aq` · price `…gSob9cmw` | idem (+ landing `/grow-hub-growth`) | rank 3 (tous outils web) | **OK** |
+| Scale `grow_hub_scale` | [buy…](https://blackwayconnect.com/payer) · plink `…SOaDDzbo` · price `…WL5IQyME` | idem | rank 4 (tous outils web) | **OK** |
+| Command `grow_hub_command` | [buy…](https://blackwayconnect.com/payer) · plink `…nvIfFOMn` · price `…c8R6DEdZ` | idem | rank 5 (tous outils web) | **OK** |
+| Partner `grow_hub_partner` | [buy…](https://blackwayconnect.com/payer) · plink `…Fzh2ZDB1` · price `…uTYWaERD` | idem | rank 6 (tous outils web) | **OK** |
 | Entreprise | `/contact` (pas de Payment Link) | N/A | consultation | **OK** (hors Stripe) |
 | Cell Signal | — | pipe prêt (`cell_signal`) | rank cell 1 | **GAP** — Payment Link à créer |
 | Cell Route | — | pipe prêt (`cell_route`) | rank cell 2 | **GAP** — Payment Link à créer |
