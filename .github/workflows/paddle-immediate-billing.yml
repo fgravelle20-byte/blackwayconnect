@@ -1,0 +1,96 @@
+name: Paddle immediate billing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/paddle-immediate-billing.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  remove-trials:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove trials from all BlackWay Paddle prices
+        env:
+          PADDLE_API_KEY: ${{ secrets.PADDLE_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PADDLE_API_KEY:-}" ]; then
+            echo "::error::PADDLE_API_KEY GitHub secret is missing"
+            exit 1
+          fi
+
+          prices=(
+            pri_01m3nt7rm1cc19134bb3e86fpb
+            pri_01kxtn6asavavmqv54407h464b
+            pri_01kxtn6b41wzt07rnzvyte4sn8
+            pri_01kxtn6befjw8m8gz9a5vwf0wf
+            pri_01m3nt7rs3vajzyv8k8r57qswc
+            pri_01m3nt7rxx08w09zef4xf2rage
+            pri_01m3nt7s39b94k4p7a13m3sya2
+            pri_01m3nt7s88bxrx8k6jph2gmtt2
+            pri_01m3nt7sd8mkr915y6vtgs6m3p
+            pri_01m3nt7sj4wndn0qkd9d855zpr
+            pri_01m3nt7sqgkcqb2payzrn0f8cf
+            pri_01m3nt7ss5526fp4j6q98zdqc0
+            pri_01m3nt7stvq4ff1942nybarhxn
+            pri_01m3nt7szxc265whjs40e2y5pd
+            pri_01m3nt7t1k43gy04eyf71amkd5
+            pri_01m3nt7t39xq8pbggfeh6ejax4
+          )
+
+          for price in "${prices[@]}"; do
+            echo "Updating $price"
+            http_code="$(curl -sS -o /tmp/paddle-price.json -w '%{http_code}' \
+              -X PATCH "https://api.paddle.com/prices/$price" \
+              -H "Authorization: Bearer $PADDLE_API_KEY" \
+              -H "Content-Type: application/json" \
+              -H "Accept: application/json" \
+              --data '{"trial_period":null}')"
+            cat /tmp/paddle-price.json
+            echo
+            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "::error::Paddle PATCH $price failed with HTTP $http_code"
+              exit 1
+            fi
+          done
+
+      - name: Verify no trial remains
+        env:
+          PADDLE_API_KEY: ${{ secrets.PADDLE_API_KEY }}
+        run: |
+          set -euo pipefail
+          prices=(
+            pri_01m3nt7rm1cc19134bb3e86fpb
+            pri_01kxtn6asavavmqv54407h464b
+            pri_01kxtn6b41wzt07rnzvyte4sn8
+            pri_01kxtn6befjw8m8gz9a5vwf0wf
+            pri_01m3nt7rs3vajzyv8k8r57qswc
+            pri_01m3nt7rxx08w09zef4xf2rage
+            pri_01m3nt7s39b94k4p7a13m3sya2
+            pri_01m3nt7s88bxrx8k6jph2gmtt2
+            pri_01m3nt7sd8mkr915y6vtgs6m3p
+            pri_01m3nt7sj4wndn0qkd9d855zpr
+            pri_01m3nt7sqgkcqb2payzrn0f8cf
+            pri_01m3nt7ss5526fp4j6q98zdqc0
+            pri_01m3nt7stvq4ff1942nybarhxn
+            pri_01m3nt7szxc265whjs40e2y5pd
+            pri_01m3nt7t1k43gy04eyf71amkd5
+            pri_01m3nt7t39xq8pbggfeh6ejax4
+          )
+
+          for price in "${prices[@]}"; do
+            body="$(curl -fsS \
+              -H "Authorization: Bearer $PADDLE_API_KEY" \
+              -H "Accept: application/json" \
+              "https://api.paddle.com/prices/$price")"
+            trial="$(printf '%s' "$body" | jq -c '.data.trial_period')"
+            if [ "$trial" != "null" ]; then
+              echo "::error::$price still has trial_period=$trial"
+              exit 1
+            fi
+            echo "OK $price trial_period=null"
+          done
