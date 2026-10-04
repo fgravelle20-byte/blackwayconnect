@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /**
+ * Cloudflare production redeploy trigger.
  * Cloudflare Workers Builds wrapper.
  *
  * Responsibilities:
