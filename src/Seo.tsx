@@ -52,8 +52,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
       title: fr ? "Du premier prospect au paiement" : "From the first lead to payment",
       ogTitle: fr ? "BlackWayConnect — du prospect au paiement" : "BlackWayConnect — from lead to payment",
       description: fr
-        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, essai de 14 jours."
-        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars, 14-day trial.",
+        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, paiement Paddle immédiat."
+        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars with immediate Paddle billing.",
     },
     outils: {
       title: fr ? "Outils pour la prochaine action" : "Tools for the next step",
