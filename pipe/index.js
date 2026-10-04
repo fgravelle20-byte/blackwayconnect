@@ -1321,6 +1321,87 @@ async function signaturePaddleValide(secret, payload, header) {
 }
 
 
+
+const LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS = Object.freeze(Object.keys(PLINK_TO_FORFAIT));
+
+async function ensureLegacyStripeCheckoutClosed(env) {
+  const markerKey = "__ops:legacy-stripe-checkout-closed-v1";
+  if (env.BW_SESSIONS) {
+    const marker = await env.BW_SESSIONS.get(markerKey);
+    if (marker) {
+      return {
+        ok: true,
+        closed: true,
+        source: "marker",
+        link_count: LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS.length,
+        webhook_history_only: true,
+      };
+    }
+  }
+
+  const key = String(env.STRIPE_SECRET_KEY || "").trim();
+  if (!key) return { ok: false, closed: false, error: "stripe_secret_missing" };
+
+  for (const paymentLinkId of LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS) {
+    const endpoint = "https://api.stripe.com/v1/payment_links/" + encodeURIComponent(paymentLinkId);
+    let response = await fetch(endpoint, {
+      headers: { Authorization: "Bearer " + key },
+    });
+    let payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      console.log("legacy stripe payment link read failed", paymentLinkId, response.status);
+      return {
+        ok: false,
+        closed: false,
+        error: "stripe_payment_link_read_failed",
+        payment_link_id: paymentLinkId,
+        status: response.status,
+      };
+    }
+
+    if (payload?.active !== false) {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + key,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "active=false",
+      });
+      payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.active !== false) {
+        console.log("legacy stripe payment link disable failed", paymentLinkId, response.status);
+        return {
+          ok: false,
+          closed: false,
+          error: "stripe_payment_link_disable_failed",
+          payment_link_id: paymentLinkId,
+          status: response.status,
+        };
+      }
+    }
+  }
+
+  if (env.BW_SESSIONS) {
+    await env.BW_SESSIONS.put(
+      markerKey,
+      JSON.stringify({
+        completed_at: new Date().toISOString(),
+        link_count: LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS.length,
+      }),
+    );
+  }
+
+  return {
+    ok: true,
+    closed: true,
+    source: "stripe",
+    link_count: LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS.length,
+    webhook_history_only: true,
+  };
+}
+
 const PADDLE_IMMEDIATE_BILLING_PRICE_IDS = [
   "pri_01m3nt7rm1cc19134bb3e86fpb",
   "pri_01kxtn6asavavmqv54407h464b",
@@ -1410,6 +1491,11 @@ export default {
         migrated: false,
         error: String(e),
       }));
+      const legacyStripeCheckout = await ensureLegacyStripeCheckoutClosed(env).catch((e) => ({
+        ok: false,
+        closed: false,
+        error: String(e),
+      }));
       const t = jeton(env);
       let hubspot = "absent";
       let hubspot_bw_session_prop = false;
@@ -1461,6 +1547,8 @@ export default {
         paddle_fulfill_relay: paddleFulfillRelay,
         paddle_ready: (paddleApiKey && paddleWebhookSecret) || paddleFulfillRelay,
         paddle_immediate_billing: paddleImmediateBilling,
+        legacy_stripe_checkout: legacyStripeCheckout,
+        stripe_webhook_history_only: true,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
