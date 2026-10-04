@@ -76,10 +76,16 @@ mustInclude(
   "CheckoutPage live token fallback",
 );
 
-mustInclude(
+if (lock.bw_paddle_fulfill_secret_binding !== "BW_PADDLE_FULFILL_KEY") {
+  fail('bw_paddle_fulfill_secret_binding must be "BW_PADDLE_FULFILL_KEY"');
+} else {
+  console.log("OK Paddle fulfill secret binding name");
+}
+
+mustNotInclude(
   "pipe/wrangler.jsonc",
-  lock.bw_paddle_fulfill_key,
-  "BW_PADDLE_FULFILL_KEY in wrangler vars",
+  '"BW_PADDLE_FULFILL_KEY":',
+  "Paddle fulfill secret must not be stored in wrangler vars",
 );
 
 
