@@ -36,7 +36,29 @@ const args = process.argv.slice(2);
 const worker = process.env.WRANGLER_CI_OVERRIDE_NAME;
 const inWorkersCi = process.env.WORKERS_CI === "1";
 const branch = process.env.WORKERS_CI_BRANCH || "";
-const isProductionBranch = branch === "main";
+
+function gitSha(ref) {
+  try {
+    const out = spawnSync("git", ["rev-parse", ref], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    });
+    if (out.status === 0) return String(out.stdout || "").trim();
+  } catch {
+    // ignore; env fallback below
+  }
+  return "";
+}
+
+const headSha = process.env.WORKERS_CI_COMMIT_SHA || gitSha("HEAD");
+const mainSha = gitSha("refs/remotes/origin/main") || gitSha("origin/main");
+const isProductionBranch =
+  branch === "main" ||
+  (!!headSha && !!mainSha && headSha === mainSha);
+
+console.error(
+  `wrangler-ci: branch=${branch || "<unset>"} head=${headSha.slice(0, 12) || "<unset>"} main=${mainSha.slice(0, 12) || "<unset>"} production=${isProductionBranch}`,
+);
 
 // Cloudflare production must never create a Preview. If the dashboard deploy
 // command is accidentally set to "wrangler preview", fix it at runtime.
