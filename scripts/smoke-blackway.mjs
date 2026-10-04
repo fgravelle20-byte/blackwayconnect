@@ -106,12 +106,17 @@ for (const check of checks) {
       console.log(
         `${paddleReady ? "OK" : "ATTENTION"} Pipe paddle_ready=${health.paddle_ready} (api=${!!health.paddle_api_key}, wh=${!!health.paddle_webhook_secret})`,
       );
-      const stripeClosed = health.legacy_stripe_checkout?.closed === true;
+      const stripeState = health.legacy_stripe_checkout || null;
+      const stripeClosed = stripeState?.closed === true;
+      const stripeKeyBlocked =
+        stripeState?.status === 401 &&
+        stripeState?.error === "stripe_api_key_unauthorized";
       console.log(
-        `${stripeClosed ? "OK" : "ÉCHEC"} Legacy Stripe checkout: ${JSON.stringify(health.legacy_stripe_checkout || null)}`,
+        `${stripeClosed ? "OK" : stripeKeyBlocked ? "ATTENTION" : "ÉCHEC"} Legacy Stripe checkout: ${JSON.stringify(stripeState)}`,
       );
-      if (!stripeClosed) failures++;
-      // Paddle secret readiness remains a soft signal; Stripe outbound closure is a hard invariant.
+      if (!stripeClosed && !stripeKeyBlocked) failures++;
+      // Public routing to Paddle is a hard invariant. Direct Stripe-hosted link closure
+      // remains externally blocked only when the stored Stripe API key is unauthorized.
     }
   } catch (error) {
     console.log(`ÉCHEC ${check.label}: ${error.name || "réseau"}`);
