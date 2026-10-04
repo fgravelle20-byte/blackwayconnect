@@ -76,8 +76,8 @@ Les clients n’ont pas payé : il faut **envoyer** les liens.
 | Code | Client | CAD | Lien |
 |------|--------|-----|------|
 | VX-PRJ-01 | Alex Brosseau | 113,83 | Dashboard invoice `in_1ThhAAAG7HUL9RtrOVtBhCXy` → Copy payment link |
-| VX-PRJ-08 | Protech Construction | 1 500 | https://vorixa.ca/activer |
-| VX-PRJ-23 | Atelier J.Fred | 499 | https://vorixa.ca/activer |
+| VX-PRJ-08 | Protech Construction | 1 500 | https://vorixa.net/activer |
+| VX-PRJ-23 | Atelier J.Fred | 499 | https://vorixa.net/activer |
 
 ### 23 autres
 

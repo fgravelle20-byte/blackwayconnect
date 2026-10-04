@@ -34,7 +34,7 @@ Bonjour,
 
 Voici le lien de paiement sécurisé pour votre forfait Vorixa (**1 500 $ CAD**) :
 
-https://vorixa.ca/activer
+https://vorixa.net/activer
 
 Des questions : 1-888-853-9080.
 
@@ -53,7 +53,7 @@ Bonjour,
 
 Voici le lien de paiement pour votre forfait Vorixa (**499 $ CAD**) :
 
-https://vorixa.ca/activer
+https://vorixa.net/activer
 
 Merci,  
 Vorixa · 1-888-853-9080
@@ -72,12 +72,12 @@ Questions : 1-888-853-9080
 
 | Client | Tél | CAD | Lien |
 |--------|-----|-----|------|
-| Guillot Roger (1981) Inc | +1 418-661-9211 | 3000 | https://vorixa.ca/activer |
-| Électricité DLP Inc | +1 418-663-8316 | 3000 | https://vorixa.ca/activer |
-| Sénégalaise Coiffure | +1 514-649-5754 | 1500 | https://vorixa.ca/activer |
-| Protech Construction | +1 450-929-0613 | 1500 | https://vorixa.ca/activer |
-| Photographe J. Lapalme | +1 450-501-8548 | 999 | https://vorixa.ca/activer |
-| Atelier J.Fred | +1 450-278-5702 | 499 | https://vorixa.ca/activer |
+| Guillot Roger (1981) Inc | +1 418-661-9211 | 3000 | https://vorixa.net/activer |
+| Électricité DLP Inc | +1 418-663-8316 | 3000 | https://vorixa.net/activer |
+| Sénégalaise Coiffure | +1 514-649-5754 | 1500 | https://vorixa.net/activer |
+| Protech Construction | +1 450-929-0613 | 1500 | https://vorixa.net/activer |
+| Photographe J. Lapalme | +1 450-501-8548 | 999 | https://vorixa.net/activer |
+| Atelier J.Fred | +1 450-278-5702 | 499 | https://vorixa.net/activer |
 | Alex Brosseau | +1 514-971-9120 | 113.83 | Dashboard invoice `in_1ThhAAAG7HUL9RtrOVtBhCXy` |
 
 Liste complète des 26 + URLs : `ops/vorixa-client-projects/README.md`
