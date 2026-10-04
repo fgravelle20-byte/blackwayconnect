@@ -1,7 +1,7 @@
 {
   "$schema_note": "PAYMENT SYSTEM LOCK — do not edit unless you intentionally unlock the live Paddle chain. CI fails if source drifts from these values.",
   "locked": true,
-  "lock_version": 4,
+  "lock_version": 5,
   "locked_at": "2026-10-04",
   "processor": "paddle",
   "site_origin": "https://blackwayconnect.com",
@@ -60,7 +60,26 @@
     "pipe/customers.js",
     "pipe/index.js",
     "pipe/wrangler.jsonc",
-    "ops/payment-lock/LOCKED.json"
+    "ops/payment-lock/LOCKED.json",
+    "worker/index.ts",
+    "scripts/smoke-blackway.mjs"
   ],
-  "bw_paddle_fulfill_secret_binding": "BW_PADDLE_FULFILL_KEY"
+  "bw_paddle_fulfill_secret_binding": "BW_PADDLE_FULFILL_KEY",
+  "billing_mode": "immediate",
+  "legacy_stripe_outbound": "disabled",
+  "legacy_stripe_webhook": "history_only",
+  "legacy_stripe_payment_links": [
+    "plink_1UCmB6AG7HUL9RtrpvUpROqh",
+    "plink_1UCmBxAG7HUL9RtrUdOVuMNm",
+    "plink_1UCmBzAG7HUL9RtrG7wA53Aq",
+    "plink_1UCmC0AG7HUL9RtrSOaDDzbo",
+    "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
+    "plink_1UCmBKAG7HUL9RtrFzh2ZDB1",
+    "plink_1U1FMTAG7HUL9RtrDCjxRIl6",
+    "plink_1U1FMUAG7HUL9RtrqsOarwY3",
+    "plink_1U1FMTAG7HUL9RtrDvKqcL9e",
+    "plink_1U1FMzAG7HUL9RtrIPzQYi9n",
+    "plink_1U1FMTAG7HUL9RtrODdZgiSo",
+    "plink_1U1FMYAG7HUL9RtruMZLdQo2"
+  ]
 }
