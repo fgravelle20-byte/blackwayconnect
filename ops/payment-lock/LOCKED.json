@@ -1,7 +1,7 @@
 {
   "$schema_note": "PAYMENT SYSTEM LOCK — do not edit unless you intentionally unlock the live Paddle chain. CI fails if source drifts from these values.",
   "locked": true,
-  "lock_version": 3,
+  "lock_version": 4,
   "locked_at": "2026-10-04",
   "processor": "paddle",
   "site_origin": "https://blackwayconnect.com",
@@ -11,7 +11,6 @@
   "paddle_webhook_destination": "https://api.blackwayconnect.com/webhooks/paddle",
   "paddle_webhook_destination_id": "ntfset_01m3nrs0n7vqyamecfsjx83jcd",
   "paddle_client_token_live_prefix": "live_a4f8ad8f1c8be908ec3784e8d8b",
-  "bw_paddle_fulfill_key": "eed3b27fa66fd71ca7b807d5e80b522de964ec81c05c7f22",
   "hubspot_bw_source_for_paddle": "portail",
   "prices": {
     "grow_hub_spark": "pri_01m3nt7rm1cc19134bb3e86fpb",
@@ -62,5 +61,6 @@
     "pipe/index.js",
     "pipe/wrangler.jsonc",
     "ops/payment-lock/LOCKED.json"
-  ]
+  ],
+  "bw_paddle_fulfill_secret_binding": "BW_PADDLE_FULFILL_KEY"
 }
