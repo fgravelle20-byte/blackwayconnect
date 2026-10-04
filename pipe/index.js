@@ -1324,8 +1324,17 @@ async function signaturePaddleValide(secret, payload, header) {
 
 const LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS = Object.freeze(Object.keys(PLINK_TO_FORFAIT));
 
+async function stripeKeyFingerprint(key) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key));
+  return [...new Uint8Array(digest)]
+    .slice(0, 8)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 async function ensureLegacyStripeCheckoutClosed(env) {
   const markerKey = "__ops:legacy-stripe-checkout-closed-v1";
+  const attemptKey = "__ops:legacy-stripe-checkout-attempt-v1";
   if (env.BW_SESSIONS) {
     const marker = await env.BW_SESSIONS.get(markerKey);
     if (marker) {
@@ -1341,6 +1350,29 @@ async function ensureLegacyStripeCheckoutClosed(env) {
 
   const key = String(env.STRIPE_SECRET_KEY || "").trim();
   if (!key) return { ok: false, closed: false, error: "stripe_secret_missing" };
+  const keyFingerprint = await stripeKeyFingerprint(key);
+
+  if (env.BW_SESSIONS) {
+    const previousRaw = await env.BW_SESSIONS.get(attemptKey);
+    if (previousRaw) {
+      try {
+        const previous = JSON.parse(previousRaw);
+        if (previous?.key_fingerprint === keyFingerprint && previous?.status === 401) {
+          return {
+            ok: false,
+            closed: false,
+            blocked: true,
+            cached: true,
+            error: "stripe_api_key_unauthorized",
+            status: 401,
+            retry_on_key_change: true,
+          };
+        }
+      } catch {
+        // Ignore malformed diagnostic marker and retry safely.
+      }
+    }
+  }
 
   for (const paymentLinkId of LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS) {
     const endpoint = "https://api.stripe.com/v1/payment_links/" + encodeURIComponent(paymentLinkId);
@@ -1350,13 +1382,26 @@ async function ensureLegacyStripeCheckoutClosed(env) {
     let payload = await response.json().catch(() => null);
 
     if (!response.ok) {
+      const unauthorized = response.status === 401;
+      if (unauthorized && env.BW_SESSIONS) {
+        await env.BW_SESSIONS.put(
+          attemptKey,
+          JSON.stringify({
+            key_fingerprint: keyFingerprint,
+            status: 401,
+            attempted_at: new Date().toISOString(),
+          }),
+        );
+      }
       console.log("legacy stripe payment link read failed", paymentLinkId, response.status);
       return {
         ok: false,
         closed: false,
-        error: "stripe_payment_link_read_failed",
+        blocked: unauthorized,
+        error: unauthorized ? "stripe_api_key_unauthorized" : "stripe_payment_link_read_failed",
         payment_link_id: paymentLinkId,
         status: response.status,
+        retry_on_key_change: unauthorized,
       };
     }
 
@@ -1391,6 +1436,7 @@ async function ensureLegacyStripeCheckoutClosed(env) {
         link_count: LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS.length,
       }),
     );
+    await env.BW_SESSIONS.delete(attemptKey);
   }
 
   return {
