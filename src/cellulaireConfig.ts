@@ -1,7 +1,7 @@
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
  * Distinct from Grow Hub web (Type A). Same Portail + Master CRM can hold both.
- * Paddle checkout via /payer?plan=cell_* (14-day trial). Stripe is retired.
+ * Paddle checkout via /payer?plan=cell_* (immediate billing). Stripe checkout is retired.
  */
 import { PADDLE_PRICES, paddlePlanUrl } from "./paddleCatalog";
 

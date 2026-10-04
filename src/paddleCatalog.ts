@@ -1,6 +1,5 @@
 /** Existing Paddle Live prices for BlackWayConnect.
- * Prices are in CAD per month. Grow Hub + Pack Cellulaire have a 14-day trial; modules IA
- * (chatbot, accueil vocal) bill from day one. Never treat a client-side success
+ * Prices are in CAD per month and bill immediately at subscription. Never treat a client-side success
  * redirect as proof of payment; fulfillment must come from a verified webhook.
  *
  * PAYMENT-LOCKED — do not edit. See ops/payment-lock/LOCKED.json + README.md.

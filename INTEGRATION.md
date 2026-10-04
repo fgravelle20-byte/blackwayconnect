@@ -3,8 +3,9 @@
 > **LOCK 2026-09-24 — Paddle self-serve on blackwayconnect.com**  
 > Canonical host = `https://blackwayconnect.com`  
 > Checkouts = **`/payer?plan=…`** (Paddle overlay) — NOT Stripe Payment Links, NOT `vorixa.ca/pricing`.  
-> Self-serve plans: **Launch 149 / Growth 349 / Automation (Scale) 699** CAD/mois (+ essai 14 j).  
-> Spark / Command / Partner / Entreprise = **contact** (`/contact`).  
+> Self-serve: **16 live Paddle prices**, billed immediately. Grow Hub (6) + Pack Cellulaire (4) + IA (6).  
+> Entreprise = **contact** (`/contact`).  
+> Legacy Stripe purchase paths are permanently redirected to Paddle; Stripe webhook remains history-only.  
 > Production deploy = **Cloudflare Workers Builds** (`blackway-site`, `blackway-pipe`, `blackway-sentinel`).  
 > Twin Turbo engines: `ops/TWIN-TURBO-ENGINES.md` · Funnel ads: `ops/FUNNEL-ADS.md` · Secrets: `ops/cloudflare-secrets-blocker.md`
 
@@ -35,10 +36,13 @@ Worker `blackwayconnect` is **not** used and must not be modified/deleted.
 
 | Plan | CAD/mo | Checkout |
 |------|--------|----------|
+| Spark | 99 | `/payer?plan=grow_hub_spark` |
 | Launch | 149 | `/payer?plan=grow_hub_launch` |
 | Growth ★ | 349 | `/payer?plan=grow_hub_growth` |
-| Automation (Scale) | 699 | `/payer?plan=grow_hub_scale` |
-| Spark / Command / Partner / Entreprise | — | `/contact` |
+| Scale | 699 | `/payer?plan=grow_hub_scale` |
+| Command | 1 249 | `/payer?plan=grow_hub_command` |
+| Partner | 2 499 | `/payer?plan=grow_hub_partner` |
+| Entreprise | — | `/contact` |
 
 Catalog: `src/paddleCatalog.ts` + `src/stripeConfig.ts` (checkoutUrl → `/payer`).  
 Build secret: `VITE_PADDLE_CLIENT_TOKEN` (`live_…`) in **Workers Builds** + GitHub secret for verify workflow.
@@ -106,9 +110,9 @@ Pipe resolve order: Vorixa guard → metadata `bw_forfait` → `client_reference
 **HubSpot :** `bw_forfait` + `bw_forfait_paye` = clé exacte ; cellulaire → `bw_forfait_cellulaire` si prop existe.  
 **Catalog code :** `src/stripeConfig.ts` · `src/portalTools.ts` · `pipe/index.js` (`PRICE_TO_FORFAIT` + `PLINK_TO_FORFAIT` + `AMOUNT_CENTS_TO_FORFAIT`).
 
-### Pack Cellulaire — gap (ne pas inventer de liens)
+### Pack Cellulaire — Paddle live
 
-Voir `STRIPE_CELLULAIRE_CHECKLIST.md` + `src/cellulaireConfig.ts` (`paymentLink: ""`). Site affiche contact tant que les liens sont vides.
+Les 4 forfaits Cellulaire sont live sur `/payer?plan=cell_*` : Signal 79 · Route 199 · Fleet 399 · Command 799 CAD/mois. Facturation immédiate.
 ## Mobile bridge (Base44)
 
 | Endpoint | Role |
@@ -185,7 +189,7 @@ Presence only: `GET /api/health` → `base44_key: true|false` (never the key val
 | `BW_LEAD_KEY` | Known — set on pipe + site secret; also set in Base44 Builder for app leads |
 | HubSpot / Stripe on pipe | Already present (`/health` ok) |
 | Grow Hub Payment Links / price IDs | Live — wired in `stripeConfig.ts` (revenu #1 web) |
-| **Cellulaire Payment Links** | **À créer** — `cell_signal` 79 · `cell_route` 199 · `cell_fleet` 399 · `cell_command` 799 CAD/mo — metadata `bw_forfait=cell_*` · success `/portail?session_id={CHECKOUT_SESSION_ID}` · puis coller URLs dans `src/cellulaireConfig.ts` + `worker/index.ts` `CELLULAIRE_CHECKOUT` |
+| **Cellulaire Paddle prices** | **LIVE** — `cell_signal` 79 · `cell_route` 199 · `cell_fleet` 399 · `cell_command` 799 CAD/mo — `/payer?plan=cell_*`, facturation immédiate |
 | HubSpot prop `bw_forfait_cellulaire` | Recommandé (texte) — pipe l’écrit si présent; sinon fallback `bw_forfait` |
 | `BW_BASE44_API_KEY` | Set on `blackway-site` secret — ready for future Admin/SDK use |
 | App Store URL | **User** — set `APP_STORE_URL` in `wrangler.jsonc` + `src/appConfig.ts` |
