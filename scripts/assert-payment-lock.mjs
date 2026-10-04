@@ -3,7 +3,7 @@
  * Hard gate: live payment chain must not drift.
  * Exit 1 if LOCKED.json invariants are violated in source.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -60,6 +60,42 @@ console.log(`Payment lock v${lock.lock_version} locked=${lock.locked} unlocking=
 if (lock.processor !== "paddle") fail('processor must be "paddle"');
 else console.log("OK processor=paddle");
 
+if (lock.billing_mode !== "immediate") fail('billing_mode must be "immediate"');
+else console.log("OK billing_mode=immediate");
+
+if (lock.legacy_stripe_outbound !== "disabled") fail('legacy_stripe_outbound must be "disabled"');
+else console.log("OK legacy Stripe outbound disabled");
+
+if (lock.legacy_stripe_webhook !== "history_only") fail('legacy_stripe_webhook must be "history_only"');
+else console.log("OK legacy Stripe webhook history-only");
+
+for (const paymentLinkId of lock.legacy_stripe_payment_links || []) {
+  mustInclude("pipe/index.js", paymentLinkId, `legacy Stripe link mapped ${paymentLinkId}`);
+}
+
+function runtimeFiles(rootRel) {
+  const rootPath = join(root, rootRel);
+  if (!existsSync(rootPath)) return [];
+  const out = [];
+  const walk = (abs, rel) => {
+    for (const name of readdirSync(abs)) {
+      const childAbs = join(abs, name);
+      const childRel = join(rel, name);
+      if (statSync(childAbs).isDirectory()) walk(childAbs, childRel);
+      else if (/\.(?:ts|tsx|js|jsx|html)$/i.test(name)) out.push(childRel.replaceAll("\\", "/"));
+    }
+  };
+  walk(rootPath, rootRel);
+  return out;
+}
+
+for (const rel of [...runtimeFiles("src"), ...runtimeFiles("worker"), ...runtimeFiles("mobile/src"), "index.html"]) {
+  if (!existsSync(join(root, rel))) continue;
+  for (const forbidden of ["https://buy.stripe.com", "https://checkout.stripe.com"]) {
+    mustNotInclude(rel, forbidden, `runtime cannot emit Stripe checkout host (${forbidden})`);
+  }
+}
+
 for (const [plan, priceId] of Object.entries(lock.prices || {})) {
   mustInclude("src/paddleCatalog.ts", priceId, `catalog ${plan}`);
   mustInclude("pipe/index.js", priceId, `pipe map ${plan}`);
@@ -91,6 +127,11 @@ mustNotInclude(
 
 mustNotInclude("mobile/capacitor.config.ts", "buy.stripe.com", "mobile cannot navigate to Stripe checkout");
 mustNotInclude("index.html", "buy.stripe.com", "public site cannot prefetch Stripe checkout");
+mustInclude("worker/index.ts", "LEGACY_BUY_PATHS", "legacy purchase routes are trapped");
+mustInclude("worker/index.ts", "legacy_stripe_redirect", "legacy Stripe redirects are tagged");
+mustInclude("worker/index.ts", "paddle-canonical", "legacy routes converge to Paddle");
+mustNotInclude("worker/index.ts", "buy.stripe.com", "site worker cannot emit Stripe checkout URLs");
+mustNotInclude("worker/index.ts", "checkout.stripe.com", "site worker cannot emit Stripe checkout URLs");
 mustNotInclude("src/pages/CellulairePlansPage.tsx", "STRIPE_CELLULAIRE_TODO", "Cellulaire UI has no Stripe checkout backlog");
 mustInclude("src/cellulaireConfig.ts", "PADDLE_CELLULAIRE_TODO", "Cellulaire migration is Paddle-only");
 mustInclude("pipe/vorixaManaged.js", 'url.searchParams.set("provider", "paddle")', "Vorixa managed checkout routes to Paddle");
