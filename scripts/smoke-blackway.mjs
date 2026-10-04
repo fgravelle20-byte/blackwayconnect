@@ -108,7 +108,7 @@ for (const check of checks) {
       );
       const stripeClosed = health.legacy_stripe_checkout?.closed === true;
       console.log(
-        `${stripeClosed ? "OK" : "ÉCHEC"} Legacy Stripe checkout closed=${!!health.legacy_stripe_checkout?.closed}`,
+        `${stripeClosed ? "OK" : "ÉCHEC"} Legacy Stripe checkout: ${JSON.stringify(health.legacy_stripe_checkout || null)}`,
       );
       if (!stripeClosed) failures++;
       // Paddle secret readiness remains a soft signal; Stripe outbound closure is a hard invariant.
