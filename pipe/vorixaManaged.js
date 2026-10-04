@@ -7,7 +7,7 @@
  *
  * 2026-09-13: the Aug 31 plan links (`plink_1U9E6m` / `1U9E7F` / `1U9E7H` /
  * `1U9E7J`) cannot be reactivated (no valid payment methods on those objects).
- * Replacement links use Stripe Managed Payments and are the live checkout URLs.
+ * Replacement Stripe links are historical identifiers only; all new checkout traffic is Paddle-only.
  */
 
 export const VORIXA_BASE44_APP_ID = "6a2a047fbc1c05e8396f0ad2";

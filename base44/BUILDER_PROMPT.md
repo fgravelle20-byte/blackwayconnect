@@ -5,7 +5,7 @@ Tu construis l’app mobile web **BlackWayConnect Grow Hub** (Black Way Link) �
 ## Mission produit
 Cette app existe pour **générer du revenu additionnel** pour BlackWayConnect :
 - Capturer des leads qualifiés (`source=app_mobile`)
-- Pousser le checkout Stripe Grow Hub (99 → 2499 CAD/mois)
+- Pousser le checkout Paddle BlackWayConnect (99 → 2499 CAD/mois)
 - Faire revenir l’utilisateur chaque jour (pipeline, streak, outils Master Tools)
 - Feeling : app consommateur top-tier (rapide, addictive, conversion-obsessed) — honnête, **aucun faux compteur de likes / faux 500k**
 
@@ -34,7 +34,7 @@ Cette app existe pour **générer du revenu additionnel** pour BlackWayConnect :
 ### 1) Home — brand-first killer
 - Viewport 1 : BlackWayConnect (hero), une headline FR/EN, une phrase, un groupe CTA
 - CTAs : « Ouvrir mon pipeline » + « Voir les forfaits »
-- Sous le fold seulement : preuve sociale honnête (« Stripe + HubSpot synchronisés », « Bilingue FR/EN », « Québec → Canada → US ») — pas de faux stats inventés
+- Sous le fold seulement : preuve sociale honnête (« Paddle + CRM synchronisés », « Bilingue FR/EN », « Québec → Canada → US ») — pas de faux stats inventés
 - Micro-moment « revenue saved » : estimateur local (leads × taux × panier) stocké device — gamifié, pas menteur
 
 ### 2) Pipeline Grow Hub — interactif
@@ -44,10 +44,10 @@ Cette app existe pour **générer du revenu additionnel** pour BlackWayConnect :
 - Streak quotidien : +1 si l’utilisateur ouvre l’app et touche une action pipeline
 - CTA sticky : « Envoyer ce lead à BlackWay » → écran Lead
 
-### 3) Forfaits — one-tap Stripe
+### 3) Forfaits — one-tap Paddle
 Charge `bootstrap.plans` (jamais hardcoder les prix).  
-Spark 99 · Launch 249 · Growth 499 ★ · Scale 749 · Command 1249 · Partner 2499 · Entreprise = consultation site  
-Chaque carte forfait : prix, bénéfice en 1 ligne, bouton « S’abonner » → `paymentLink` +  
+Spark 99 · Launch 149 · Growth 349 ★ · Scale 699 · Command 1249 · Partner 2499 · Entreprise = consultation site  
+Chaque carte forfait : prix, bénéfice en 1 ligne, bouton « S’abonner » → `paymentLink` canonique BlackWay `/payer?plan=…` +  
 `client_reference_id=app_mobile:{plan}` + UTM (`utm_source=grow_hub_app`, `utm_medium=checkout`, `utm_campaign={plan}`)
 
 ### 4) Lead capture
