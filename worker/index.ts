@@ -181,7 +181,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Signal",
         amountCad: CELLULAIRE_PLANS.cell_signal.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_signal || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: ["cell_capture"],
       },
@@ -190,7 +190,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Route",
         amountCad: CELLULAIRE_PLANS.cell_route.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_route || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout"],
       },
@@ -199,7 +199,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Fleet",
         amountCad: CELLULAIRE_PLANS.cell_fleet.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_fleet || null,
-        checkoutReady: false,
+        checkoutReady: true,
         featured: true,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout", "cell_streak", "cell_fleet_ops"],
@@ -209,7 +209,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Command",
         amountCad: CELLULAIRE_PLANS.cell_command.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_command || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: [
           "cell_capture",
@@ -273,7 +273,8 @@ export default {
       }
     }
 
-    // Buy-intent shortcuts → BlackWay's own pricing page (never vorixa.ca).
+    // Buy-intent shortcuts → Paddle checkout. Preserve a recognized plan so
+    // old/shared links land directly on the correct Paddle-backed /payer route.
     if (
       url.pathname === "/paddle" ||
       url.pathname === "/acheter" ||
@@ -282,7 +283,16 @@ export default {
       url.pathname === "/stripe" ||
       url.pathname === "/paiement-stripe"
     ) {
-      return Response.redirect(`${SITE_ORIGIN}/forfaits`, 302);
+      const requestedPlan =
+        url.searchParams.get("plan") ||
+        url.searchParams.get("forfait") ||
+        url.searchParams.get("bw_forfait") ||
+        "";
+      const directCheckout =
+        requestedPlan && Object.prototype.hasOwnProperty.call(CHECKOUT, requestedPlan)
+          ? CHECKOUT[requestedPlan as keyof typeof CHECKOUT]
+          : `${SITE_ORIGIN}/payer`;
+      return Response.redirect(directCheckout, 302);
     }
 
     if (url.pathname === "/api/owner/overview") {
