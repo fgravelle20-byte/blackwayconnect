@@ -1,8 +1,8 @@
-import { isPaddlePlanKey, paddlePlanUrl } from "./paddleCatalog";
+import { isPaymentPlanKey, paymentPlanUrl } from "./paymentCatalog";
 
 /**
- * BlackWay Grow Hub catalog — checkout is Paddle only.
- * Spark / Launch / Growth / Scale / Command / Partner → /payer.
+ * BlackWay Grow Hub catalog — checkout is Wix Payments.
+ * Spark / Launch / Growth / Scale / Command / Partner → Wix checkout URLs.
  * Legacy Stripe price / plink IDs stay for inbound webhook forfait mapping only.
  * See ops/payment-lock/.
  */
@@ -26,7 +26,7 @@ export type PlanCatalog = {
   featured?: boolean;
 };
 
-/** Self-serve monthly ladder (CAD). Every plan is sold through Paddle /payer. */
+/** Self-serve monthly ladder (CAD). Every plan is sold through Wix Payments. */
 export const PLANS: Record<PlanKey, PlanCatalog> = {
   grow_hub_spark: {
     key: "grow_hub_spark",
@@ -34,7 +34,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FKzAG7HUL9RtrC2bJrFVP",
     productId: "prod_V1HuBVHegAkaHb",
     paymentLinkId: "plink_1UCmB6AG7HUL9RtrpvUpROqh",
-    paymentLink: paddlePlanUrl("grow_hub_spark"),
+    paymentLink: paymentPlanUrl("grow_hub_spark"),
     amountCad: 99,
   },
   grow_hub_launch: {
@@ -43,7 +43,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLbAG7HUL9Rtr3QF6c4pC",
     productId: "prod_V1HvK45vGGJ68K",
     paymentLinkId: "plink_1UCmBxAG7HUL9RtrUdOVuMNm",
-    paymentLink: paddlePlanUrl("grow_hub_launch"),
+    paymentLink: paymentPlanUrl("grow_hub_launch"),
     amountCad: 149,
   },
   grow_hub_growth: {
@@ -52,7 +52,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLcAG7HUL9RtrgSob9cmw",
     productId: "prod_V1Hv0CUSd3Gal9",
     paymentLinkId: "plink_1UCmBzAG7HUL9RtrG7wA53Aq",
-    paymentLink: paddlePlanUrl("grow_hub_growth"),
+    paymentLink: paymentPlanUrl("grow_hub_growth"),
     amountCad: 349,
     featured: true,
   },
@@ -62,7 +62,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLdAG7HUL9RtrWL5IQyME",
     productId: "prod_V1HvMstGzO6z9Z",
     paymentLinkId: "plink_1UCmC0AG7HUL9RtrSOaDDzbo",
-    paymentLink: paddlePlanUrl("grow_hub_scale"),
+    paymentLink: paymentPlanUrl("grow_hub_scale"),
     amountCad: 699,
   },
   grow_hub_command: {
@@ -71,7 +71,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLeAG7HUL9Rtrc8R6DEdZ",
     productId: "prod_V1Hv4OhF6vomby",
     paymentLinkId: "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
-    paymentLink: paddlePlanUrl("grow_hub_command"),
+    paymentLink: paymentPlanUrl("grow_hub_command"),
     amountCad: 1249,
   },
   grow_hub_partner: {
@@ -80,7 +80,7 @@ export const PLANS: Record<PlanKey, PlanCatalog> = {
     priceId: "price_1U1FLfAG7HUL9RtruTYWaERD",
     productId: "prod_V1HvFolyqB03rO",
     paymentLinkId: "plink_1UCmBKAG7HUL9RtrFzh2ZDB1",
-    paymentLink: paddlePlanUrl("grow_hub_partner"),
+    paymentLink: paymentPlanUrl("grow_hub_partner"),
     amountCad: 2499,
   },
 };
@@ -93,7 +93,7 @@ export const PLAN_ORDER: PlanKey[] = [
 
 export const FEATURED_PLAN: PlanKey = "grow_hub_growth";
 
-/** The web and mobile bootstrap use the same BlackWay Paddle checkout route. */
+/** The web and mobile bootstrap use the same Wix checkout links. */
 export const CHECKOUT_LINKS = {
   grow_hub_spark: PLANS.grow_hub_spark.paymentLink,
   grow_hub_launch: PLANS.grow_hub_launch.paymentLink,
@@ -102,7 +102,7 @@ export const CHECKOUT_LINKS = {
   grow_hub_command: PLANS.grow_hub_command.paymentLink,
   grow_hub_partner: PLANS.grow_hub_partner.paymentLink,
   currency: "cad" as const,
-  processor: "paddle" as const,
+  processor: "wix" as const,
   storefront: "https://blackwayconnect.com/forfaits",
 };
 
@@ -131,13 +131,13 @@ export const STRIPE_WEBHOOK = "https://api.blackwayconnect.com/webhooks/stripe";
 export const PORTAL_URL = "https://blackwayconnect.com/portail";
 export const PORTAL_SUCCESS_URL = "https://blackwayconnect.com/portail";
 export const THANK_YOU_URL = PORTAL_SUCCESS_URL;
-export const MERCI_URL = "https://blackwayconnect.com/merci?src=paddle";
+export const MERCI_URL = "https://blackwayconnect.com/merci?src=wix";
 
 export function checkoutUrl(
   plan: PlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ) {
-  if (isPaddlePlanKey(plan)) return paddlePlanUrl(plan, opts);
+  if (isPaymentPlanKey(plan)) return paymentPlanUrl(plan, opts);
   const url = new URL(opts.lang === "en" ? "/en/contact" : "/contact", "https://blackwayconnect.com");
   url.searchParams.set("forfait", plan);
   url.searchParams.set("bw_source", opts.source || "site_web");
@@ -146,5 +146,5 @@ export function checkoutUrl(
 }
 
 export function isCheckoutReady(plan: PlanKey): boolean {
-  return isPaddlePlanKey(plan);
+  return isPaymentPlanKey(plan);
 }
