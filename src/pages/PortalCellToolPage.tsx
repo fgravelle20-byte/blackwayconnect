@@ -28,7 +28,7 @@ type PortalLead = {
   local?: boolean;
 };
 
-const PADDLE_FIELD_PLANS: PlanKey[] = ["grow_hub_launch", "grow_hub_growth", "grow_hub_scale"];
+const WIX_FIELD_PLANS: PlanKey[] = ["grow_hub_launch", "grow_hub_growth", "grow_hub_scale"];
 const PIPE_STAGES = ["inbox", "contacted", "qualified", "booked", "won", "lost"];
 
 function readSession(): PortalSession | null {
@@ -185,14 +185,14 @@ export function PortalCellToolPage() {
       email,
       entreprise,
       telephone: String(fd.get("telephone") || ""),
-      message: `bw_source=cell_checkout | paddle=${payHref} | plan=${payPlan}`,
+      message: `bw_source=cell_checkout | wix=${payHref} | plan=${payPlan}`,
       forfait: payPlan,
       source: "portail",
       langue: lang,
       bw_ref: "cell_checkout",
     });
     if (out.ok) {
-      setStatus(fr ? "Prospect envoyé au CRM. Copiez le lien Paddle Grow Hub." : "Prospect sent to CRM. Copy the Grow Hub Paddle link.");
+      setStatus(fr ? "Prospect envoyé au CRM. Copiez le lien Wix Grow Hub." : "Prospect sent to CRM. Copy the Grow Hub Wix link.");
       setErr("");
       e.currentTarget.reset();
       return;
@@ -328,9 +328,9 @@ export function PortalCellToolPage() {
         {mode === "checkout" ? (
           <form className="form" onSubmit={sendCheckout}>
             <div className="field">
-              <label htmlFor="payPlan">{fr ? "Lien Grow Hub (Paddle live)" : "Grow Hub link (live Paddle)"}</label>
+              <label htmlFor="payPlan">{fr ? "Lien Grow Hub (Wix live)" : "Grow Hub link (live Wix)"}</label>
               <select id="payPlan" value={payPlan} onChange={(e) => setPayPlan(e.target.value as PlanKey)}>
-                {PADDLE_FIELD_PLANS.map((key) => (
+                {WIX_FIELD_PLANS.map((key) => (
                   <option key={key} value={key} disabled={!isCheckoutReady(key)}>
                     {key.replace("grow_hub_", "")} · {PLANS[key].amountCad} $ CAD
                   </option>
@@ -355,18 +355,18 @@ export function PortalCellToolPage() {
             </div>
             <p className="lede">
               {fr
-                ? "Ceci n’est pas un Pack Cellulaire. C’est le paiement en ligne Grow Hub Launch / Growth / Scale déjà en Paddle. Pack Cellulaire = demande ci-dessous."
-                : "This is not a Cellular Pack. It is the live Grow Hub Launch / Growth / Scale Paddle checkout. Cellular Pack = request below."}
+                ? "Ceci n’est pas un Pack Cellulaire. C’est le paiement en ligne Grow Hub Launch / Growth / Scale déjà en Wix. Pack Cellulaire = demande ci-dessous."
+                : "This is not a Cellular Pack. It is the live Grow Hub Launch / Growth / Scale Wix checkout. Cellular Pack = request below."}
             </p>
             <p className="lede">
-              {fr ? "Lien Paddle :" : "Paddle link:"} {payHref}
+              {fr ? "Lien Wix :" : "Wix link:"} {payHref}
             </p>
             <div className="cta-row">
               <button className="btn btn--primary" type="submit">
                 {fr ? "Envoyer au CRM + préparer le lien" : "Send to CRM + prepare link"}
               </button>
               <button className="btn btn--ghost" type="button" onClick={() => void navigator.clipboard.writeText(payHref)}>
-                {fr ? "Copier le lien Paddle" : "Copy Paddle link"}
+                {fr ? "Copier le lien Wix" : "Copy Wix link"}
               </button>
               <a className="btn btn--ghost" href={payHref} rel="noopener noreferrer">
                 {fr ? "Ouvrir /payer" : "Open /payer"}
