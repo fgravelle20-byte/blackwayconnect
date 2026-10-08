@@ -57,8 +57,8 @@ function shareCopy(variant: ShareVariant, lang: "fr" | "en"): ShareCopy {
     outils: {
       title: fr ? "Outils de travail — BlackWayConnect" : "Master Tools — BlackWayConnect",
       text: fr
-        ? "Outils de travail : diagnostic commercial, relance panier, soumission Paddle, liste de vérification, Grow Hub, ROI. Arsenal de la demande au revenu :"
-        : "Master Tools: Leak Score, cart recovery, Paddle quotes, checklist, Grow Hub, ROI. Lead-to-revenue arsenal:",
+        ? "Outils de travail : diagnostic commercial, relance panier, soumission Wix, liste de vérification, Grow Hub, ROI. Arsenal de la demande au revenu :"
+        : "Master Tools: Leak Score, cart recovery, Wix quotes, checklist, Grow Hub, ROI. Lead-to-revenue arsenal:",
       proofTitle: fr ? "Partagez ces outils" : "Share these tools",
       proofBody: fr
         ? "Partagez ces outils avec un associé pour préparer vos prochaines actions ensemble."
@@ -175,4 +175,3 @@ export function ShareBar({ variant, url, className = "", compact = false }: Prop
     </aside>
   );
 }
-
