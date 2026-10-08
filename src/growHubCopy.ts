@@ -80,7 +80,7 @@ export const SAMPLE_DEALS: SampleDeal[] = [
     title: { fr: "Automatisations + CRM", en: "Automation + CRM" },
     value: 18500,
     source: { fr: "Revenue Leak Score", en: "Revenue Leak Score" },
-    next: { fr: "Confirmer le paiement Paddle", en: "Confirm Paddle payment" },
+    next: { fr: "Confirmer le paiement Wix", en: "Confirm Wix payment" },
     stage: "closing",
   },
   {
@@ -240,4 +240,3 @@ export function planFromScore(score: number): PlanKey {
   if (score >= 20) return "grow_hub_launch";
   return "grow_hub_spark";
 }
-
