@@ -85,7 +85,7 @@ export function SoumissionPage() {
         `Validité : ${delay}`,
         extra ? `Notes : ${extra}` : null,
         ``,
-        pay ? `Paiement : ${pay}` : "Paiement : (ajoute votre lien Interac / facture / Paddle)",
+        pay ? `Paiement : ${pay}` : "Paiement : (ajoute votre lien Interac / facture / paiement en ligne)",
         ``,
         sign ? `— ${shop} · ${sign}` : `— ${shop}`,
       ]
@@ -101,7 +101,7 @@ export function SoumissionPage() {
       `Valid: ${delay}`,
       extra ? `Notes: ${extra}` : null,
       ``,
-      pay ? `Payment: ${pay}` : `Payment: (add your e-transfer / invoice / Paddle link)`,
+      pay ? `Payment: ${pay}` : `Payment: (add your e-transfer / invoice / online payment link)`,
       ``,
       sign ? `— ${shop} · ${sign}` : `— ${shop}`,
     ]
@@ -237,7 +237,7 @@ export function SoumissionPage() {
               <p className="form-status form-status--err">
                 {fr
                   ? "Ce lien sert à votre abonnement BlackWayConnect. Indiquez plutôt les instructions de paiement de votre entreprise."
-                  : "That's the BlackWay checkout. Your customer must pay YOUR link (e-transfer, invoice, your Paddle/Stripe)."}
+                  : "That's the BlackWay checkout. Your customer must pay YOUR link (e-transfer, invoice, your online payment)."}
               </p>
             ) : null}
           </form>

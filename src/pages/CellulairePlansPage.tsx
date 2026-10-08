@@ -52,11 +52,11 @@ export function CellulairePlansPage() {
         <p className="form-status" role="status">
           {anyLive
             ? fr
-              ? "Essai gratuit 14 jours, paiement sécurisé Paddle. Le pack s’active dans votre Portail dès l’abonnement."
-              : "14-day free trial, secure Paddle payment. The pack unlocks in your Portal as soon as you subscribe."
+              ? "Paiement sécurisé Wix, facturation immédiate. Le pack s’active dans votre Portail dès l’abonnement."
+              : "Secure Wix payment, immediate billing. The pack unlocks in your Portal as soon as you subscribe."
             : fr
-              ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Paddle sera proposé avec l’offre finale."
-              : "Cellular Pack is quote-based — contact BlackWay below. Paddle payment will be included with the final offer."}
+              ? "Pack Cellulaire sur demande — parlez à BlackWay ci-dessous. Le paiement Wix sera proposé avec l’offre finale."
+              : "Cellular Pack is quote-based — contact BlackWay below. Wix payment will be included with the final offer."}
         </p>
 
         <div className="plan-rail">
@@ -159,4 +159,3 @@ function toolLabel(id: string, fr: boolean): string {
 export function featuredCellulaireKey(): CellulairePlanKey {
   return FEATURED_CELLULAIRE;
 }
-

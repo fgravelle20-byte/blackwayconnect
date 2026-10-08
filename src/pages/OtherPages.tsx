@@ -7,7 +7,7 @@ import { ContactDetails } from "../ContactDetails";
 import { ConvertStickyBar } from "../ConvertStickyBar";
 import { APP_QR_PATH } from "../appConfig";
 import { checkoutUrl, PLANS, type PlanKey } from "../stripeConfig";
-import { isPaddlePlanKey } from "../paddleCatalog";
+import { isPaymentPlanKey } from "../paymentCatalog";
 import { GrowHubPreview } from "../GrowHubPreview";
 import { PhotoFigure } from "../PhotoFigure";
 import { ShareBar } from "../ShareBar";
@@ -82,8 +82,8 @@ export function PricingPage() {
             </h1>
             <p className="lede">
               {fr
-                ? "Launch, Growth ou Scale — plus Spark, Command et Partner. La plupart des PME partent sur Growth (349 $/mois) — essai 14 jours, Portail + mobile inclus. Paddle. Annulable."
-                : "Launch, Growth, or Scale — plus Spark, Command, and Partner. Most SMBs start on Growth ($349/mo) — 14-day trial, Portal + mobile included. Paddle. Cancel anytime."}
+                ? "Launch, Growth ou Scale — plus Spark, Command et Partner. La plupart des PME partent sur Growth (349 $/mois) — facturation immédiate, Portail + mobile inclus. Wix. Annulable."
+                : "Launch, Growth, or Scale — plus Spark, Command, and Partner. Most SMBs start on Growth ($349/mo) — immediate billing, Portal + mobile included. Wix. Cancel anytime."}
             </p>
             <div className="cta-row">
               <a
@@ -146,7 +146,7 @@ export function PricingPage() {
                     })
                   }
                 >
-                  {isPaddlePlanKey(plan.key)
+                  {isPaymentPlanKey(plan.key)
                     ? t.ctaBuy
                     : lang === "fr"
                       ? "Demander une offre"
@@ -350,7 +350,7 @@ export function ContactPage() {
                 <span>{plan.name}</span>
                 <strong>{plan.price}</strong>
                 <span className="contact-aside__cta">
-                  {isPaddlePlanKey(plan.key)
+                  {isPaymentPlanKey(plan.key)
                     ? t.ctaBuy
                     : lang === "fr"
                       ? "Demander une offre"
@@ -373,7 +373,7 @@ export function MerciPage() {
   const [params] = useSearchParams();
   const fr = lang === "fr";
   const src = (params.get("src") || "").toLowerCase();
-  const paid = src === "paddle";
+  const paid = src === "wix";
   const planKey = resolvePlanKey(params.get("plan"));
   const planMeta = planKey ? PLAN_LABELS[planKey] : null;
   const planCopy = planKey ? t.plans.find((p) => p.key === planKey) : null;
@@ -391,7 +391,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Paiement confirmé",
-            body: "Paddle a encaissé. Vous êtes client actif — pas besoin de renvoyer vos infos.",
+            body: "Wix a encaissé. Vous êtes client actif — pas besoin de renvoyer vos infos.",
           },
           {
             n: "02",
@@ -413,7 +413,7 @@ export function MerciPage() {
           {
             n: "01",
             title: "Payment confirmed",
-            body: "Paddle collected. You’re an active client — no need to resubmit your details.",
+            body: "Wix collected. You’re an active client — no need to resubmit your details.",
           },
           {
             n: "02",
@@ -492,8 +492,8 @@ export function MerciPage() {
           <p className="lede">
             {paid
               ? fr
-                ? `Paiement Paddle confirmé${planName ? ` — ${planName}` : ""}${amount != null ? ` (${amount} $ / mois)` : ""}. Votre compte CRM BlackWay est créé automatiquement. Voici vos prochaines étapes — rien à gérer manuellement de votre côté.`
-                : `Paddle payment confirmed${planName ? ` — ${planName}` : ""}${amount != null ? ` ($${amount} / month)` : ""}. Your BlackWay CRM account is created automatically. Here’s what happens next — nothing for you to chase.`
+                ? `Paiement Wix confirmé${planName ? ` — ${planName}` : ""}${amount != null ? ` (${amount} $ / mois)` : ""}. Votre compte CRM BlackWay est créé automatiquement. Voici vos prochaines étapes — rien à gérer manuellement de votre côté.`
+                : `Wix payment confirmed${planName ? ` — ${planName}` : ""}${amount != null ? ` ($${amount} / month)` : ""}. Your BlackWay CRM account is created automatically. Here’s what happens next — nothing for you to chase.`
               : fr
                 ? "Votre demande est dans le suivi commercial BlackWay. On vous contacte sous peu — ou choisissez un forfait pour activer tout de suite."
                 : "Your request is in the BlackWay pipeline. We’ll reach out shortly — or pick a plan to activate now."}
@@ -626,4 +626,3 @@ export function RefundPage() {
     </div>
   );
 }
-

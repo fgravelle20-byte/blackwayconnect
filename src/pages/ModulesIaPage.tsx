@@ -11,7 +11,7 @@ import {
   type ModuleIaKey,
 } from "../modulesIaConfig";
 
-/** Modules IA — Chatbot IA + Accueil vocal IA, abonnements Paddle séparés du Grow Hub. */
+/** Modules IA — Chatbot IA + Accueil vocal IA, abonnements Wix séparés du Grow Hub. */
 export function ModulesIaPage() {
   const { lang, path } = useLang();
   const fr = lang === "fr";
@@ -65,8 +65,8 @@ export function ModulesIaPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Chaque module s’ajoute à votre portail client, avec ou sans Grow Hub. Paiement sécurisé Paddle, en dollars canadiens, annulable en tout temps."
-              : "Each module is added to your Client Master Portal, with or without Grow Hub. Secure Paddle payment in Canadian dollars, cancel anytime."}
+              ? "Chaque module s’ajoute à votre portail client, avec ou sans Grow Hub. Paiement sécurisé en ligne, en dollars canadiens, annulable en tout temps."
+              : "Each module is added to your Client Master Portal, with or without Grow Hub. Secure online payment in Canadian dollars, cancel anytime."}
           </p>
           <div className="cta-row">
             <Link className="btn btn--ghost" to={path("/forfaits")}>

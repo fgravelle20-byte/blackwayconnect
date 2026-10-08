@@ -6,7 +6,7 @@
  * Twin score        — blended performance index for CRM + plan recommendation.
  *
  * Never invent payment proof from the client score alone — fulfillment stays
- * on verified Paddle/Stripe webhooks.
+ * on verified Wix/Stripe webhooks.
  */
 
 import type { PlanKey } from "./stripeConfig";
@@ -56,7 +56,7 @@ export function twinBand(twinScore: number): "low" | "mid" | "high" {
 }
 
 /**
- * Recommend among Paddle self-serve plans only (Launch / Growth / Scale).
+ * Recommend among Wix self-serve plans only (Launch / Growth / Scale).
  * Spark / Command / Partner stay contact-led — not returned here.
  */
 export function twinRecommendPlan(

@@ -133,7 +133,7 @@ test("portal provision accepts X-BW-Fulfill-Key when BW_LEAD_KEY differs", async
   }
 });
 
-test("asks Paddle to retry when customer lookup fails after a valid payment", async () => {
+test("rejects retired Paddle webhooks even when they are signed", async () => {
   const secret = "pdl_ntfset_test_secret";
   const body = JSON.stringify({
     event_type: "transaction.completed",
@@ -153,8 +153,8 @@ test("asks Paddle to retry when customer lookup fails after a valid payment", as
       headers: { "Paddle-Signature": `ts=${ts};h1=${signature}` },
       body,
     }), { PADDLE_WEBHOOK_SECRET: secret, PADDLE_API_KEY: "test-key" }, { waitUntil() {} });
-    assert.equal(response.status, 502);
-    assert.equal((await response.json()).recu, undefined);
+    assert.equal(response.status, 410);
+    assert.match((await response.json()).erreur, /déconnecté/);
   } finally {
     globalThis.fetch = previousFetch;
   }

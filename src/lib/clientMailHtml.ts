@@ -73,7 +73,7 @@ export function followupHtml(p: FollowupMail) {
        <p style="margin:22px 0 0;font-size:13px;color:#8a8a8a;word-break:break-all;">${escHtml(link)}</p>`
     : pay
       ? `<p style="margin:0;padding:14px 16px;border-left:3px solid #e10600;background:#111111;color:#ffffff;"><strong>${fr ? "Pour payer :" : "To pay:"}</strong> ${escHtml(pay)}</p>`
-      : `<p style="margin:0;color:#e10600;font-size:14px;">${fr ? "Ajoutez votre lien de paiement (Interac, facture, Paddle…)." : "Add your payment link (e-transfer, invoice, Paddle…)."}</p>`;
+      : `<p style="margin:0;color:#e10600;font-size:14px;">${fr ? "Ajoutez votre lien de paiement (Interac, facture, Wix…)." : "Add your payment link (e-transfer, invoice, Wix…)."}</p>`;
   const footer = signature(p, p.vendorCompany.trim() || (fr ? "Votre entreprise" : "Your company"))
     .map(escHtml)
     .join(" · ");

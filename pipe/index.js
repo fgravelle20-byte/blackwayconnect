@@ -1444,10 +1444,11 @@ export default {
           hubspot_bw_session_prop = await ensureBwLastCheckoutSessionProp(env);
         }
       }
-      const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
-      const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
-      const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
-      const paddleFulfillRelay = !!String(env.BW_PADDLE_FULFILL_KEY || "").trim();
+      // Paddle is disconnected even if stale secrets still exist in the hosting environment.
+      const paddleApiKey = false;
+      const paddleWebhookSecret = false;
+      const paddleClientToken = false;
+      const paddleFulfillRelay = false;
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
       let masterDb = false;
@@ -1459,11 +1460,7 @@ export default {
           console.log("health master db", e);
         }
       }
-      const portal_claim_ready = (masterDb || hubspot === "connecte") && (
-        (paddleApiKey && paddleWebhookSecret) ||
-        paddleApiKey ||
-        paddleFulfillRelay
-      );
+      const portal_claim_ready = masterDb || hubspot === "connecte";
       return json({
         service: "blackway-pipe",
         ok: masterDb || hubspot === "connecte",
@@ -1482,7 +1479,9 @@ export default {
         paddle_webhook_secret: paddleWebhookSecret,
         paddle_client_token: paddleClientToken,
         paddle_fulfill_relay: paddleFulfillRelay,
-        paddle_ready: (paddleApiKey && paddleWebhookSecret) || paddleFulfillRelay,
+        paddle_ready: false,
+        paddle_disconnected: true,
+        payment_processor: "wix",
         paddle_immediate_billing: paddleImmediateBilling,
         legacy_stripe_checkout: legacyStripeCheckout,
         stripe_webhook_history_only: true,
@@ -1495,13 +1494,9 @@ export default {
       });
     }
 
-    // Public client-side token for /payer overlay (designed to be browser-visible).
+    // Paddle is permanently disconnected. Keep this legacy route only to reject old clients.
     if (url.pathname === "/paddle/client-config" && request.method === "GET") {
-      const token = String(env.PADDLE_CLIENT_TOKEN || "").trim();
-      if (!token.startsWith("live_")) {
-        return json({ ok: false, erreur: "paddle client token absent" }, 503);
-      }
-      return json({ ok: true, environment: "production", client_token: token });
+      return json({ ok: false, erreur: "Paddle déconnecté; utilisez Wix Payments." }, 410);
     }
 
     if (url.pathname === "/lead" && request.method === "POST") {
@@ -1591,6 +1586,8 @@ export default {
     }
 
     if (url.pathname === "/webhooks/paddle" && request.method === "POST") {
+      return json({ ok: false, erreur: "Paddle déconnecté; événements refusés." }, 410);
+      /* Historique de traitement conservé ci-dessous, mais rendu inaccessible.
       const body = await request.text();
       const ok = await signaturePaddleValide(
         env.PADDLE_WEBHOOK_SECRET,
@@ -1659,6 +1656,7 @@ export default {
         return json({ erreur: "activation Paddle temporairement indisponible" }, 502);
       }
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
+      */
     }
 
     if (url.pathname === "/ops/engine/tick" && request.method === "POST") {

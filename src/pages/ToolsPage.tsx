@@ -29,7 +29,7 @@ const COMPARE_FR: Row[] = [
   },
   {
     label: "Pipeline → paiement → CRM",
-    bwc: "Natif (Paddle + CRM BlackWay)",
+    bwc: "Natif (Wix + CRM BlackWay)",
     ghl: "Oui (écosystème GHL)",
     hub: "Oui (sièges / contacts)",
     agency: "Variable / plusieurs outils",
@@ -74,7 +74,7 @@ const COMPARE_EN: Row[] = [
   },
   {
     label: "Pipeline → pay → CRM",
-    bwc: "Native (Paddle + BlackWay CRM)",
+    bwc: "Native (Wix + BlackWay CRM)",
     ghl: "Yes (GHL ecosystem)",
     hub: "Yes (seats / contacts)",
     agency: "Varies / tool sprawl",
@@ -288,8 +288,8 @@ export function ToolsPage() {
       eyebrow: "05",
       title: fr ? "Aperçu Grow Hub" : "Grow Hub Preview",
       body: fr
-        ? "Pipeline interactif : étapes, prochaines actions, chemin vers l’abonnement Paddle."
-        : "Interactive pipeline: stages, next actions, path to Paddle subscribe.",
+        ? "Pipeline interactif : étapes, prochaines actions, chemin vers l’abonnement Wix."
+        : "Interactive pipeline: stages, next actions, path to Wix subscribe.",
       to: path("/grow-hub"),
       cta: fr ? "Ouvrir Grow Hub" : "Open Grow Hub",
       primary: false,
@@ -718,4 +718,3 @@ export function ToolsPage() {
     </section>
   );
 }
-

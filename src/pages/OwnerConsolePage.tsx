@@ -73,13 +73,13 @@ const sections = [
     title: "Paiements",
     state: "Partiel",
     detail:
-      "Étapes Master CRM + fulfillment Paddle. Le solde bancaire se vérifie dans Paddle.",
+      "Étapes Master CRM + fulfillment Wix. Le solde bancaire se vérifie dans Wix.",
   },
   {
     title: "Automatisations",
     state: "Actif",
     detail:
-      "Leads Tools/Portail → Master CRM BlackWayConnect · webhooks Paddle → forfait + portail. Suivi d’exécution encore partiel.",
+      "Leads Tools/Portail → Master CRM BlackWayConnect · webhooks Wix → forfait + portail. Suivi d’exécution encore partiel.",
   },
 ];
 
