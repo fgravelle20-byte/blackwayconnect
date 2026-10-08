@@ -26,8 +26,8 @@ import { readLeakScore } from "../lib/portalSession";
 
 const STORAGE_KEY = "bw_portal_session";
 
-/** Real Paddle txn_… only — never claim on catalog placeholders like {txn_id}. */
-function isLivePaddleTransactionId(raw: string | null): boolean {
+/** Real Wix txn_… only — never claim on catalog placeholders like {txn_id}. */
+function isLiveWixTransactionId(raw: string | null): boolean {
   if (!raw) return false;
   let t = raw.trim();
   try {
@@ -85,8 +85,8 @@ const TOOL_COPY: Partial<
     en: { title: "Cart recovery", body: "Abandoned quotes → recoverable $ → Growth.", cta: "Estimate" },
   },
   soumission: {
-    fr: { title: "Soumission → Paddle", body: "Générer une soumission + lien paiement Growth.", cta: "Créer" },
-    en: { title: "Quote → Paddle", body: "Generate a quote + Growth payment link.", cta: "Create" },
+    fr: { title: "Soumission → Wix", body: "Générer une soumission + lien paiement Growth.", cta: "Créer" },
+    en: { title: "Quote → Wix", body: "Generate a quote + Growth payment link.", cta: "Create" },
   },
   checklist: {
     fr: { title: "Liste de vérification 7 jours", body: "Lead magnet — actions pour fermer sans fuite.", cta: "Ouvrir" },
@@ -129,8 +129,8 @@ const TOOL_COPY: Partial<
     en: { title: "Mobile pipeline", body: "Advance deals on the road.", cta: "Open" },
   },
   cell_checkout: {
-    fr: { title: "Paiement du prospect", body: "Envoyer un lien Paddle Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
-    en: { title: "Prospect checkout", body: "Send a Grow Hub Paddle link from the field (Cellular Pack = request).", cta: "Open" },
+    fr: { title: "Paiement du prospect", body: "Envoyer un lien Wix Grow Hub depuis le terrain (Pack Cellulaire = demande).", cta: "Ouvrir" },
+    en: { title: "Prospect checkout", body: "Send a Grow Hub Wix link from the field (Cellular Pack = request).", cta: "Open" },
   },
   cell_streak: {
     fr: { title: "Suivi des activités", body: "Rythme quotidien d’activité terrain.", cta: "Ouvrir" },
@@ -313,7 +313,7 @@ export function PortalPage() {
       setEmail(emailParam);
     }
     if (transactionId) {
-      if (!isLivePaddleTransactionId(transactionId)) {
+      if (!isLiveWixTransactionId(transactionId)) {
         setBooting(false);
         return;
       }
@@ -390,8 +390,8 @@ export function PortalPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Paddle. Aucun mot de passe n’est requis."
-              : "On iPhone or desktop, enter the exact email used with Paddle. No password is required."}
+              ? "Sur iPhone ou ordinateur, entrez le courriel exact utilisé avec Wix. Aucun mot de passe n’est requis."
+              : "On iPhone or desktop, enter the exact email used with Wix. No password is required."}
           </p>
           <form
             className="portal-login__form"
@@ -417,8 +417,8 @@ export function PortalPage() {
           {error ? <p className="form-status form-status--err">{error}</p> : null}
           <p className="portal-login__hint">
             {fr
-              ? "Accès refusé? Vérifiez le courriel du reçu Paddle ou contactez serviceclient@blackwayconnect.com."
-              : "Access denied? Check the email on your Paddle receipt or contact serviceclient@blackwayconnect.com."}
+              ? "Accès refusé? Vérifiez le courriel du reçu Wix ou contactez serviceclient@blackwayconnect.com."
+              : "Access denied? Check the email on your Wix receipt or contact serviceclient@blackwayconnect.com."}
           </p>
           <p className="portal-login__hint">
             {fr ? (
@@ -849,4 +849,3 @@ function ToolGrid(props: {
     </>
   );
 }
-
