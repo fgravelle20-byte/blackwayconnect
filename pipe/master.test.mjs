@@ -134,7 +134,7 @@ test("health is ok on the Master DB without HubSpot", async () => {
   assert.equal(j.hubspot_sync, false);
 });
 
-test("Paddle webhooks: pay activates, cancel cuts access, replay does not revive, new payment does", async () => {
+test.skip("Legacy Paddle lifecycle (retired)", async () => {
   const realFetch = globalThis.fetch;
   globalThis.fetch = async (u) => {
     if (String(u.url || u).startsWith("https://api.paddle.com/customers/ctm_1")) {
@@ -188,6 +188,14 @@ test("Paddle webhooks: pay activates, cancel cuts access, replay does not revive
   }
 });
 
+test("Paddle routes are permanently disabled", async () => {
+  const env = envNoHubspot();
+  const config = await pipe.fetch(new Request("https://api.blackwayconnect.com/paddle/client-config"), env, { waitUntil() {} });
+  assert.equal(config.status, 410);
+  const webhook = await pipe.fetch(new Request("https://api.blackwayconnect.com/webhooks/paddle", { method: "POST", body: "{}" }), env, { waitUntil() {} });
+  assert.equal(webhook.status, 410);
+});
+
 test("modules IA and Pack Cellulaire each get their own portal line, never Grow Hub for free", async () => {
   const env = envNoHubspot();
   const provision = (email, price_id, payment_id) =>
@@ -215,7 +223,7 @@ test("modules IA and Pack Cellulaire each get their own portal line, never Grow 
   assert.deepEqual(j.portal.modules.map((m) => m.key), ["ia_chatbot_1", "ia_vocal_avance"]);
 });
 
-test("canceling one module keeps the others; canceling the last one cuts access", async () => {
+test.skip("Legacy Paddle module cancellation (retired)", async () => {
   const realFetch = globalThis.fetch;
   globalThis.fetch = async (u) =>
     String(u.url || u).startsWith("https://api.paddle.com/customers/ctm_2")
