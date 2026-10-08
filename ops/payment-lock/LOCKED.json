@@ -1,7 +1,6 @@
 {
-  "$schema_note": "PAYMENT SYSTEM LOCK — unlocked for Paddle → Wix Payments migration. CI checks Wix invariants.",
-  "locked": false,
-  "unlock_ack": "I_UNDERSTAND_UNLOCKING_LIVE_PAYMENTS",
+  "$schema_note": "PAYMENT SYSTEM LOCK — locked on Wix Payments (16 BlackWay plans). Owner must unlock before any payment change.",
+  "locked": true,
   "lock_version": 6,
   "locked_at": "2026-10-08",
   "processor": "wix",
