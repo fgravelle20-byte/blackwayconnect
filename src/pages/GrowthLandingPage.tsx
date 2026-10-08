@@ -41,8 +41,8 @@ export function GrowthLandingPage() {
             </h1>
             <p className="lede">
               {fr
-                ? "Score, relances, soumissions et portail sont inclus. Essai de 14 jours, annulable."
-                : "Scoring, follow-ups, quotes and the portal are included. 14-day trial, cancel anytime."}
+                ? "Score, relances, soumissions et portail sont inclus. Facturation immédiate, annulable."
+                : "Scoring, follow-ups, quotes and the portal are included. Immediate billing, cancel anytime."}
             </p>
             <div className="cta-row">
               <a
@@ -76,7 +76,7 @@ export function GrowthLandingPage() {
             <li>{fr ? "Pipeline + CRM BlackWay branché — prochaine action claire" : "Pipeline + BlackWay CRM — clear next action"}</li>
             <li>{fr ? "portail client + accès mobile le jour 1" : "Master Portal + mobile access on day one"}</li>
             <li>{fr ? "Secrétaire IA 24h sur le site" : "AI Secretary 24/7 on the site"}</li>
-            <li>{fr ? "Paddle. Annulable. Upsell Cellulaire optionnel." : "Paddle. Cancel anytime. Optional Cellular upsell."}</li>
+            <li>{fr ? "Wix. Annulable. Upsell Cellulaire optionnel." : "Wix. Cancel anytime. Optional Cellular upsell."}</li>
           </ul>
 
           <p className="lede">
@@ -98,4 +98,3 @@ export function GrowthLandingPage() {
     </>
   );
 }
-
