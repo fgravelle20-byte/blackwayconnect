@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { useEffect, type ReactNode } from "react";
-import { initializePublicHomePaddle } from "../paddleLoader";
+import { type ReactNode } from "react";
 import { Hero } from "../Hero";
 import { ContactForm } from "../ContactForm";
 import { AppCta } from "../AppCta";
 import { useLang } from "../i18n";
 import { checkoutUrl } from "../stripeConfig";
-import { isPaddlePlanKey } from "../paddleCatalog";
+import { isPaymentPlanKey } from "../paymentCatalog";
 
 function sameSitePath(href: string): string | null {
   try {
@@ -44,18 +43,6 @@ function PlanLink({
 
 export function HomePage() {
   const { t, path, lang } = useLang();
-
-  useEffect(() => {
-    // Retain still runs on the public home page, after the first paint.
-    // The client-side token is browser-public; never put an API key here.
-    const start = () => {
-      void initializePublicHomePaddle().catch((error) => {
-        console.warn("Paddle.js unavailable on home page", error);
-      });
-    };
-    const id = window.requestIdleCallback(start, { timeout: 4000 });
-    return () => window.cancelIdleCallback(id);
-  }, []);
 
   return (
     <>
@@ -112,7 +99,7 @@ export function HomePage() {
                   className="btn btn--primary plan-item__cta"
                   href={checkoutUrl(plan.key, { lang, source: "site_web", content: "home_plans" })}
                 >
-                  {isPaddlePlanKey(plan.key)
+                  {isPaymentPlanKey(plan.key)
                     ? t.ctaBuy
                     : lang === "fr"
                       ? "Demander une offre"
@@ -217,7 +204,7 @@ export function HomePage() {
                   <span>{plan.name}</span>
                   <strong>{plan.price}</strong>
                   <span className="contact-aside__cta">
-                    {isPaddlePlanKey(plan.key)
+                    {isPaymentPlanKey(plan.key)
                       ? t.ctaBuy
                       : lang === "fr"
                         ? "Demander une offre"
