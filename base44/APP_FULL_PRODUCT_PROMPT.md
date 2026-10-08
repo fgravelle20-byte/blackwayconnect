@@ -15,12 +15,12 @@ Manifest name : **BlackWayConnect** (plus de description « social networking »
 | **Vrai dashboard client** | `https://blackwayconnect.com/portail` |
 | Login portail | email du compte payeur → claim session |
 | Outils qui marchent | `/diagnostic` `/outils` `/comparer` `/relance-panier` `/soumission` `/checklist` `/roi` `/grow-hub` |
-| Forfaits payants Grow Hub | **site Safari seulement** → `/forfaits` (Apple : pas de Stripe abo **dans** la WebView) |
+| Forfaits payants Grow Hub | **site Safari seulement** → `/forfaits` (checkout Paddle externe au parcours natif) |
 | Contact | `https://blackwayconnect.com/contact` · `serviceclient@blackwayconnect.com` · `tel:+14502316911` · sans frais `tel:+18888539080` |
 | Bridge public | `GET https://blackwayconnect.com/api/mobile/bootstrap` |
 | Lead | function `submit-lead` + secret `BW_LEAD_KEY` → pipe HubSpot |
 
-**Interdit :** faux likes, faux MRR, fake cards vides, « social network », Pack Cellulaire Stripe (paymentLink = null — **ne pas inventer**), hardcoder `BW_LEAD_KEY`, inventer App Store URL.
+**Interdit :** faux likes, faux MRR, fake cards vides, « social network », tout checkout Stripe, hardcoder `BW_LEAD_KEY`, inventer App Store URL.
 
 ---
 
@@ -34,8 +34,8 @@ L’utilisateur ouvre l’app → en **1 tap** il est dans son Portail (forfait 
 
 1. Au démarrage app : `GET https://blackwayconnect.com/api/mobile/bootstrap`  
    Utiliser : `site.portal`, `site.tools`, `site.diagnostic`, `site.pricing`, `site.contact`, `site.home`, `support.email`, `qr.*`, `model.pitch`.  
-   **Ne pas** afficher une grille checkout Stripe Grow Hub in-app.  
-   **Ne pas** vendre `plansCellulaire` (liens null).
+   **Ne pas** afficher de checkout Stripe. Les achats passent par le site BlackWayConnect et son `/payer` Paddle.  
+   `plansCellulaire` contient les liens Paddle live; si l’app les expose, elle doit ouvrir le site BlackWayConnect en navigateur externe.
 
 2. Function `submit-lead` (déjà dans le projet) : secret Dashboard `BW_LEAD_KEY` = même clé Cloudflare.  
    Payload forcé : `source=app_mobile`, `bw_source=mobile_app`, `bw_ref=base44_app`.
@@ -67,7 +67,7 @@ Viewport 1 seulement :
   `https://blackwayconnect.com/forfaits?utm_source=grow_hub_app&utm_medium=app_store&utm_campaign=external_checkout&bw_source=mobile_app&bw_ref=base44_app`
 
 Sous le fold (pas dans le hero) :
-- 3 trust chips **honnêtes** seulement : « Stripe → HubSpot », « Bilingue FR/EN », « Québec · Canada · US »
+- 3 trust chips **honnêtes** seulement : « Paddle → CRM », « Bilingue FR/EN », « Québec · Canada · US »
 - Aucun compteur inventé
 
 ### 2) Portail — LE cœur (pas une coquille)
@@ -91,7 +91,7 @@ Si WebView cassée / auth cookies : fallback = ouvrir URL système.
 
 **Affiche aussi (lecture seule, depuis bootstrap si dispo, sinon copy fixe) :**
 - « Dashboard mobile = inclus avec Grow Hub »
-- « Pack terrain = optionnel — bientôt / voir site » — **sans** bouton Stripe cellulaire
+- « Pack terrain = optionnel — bientôt / voir site » — sans checkout Stripe
 
 ### 3) Outils — deep links qui MARCHENT (pas de cards décoratives)
 
@@ -163,8 +163,8 @@ Jamais dans le code frontend.
 - [ ] Onglet Outils = liens site qui ouvrent de vraies pages
 - [ ] Lead POST fonctionne (ou message d’erreur honnête)
 - [ ] Privacy + support visibles
-- [ ] Zéro checkout Stripe abo **dans** la WebView (forfaits = Safari externe)
-- [ ] Zéro Payment Link Cellulaire inventé
+- [ ] Zéro checkout Stripe; forfaits = site BlackWayConnect / Paddle en navigateur externe
+- [ ] Zéro lien de paiement inventé; utiliser uniquement les URLs Paddle du bootstrap
 - [ ] Publié : `https://black-way-link.base44.app/` montre cette UI
 - [ ] Manifest description ≠ social network
 

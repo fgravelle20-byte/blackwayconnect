@@ -347,7 +347,7 @@ export function RevenueLeakScore({ embedded = false }: { embedded?: boolean }) {
           </div>
           <ShareBar variant="diagnostic" compact className="share-bar--result" />
           <p className="rls__hint">
-            {PLANS[plan].amountCad}$ CAD · Paddle Checkout
+            {PLANS[plan].amountCad}$ CAD · Wix Checkout
           </p>
         </div>
       )}

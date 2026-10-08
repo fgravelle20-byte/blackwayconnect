@@ -7,7 +7,7 @@
  *
  * 2026-09-13: the Aug 31 plan links (`plink_1U9E6m` / `1U9E7F` / `1U9E7H` /
  * `1U9E7J`) cannot be reactivated (no valid payment methods on those objects).
- * Replacement links use Stripe Managed Payments and are the live checkout URLs.
+ * Replacement Stripe links are historical identifiers only; all new checkout traffic is Paddle-only.
  */
 
 export const VORIXA_BASE44_APP_ID = "6a2a047fbc1c05e8396f0ad2";
@@ -19,7 +19,6 @@ export const VORIXA_GERE_PLANS = {
     amountCad: 499,
     priceId: "price_1U9DxTAG7HUL9RtrioEG5ZM5",
     paymentLinkId: "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-    paymentLink: "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
     legacyPaymentLinkIds: ["plink_1U9E6mAG7HUL9RtrmS3M1qh3"],
   },
   vorixa_gere_croissance: {
@@ -28,7 +27,6 @@ export const VORIXA_GERE_PLANS = {
     amountCad: 999,
     priceId: "price_1U9DxYAG7HUL9RtrlCdkCnNH",
     paymentLinkId: "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-    paymentLink: "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
     legacyPaymentLinkIds: ["plink_1U9E7FAG7HUL9RtrV9HPIqvz"],
   },
   vorixa_gere_1500: {
@@ -37,7 +35,6 @@ export const VORIXA_GERE_PLANS = {
     amountCad: 1500,
     priceId: "price_1U9DxbAG7HUL9RtrpUFQKphC",
     paymentLinkId: "plink_1UFMWaAG7HUL9RtrC5Q9YE4T",
-    paymentLink: "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v",
     legacyPaymentLinkIds: ["plink_1U9E7HAG7HUL9Rtr4VJoLqaJ"],
   },
   vorixa_gere_3000: {
@@ -46,7 +43,6 @@ export const VORIXA_GERE_PLANS = {
     amountCad: 3000,
     priceId: "price_1U9DxeAG7HUL9RtrZtujFl10",
     paymentLinkId: "plink_1UFMWbAG7HUL9RtrXevysZSA",
-    paymentLink: "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w",
     legacyPaymentLinkIds: ["plink_1U9E7JAG7HUL9RtrAv9D6gpE"],
   },
 };

@@ -1,16 +1,20 @@
-# RETIRÉ — Pack Cellulaire Stripe
+# Pack Cellulaire — statut paiement
 
-Stripe n'est plus un canal de paiement pour les nouvelles ventes BlackWayConnect.
+**État actuel : Paddle LIVE. Stripe checkout RETIRÉ.**
 
-## Règle active
+Les quatre forfaits sont vendus exclusivement par le checkout canonique BlackWayConnect :
 
-- Processeur de nouveaux paiements : **Paddle**
-- Ne créer aucun nouveau Payment Link Stripe.
-- Ne remettre aucune URL `buy.stripe.com` dans le site, l'app mobile, les courriels ou les outils.
-- Les offres Cellulaire restent **sur demande** tant que des prix Paddle dédiés et approuvés ne sont pas ajoutés.
-- Le Portail et les webhooks Stripe existants peuvent rester pour l'historique, remboursements et rapprochement des anciennes transactions.
+- `cell_signal` — 79 CAD/mois → `/payer?plan=cell_signal`
+- `cell_route` — 199 CAD/mois → `/payer?plan=cell_route`
+- `cell_fleet` — 399 CAD/mois → `/payer?plan=cell_fleet`
+- `cell_command` — 799 CAD/mois → `/payer?plan=cell_command`
 
-Voir :
-- `src/cellulaireConfig.ts`
-- `src/paddleCatalog.ts`
-- `ops/payment-lock/LOCKED.json`
+Facturation : **immédiate**. Aucun essai gratuit.
+
+## Stripe
+
+- Aucun nouveau Payment Link Stripe.
+- Aucun CTA public ou mobile ne doit émettre une URL de checkout Stripe.
+- Les anciens IDs Stripe restent uniquement dans le pipe pour résoudre les événements historiques.
+- Le webhook Stripe peut rester actif pour rapprochement/remboursement des transactions historiques.
+- Toute ancienne URL BlackWay d’achat (`/checkout`, `/stripe`, `/paiement-stripe`, etc.) doit rediriger vers `/payer` Paddle.

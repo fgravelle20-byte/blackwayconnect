@@ -52,8 +52,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
       title: fr ? "Du premier prospect au paiement" : "From the first lead to payment",
       ogTitle: fr ? "BlackWayConnect — du prospect au paiement" : "BlackWayConnect — from lead to payment",
       description: fr
-        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, essai de 14 jours."
-        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars, 14-day trial.",
+        ? "Chaque demande est classée, suivie et encaissée dans le même dossier. Forfaits en dollars canadiens, paiement Wix immédiat."
+        : "Each request is sorted, followed up and collected in the same record. Plans in Canadian dollars with immediate Wix billing.",
     },
     outils: {
       title: fr ? "Outils pour la prochaine action" : "Tools for the next step",
@@ -108,15 +108,15 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Forfaits BlackWayConnect — 99 $ à 2 499 $ CAD/mois"
         : "BlackWayConnect plans — $99 to $2,499 CAD/mo",
       description: fr
-        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Abonnement Paddle, essai 14 jours."
-        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Paddle subscription, 14-day trial.",
+        ? "Spark 99 $, Launch 149 $, Growth 349 $, Scale 699 $, Command 1 249 $, Partner 2 499 $ CAD/mois. Abonnement Wix, facturation immédiate."
+        : "Spark $99, Launch $149, Growth $349, Scale $699, Command $1,249, Partner $2,499 CAD/mo. Wix subscription, immediate billing.",
     },
     "forfaits-growth": {
       title: fr ? "Grow Hub Growth · 349 $/mois" : "Grow Hub Growth · $349/mo",
       ogTitle: fr ? "Growth 349 $ — ferme plus de prospects" : "Growth $349 — close more leads",
       description: fr
-        ? "Forfait Grow Hub Growth 349 $ CAD/mois. Essai 14 jours, Portail + tableau de bord mobile inclus. Paddle."
-        : "Ad landing: Grow Hub Growth $349 CAD/mo. 14-day trial, Portal + mobile dashboard included. Paddle.",
+        ? "Forfait Grow Hub Growth 349 $ CAD/mois. Facturation immédiate, Portail + tableau de bord mobile inclus. Wix."
+        : "Ad landing: Grow Hub Growth $349 CAD/mo. Immediate billing, Portal + mobile dashboard included. Wix.",
     },
     "forfaits-cellulaire": {
       title: fr
@@ -135,8 +135,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Chatbot IA dès 99 $ · Accueil vocal IA dès 149 $ CAD/mois"
         : "AI Chatbot from $99 · AI Voice reception from $149 CAD/mo",
       description: fr
-        ? "Chatbot IA pour votre site et accueil vocal IA pour votre ligne téléphonique. Abonnement mensuel Paddle, activé dans votre portail client."
-        : "AI chatbot for your website and AI voice reception for your phone line. Monthly Paddle subscription, activated in your Client Master Portal.",
+        ? "Chatbot IA pour votre site et accueil vocal IA pour votre ligne téléphonique. Abonnement mensuel Wix, activé dans votre portail client."
+        : "AI chatbot for your website and AI voice reception for your phone line. Monthly Wix subscription, activated in your Client Master Portal.",
     },
     "app-forfaits": {
       title: fr ? "Pack Cellulaire" : "Cellular Pack",
@@ -150,8 +150,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment fonctionne BlackWayConnect"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisissez votre forfait (Spark à Partner), payez avec Paddle, puis le Portail s’active automatiquement."
-        : "Pick your plan (Spark to Partner), pay with Paddle, and the Portal activates automatically.",
+        ? "Choisissez votre forfait (Spark à Partner), payez avec Wix, puis le Portail s’active automatiquement."
+        : "Pick your plan (Spark to Partner), pay with Wix, and the Portal activates automatically.",
     },
     "how-it-works": {
       title: fr ? "Comment ça marche · abonnement Grow Hub" : "How it works · Grow Hub subscription",
@@ -159,8 +159,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
         ? "Comment fonctionne BlackWayConnect"
         : "How it works — pay, your plan unlocks",
       description: fr
-        ? "Choisissez votre forfait, payez avec Paddle, activation auto du Portail (bw_forfait), puis vous contrôlez."
-        : "Pick a plan, pay on Paddle, Portal auto-activates (bw_forfait), then you control.",
+        ? "Choisissez votre forfait, payez avec Wix, activation auto du Portail (bw_forfait), puis vous contrôlez."
+        : "Pick a plan, pay on Wix, Portal auto-activates (bw_forfait), then you control.",
     },
     diagnostic: {
       title: fr ? "Twin Turbo Leak Score · 60 secondes" : "Twin Turbo Leak Score · 60 seconds",
@@ -222,8 +222,8 @@ function pageSeo(pageKey: string, lang: "fr" | "en", fallbackBody: string): Page
     faq: {
       title: "FAQ",
       description: fr
-        ? "Abonnement Paddle, service 24h, bureaux, prospects, bilingue FR/EN et choix de forfait — réponses courtes."
-        : "Paddle subscribe, 24/7 service, office, leads, bilingual FR/EN and plan choice — short answers.",
+        ? "Abonnement Wix, service 24h, bureaux, prospects, bilingue FR/EN et choix de forfait — réponses courtes."
+        : "Wix subscribe, 24/7 service, office, leads, bilingual FR/EN and plan choice — short answers.",
     },
     contact: {
       title: fr ? "Consultation stratégique" : "Strategic consultation",
@@ -464,4 +464,3 @@ export function Seo() {
 
   return null;
 }
-

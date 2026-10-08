@@ -142,7 +142,7 @@ export const copy: Record<Lang, Copy> = {
     ctaConsult: "Réserver une consultation",
     ctaGrow: "Voir Grow Hub en action",
     ctaPricing: "Comparer les forfaits",
-    ctaBuy: "S’abonner — Paddle",
+    ctaBuy: "S’abonner — Wix",
     ctaApp: "Ouvrir le portail",
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
@@ -155,7 +155,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Mondial",
     heroTitle: "Du premier contact au paiement.",
     heroBody:
-      "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, essai de 14 jours, annulable.",
+      "Chaque demande est classée, suivie, puis encaissée dans le même dossier. Growth : 349 $ par mois, facturé dès l’abonnement, annulable.",
     office: {
       eyebrow: "Bureau BlackWayConnect",
       title: "Une journée dans le système.",
@@ -182,7 +182,7 @@ export const copy: Record<Lang, Copy> = {
       { value: "Twin", label: "Turbo Volume + Qualité" },
       { value: "60 s", label: "Diagnostic Master Leads" },
       { value: "FR / EN", label: "Parcours bilingues" },
-      { value: "Paddle", label: "Paiement sécurisé" },
+      { value: "Wix", label: "Paiement sécurisé" },
     ],
     growTitle: "Un suivi en trois étapes.",
     growBody:
@@ -194,7 +194,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Un forfait adapté à votre entreprise.",
     plansBody:
-      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne (Paddle), avec un essai de 14 jours.",
+      "Prix en dollars canadiens, taxes en sus. Tous les forfaits se paient en ligne avec Wix, dès l’abonnement, puis se renouvellent mensuellement.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -301,7 +301,7 @@ export const copy: Record<Lang, Copy> = {
       heroBody: "Une plateforme pour centraliser vos demandes, structurer vos suivis et accompagner votre croissance.",
       visionTitle: "La vision",
       visionBody:
-        "Un seul fil du premier clic au paiement Paddle. Moins de friction, plus de suivi des revenus — pour les équipes qui vendent vraiment.",
+        "Un seul fil du premier clic au paiement Wix. Moins de friction, plus de suivi des revenus — pour les équipes qui vendent vraiment.",
       valuesTitle: "Ce qui nous guide",
       values: [
         {
@@ -350,7 +350,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "Ce qui est inclus avec Grow Hub.",
     proofBody: "Le paiement, le dossier client et le portail font partie du même abonnement.",
     proofItems: [
-      "Paiement en ligne en dollars canadiens, essai de 14 jours, annulable.",
+      "Paiement en ligne en dollars canadiens, facturé dès l’abonnement, annulable.",
       "Chaque demande reste dans un dossier, du premier message au paiement.",
       "Le portail client est inclus, sur le web et sur mobile.",
       "Français et anglais, sans deuxième système.",
@@ -398,7 +398,7 @@ export const copy: Record<Lang, Copy> = {
     terms: "Conditions d’utilisation",
     refund: "Politique de remboursement",
     privacyBody:
-      "Politique de confidentialité — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Paddle). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
+      "Politique de confidentialité — BlackWayConnect (Canada) traite les données de contact, de compte et d'utilisation pour répondre à vos demandes, opérer le Grow Hub et sécuriser le service. Aucune vente de listes à des tiers. Les paiements en ligne peuvent être traités par un processeur de paiement (ex. Wix). Contact : serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil (QC) J4L 0B2.",
     termsBody:
       "Conditions d’utilisation — L'utilisation du site et des services BlackWayConnect implique l'acceptation des présentes conditions, de la politique de confidentialité et de la politique de remboursement. Les services sont fournis selon les forfaits convenus ; montants en CAD sauf indication contraire. Usage interdit à des fins illégales ou abusives. BlackWayConnect / 9495-5457 Québec Inc., Canada. Contact : serviceclient@blackwayconnect.com.",
     refundBody:
@@ -424,7 +424,7 @@ export const copy: Record<Lang, Copy> = {
     ctaConsult: "Book a consultation",
     ctaGrow: "See Grow Hub in action",
     ctaPricing: "Compare plans",
-    ctaBuy: "Subscribe — Paddle",
+    ctaBuy: "Subscribe — Wix",
     ctaApp: "Open the portal",
     ctaAppStore: "App Store",
     ctaPlayStore: "Google Play",
@@ -436,7 +436,7 @@ export const copy: Record<Lang, Copy> = {
     heroEyebrow: "Québec · Global",
     heroTitle: "From the first lead to payment.",
     heroBody:
-      "Each request is sorted, followed up, and collected in the same record. Growth is $349 a month, with a 14-day trial you can cancel.",
+      "Each request is sorted, followed up, and collected in the same record. Growth is $349 a month, billed immediately at subscription, cancel anytime.",
     office: {
       eyebrow: "BlackWayConnect office",
       title: "A day inside the system.",
@@ -463,7 +463,7 @@ export const copy: Record<Lang, Copy> = {
       { value: "Twin", label: "Volume + Quality turbos" },
       { value: "60 s", label: "Master Leads diagnostic" },
       { value: "FR / EN", label: "Bilingual journeys" },
-      { value: "Paddle", label: "Secure checkout" },
+      { value: "Wix", label: "Secure checkout" },
     ],
     growTitle: "Three steps. Not a pile of tools.",
     growBody:
@@ -475,7 +475,7 @@ export const copy: Record<Lang, Copy> = {
     ],
     plansTitle: "Pick the level. Keep the same system.",
     plansBody:
-      "Prices in Canadian dollars, before tax. Every plan is paid online (Paddle), with a 14-day trial.",
+      "Prices in Canadian dollars, before tax. Every plan is paid online with Wix at subscription, then renews monthly.",
     plans: [
       {
         key: "grow_hub_spark",
@@ -581,7 +581,7 @@ export const copy: Record<Lang, Copy> = {
       heroBody: "Connect. Build. Grow. — black and red brand, clear promise: close more without stacking tools.",
       visionTitle: "The vision",
       visionBody:
-        "One thread from first click to Paddle payment. Less friction, more revenue provenance — for teams that actually sell.",
+        "One thread from first click to Wix payment. Less friction, more revenue provenance — for teams that actually sell.",
       valuesTitle: "What guides us",
       values: [
         {
@@ -630,7 +630,7 @@ export const copy: Record<Lang, Copy> = {
     proofTitle: "What Grow Hub includes.",
     proofBody: "Payment, the client record and the portal are part of the same subscription.",
     proofItems: [
-      "Online payment in Canadian dollars, 14-day trial, cancel anytime.",
+      "Online payment in Canadian dollars, billed at subscription, cancel anytime.",
       "Each request stays in one record, from the first message to payment.",
       "The client portal is included, on the web and on mobile.",
       "French and English, without a second system.",
@@ -678,11 +678,10 @@ export const copy: Record<Lang, Copy> = {
     terms: "Terms of Service",
     refund: "Refund Policy",
     privacyBody:
-      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Paddle). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
+      "Privacy Notice — BlackWayConnect (Canada) processes contact, account and usage data to answer requests, operate Grow Hub and secure the service. We do not sell lists to third parties. Online payments may be handled by a payment processor (e.g. Wix). Contact: serviceclient@blackwayconnect.com · 313 Cuvillier Ouest #302, Longueuil, QC J4L 0B2.",
     termsBody:
       "Terms of Service — Use of the BlackWayConnect site and services means you accept these Terms, the Privacy Notice and the Refund Policy. Services are delivered per agreed plans; amounts are CAD unless stated otherwise. Illegal or abusive use is prohibited. BlackWayConnect / 9495-5457 Quebec Inc., Canada. Contact: serviceclient@blackwayconnect.com.",
     refundBody:
       "Refund Policy — You may cancel a subscription per the offer terms; access usually continues through the paid period. Fees already charged are not automatically refundable; each request is reviewed under applicable law (including Québec/Canada consumer protection) and services delivered. Request: serviceclient@blackwayconnect.com (ideally within 14 days) with date, amount and transaction reference.",
   },
 };
-

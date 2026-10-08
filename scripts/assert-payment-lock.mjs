@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Hard gate: live payment chain must not drift.
+ * Hard gate: payment system must not drift from Wix Payments.
  * Exit 1 if LOCKED.json invariants are violated in source.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -31,12 +31,6 @@ function mustNotInclude(file, needle, label) {
   else console.log(`OK ${label}`);
 }
 
-function mustMatch(file, re, label) {
-  const text = read(file);
-  if (!re.test(text)) fail(`${label}: pattern not found in ${file}`);
-  else console.log(`OK ${label}`);
-}
-
 if (!existsSync(lockPath)) {
   fail("ops/payment-lock/LOCKED.json missing");
   process.exit(1);
@@ -57,61 +51,68 @@ if (!Number.isInteger(lock.lock_version) || lock.lock_version < 1) {
 
 console.log(`Payment lock v${lock.lock_version} locked=${lock.locked} unlocking=${unlocking}`);
 
-if (lock.processor !== "paddle") fail('processor must be "paddle"');
-else console.log("OK processor=paddle");
+// Processor must be Wix (migrated from Paddle)
+if (lock.processor !== "wix") fail('processor must be "wix"');
+else console.log("OK processor=wix");
 
-for (const [plan, priceId] of Object.entries(lock.prices || {})) {
-  mustInclude("src/paddleCatalog.ts", priceId, `catalog ${plan}`);
-  mustInclude("pipe/index.js", priceId, `pipe map ${plan}`);
+if (lock.billing_mode !== "immediate") fail('billing_mode must be "immediate"');
+else console.log("OK billing_mode=immediate");
+
+if (lock.legacy_stripe_outbound !== "disabled") fail('legacy_stripe_outbound must be "disabled"');
+else console.log("OK legacy Stripe outbound disabled");
+
+if (lock.legacy_stripe_webhook !== "history_only") fail('legacy_stripe_webhook must be "history_only"');
+else console.log("OK legacy Stripe webhook history-only");
+
+function runtimeFiles(rootRel) {
+  const rootPath = join(root, rootRel);
+  if (!existsSync(rootPath)) return [];
+  const out = [];
+  const walk = (abs, rel) => {
+    for (const name of readdirSync(abs)) {
+      const childAbs = join(abs, name);
+      const childRel = join(rel, name);
+      if (statSync(childAbs).isDirectory()) walk(childAbs, childRel);
+      else if (/\.(?:ts|tsx|js|jsx|html)$/i.test(name)) out.push(childRel.replaceAll("\\", "/"));
+    }
+  };
+  walk(rootPath, rootRel);
+  return out;
 }
 
-for (const [priceId, forfait] of Object.entries(lock.pipe_price_map || {})) {
-  mustInclude("pipe/index.js", priceId, `pipe price ${priceId}`);
-  mustInclude("pipe/index.js", `"${forfait}"`, `pipe forfait ${forfait}`);
+// No Stripe checkout URLs in runtime files
+for (const rel of [...runtimeFiles("src"), ...runtimeFiles("worker"), ...runtimeFiles("mobile/src"), "index.html"]) {
+  if (!existsSync(join(root, rel))) continue;
+  for (const forbidden of ["https://buy.stripe.com", "https://checkout.stripe.com"]) {
+    mustNotInclude(rel, forbidden, `runtime cannot emit Stripe checkout host (${forbidden})`);
+  }
 }
 
-mustInclude(
-  "src/pages/CheckoutPage.tsx",
-  lock.paddle_client_token_live_prefix,
-  "CheckoutPage live token fallback",
-);
+// No Paddle.js or Paddle price IDs in source
+for (const rel of runtimeFiles("src")) {
+  mustNotInclude(rel, "cdn.paddle.com", `Paddle.js forbidden in ${rel}`);
+}
 
-mustInclude(
-  "pipe/wrangler.jsonc",
-  lock.bw_paddle_fulfill_key,
-  "BW_PADDLE_FULFILL_KEY in wrangler vars",
-);
+// Payment catalog must exist and use Wix
+mustInclude("src/paymentCatalog.ts", "VITE_WIX_CHECKOUT_URLS", "payment catalog uses Wix env var");
+mustInclude("src/stripeConfig.ts", 'processor: "wix"', "checkout processor wix");
+mustInclude("src/stripeConfig.ts", "paymentPlanUrl", "CHECKOUT_LINKS use paymentPlanUrl");
 
+// Paddle catalog must be deprecated (re-export only, no live price IDs)
+mustNotInclude("src/paddleCatalog.ts", "pri_01", "paddleCatalog has no Paddle price IDs");
 
-mustNotInclude("mobile/capacitor.config.ts", "buy.stripe.com", "mobile cannot navigate to Stripe checkout");
-mustNotInclude("index.html", "buy.stripe.com", "public site cannot prefetch Stripe checkout");
-mustNotInclude("src/pages/CellulairePlansPage.tsx", "STRIPE_CELLULAIRE_TODO", "Cellulaire UI has no Stripe checkout backlog");
-mustInclude("src/cellulaireConfig.ts", "PADDLE_CELLULAIRE_TODO", "Cellulaire migration is Paddle-only");
-mustInclude("pipe/vorixaManaged.js", 'url.searchParams.set("provider", "paddle")', "Vorixa managed checkout routes to Paddle");
+// CheckoutPage must not contain Paddle token
+mustNotInclude("src/pages/CheckoutPage.tsx", "live_a4f8ad8f1c8be908ec3784e8d8b", "CheckoutPage has no Paddle token");
 
-mustInclude("src/stripeConfig.ts", 'processor: "paddle"', "checkout processor paddle");
-mustInclude("src/paddleCatalog.ts", "/payer", "checkout links → /payer");
-mustInclude("src/stripeConfig.ts", "paddlePlanUrl", "CHECKOUT_LINKS use paddlePlanUrl");
+// Cellulaire config must not have Paddle TODO
+mustNotInclude("src/cellulaireConfig.ts", "PADDLE_CELLULAIRE_TODO", "Cellulaire UI has no Paddle backlog");
 
-mustMatch(
-  "pipe/index.js",
-  /hsSource\s*=\s*cell\s*\|\|\s*processor\s*===\s*"paddle"\s*\?\s*"portail"\s*:\s*"stripe"/,
-  "HubSpot bw_source maps paddle → portail",
-);
+// paddleLoader must be a no-op (no Paddle.js)
+mustNotInclude("src/paddleLoader.ts", "cdn.paddle.com", "paddleLoader has no Paddle.js");
 
 // When locked, refuse unlock_ack leftovers (must be cleaned after intentional unlock merge).
 if (lock.locked === true && lock.unlock_ack) {
   fail('locked=true but unlock_ack still present — remove unlock_ack to re-seal');
-}
-
-mustInclude("pipe/index.js", 'processor: "paddle"', "pipe paddle processor paths");
-mustInclude("pipe/index.js", "/portal/provision", "portal provision route");
-mustInclude("pipe/index.js", "X-BW-Fulfill-Key", "fulfill key header support");
-
-if (lock.hubspot_bw_source_for_paddle !== "portail") {
-  fail('hubspot_bw_source_for_paddle must be "portail"');
-} else {
-  console.log("OK hubspot bw_source for paddle = portail");
 }
 
 if (unlocking) {
@@ -123,4 +124,4 @@ if (process.exitCode) {
   process.exit(1);
 }
 
-console.log("\nPAYMENT LOCK OK — live Paddle chain invariants intact.");
+console.log("\nPAYMENT LOCK OK — Wix Payments chain invariants intact.");

@@ -22,7 +22,7 @@ const CONTENT = {
     activation: "Et pour commencer ?", activationBody: "Votre abonnement BlackWayConnect se souscrit séparément de vos ventes à vos propres clients.",
     onboarding: [
       ["Choisissez votre forfait", "Comparez les outils et le niveau d’accompagnement sur la page Forfaits."],
-      ["Souscrivez avec Paddle", "Le paiement de l’abonnement est traité par Paddle en dollars canadiens. Grow Hub comprend un essai de 14 jours selon les conditions du forfait."],
+      ["Souscrivez en ligne", "Le paiement de l’abonnement est traité en ligne en dollars canadiens. L'accès est activé dès la confirmation du paiement."],
       ["Accédez au portail", "Une fois l’abonnement confirmé, les accès correspondant au forfait sont activés. Utilisez le portail pour retrouver vos outils."],
     ],
     faqTitle: "Les réponses avant de vous lancer.",
@@ -48,7 +48,7 @@ const CONTENT = {
     example: "Illustrative example · no real client data", exampleTitle: "A quote request, from the message to the next action.", exampleBody: "A prospect fills in the form. You review their needs, prepare a reply and then a quote. The record and tools give you a reference point for follow-up.",
     statuses: ["Request received", "Needs clarified", "Offer prepared", "Follow-up needed"], exampleName: "Example Company", exampleNeed: "Need: centralize website requests", exampleNext: "Next action: confirm the scope before preparing a quote",
     activation: "How do you get started?", activationBody: "Your BlackWayConnect subscription is separate from sales to your own clients.",
-    onboarding: [["Choose your plan", "Compare tools and support levels on the Plans page."], ["Subscribe through Paddle", "Paddle processes subscription payments in Canadian dollars. Grow Hub includes a 14-day trial under the plan’s terms."], ["Access the portal", "Once the subscription is confirmed, access for your plan is activated. Open the portal to find your tools."]],
+    onboarding: [["Choose your plan", "Compare tools and support levels on the Plans page."], ["Subscribe online", "Subscription payments are processed online in Canadian dollars. Access is activated as soon as payment is confirmed’s terms."], ["Access the portal", "Once the subscription is confirmed, access for your plan is activated. Open the portal to find your tools."]],
     faqTitle: "Answers before you start.",
     faq: [["Does everything happen automatically?", "Capture and access activation are connected to the system. Follow-ups and quotes are content you prepare and review. Automations and support vary by plan."], ["Does every plan include the same tools?", "No. Access depends on your tier. Check the plan comparison for the tools you need."], ["Can I use it on my phone?", "Yes. The web portal works in your mobile browser. The Cellular Pack is a separate offer and is not required to open the web portal."], ["What if I cannot find my access?", "Open the portal with the email associated with your subscription. If the issue persists, contact support with that email and your transaction reference."]],
     cta: "Start with what you need.", ctaBody: "Run the diagnostic to set priorities, or compare plans if you already know what you need.", contact: "Talk to BlackWay", result: "What you get", illustration: "Workflow illustration", tools: "Follow-up · Quote · Checklist",

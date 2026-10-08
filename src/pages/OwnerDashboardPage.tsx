@@ -68,8 +68,8 @@ export function OwnerDashboardPage() {
       href: "/",
     },
     {
-      id: "paddle",
-      title: "Paddle Checkout",
+      id: "wix",
+      title: "Wix Checkout",
       body: fr ? "Paiement Grow Hub (CAD/mois)" : "Grow Hub checkout (CAD/mo)",
       ok: true,
       href: path("/payer") + "?plan=grow_hub_growth",
@@ -84,7 +84,7 @@ export function OwnerDashboardPage() {
     {
       id: "portal",
       title: fr ? "Portail client" : "Client portal",
-      body: fr ? "Dashboard acheteur (après Paddle)" : "Buyer dashboard (after Paddle)",
+      body: fr ? "Dashboard acheteur (après Wix)" : "Buyer dashboard (after Wix)",
       ok: true,
       href: path("/portail"),
     },
@@ -120,8 +120,8 @@ export function OwnerDashboardPage() {
           </h1>
           <p className="lede">
             {fr
-              ? "Ici vous voyez l’état réel du produit : site, Paddle, Master CRM, portail client, preview Base44, App Store. Le /portail est pour vos clients payants — celui-ci est pour vous."
-              : "Live product state: site, Paddle, Master CRM, client portal, Base44 preview, App Store. /portail is for paying customers — this one is yours."}
+              ? "Ici vous voyez l’état réel du produit : site, Wix, Master CRM, portail client, preview Base44, App Store. Le /portail est pour vos clients payants — celui-ci est pour vous."
+              : "Live product state: site, Wix, Master CRM, client portal, Base44 preview, App Store. /portail is for paying customers — this one is yours."}
           </p>
           {data?.generatedAt ? (
             <p className="ops-stamp">
@@ -153,7 +153,7 @@ export function OwnerDashboardPage() {
           </article>
           <article className="ops-kpi">
             <Light on={true} />
-            <strong>Paddle</strong>
+            <strong>Wix</strong>
             <span>{fr ? "processeur live" : "live processor"}</span>
           </article>
           <article className="ops-kpi">
@@ -200,7 +200,7 @@ export function OwnerDashboardPage() {
             {fr ? "Portail clients" : "Customer portal"}
           </Link>
           <Link className="btn btn--ghost" to={path("/forfaits")}>
-            {fr ? "Forfaits / Paddle" : "Plans / Paddle"}
+            {fr ? "Forfaits / Wix" : "Plans / Wix"}
           </Link>
           <Link className="btn btn--ghost" to={path("/outils")}>
             Master Tools
@@ -208,15 +208,15 @@ export function OwnerDashboardPage() {
           <a className="btn btn--ghost" href={app.preview || "https://black-way-link.base44.app/"} rel="noopener noreferrer">
             {fr ? "Preview app Base44" : "Base44 app preview"}
           </a>
-          <a className="btn btn--ghost" href="https://vendors.paddle.com" rel="noopener noreferrer">
-            Paddle Dashboard
+          <a className="btn btn--ghost" href="https://www.wix.com/dashboard" rel="noopener noreferrer">
+            Wix Dashboard
           </a>
           <Link className="btn btn--ghost" to={path("/crm")}>
             Master CRM
           </Link>
         </div>
 
-        <h2 className="ops-h2">{fr ? "Checkout Paddle live" : "Live Paddle checkout"}</h2>
+        <h2 className="ops-h2">{fr ? "Checkout Wix live" : "Live Wix checkout"}</h2>
         <ul className="ops-prices">
           {PLAN_ORDER.map((key) => {
             const p = PLANS[key];

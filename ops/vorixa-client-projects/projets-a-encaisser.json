@@ -24,20 +24,7 @@
       "reason": "rejected.fraud",
       "note": "Les factures encaissent sur le compte plateforme Vorixa. Un virement Scotia via ce Connect restera bloqué tant que l’appel fraude n’est pas levé."
     },
-    "payment_links_live": {
-      "depart_499": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
-      "croissance_999": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
-      "personnalise_1500": "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v",
-      "personnalise_3000": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w"
-    },
-    "grow_hub_links_reactivated": [
-      "plink_1UCmB6AG7HUL9RtrpvUpROqh",
-      "plink_1UCmBxAG7HUL9RtrUdOVuMNm",
-      "plink_1UCmBzAG7HUL9RtrG7wA53Aq",
-      "plink_1UCmC0AG7HUL9RtrSOaDDzbo",
-      "plink_1UCmBJAG7HUL9RtrnvIfFOMn",
-      "plink_1UCmBKAG7HUL9RtrFzh2ZDB1"
-    ],
+    "grow_hub_links_reactivated": [],
     "managed_payments": "Les 4 liens de plan Vorixa du 31 août ne se réactivent pas (aucun moyen de paiement valide sur ces objets). Remplacés le 13 sept. 2026 par des Payment Links Managed Payments (actifs). Les 6 liens Grow Hub ont été réactivés le même jour.",
     "live_audit": {
       "audited_at": "2026-09-19",
@@ -57,7 +44,10 @@
         "note": "GitHub cannot lift this. Owner must appeal in Stripe Dashboard."
       },
       "paddle": "not_integrated_in_repo"
-    }
+    },
+    "processor": "paddle",
+    "stripe_retired": "2026-10-04 — Stripe n'est plus utilisé pour encaisser. Tout paiement passe par Paddle (vorixa.net/activer). Les identifiants Stripe ci-dessous servent seulement à annuler les anciennes factures.",
+    "paddle_checkout": "https://vorixa.net/activer"
   },
   "projects": [
     {
@@ -82,7 +72,7 @@
       "blockers": [
         "aucune_carte_enregistree"
       ],
-      "next_action": "Envoyer la facture hébergée Stripe (Dashboard → Invoice → Copy payment link) à piscinehydrofix@outlook.com.",
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
       "checkout_url": null
     },
     {
@@ -102,15 +92,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X1kuCbO9CEP9",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjcGAG7HUL9RtrBGGRbv6t",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X1kuCbO9CEP9"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-03",
@@ -129,15 +119,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2NgRzzI7PET",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjcDAG7HUL9RtraOgQkmBV",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2NgRzzI7PET"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-04",
@@ -156,15 +146,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2OBi6wg5Zf6",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjcBAG7HUL9RtrVRNJYqhV",
       "plan_payment_link_id": "plink_1UFMWbAG7HUL9RtrXevysZSA",
-      "plan_payment_link": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w?client_reference_id=cus_V9X2OBi6wg5Zf6"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-05",
@@ -183,15 +173,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2GmDVGtBXfq",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjc8AG7HUL9RtrQ2kTEkDs",
       "plan_payment_link_id": "plink_1UFMWbAG7HUL9RtrXevysZSA",
-      "plan_payment_link": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w?client_reference_id=cus_V9X2GmDVGtBXfq"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-06",
@@ -210,15 +200,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2fiJumxkwAY",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjc5AG7HUL9RtrApM5uGgD",
       "plan_payment_link_id": "plink_1UFMWbAG7HUL9RtrXevysZSA",
-      "plan_payment_link": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/bJebJ05TT7J90Rw5pceIw2w?client_reference_id=cus_V9X2fiJumxkwAY"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-07",
@@ -237,15 +227,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2EUKhvwx1GK",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjc2AG7HUL9RtrcEto4JmW",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrC5Q9YE4T",
-      "plan_payment_link": "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v?client_reference_id=cus_V9X2EUKhvwx1GK"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-08",
@@ -264,14 +254,14 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2dK9cBZ0Ldh",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbzAG7HUL9Rtru3zBkzlF",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrC5Q9YE4T",
-      "plan_payment_link": "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
       "next_action": "Envoyer le checkout_url à info@protechconstruction.ca (ou le lien de facture Dashboard en parallèle).",
-      "checkout_url": "https://buy.stripe.com/9B63cudml1kLbwa18WeIw2v?client_reference_id=cus_V9X2dK9cBZ0Ldh"
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-09",
@@ -290,15 +280,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2Hm6uliywtt",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbwAG7HUL9Rtrg7o0pIrN",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X2Hm6uliywtt"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-10",
@@ -317,15 +307,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2js61ziFUdW",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbtAG7HUL9RtroI00yRQ8",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2js61ziFUdW"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-11",
@@ -344,15 +334,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X29YJa6fTKqW",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbqAG7HUL9RtrbUjvzDk1",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X29YJa6fTKqW"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-12",
@@ -371,15 +361,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2Z3PsCHBPYb",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbnAG7HUL9RtrWVI4en7X",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2Z3PsCHBPYb"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-13",
@@ -398,15 +388,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2DTlhyZSKlQ",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbkAG7HUL9Rtrc2PygmmI",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X2DTlhyZSKlQ"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-14",
@@ -425,15 +415,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2IH4cFIR5vM",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbiAG7HUL9RtrkiWFdWhe",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2IH4cFIR5vM"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-15",
@@ -452,15 +442,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2I8XrZ0X8sz",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbfAG7HUL9Rtrcye5wv7z",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2I8XrZ0X8sz"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-16",
@@ -479,15 +469,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2xQn5xknL9l",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbcAG7HUL9Rtr5yulFL6G",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X2xQn5xknL9l"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-17",
@@ -506,15 +496,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X25vIXQiqxdI",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbaAG7HUL9RtrqrGNGDBu",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X25vIXQiqxdI"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-18",
@@ -533,15 +523,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2dvpRHbIu5l",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbYAG7HUL9RtrJj6TpSQm",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X2dvpRHbIu5l"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-19",
@@ -560,15 +550,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X2iazF2Ndv5B",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbVAG7HUL9RtrtGnC7Aoo",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X2iazF2Ndv5B"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-20",
@@ -587,15 +577,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3jylo0aovda",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbSAG7HUL9Rtr8bn1PIHP",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X3jylo0aovda"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-21",
@@ -614,15 +604,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3XqqCVZPmyQ",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbPAG7HUL9RtrGFpzMZlS",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X3XqqCVZPmyQ"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-22",
@@ -641,15 +631,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3t8QUpXcF8U",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbMAG7HUL9RtrT21eyhm4",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X3t8QUpXcF8U"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-23",
@@ -668,14 +658,14 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3yBibjjQnUK",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbJAG7HUL9Rtr5zxX3ZuP",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
       "next_action": "Envoyer le checkout_url à atelierjfred@gmail.com (ou le lien de facture Dashboard en parallèle).",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X3yBibjjQnUK"
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-24",
@@ -694,15 +684,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3QZUXY3qXme",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbGAG7HUL9RtrgCAHQK18",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X3QZUXY3qXme"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-25",
@@ -721,15 +711,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3hQhNuBck5r",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbDAG7HUL9RtrgNKDkP8J",
       "plan_payment_link_id": "plink_1UFMWMAG7HUL9RtrW8L1FIE0",
-      "plan_payment_link": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/7sY14meqp1kL2ZE5pceIw2t?client_reference_id=cus_V9X3hQhNuBck5r"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-PRJ-26",
@@ -748,15 +738,15 @@
       "dashboard_customer": "https://dashboard.stripe.com/customers/cus_V9X3P0jI1VxR71",
       "dashboard_invoice": "https://dashboard.stripe.com/invoices/in_1UCjbAAG7HUL9RtrOr6kRzjL",
       "plan_payment_link_id": "plink_1UFMWaAG7HUL9RtrtBPA3MHL",
-      "plan_payment_link": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u",
+      "plan_payment_link": "https://vorixa.net/activer",
       "vorixa_repair_batch": "2026-08-31",
       "blockers": [
         "courriel_manquant",
         "aucune_carte_enregistree",
         "facture_charge_auto_sans_moyen"
       ],
-      "next_action": "Envoyer le checkout_url par SMS/WhatsApp/appel. Ajouter le courriel sur le customer Stripe ensuite.",
-      "checkout_url": "https://buy.stripe.com/8x2aEW8211kLas67xkeIw2u?client_reference_id=cus_V9X3P0jI1VxR71"
+      "next_action": "Encaisser via Paddle : envoyer https://vorixa.net/activer au client, puis annuler la facture Stripe ouverte (ne plus l'envoyer).",
+      "checkout_url": "https://vorixa.net/activer"
     }
   ],
   "soumissions_hors_customers": [
@@ -770,9 +760,9 @@
       "plan_label": "CRM & Pipeline + Visibilité Standard",
       "stripe_customer_id": null,
       "plan_payment_link_id": "plink_1UDWT5AG7HUL9RtrY7UXwpp7",
-      "plan_payment_link": "https://buy.stripe.com/3cIfZg5TT3sT57M2d0eIw2s",
+      "plan_payment_link": "https://vorixa.net/activer",
       "note": "Hors des 69 customers. Payment Link actif (création Vorixa).",
-      "checkout_url": "https://buy.stripe.com/3cIfZg5TT3sT57M2d0eIw2s"
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-SOU-2026-3480",
@@ -784,9 +774,9 @@
       "plan_label": "Site Web IA + SEO Local + CRM + Visibilité Standard",
       "stripe_customer_id": null,
       "plan_payment_link_id": "plink_1UFMWxAG7HUL9Rtr1sUQW2m0",
-      "plan_payment_link": "https://buy.stripe.com/9B69AS6XX8Nd43IbNAeIw2x",
+      "plan_payment_link": "https://vorixa.net/activer",
       "note": "Hors des 69 customers. Lien recréé 2026-09-13 (Managed Payments).",
-      "checkout_url": "https://buy.stripe.com/9B69AS6XX8Nd43IbNAeIw2x"
+      "checkout_url": "https://vorixa.net/activer"
     },
     {
       "project_code": "VX-SOU-2026-2055",
@@ -798,9 +788,9 @@
       "plan_label": "Site Web IA + SEO Local + Visibilité Standard",
       "stripe_customer_id": null,
       "plan_payment_link_id": "plink_1UFMWxAG7HUL9Rtryfj01Kwd",
-      "plan_payment_link": "https://buy.stripe.com/eVqdR8dml7J90RwcREeIw2y",
+      "plan_payment_link": "https://vorixa.net/activer",
       "note": "Hors des 69 customers. Lien recréé 2026-09-13 (Managed Payments).",
-      "checkout_url": "https://buy.stripe.com/eVqdR8dml7J90RwcREeIw2y"
+      "checkout_url": "https://vorixa.net/activer"
     }
   ]
 }

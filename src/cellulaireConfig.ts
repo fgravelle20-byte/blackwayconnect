@@ -1,9 +1,9 @@
 /**
  * TYPE B — Forfaits CELLULAIRES (revenu #2 · outils terrain).
- * Distinct from Grow Hub web (Type A). Same Portail + Master CRM can hold both.
- * Paddle checkout via /payer?plan=cell_* (14-day trial). Stripe is retired.
+ * Distinct from Grow Hub web (Type A). Same portail + Master CRM can hold both.
+ * Wix Payments checkout (immediate billing). Stripe checkout is retired.
  */
-import { PADDLE_PRICES, paddlePlanUrl } from "./paddleCatalog";
+import { paymentPlanUrl, hasCheckoutUrl } from "./paymentCatalog";
 
 export type CellulairePlanKey =
   | "cell_signal"
@@ -28,8 +28,6 @@ export type CellulairePlan = {
   nameEn: string;
   amountCad: number;
   paymentLink: string;
-  priceId: string;
-  productId: string;
   featured?: boolean;
   tools: CellulaireToolId[];
   blurbFr: string;
@@ -43,9 +41,7 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Signal",
     nameEn: "Cell Signal",
     amountCad: 79,
-    paymentLink: paddlePlanUrl("cell_signal"),
-    priceId: PADDLE_PRICES.cell_signal,
-    productId: "",
+    paymentLink: paymentPlanUrl("cell_signal"),
     tools: ["cell_capture", "forfaits_cellulaire", "support"],
     blurbFr: "Capture lead terrain — fiche rapide, sync CRM BlackWay.",
     blurbEn: "Field lead capture — quick card, BlackWay CRM sync.",
@@ -56,9 +52,7 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Route",
     nameEn: "Cell Route",
     amountCad: 199,
-    paymentLink: paddlePlanUrl("cell_route"),
-    priceId: PADDLE_PRICES.cell_route,
-    productId: "",
+    paymentLink: paymentPlanUrl("cell_route"),
     tools: ["cell_capture", "cell_pipeline", "cell_checkout", "forfaits_cellulaire", "support"],
     blurbFr: "Leads + checkout prospect en déplacement.",
     blurbEn: "Leads + prospect checkout on the road.",
@@ -69,9 +63,7 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Fleet",
     nameEn: "Cell Fleet",
     amountCad: 399,
-    paymentLink: paddlePlanUrl("cell_fleet"),
-    priceId: PADDLE_PRICES.cell_fleet,
-    productId: "",
+    paymentLink: paymentPlanUrl("cell_fleet"),
     featured: true,
     tools: [
       "cell_capture",
@@ -91,9 +83,7 @@ export const CELLULAIRE_PLANS: Record<CellulairePlanKey, CellulairePlan> = {
     nameFr: "Cell Command",
     nameEn: "Cell Command",
     amountCad: 799,
-    paymentLink: paddlePlanUrl("cell_command"),
-    priceId: PADDLE_PRICES.cell_command,
-    productId: "",
+    paymentLink: paymentPlanUrl("cell_command"),
     tools: [
       "cell_capture",
       "cell_pipeline",
@@ -125,14 +115,6 @@ export const CELLULAIRE_RANK: Record<string, number> = {
   cell_command: 4,
 };
 
-/** Paddle catalog reference for Cellulaire prices (created live, see PADDLE_PRICES). */
-export const PADDLE_CELLULAIRE_TODO = [
-  { key: "cell_signal", name: "Cell Signal", amountCad: 79, metadata: "bw_forfait=cell_signal" },
-  { key: "cell_route", name: "Cell Route", amountCad: 199, metadata: "bw_forfait=cell_route" },
-  { key: "cell_fleet", name: "Cell Fleet", amountCad: 399, metadata: "bw_forfait=cell_fleet" },
-  { key: "cell_command", name: "Cell Command", amountCad: 799, metadata: "bw_forfait=cell_command" },
-] as const;
-
 export function isCellulaireForfait(key: string | null | undefined): boolean {
   return !!key && String(key).startsWith("cell_");
 }
@@ -146,18 +128,9 @@ export function cellulaireCheckoutUrl(
   plan: CellulairePlanKey,
   opts: { source?: string; lang?: "fr" | "en"; content?: string } = {},
 ): string {
-  if (isCellulaireCheckoutReady(plan)) {
-    return paddlePlanUrl(plan, { lang: opts.lang, source: opts.source || "cellulaire", content: opts.content });
-  }
-  const path = opts.lang === "en" ? "/en/contact" : "/contact";
-  const url = new URL(path, "https://blackwayconnect.com");
-  url.searchParams.set("forfait", plan);
-  url.searchParams.set("bw_source", opts.source || "cellulaire");
-  if (opts.content) url.searchParams.set("utm_content", opts.content);
-  return url.toString();
+  return paymentPlanUrl(plan, { lang: opts.lang, source: opts.source || "cellulaire", content: opts.content });
 }
 
 export function isCellulaireCheckoutReady(plan: CellulairePlanKey): boolean {
-  const p = CELLULAIRE_PLANS[plan];
-  return p.priceId.startsWith("pri_") && /\/payer(\?|$)/.test(p.paymentLink);
+  return hasCheckoutUrl(plan);
 }

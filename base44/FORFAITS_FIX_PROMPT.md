@@ -12,9 +12,9 @@ Ce fichier = plus tard seulement.
 
 | Élément | Rôle | Prix |
 |---------|------|------|
-| Grow Hub web Spark→Partner | Revenu #1 | Stripe existant |
+| Grow Hub web Spark→Partner | Revenu #1 | Paddle live (`/payer`) |
 | **Portail / « app » dashboard** | **Surplus inclus** — contrôle le dashboard partout | **$0** (inclus avec Grow Hub) |
-| Pack Cellulaire Signal→Command | Revenu #2 optionnel — outils **terrain** différents | Stripe à créer |
+| Pack Cellulaire Signal→Command | Revenu #2 optionnel — outils **terrain** différents | Paddle live (`/payer?plan=cell_*`) |
 
 - L’app **n’est pas** un 2ᵉ abo Grow Hub.
 - L’app **n’est pas** un clone Spark–Partner.
@@ -24,7 +24,7 @@ Ce fichier = plus tard seulement.
 
 1. Home CTA principal → ouvrir `https://blackwayconnect.com/portail` (dashboard mobile inclus).
 2. Écran **Pack Cellulaire** (optionnel) → `GET https://blackwayconnect.com/api/mobile/bootstrap` → **`plansCellulaire[]`** seulement.
-3. Checkout pack → `paymentLink` cellulaire + `bw_source=cellulaire` (si link null → contact).
+3. Checkout pack → `paymentLink` Paddle cellulaire + `bw_source=cellulaire`. Aucun fallback Stripe.
 4. Manifest : BlackWayConnect / Grow Hub dashboard — plus « social networking ».
 5. Secrets : `BW_LEAD_KEY` si lead form.
 

@@ -7,6 +7,8 @@
 | Invariant | Value |
 | --- | --- |
 | Processor | `paddle` (no Stripe checkout anywhere) |
+| Billing | Immediate on subscription for all 16 live prices |
+| Legacy Stripe outbound | Disabled; Stripe webhook retained history-only |
 | Prices | 16 live CAD monthly prices in `LOCKED.json` (see table below) |
 | Client token fallback | `live_a4f8ad8f1c8be908ec3784e8d8b` |
 | Fulfill key (`/portal/provision`) | `BW_PADDLE_FULFILL_KEY` in `pipe/wrangler.jsonc` |
@@ -22,17 +24,17 @@ Every row is sold on `/payer?plan=<key>`. The pipe maps the **paid price ID** to
 (browser `custom_data` is ignored when the transaction has items) and stores it in its own
 D1 column, so one customer can hold several lines at once. Canceling one line keeps the others.
 
-| Line (D1 column) | Key | Price | Trial |
+| Line (D1 column) | Key | Price | Billing |
 | --- | --- | --- | --- |
-| Grow Hub (`forfait`) | `grow_hub_spark` | 99 $ | 14 days |
-| | `grow_hub_launch` | 149 $ | 14 days |
-| | `grow_hub_growth` | 349 $ | 14 days |
-| | `grow_hub_scale` | 699 $ | 14 days |
-| | `grow_hub_command` | 1 249 $ | 14 days |
-| | `grow_hub_partner` | 2 499 $ | 14 days |
-| Pack Cellulaire (`forfait_cellulaire`) | `cell_signal` / `cell_route` / `cell_fleet` / `cell_command` | 79 / 199 / 399 / 799 $ | 14 days |
-| Chatbot IA (`forfait_chatbot`) | `ia_chatbot_1` / `ia_chatbot_5` / `ia_chatbot_illimite` | 99 / 249 / 399 $ | none |
-| Accueil vocal IA (`forfait_vocal`) | `ia_vocal_basic` / `ia_vocal_avance` / `ia_vocal_premium` | 149 / 299 / 499 $ | none |
+| Grow Hub (`forfait`) | `grow_hub_spark` | 99 $ | immediate |
+| | `grow_hub_launch` | 149 $ | immediate |
+| | `grow_hub_growth` | 349 $ | immediate |
+| | `grow_hub_scale` | 699 $ | immediate |
+| | `grow_hub_command` | 1 249 $ | immediate |
+| | `grow_hub_partner` | 2 499 $ | immediate |
+| Pack Cellulaire (`forfait_cellulaire`) | `cell_signal` / `cell_route` / `cell_fleet` / `cell_command` | 79 / 199 / 399 / 799 $ | immediate |
+| Chatbot IA (`forfait_chatbot`) | `ia_chatbot_1` / `ia_chatbot_5` / `ia_chatbot_illimite` | 99 / 249 / 399 $ | immediate |
+| Accueil vocal IA (`forfait_vocal`) | `ia_vocal_basic` / `ia_vocal_avance` / `ia_vocal_premium` | 149 / 299 / 499 $ | immediate |
 
 ## Chain (live, verified 2026-09-29)
 
@@ -79,6 +81,7 @@ node --test pipe/paddle.test.mjs
 ## Do not
 
 - Swap processor back to Stripe for any forfait
+- Reactivate or publish any legacy Stripe Payment Link / hosted checkout URL
 - Trust `custom_data.bw_forfait` over the paid price ID (a 79 $ payment must never unlock Partner)
 - Change price IDs without Paddle dashboard sync
 - Send HubSpot `bw_source=paddle` (breaks provision — enum rejects it)

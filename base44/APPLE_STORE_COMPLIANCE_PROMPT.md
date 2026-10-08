@@ -1,21 +1,21 @@
 # Colle ce prompt ENTIER dans le chat IA Base44 Builder (AVANT génération IPA)
 
-Tu prépares **Black Way Link / BlackWayConnect** pour **TestFlight + App Store**. Priorité = app utile en production. **Pas** de Pack Cellulaire Stripe. **Pas** de Payment Links cellulaire.
+Tu prépares **Black Way Link / BlackWayConnect** pour **TestFlight + App Store**. Priorité = app utile en production. **Aucun checkout Stripe.** Les ventes passent par le site BlackWayConnect et Paddle.
 
 ## Produit verrouillé (obéir)
 
 1. **Dashboard mobile = Portail Client Master**  
    URL : `https://blackwayconnect.com/portail`  
    Pitch : « Contrôle ton dashboard partout sur mobile. Inclus avec Grow Hub. »
-2. **Revenu #1** = Grow Hub **web** `https://blackwayconnect.com/forfaits` (Stripe déjà live **sur le site**).
-3. **Pack Cellulaire** = backlog. Ne pas vendre / ne pas checkout Stripe cellulaire dans l’app.
+2. **Revenu #1** = Grow Hub **web** `https://blackwayconnect.com/forfaits` (Paddle live via `/payer`).
+3. **Pack Cellulaire** = Paddle live sur le site. Si exposé dans l’app, ouvrir le site en navigateur externe.
 4. Cette app native est une **télécommande du Portail** + outils + leads — **pas** un 2ᵉ store d’abos digitaux.
 
 ## Apple / conformité paiements (CRITIQUE)
 
-Apple refuse Stripe pour abonnements / contenu digital **dans** l’app.
+Ne pas embarquer de checkout de paiement dans la WebView native; le parcours payant reste sur le site BlackWayConnect.
 
-- **Interdit dans la WebView native :** boutons qui ouvrent `buy.stripe.com` / Payment Links pour Grow Hub ou Cellulaire.
+- **Interdit dans la WebView native :** checkout Stripe ou lien de paiement externe non canonique.
 - **Autorisé :** CTA « Voir les forfaits » / « S’abonner » qui ouvre le **site** en navigateur externe (Safari) :
   `https://blackwayconnect.com/forfaits?utm_source=grow_hub_app&utm_medium=app_store&utm_campaign=external_checkout&bw_source=mobile_app&bw_ref=base44_app`
 - Leads HubSpot via function `submit-lead` + secret `BW_LEAD_KEY` = OK.
@@ -29,7 +29,7 @@ Apple refuse Stripe pour abonnements / contenu digital **dans** l’app.
 - CTA **primaire** : « Ouvrir mon Portail » → `https://blackwayconnect.com/portail` (garder UTM `bw_source=mobile_app`, `bw_ref=base44_app`).
 - CTA secondaire : « Outils » → `https://blackwayconnect.com/outils` ou onglet Outils.
 - CTA tertiaire (externe Safari) : « Forfaits Grow Hub (site) » → `/forfaits` comme ci-dessus.
-- Enlever / masquer toute grille de prix Stripe embarquée.
+- Enlever / masquer toute grille de paiement embarquée; les CTAs payants ouvrent le site BlackWayConnect.
 
 ### Pipeline / Outils / Lead
 - Garder pipeline local + lead `source=app_mobile` si déjà là.
@@ -38,7 +38,7 @@ Apple refuse Stripe pour abonnements / contenu digital **dans** l’app.
 ### Ancien onglet « Forfaits »
 - Renommer ou convertir en **« Pack terrain (bientôt) »** info-only, **sans** boutons Stripe.
 - Ou rediriger uniquement vers Portail + lien externe Safari `/forfaits`.
-- Ne charge **pas** `plansCellulaire` pour checkout.
+- Ne transforme pas `plansCellulaire` en checkout natif; les URLs Paddle ouvrent le site externe.
 
 ### Privacy / Terms (obligatoire Apple)
 - Liens visibles sur Home / Plus **avant** login :
@@ -60,16 +60,16 @@ Apple refuse Stripe pour abonnements / contenu digital **dans** l’app.
 Publie l’app pour que `https://black-way-link.base44.app/` serve cette UI conforme.
 
 ## Ne pas faire
-- Ne pas créer / coller Payment Links Cellulaire
+- Ne pas créer / coller de liens Stripe; utiliser uniquement les URLs Paddle du bootstrap
 - Ne pas hardcoder `BW_LEAD_KEY`
 - Ne pas inventer d’URL App Store / Play
 - Ne pas inventer de faux likes / faux MRR
-- Ne pas vendre Spark→Partner via Stripe **dans** l’app
+- Ne pas vendre Spark→Partner via Stripe; le site externe utilise Paddle
 - Ne pas faire de CRUD admin gris
 
 ## Done when
 - [ ] CTA #1 = Portail
-- [ ] Zéro checkout Stripe abo dans la WebView
+- [ ] Zéro checkout Stripe; paiements via site externe Paddle
 - [ ] Grow Hub payant = Safari / site seulement
 - [ ] Privacy + support visibles
 - [ ] Publié sur black-way-link.base44.app

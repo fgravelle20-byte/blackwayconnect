@@ -1,5 +1,6 @@
 import { CELLULAIRE_PLANS, cellulaireCheckoutUrl } from "../src/cellulaireConfig";
-import { CHECKOUT_LINKS, PLANS } from "../src/stripeConfig";
+import { isPaddlePlanKey, type PaddlePlanKey } from "../src/paddleCatalog";
+import { CHECKOUT_LINKS, PLANS, paymentLinkToForfait } from "../src/stripeConfig";
 import { handleChat, type ChatLang, type ChatMessage } from "./chat";
 import { injectSeoHtml, shouldInjectHtml } from "./seoInject";
 import { authorizeOwner } from "./ownerAuth";
@@ -31,8 +32,104 @@ const SITE_ORIGIN = "https://blackwayconnect.com";
 const DEFAULT_APP = "https://blackwayconnect.com/portail";
 const BASE44_PREVIEW = "https://black-way-link.base44.app/";
 
-/** Live checkout — Paddle /payer or /contact. Do not fork buy.stripe.com URLs here. */
+/** Live checkout — Paddle /payer only for paid plans. Stripe-hosted checkout is retired. */
 const CHECKOUT = CHECKOUT_LINKS;
+
+const LEGACY_BUY_PATHS = new Set([
+  "/paddle",
+  "/acheter",
+  "/checkout",
+  "/encaisser",
+  "/stripe",
+  "/paiement-stripe",
+  "/payment",
+  "/pay",
+  "/payment-link",
+  "/checkout-stripe",
+  "/stripe-checkout",
+  "/subscribe",
+  "/abonnement",
+]);
+
+const LEGACY_STRIPE_PLINK_TO_PLAN = paymentLinkToForfait();
+const LEGACY_STRIPE_PRICE_TO_PLAN = Object.fromEntries(
+  Object.values(PLANS).map((plan) => [plan.priceId, plan.key]),
+) as Record<string, PaddlePlanKey>;
+const LEGACY_STRIPE_PRODUCT_TO_PLAN = Object.fromEntries(
+  Object.values(PLANS).map((plan) => [plan.productId, plan.key]),
+) as Record<string, PaddlePlanKey>;
+
+const LEGACY_PLAN_ALIASES: Record<string, PaddlePlanKey> = {
+  spark: "grow_hub_spark",
+  launch: "grow_hub_launch",
+  growth: "grow_hub_growth",
+  scale: "grow_hub_scale",
+  automation: "grow_hub_scale",
+  command: "grow_hub_command",
+  partner: "grow_hub_partner",
+  signal: "cell_signal",
+  route: "cell_route",
+  fleet: "cell_fleet",
+};
+
+function resolveLegacyCheckoutPlan(url: URL): PaddlePlanKey | null {
+  for (const key of ["plan", "forfait", "bw_forfait", "tier"]) {
+    const raw = String(url.searchParams.get(key) || "").trim().toLowerCase();
+    if (!raw) continue;
+    if (isPaddlePlanKey(raw)) return raw;
+    if (LEGACY_PLAN_ALIASES[raw]) return LEGACY_PLAN_ALIASES[raw];
+  }
+
+  const plink =
+    url.searchParams.get("payment_link") ||
+    url.searchParams.get("payment_link_id") ||
+    url.searchParams.get("plink") ||
+    "";
+  const plinkPlan = LEGACY_STRIPE_PLINK_TO_PLAN[plink];
+  if (plinkPlan && isPaddlePlanKey(plinkPlan)) return plinkPlan;
+
+  const price = url.searchParams.get("price_id") || url.searchParams.get("price") || "";
+  const pricePlan = LEGACY_STRIPE_PRICE_TO_PLAN[price];
+  if (pricePlan && isPaddlePlanKey(pricePlan)) return pricePlan;
+
+  const product = url.searchParams.get("product_id") || url.searchParams.get("product") || "";
+  const productPlan = LEGACY_STRIPE_PRODUCT_TO_PLAN[product];
+  if (productPlan && isPaddlePlanKey(productPlan)) return productPlan;
+
+  return null;
+}
+
+function legacyPaddleTarget(url: URL, plan: PaddlePlanKey | null): string {
+  const english =
+    url.pathname === "/en" ||
+    url.pathname.startsWith("/en/") ||
+    url.searchParams.get("lang") === "en";
+  const target = new URL(
+    plan ? (english ? "/en/payer" : "/payer") : (english ? "/en/forfaits" : "/forfaits"),
+    SITE_ORIGIN,
+  );
+  if (plan) target.searchParams.set("plan", plan);
+
+  for (const key of ["utm_medium", "utm_campaign", "utm_content", "utm_term", "client_reference_id"]) {
+    const value = url.searchParams.get(key);
+    if (value) target.searchParams.set(key, value);
+  }
+  target.searchParams.set("utm_source", url.searchParams.get("utm_source") || "legacy_checkout_redirect");
+  target.searchParams.set("bw_source", "legacy_checkout");
+  target.searchParams.set("bw_ref", "legacy_stripe_redirect");
+  return target.toString();
+}
+
+function permanentPaymentRedirect(location: string): Response {
+  return new Response(null, {
+    status: 308,
+    headers: {
+      Location: location,
+      "Cache-Control": "no-store",
+      "X-BW-Payment-Route": "paddle-canonical",
+    },
+  });
+}
 
 /** Type B — cellulaire quote via /contact until dedicated Paddle prices exist. */
 const CELLULAIRE_CHECKOUT: Record<string, string> = {
@@ -181,7 +278,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Signal",
         amountCad: CELLULAIRE_PLANS.cell_signal.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_signal || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: ["cell_capture"],
       },
@@ -190,7 +287,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Route",
         amountCad: CELLULAIRE_PLANS.cell_route.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_route || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout"],
       },
@@ -199,7 +296,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Fleet",
         amountCad: CELLULAIRE_PLANS.cell_fleet.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_fleet || null,
-        checkoutReady: false,
+        checkoutReady: true,
         featured: true,
         line: "cellulaire",
         tools: ["cell_capture", "cell_pipeline", "cell_checkout", "cell_streak", "cell_fleet_ops"],
@@ -209,7 +306,7 @@ function mobileBootstrap(env: Env) {
         name: "Cell Command",
         amountCad: CELLULAIRE_PLANS.cell_command.amountCad,
         paymentLink: CELLULAIRE_CHECKOUT.cell_command || null,
-        checkoutReady: false,
+        checkoutReady: true,
         line: "cellulaire",
         tools: [
           "cell_capture",
@@ -257,10 +354,16 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // Force canonical host (www → apex) if somehow hit on www via this worker
+    // Force canonical host (www → apex) if somehow hit on www via this worker.
     if (url.hostname === "www.blackwayconnect.com") {
       url.hostname = "blackwayconnect.com";
       return Response.redirect(url.toString(), 301);
+    }
+
+    // If the former pay.* hostname is ever routed back to this Worker, it can
+    // never serve an old checkout: permanently converge it to canonical Paddle.
+    if (url.hostname === "pay.blackwayconnect.com" && (request.method === "GET" || request.method === "HEAD")) {
+      return permanentPaymentRedirect(legacyPaddleTarget(url, resolveLegacyCheckoutPlan(url)));
     }
 
     // Keep the owner page private even when a GitHub merge deploys before Access setup.
@@ -273,16 +376,26 @@ export default {
       }
     }
 
-    // Buy-intent shortcuts → BlackWay's own pricing page (never vorixa.ca).
+    // Every historical purchase entry point converges to the canonical Paddle
+    // checkout. Stripe IDs are accepted only as lookup aliases; they are never
+    // emitted back to the browser.
+    const barePaymentPath = url.pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+    const stripeMarkedPayer =
+      barePaymentPath === "/payer" &&
+      (
+        String(url.searchParams.get("provider") || "").toLowerCase() === "stripe" ||
+        !!url.searchParams.get("payment_link") ||
+        !!url.searchParams.get("payment_link_id") ||
+        !!url.searchParams.get("plink") ||
+        !!url.searchParams.get("price") ||
+        !!url.searchParams.get("price_id")
+      );
+
     if (
-      url.pathname === "/paddle" ||
-      url.pathname === "/acheter" ||
-      url.pathname === "/checkout" ||
-      url.pathname === "/encaisser" ||
-      url.pathname === "/stripe" ||
-      url.pathname === "/paiement-stripe"
+      (request.method === "GET" || request.method === "HEAD") &&
+      (LEGACY_BUY_PATHS.has(barePaymentPath) || stripeMarkedPayer)
     ) {
-      return Response.redirect(`${SITE_ORIGIN}/forfaits`, 302);
+      return permanentPaymentRedirect(legacyPaddleTarget(url, resolveLegacyCheckoutPlan(url)));
     }
 
     if (url.pathname === "/api/owner/overview") {

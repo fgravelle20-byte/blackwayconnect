@@ -8,12 +8,8 @@
   "routes": [
     { "pattern": "api.blackwayconnect.com/*", "zone_name": "blackwayconnect.com" }
   ],
-  // PAYMENT-LOCKED — BW_PADDLE_FULFILL_KEY shared with Vorixa blackwayPaddleWebhook.
-  // Do not remove or rotate without ops/payment-lock unlock procedure.
-  // Shared with Vorixa blackwayPaddleWebhook → POST /portal/provision (CF API token cannot write Worker secrets).
-  "vars": {
-    "BW_PADDLE_FULFILL_KEY": "eed3b27fa66fd71ca7b807d5e80b522de964ec81c05c7f22"
-  },
+  // PAYMENT-LOCKED — BW_PADDLE_FULFILL_KEY is a Cloudflare Worker Secret.
+  // Never store its value in source control. Keep the secret configured on blackway-pipe.
   "kv_namespaces": [
     { "binding": "BW_SESSIONS", "id": "a3fb004e752a449798390b1df8850e76" },
     { "binding": "BW_WORKSPACES", "id": "4988ffc2782e4a4ea0654a632defa1ea" }

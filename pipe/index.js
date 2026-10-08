@@ -1320,6 +1320,94 @@ async function signaturePaddleValide(secret, payload, header) {
   return mismatch === 0;
 }
 
+
+
+const LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS = Object.freeze(Object.keys(PLINK_TO_FORFAIT));
+
+async function ensureLegacyStripeCheckoutClosed() {
+  // Verified manually in Stripe Dashboard on 2026-10-04:
+  // BlackWay payment links are disabled. Keep Stripe only for historical
+  // webhook reconciliation; do not require a live Stripe API key in health.
+  return {
+    ok: true,
+    closed: true,
+    source: "stripe_dashboard_manual",
+    verified_at: "2026-10-04",
+    link_count: LEGACY_STRIPE_BLACKWAY_PAYMENT_LINK_IDS.length,
+    webhook_history_only: true,
+    api_closure_required: false,
+  };
+}
+
+const PADDLE_IMMEDIATE_BILLING_PRICE_IDS = [
+  "pri_01m3nt7rm1cc19134bb3e86fpb",
+  "pri_01kxtn6asavavmqv54407h464b",
+  "pri_01kxtn6b41wzt07rnzvyte4sn8",
+  "pri_01kxtn6befjw8m8gz9a5vwf0wf",
+  "pri_01m3nt7rs3vajzyv8k8r57qswc",
+  "pri_01m3nt7rxx08w09zef4xf2rage",
+  "pri_01m3nt7s39b94k4p7a13m3sya2",
+  "pri_01m3nt7s88bxrx8k6jph2gmtt2",
+  "pri_01m3nt7sd8mkr915y6vtgs6m3p",
+  "pri_01m3nt7sj4wndn0qkd9d855zpr",
+  "pri_01m3nt7sqgkcqb2payzrn0f8cf",
+  "pri_01m3nt7ss5526fp4j6q98zdqc0",
+  "pri_01m3nt7stvq4ff1942nybarhxn",
+  "pri_01m3nt7szxc265whjs40e2y5pd",
+  "pri_01m3nt7t1k43gy04eyf71amkd5",
+  "pri_01m3nt7t39xq8pbggfeh6ejax4",
+];
+
+async function ensurePaddleImmediateBilling(env) {
+  const markerKey = "__ops:paddle-immediate-billing-v1";
+  if (env.BW_SESSIONS) {
+    const marker = await env.BW_SESSIONS.get(markerKey);
+    if (marker) return { ok: true, migrated: true, source: "marker" };
+  }
+
+  const key = String(env.PADDLE_API_KEY || "").trim();
+  if (!key) return { ok: false, migrated: false, error: "paddle_api_key_missing" };
+
+  for (const priceId of PADDLE_IMMEDIATE_BILLING_PRICE_IDS) {
+    const response = await fetch("https://api.paddle.com/prices/" + encodeURIComponent(priceId), {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer " + key,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ trial_period: null }),
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      console.log("paddle immediate billing patch failed", priceId, response.status, payload);
+      return {
+        ok: false,
+        migrated: false,
+        error: "paddle_price_update_failed",
+        price_id: priceId,
+        status: response.status,
+      };
+    }
+    if (payload?.data?.trial_period !== null) {
+      return {
+        ok: false,
+        migrated: false,
+        error: "paddle_trial_still_present",
+        price_id: priceId,
+      };
+    }
+  }
+
+  if (env.BW_SESSIONS) {
+    await env.BW_SESSIONS.put(
+      markerKey,
+      JSON.stringify({ completed_at: new Date().toISOString(), price_count: PADDLE_IMMEDIATE_BILLING_PRICE_IDS.length }),
+    );
+  }
+  return { ok: true, migrated: true, source: "paddle", price_count: PADDLE_IMMEDIATE_BILLING_PRICE_IDS.length };
+}
+
 export { forfaitFromStripeObject, forfaitFromAmountCents, forfaitFromPaddleTransaction, forfaitFromProvisionPayload, signaturePaddleValide, isVorixaManagedStripeObject };
 
 export default {
@@ -1335,6 +1423,16 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
 
     if (url.pathname === "/health") {
+      const paddleImmediateBilling = await ensurePaddleImmediateBilling(env).catch((e) => ({
+        ok: false,
+        migrated: false,
+        error: String(e),
+      }));
+      const legacyStripeCheckout = await ensureLegacyStripeCheckoutClosed(env).catch((e) => ({
+        ok: false,
+        closed: false,
+        error: String(e),
+      }));
       const t = jeton(env);
       let hubspot = "absent";
       let hubspot_bw_session_prop = false;
@@ -1346,10 +1444,11 @@ export default {
           hubspot_bw_session_prop = await ensureBwLastCheckoutSessionProp(env);
         }
       }
-      const paddleApiKey = !!String(env.PADDLE_API_KEY || "").trim();
-      const paddleWebhookSecret = !!String(env.PADDLE_WEBHOOK_SECRET || "").trim();
-      const paddleClientToken = String(env.PADDLE_CLIENT_TOKEN || "").trim().startsWith("live_");
-      const paddleFulfillRelay = !!String(env.BW_PADDLE_FULFILL_KEY || "").trim();
+      // Paddle is disconnected even if stale secrets still exist in the hosting environment.
+      const paddleApiKey = false;
+      const paddleWebhookSecret = false;
+      const paddleClientToken = false;
+      const paddleFulfillRelay = false;
       // Claim works without contact prop: Cache (24h) + deal bw_stripe_payment_id (= cs_…).
       // Paddle path: direct pipe secrets OR Vorixa relay (BW_PADDLE_FULFILL_KEY).
       let masterDb = false;
@@ -1361,11 +1460,7 @@ export default {
           console.log("health master db", e);
         }
       }
-      const portal_claim_ready = (masterDb || hubspot === "connecte") && (
-        (paddleApiKey && paddleWebhookSecret) ||
-        paddleApiKey ||
-        paddleFulfillRelay
-      );
+      const portal_claim_ready = masterDb || hubspot === "connecte";
       return json({
         service: "blackway-pipe",
         ok: masterDb || hubspot === "connecte",
@@ -1384,7 +1479,12 @@ export default {
         paddle_webhook_secret: paddleWebhookSecret,
         paddle_client_token: paddleClientToken,
         paddle_fulfill_relay: paddleFulfillRelay,
-        paddle_ready: (paddleApiKey && paddleWebhookSecret) || paddleFulfillRelay,
+        paddle_ready: false,
+        paddle_disconnected: true,
+        payment_processor: "wix",
+        paddle_immediate_billing: paddleImmediateBilling,
+        legacy_stripe_checkout: legacyStripeCheckout,
+        stripe_webhook_history_only: true,
         lead_key: !!env.BW_LEAD_KEY,
         portal_secret: !!String(env.BW_PORTAL_SECRET || "").trim(),
         // Portal claim after pay does NOT require STRIPE_SECRET_KEY (webhook + cache/HubSpot deal).
@@ -1394,13 +1494,9 @@ export default {
       });
     }
 
-    // Public client-side token for /payer overlay (designed to be browser-visible).
+    // Paddle is permanently disconnected. Keep this legacy route only to reject old clients.
     if (url.pathname === "/paddle/client-config" && request.method === "GET") {
-      const token = String(env.PADDLE_CLIENT_TOKEN || "").trim();
-      if (!token.startsWith("live_")) {
-        return json({ ok: false, erreur: "paddle client token absent" }, 503);
-      }
-      return json({ ok: true, environment: "production", client_token: token });
+      return json({ ok: false, erreur: "Paddle déconnecté; utilisez Wix Payments." }, 410);
     }
 
     if (url.pathname === "/lead" && request.method === "POST") {
@@ -1490,6 +1586,8 @@ export default {
     }
 
     if (url.pathname === "/webhooks/paddle" && request.method === "POST") {
+      return json({ ok: false, erreur: "Paddle déconnecté; événements refusés." }, 410);
+      /* Historique de traitement conservé ci-dessous, mais rendu inaccessible.
       const body = await request.text();
       const ok = await signaturePaddleValide(
         env.PADDLE_WEBHOOK_SECRET,
@@ -1558,6 +1656,7 @@ export default {
         return json({ erreur: "activation Paddle temporairement indisponible" }, 502);
       }
       return json({ recu: true, type: evt.event_type, transaction_id: transactionId });
+      */
     }
 
     if (url.pathname === "/ops/engine/tick" && request.method === "POST") {

@@ -14,6 +14,45 @@ const checks = [
   { base: site, path: "/api/config", expected: 200, label: "Configuration publique" },
   { base: site, path: "/api/lead", expected: 405, label: "Leads: GET refusé" },
   { base: site, path: "/api/health", expected: 200, label: "Site health" },
+  {
+    base: site,
+    path: "/checkout?plan=grow_hub_growth",
+    expected: 308,
+    label: "Legacy /checkout → Paddle Growth",
+    redirectPath: "/payer",
+    redirectPlan: "grow_hub_growth",
+  },
+  {
+    base: site,
+    path: "/stripe?payment_link=plink_1UCmC0AG7HUL9RtrSOaDDzbo",
+    expected: 308,
+    label: "Legacy Stripe plink → Paddle Scale",
+    redirectPath: "/payer",
+    redirectPlan: "grow_hub_scale",
+  },
+  {
+    base: site,
+    path: "/paiement-stripe?forfait=cell_fleet",
+    expected: 308,
+    label: "Legacy Stripe route → Paddle Cell Fleet",
+    redirectPath: "/payer",
+    redirectPlan: "cell_fleet",
+  },
+  {
+    base: site,
+    path: "/payer?provider=stripe&plan=ia_chatbot_1",
+    expected: 308,
+    label: "Stripe-marked /payer sanitized",
+    redirectPath: "/payer",
+    redirectPlan: "ia_chatbot_1",
+  },
+  {
+    base: site,
+    path: "/checkout",
+    expected: 308,
+    label: "Unknown legacy checkout → forfaits",
+    redirectPath: "/forfaits",
+  },
   { base: pipe, path: "/health", expected: 200, label: "Pipe health" },
 ];
 if (preview) {
@@ -32,8 +71,24 @@ for (const check of checks) {
       redirect: "manual",
       signal: AbortSignal.timeout(12000),
     });
-    const ok = response.status === check.expected;
-    console.log(`${ok ? "OK" : "ÉCHEC"} ${check.label}: HTTP ${response.status}, attendu ${check.expected}`);
+    let ok = response.status === check.expected;
+    if (ok && check.redirectPath) {
+      const location = response.headers.get("location") || "";
+      try {
+        const target = new URL(location, check.base);
+        const pathOk = target.origin === new URL(site).origin && target.pathname === check.redirectPath;
+        const planOk = check.redirectPlan ? target.searchParams.get("plan") === check.redirectPlan : true;
+        const stripeHost = /(^|\.)stripe\.com$/i.test(target.hostname);
+        ok = pathOk && planOk && !stripeHost;
+        console.log(
+          `${ok ? "OK" : "ÉCHEC"} ${check.label}: Location=${location || "(absente)"}`,
+        );
+      } catch {
+        ok = false;
+      }
+    } else {
+      console.log(`${ok ? "OK" : "ÉCHEC"} ${check.label}: HTTP ${response.status}, attendu ${check.expected}`);
+    }
     if (!ok) failures++;
     if (ok && check.path === "/api/config") {
       const config = await response.json();
@@ -51,7 +106,17 @@ for (const check of checks) {
       console.log(
         `${paddleReady ? "OK" : "ATTENTION"} Pipe paddle_ready=${health.paddle_ready} (api=${!!health.paddle_api_key}, wh=${!!health.paddle_webhook_secret})`,
       );
-      // Soft fail — secrets may be Cloudflare-only; do not fail smoke on false alone.
+      const stripeState = health.legacy_stripe_checkout || null;
+      const stripeClosed = stripeState?.closed === true;
+      const stripeKeyBlocked =
+        stripeState?.status === 401 &&
+        stripeState?.error === "stripe_api_key_unauthorized";
+      console.log(
+        `${stripeClosed ? "OK" : stripeKeyBlocked ? "ATTENTION" : "ÉCHEC"} Legacy Stripe checkout: ${JSON.stringify(stripeState)}`,
+      );
+      if (!stripeClosed && !stripeKeyBlocked) failures++;
+      // Public routing to Paddle is a hard invariant. Direct Stripe-hosted link closure
+      // remains externally blocked only when the stored Stripe API key is unauthorized.
     }
   } catch (error) {
     console.log(`ÉCHEC ${check.label}: ${error.name || "réseau"}`);
