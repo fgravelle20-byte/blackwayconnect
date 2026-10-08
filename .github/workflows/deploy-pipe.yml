@@ -1,7 +1,4 @@
-name: Deploy pipe (blackway-pipe)
-
-# Production deploy path = Cloudflare Workers Builds (blackway-pipe).
-# Optional manual secret sync via workflow_dispatch only.
+name: Verify pipe (Wix Payments)
 
 on:
   workflow_dispatch: {}
@@ -11,16 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy policy (Workers Builds canonical)
-        env:
-          PADDLE_API_KEY: ${{ secrets.PADDLE_API_KEY }}
-          PADDLE_WEBHOOK_SECRET: ${{ secrets.PADDLE_WEBHOOK_SECRET }}
-        run: |
-          {
-            echo "## Pipe deploy policy"
-            echo "Production publish = **Cloudflare Workers Builds** → worker \`blackway-pipe\`."
-            echo "Set Worker secrets in Dash (not Actions wrangler): \`PADDLE_API_KEY\`, \`PADDLE_WEBHOOK_SECRET\`, \`HUBSPOT_TOKEN\`, \`BW_LEAD_KEY\`, \`BW_PORTAL_SECRET\`."
-            if [ -n "${PADDLE_API_KEY}" ]; then echo "- GitHub secret PADDLE_API_KEY: present"; else echo "- GitHub secret PADDLE_API_KEY: empty (ok if only on CF)"; fi
-            if [ -n "${PADDLE_WEBHOOK_SECRET}" ]; then echo "- GitHub secret PADDLE_WEBHOOK_SECRET: present"; else echo "- GitHub secret PADDLE_WEBHOOK_SECRET: empty (ok if only on CF)"; fi
-            echo "Health check after deploy: GET https://api.blackwayconnect.com/health → paddle_ready=true"
-          } >> "$GITHUB_STEP_SUMMARY"
+      - run: |
+          echo "Payment processor: Wix"
+          echo "Legacy Paddle routes return HTTP 410 and cannot accept transactions."
