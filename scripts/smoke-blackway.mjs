@@ -7,7 +7,7 @@ const checks = [
   { base: site, path: "/", expected: 200, label: "Accueil" },
   { base: site, path: "/forfaits", expected: 200, label: "Forfaits" },
   { base: site, path: "/forfaits-growth", expected: 200, label: "Growth landing" },
-  { base: site, path: "/payer?plan=grow_hub_growth", expected: 200, label: "Checkout Paddle" },
+  { base: site, path: "/payer?plan=grow_hub_growth", expected: 200, label: "Wix checkout" },
   { base: site, path: "/contact", expected: 200, label: "Contact" },
   { base: site, path: "/portail", expected: 200, label: "Portail client" },
   { base: site, path: "/diagnostic", expected: 200, label: "Twin Turbo diagnostic" },
@@ -18,7 +18,7 @@ const checks = [
     base: site,
     path: "/checkout?plan=grow_hub_growth",
     expected: 308,
-    label: "Legacy /checkout → Paddle Growth",
+    label: "Legacy /checkout → Wix Growth",
     redirectPath: "/payer",
     redirectPlan: "grow_hub_growth",
   },
@@ -26,7 +26,7 @@ const checks = [
     base: site,
     path: "/stripe?payment_link=plink_1UCmC0AG7HUL9RtrSOaDDzbo",
     expected: 308,
-    label: "Legacy Stripe plink → Paddle Scale",
+    label: "Legacy Stripe plink → Wix Scale",
     redirectPath: "/payer",
     redirectPlan: "grow_hub_scale",
   },
@@ -34,7 +34,7 @@ const checks = [
     base: site,
     path: "/paiement-stripe?forfait=cell_fleet",
     expected: 308,
-    label: "Legacy Stripe route → Paddle Cell Fleet",
+    label: "Legacy Stripe route → Wix Cell Fleet",
     redirectPath: "/payer",
     redirectPlan: "cell_fleet",
   },
@@ -92,20 +92,34 @@ for (const check of checks) {
     if (!ok) failures++;
     if (ok && check.path === "/api/config") {
       const config = await response.json();
-      const paddle =
-        config.checkout?.processor === "paddle" &&
-        ["grow_hub_launch", "grow_hub_growth", "grow_hub_scale"].every((plan) =>
-          String(config.checkout?.[plan] || "").includes("/payer"),
-        );
-      console.log(`${paddle ? "OK" : "ÉCHEC"} Paiement : Launch/Growth/Scale → /payer (Paddle)`);
-      if (!paddle) failures++;
+      const wixPlans = [
+        "grow_hub_spark",
+        "grow_hub_launch",
+        "grow_hub_growth",
+        "grow_hub_scale",
+        "grow_hub_command",
+        "grow_hub_partner",
+      ];
+      const wixCheckout =
+        config.checkout?.processor === "wix" &&
+        wixPlans.every((plan) => {
+          try {
+            const target = new URL(String(config.checkout?.[plan] || ""));
+            return (
+              target.protocol === "https:" &&
+              (target.hostname === "wix.com" ||
+                target.hostname.endsWith(".wix.com") ||
+                target.hostname.endsWith(".wixsite.com"))
+            );
+          } catch {
+            return false;
+          }
+        });
+      console.log(`${wixCheckout ? "OK" : "ÉCHEC"} Paiement : Grow Hub → liens Wix`);
+      if (!wixCheckout) failures++;
     }
     if (ok && check.path === "/health" && check.base === pipe) {
       const health = await response.json();
-      const paddleReady = health.paddle_ready === true || (health.paddle_api_key && health.paddle_webhook_secret);
-      console.log(
-        `${paddleReady ? "OK" : "ATTENTION"} Pipe paddle_ready=${health.paddle_ready} (api=${!!health.paddle_api_key}, wh=${!!health.paddle_webhook_secret})`,
-      );
       const stripeState = health.legacy_stripe_checkout || null;
       const stripeClosed = stripeState?.closed === true;
       const stripeKeyBlocked =
@@ -115,8 +129,7 @@ for (const check of checks) {
         `${stripeClosed ? "OK" : stripeKeyBlocked ? "ATTENTION" : "ÉCHEC"} Legacy Stripe checkout: ${JSON.stringify(stripeState)}`,
       );
       if (!stripeClosed && !stripeKeyBlocked) failures++;
-      // Public routing to Paddle is a hard invariant. Direct Stripe-hosted link closure
-      // remains externally blocked only when the stored Stripe API key is unauthorized.
+      // Public checkout links use Wix. Legacy Stripe checkout remains closed.
     }
   } catch (error) {
     console.log(`ÉCHEC ${check.label}: ${error.name || "réseau"}`);
