@@ -555,7 +555,7 @@ async function emailFromPortalLoginLink(env, token) {
 
 async function sendPortalLoginLink(env, emailInput) {
   const email = String(emailInput || "").trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new Error("courriel invalide");
   }
   const resendKey = String(env.RESEND_API_KEY || "").trim();

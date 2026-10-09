@@ -146,6 +146,10 @@ test("portal/me exposes only the authenticated customer's Paddle ID", async () =
       method: "POST", body: JSON.stringify({ transaction_id: "txn_public_reference" }),
     }), env, { waitUntil() {} });
     assert.equal(transactionOnly.status, 401);
+    const oversizedEmail = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/login-link", {
+      method: "POST", body: JSON.stringify({ email: "a".repeat(10000) }),
+    }), env, { waitUntil() {} });
+    assert.equal(oversizedEmail.status, 503);
     const requested = await pipe.fetch(new Request("https://api.blackwayconnect.com/portal/login-link", {
       method: "POST", body: JSON.stringify({ email: "pay@example.com" }),
     }), env, { waitUntil() {} });
